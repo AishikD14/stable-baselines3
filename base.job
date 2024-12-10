@@ -1,0 +1,17 @@
+#!/bin/bash
+#SBATCH --job-name=espace
+#SBATCH --output=/home/aideb/stable-baselines3/base_job_output/base_out_800.txt
+#SBATCH --error=/home/aideb/stable-baselines3/base_job_output/base_err_800.txt
+#SBATCH --time=00-00:30
+#SBATCH --mem=50000
+#SBATCH --gres=gpu:1
+
+# Test CUDA compiler (not needed by deep learning people, we just use the python libraries)
+# /cm/shared/apps/cuda11.1/toolkit/11.1.1/bin/nvcc -o saxpy /home/aideb/cuda_c_code/saxpy.cu && ./saxpy
+
+# Test nvidia-smi
+nvidia-smi
+
+# Test Python conda environment
+source activate basenv
+/home/aideb/miniconda3/envs/basenv/bin/python3 -u /home/aideb/stable-baselines3/main.py
