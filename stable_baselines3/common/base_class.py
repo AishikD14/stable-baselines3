@@ -388,6 +388,7 @@ class BaseAlgorithm(ABC):
         reset_num_timesteps: bool = True,
         tb_log_name: str = "run",
         progress_bar: bool = False,
+        first_iteration: bool = True,
     ) -> tuple[int, BaseCallback]:
         """
         Initialize different variables needed for training.
@@ -428,7 +429,7 @@ class BaseAlgorithm(ABC):
                 self._last_original_obs = self._vec_normalize_env.get_original_obs()
 
         # Configure logger's outputs if no logger was passed
-        if not self._custom_logger:
+        if not self._custom_logger and first_iteration:
             self._logger = utils.configure_logger(self.verbose, self.tensorboard_log, tb_log_name, reset_num_timesteps)
 
         # Create eval callback if needed

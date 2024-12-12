@@ -304,6 +304,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
         tb_log_name: str = "OnPolicyAlgorithm",
         reset_num_timesteps: bool = True,
         progress_bar: bool = False,
+        first_iteration: bool = True,
     ) -> SelfOnPolicyAlgorithm:
         iteration = 0
 
@@ -313,6 +314,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
             reset_num_timesteps,
             tb_log_name,
             progress_bar,
+            first_iteration
         )
 
         callback.on_training_start(locals(), globals())
