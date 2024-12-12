@@ -307,6 +307,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
         reset_num_timesteps: bool = True,
         progress_bar: bool = False,
         first_iteration: bool = True,
+        iteration_number_for_log: Optional[int] = 1,
     ) -> SelfOnPolicyAlgorithm:
         iteration = 0
 
@@ -339,7 +340,8 @@ class OnPolicyAlgorithm(BaseAlgorithm):
 
             self.train()
 
-            print(self.tensorboard_log + tb_log_name + "/" + get_latest_run_id(self.tensorboard_log, tb_log_name))
+            self.save(self.tensorboard_log + tb_log_name + "_" + str(get_latest_run_id(self.tensorboard_log, tb_log_name)) + "/models/agent" + str(iteration_number_for_log))
+            iteration_number_for_log += 1
 
         callback.on_training_end()
 

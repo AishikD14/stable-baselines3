@@ -163,7 +163,7 @@ model = PPO("MlpPolicy", env, verbose=1, seed=0, n_steps=n_steps_per_rollout, ba
 
 # print("Starting Initial training")
 # model.learn(total_timesteps=START_ITER*n_steps_per_rollout, log_interval=50)
-model.save("full_exp_on_ppo/models/ppo_ant")
+# model.save("full_exp_on_ppo/models/ppo_ant")
 # print("Initial training done")
 # quit()
 
@@ -186,10 +186,11 @@ timeArray = []
 for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
     print(i)
     model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout, 
+                iteration_number_for_log = i+1,
                 log_interval=1, 
                 tb_log_name="PPO_empty_space", 
                 reset_num_timesteps=True if i == START_ITER else False, 
-                first_iteration=True if i == START_ITER else False
+                first_iteration=True if i == START_ITER else False,
                 )
     if i == START_ITER +10:
         break

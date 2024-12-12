@@ -302,6 +302,7 @@ class PPO(OnPolicyAlgorithm):
     def learn(
         self: SelfPPO,
         total_timesteps: int,
+        iteration_number_for_log: int,
         callback: MaybeCallback = None,
         log_interval: int = 1,
         tb_log_name: str = "PPO",
@@ -317,4 +318,5 @@ class PPO(OnPolicyAlgorithm):
             reset_num_timesteps=reset_num_timesteps,
             progress_bar=progress_bar,
             first_iteration=first_iteration,
+            iteration_number_for_log = iteration_number_for_log,
         )
