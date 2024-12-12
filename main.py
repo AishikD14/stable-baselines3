@@ -6,6 +6,8 @@ from scipy.spatial.distance import euclidean
 from collections import OrderedDict
 import torch
 import time
+from stable_baselines3.common.utils import get_latest_run_id
+# from stable_baselines3.common.base_class import BaseAlgorithm
 
 device = "cpu"
 
@@ -32,12 +34,18 @@ def elastic(es, neighbors, D):
 
 # Search the empty space policies
 def empty_center(data, coor, neighbor, use_momentum, movestep, numiter):
+    print("-------------------")
     orig_coor = coor.copy()
     cum_mag = 0
     gamma = 0.9 # discount factor
     momentum = np.zeros(coor.shape)
     es_configs = []
     for i in range(numiter):
+        print(i)
+        contains_nan = np.isnan(coor).any()
+        print("Contains NaN:", contains_nan)
+        print(coor)
+        print("-------------------")
         distances_, adjs_ = neighbor.kneighbors(coor)
         if i % 20 == 0:
             if use_momentum:
@@ -64,24 +72,23 @@ def empty_center(data, coor, neighbor, use_momentum, movestep, numiter):
     else:
         return np.linalg.norm(coor - orig_coor), np.array(es_configs)
 
-def load_weights(arng, directory, args):
+def load_weights(arng, directory, env):
     policies = []
     for i in arng:
         policy_vec = []
-        if torch.cuda.is_available():
-            ckp = torch.load(f'logs/AntDir-v0/{directory}/models/agent{i}.pt')
-        else:
-            ckp = torch.load(f'logs/AntDir-v0/{directory}/models/agent{i}.pt', map_location=torch.device('cpu'))
-        # ckp = torch.load(f'../full_exp_on_sac/models/agent{i}.pt')
+
+        new_model = PPO("MlpPolicy", env, verbose=0, device='cpu')
+        new_model.load(f'logs/{directory}/models/agent{i}.zip', device='cpu')
+
+        # print(new_model.policy)
+
+        ckp = new_model.policy.state_dict()
+        
         ckp_layers = ckp.keys()
         for layer in ckp_layers:
-            # if args.policy == 'ppo_actor':
-            #     if 'actor_mean' in layer:
-            #         policy_vec.append(ptu.get_numpy(ckp[layer]).reshape(-1))
-            # else:
             if 'policy' in layer:
-                # policy_vec.append(ptu.get_numpy(ckp[layer]).reshape(-1))
-                policy_vec.append(ckp[layer].to('cpu').detach().numpy().reshape(-1))
+                policy_vec.append(ckp[layer].detach().numpy().reshape(-1))
+
         policy_vec = np.concatenate(policy_vec)
         policies.append(policy_vec)
     policies = np.array(policies)
@@ -111,8 +118,8 @@ def dump_weights(agent_net, es_models):
     return policies
 
 # Nearest neighbor search plus empty space search
-def search_empty_space_policies(algo, directory, start, end, args, agent_num=10):
-    dt = load_weights(range(start, end), directory, args)
+def search_empty_space_policies(algo, directory, start, end, env, agent_num=10):
+    dt = load_weights(range(start, end), directory, env)
     print(dt.shape)
     neigh = NearestNeighbors(n_neighbors=6)
     neigh.fit(dt)
@@ -124,11 +131,14 @@ def search_empty_space_policies(algo, directory, start, end, args, agent_num=10)
 
     policies = []
     print(len(points))
+    print(points)
     for p in points:
         a = empty_center(dt, p.reshape(1, -1), neigh, use_momentum=True, movestep=0.001, numiter=400)
         policies.append(a[1])
     policies = np.concatenate(policies)
     print(policies.shape)
+
+    quit()
 
     agents = dump_weights(algo.agent.state_dict(), policies)
 
@@ -150,8 +160,9 @@ def search_empty_space_policies(algo, directory, start, end, args, agent_num=10)
     
     return agents, average_distance
 
-env = gym.make("Ant-v5")
-print(env.action_space, env.observation_space)
+env_name = "Ant-v5"
+env = gym.make(env_name)
+# print(env.action_space, env.observation_space)
 
 n_steps_per_rollout = 200
 
@@ -159,7 +170,7 @@ START_ITER = 1000
 SEARCH_INTERV = 10
 NUM_ITERS = START_ITER + 100
 
-model = PPO("MlpPolicy", env, verbose=1, seed=0, n_steps=n_steps_per_rollout, batch_size=50, device='cpu', tensorboard_log='logs/')
+model = PPO("MlpPolicy", env, verbose=0, seed=0, n_steps=n_steps_per_rollout, batch_size=50, device='cpu', tensorboard_log='logs/'+env_name+"/")
 
 # print("Starting Initial training")
 # model.learn(total_timesteps=START_ITER*n_steps_per_rollout, log_interval=50)
@@ -167,7 +178,7 @@ model = PPO("MlpPolicy", env, verbose=1, seed=0, n_steps=n_steps_per_rollout, ba
 # print("Initial training done")
 # quit()
 
-print("Loading model")
+print("Loading Initial saved model")
 
 # Load model
 model.set_parameters("full_exp_on_ppo/models/ppo_ant", device='cpu')
@@ -179,6 +190,9 @@ obs = vec_env.reset()
 
 print("Starting evaluation")
 
+exp = "PPO_empty_space"
+DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
+
 distanceArray = []
 start_time = time.time()
 timeArray = []
@@ -188,13 +202,15 @@ for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
     model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout, 
                 iteration_number_for_log = i+1,
                 log_interval=1, 
-                tb_log_name="PPO_empty_space", 
+                tb_log_name=exp, 
                 reset_num_timesteps=True if i == START_ITER else False, 
                 first_iteration=True if i == START_ITER else False,
                 )
+    
+    agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+
     if i == START_ITER +10:
         break
-    # agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, args)
 
 # ret = 0
 # for i in range(10):
