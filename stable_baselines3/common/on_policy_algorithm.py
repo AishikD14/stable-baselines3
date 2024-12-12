@@ -15,6 +15,8 @@ from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedul
 from stable_baselines3.common.utils import obs_as_tensor, safe_mean
 from stable_baselines3.common.vec_env import VecEnv
 
+from stable_baselines3.common.utils import get_latest_run_id
+
 SelfOnPolicyAlgorithm = TypeVar("SelfOnPolicyAlgorithm", bound="OnPolicyAlgorithm")
 
 
@@ -336,6 +338,8 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 self._dump_logs(iteration)
 
             self.train()
+
+            print(self.tensorboard_log + tb_log_name + "/" + get_latest_run_id(self.tensorboard_log, tb_log_name))
 
         callback.on_training_end()
 
