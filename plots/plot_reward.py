@@ -41,8 +41,6 @@ for filename in os.listdir(directory):
         # Append the maximum reward to the rewards list
         rewards.append(max_reward)
 
-print(x)
-print(rewards)
 # Choose appropriate value from the rewards
 rewards = rewards[::x_step_size]
 
@@ -50,6 +48,35 @@ rewards = rewards[::x_step_size]
 plt.plot(x, rewards, label="Neighbor Sampling+Empty Space")
 # except :
 #     print("Error in empty space directory")
+
+# -------------------------------------------------------
+
+# Load the rewards from the normal_train directory
+
+# Loop through the directories and load the rewards
+directory = "../logs/Ant-v5/PPO_normal_train"+iterationString
+print("------------------------------------")
+print("Working on normal_train directory")
+rewards = []
+try:
+    for filename in os.listdir(directory):
+        # Check if the filename starts with "results"
+        if filename.startswith('results'):
+            # print(filename)
+            # Load the rewards
+            results = np.load(directory + "/" + filename)
+            # Find the maximum reward
+            max_reward = np.max(results)
+            # Append the maximum reward to the rewards list
+            rewards.append(max_reward)
+
+    # Choose appropriate value from the rewards
+    rewards = rewards[::x_step_size]
+
+    # Plot the rewards
+    plt.plot(x, rewards, label="Normal Training")
+except:
+    print("Error in normal train directory")
 
 # -------------------------------------------------------
 

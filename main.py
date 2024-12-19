@@ -403,7 +403,7 @@ SEARCH_INTERV = 1
 NUM_ITERS = START_ITER + 10
 N_EPOCHS = 10
 
-exp = "PPO_random_search_random_walk"
+exp = "PPO_normal_train"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -433,48 +433,70 @@ obs = vec_env.reset()
 
 print("Starting evaluation")
 
+normal_train = False
 distanceArray = []
 start_time = time.time()
 timeArray = []
 
-for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
-    print(i)
-    model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
-                log_interval=1, 
-                tb_log_name=exp, 
-                reset_num_timesteps=True if i == START_ITER else False, 
-                first_iteration=True if i == START_ITER else False,
-                )
-    
-    # agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-    # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-    # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-    # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-    agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-    distanceArray.append(distance)
-    
-    cum_rews = []
-
-    for j, a in enumerate(agents):
-        model.policy.load_state_dict(a)
-        model.policy.to(device)
+if not normal_train:
+    for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
+        print(i)
+        model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
+                    log_interval=1, 
+                    tb_log_name=exp, 
+                    reset_num_timesteps=True if i == START_ITER else False, 
+                    first_iteration=True if i == START_ITER else False,
+                    )
         
+        # agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+        # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+        # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+        # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+        agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+        distanceArray.append(distance)
+        
+        cum_rews = []
+
+        for j, a in enumerate(agents):
+            model.policy.load_state_dict(a)
+            model.policy.to(device)
+            
+            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=5, deterministic=True)[0]
+            print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
+            cum_rews.append(returns_trains)
+            
+        np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
+        np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+        timeArray.append(time.time() - start_time)
+
+        best_idx = np.argsort(cum_rews)[-1]
+        best_agent = agents[best_idx]
+        print(f'the best agent: {best_idx}, avg policy: {cum_rews[best_idx]}')
+        load_state_dict(model, best_agent)
+
+    np.save(f'logs/{DIR}/distance.npy', distanceArray)
+    np.save(f'logs/{DIR}/time.npy', timeArray)
+    print("Average distance of random agents to nearest neighbors:", distanceArray)
+    print("Time taken for each iteration:", timeArray)
+
+else:
+    for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
+        model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
+                    log_interval=1, 
+                    tb_log_name=exp, 
+                    reset_num_timesteps=True if i == START_ITER else False, 
+                    first_iteration=True if i == START_ITER else False,
+                    )
+
+        cum_rews = []
+
         returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=5, deterministic=True)[0]
-        print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
+        print(f'avg return on policy: {returns_trains}')
         cum_rews.append(returns_trains)
-        
-    np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
-    np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
-    timeArray.append(time.time() - start_time)
-
-    best_idx = np.argsort(cum_rews)[-1]
-    best_agent = agents[best_idx]
-    print(f'the best agent: {best_idx}, avg policy: {cum_rews[best_idx]}')
-    load_state_dict(model, best_agent)
-
-np.save(f'logs/{DIR}/distance.npy', distanceArray)
-np.save(f'logs/{DIR}/time.npy', timeArray)
-print("Average distance of random agents to nearest neighbors:", distanceArray)
-print("Time taken for each iteration:", timeArray)
+        np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+        timeArray.append(time.time() - start_time)
+    
+    np.save(f'logs/{DIR}/time.npy', timeArray)
+    print("Time taken for each iteration:", timeArray)
 
 env.close()
