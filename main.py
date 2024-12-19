@@ -153,6 +153,67 @@ def search_empty_space_policies(algo, directory, start, end, env, agent_num=10):
     
     return agents, average_distance
 
+# Function to calculate the mean and covariance of the training data
+def fit_gaussian_model(data):
+    mean = np.mean(data, axis=0)
+    covariance = np.cov(data, rowvar=False)
+    return mean, covariance
+
+#  Randomly sample from a Gaussian distribution of points
+def random_search_policies(algo, directory, start, end, env, agent_num=10):
+    dt = load_weights(range(start, end), directory, env)
+    print(dt.shape)
+
+    # Fit the Gaussian model to the training data with MLE
+    mean, covariance = fit_gaussian_model(dt)
+    # print("Mean of the Gaussian model:", mean)
+    # print("Covariance of the Gaussian model:", covariance)
+
+    # Sample from the fitted Gaussian distribution
+    policies = np.random.multivariate_normal(mean, covariance, agent_num)
+    print("Shape of generated policies:", policies.shape)
+    
+    # Calculate log-likelihood of the training data under the fitted Gaussian model
+    # log_likelihood = np.sum(multivariate_normal.logpdf(dt, mean=mean, cov=covariance))
+    # print("Log-likelihood of the training data under the fitted Gaussian model:", log_likelihood)
+
+    agents = dump_weights(algo.policy.state_dict(), policies)
+
+    # Distance Calculation 1
+
+    # # Calculate the mean of the training agents
+    # training_agents_mean = np.mean(dt, axis=0)
+
+    # # Calculate the distance of each random agent to the mean of the training agents
+    # distances = [euclidean(policy, training_agents_mean) for policy in policies]
+    
+    # # Average distance
+    # average_distance = np.mean(distances)
+    # print("Average distance of random agents to training agents:", average_distance)
+
+    # ---------------------------------------------------------------------------------
+
+    # Distance Calculation 2
+
+    # Calculate the nearest neighbors of the random agents
+    neigh = NearestNeighbors(n_neighbors=6)
+    neigh.fit(policies)
+
+    _, adjs = neigh.kneighbors(policies)
+    points = policies[adjs[:, 1:]]
+    points = points.mean(axis=1)
+    print(points.shape)
+
+    # Calculate the distance of each random agent to the mean of the nearest neighbors
+    distances = [euclidean(policy, point) for policy, point in zip(policies, points)]
+
+    # Average distance
+    average_distance = np.mean(distances)
+    print("Average distance of random agents to nearest neighbors:", average_distance)
+
+    
+    return agents, average_distance
+
 def load_state_dict(algo, params):
     algo.policy.load_state_dict(params)
     algo.policy.optimizer = algo.policy.optimizer_class(algo.policy.parameters(), lr=algo.learning_rate)
@@ -171,7 +232,7 @@ SEARCH_INTERV = 1
 NUM_ITERS = START_ITER + 10
 N_EPOCHS = 10
 
-exp = "PPO_empty_space"
+exp = "PPO_random_search"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -214,7 +275,8 @@ for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
                 first_iteration=True if i == START_ITER else False,
                 )
     
-    agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+    # agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+    agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
     distanceArray.append(distance)
     
     cum_rews = []

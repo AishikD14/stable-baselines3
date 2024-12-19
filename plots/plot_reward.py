@@ -25,7 +25,7 @@ x = np.arange(start_iteration+1, end_iteration+1, x_step_size)
 # Load the rewards from the empty space directory
 
 # Loop through the directories and load the rewards
-directory = "../logs/Ant-v5/PPO_empty_space_2"+iterationString
+directory = "../logs/Ant-v5/PPO_empty_space"+iterationString
 print("------------------------------------")
 print("Working on empty_space directory")
 rewards = []
