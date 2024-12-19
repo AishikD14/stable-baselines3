@@ -5,6 +5,7 @@ import numpy as np
 import torch as th
 from gymnasium import spaces
 from torch.nn import functional as F
+import os
 
 from stable_baselines3.common.buffers import RolloutBuffer
 from stable_baselines3.common.on_policy_algorithm import OnPolicyAlgorithm
@@ -105,6 +106,7 @@ class PPO(OnPolicyAlgorithm):
         seed: Optional[int] = None,
         device: Union[th.device, str] = "auto",
         _init_setup_model: bool = True,
+        **kwargs
     ):
         super().__init__(
             policy,
@@ -169,6 +171,8 @@ class PPO(OnPolicyAlgorithm):
 
         if _init_setup_model:
             self._setup_model()
+
+        self.ckp_dir = kwargs['ckp_dir'] if 'ckp_dir' in kwargs else None
 
     def _setup_model(self) -> None:
         super()._setup_model()
@@ -277,6 +281,10 @@ class PPO(OnPolicyAlgorithm):
                 th.nn.utils.clip_grad_norm_(self.policy.parameters(), self.max_grad_norm)
                 self.policy.optimizer.step()
 
+            if self.ckp_dir is not None:
+                os.makedirs(self.ckp_dir, exist_ok=True)
+                th.save(self.policy.state_dict(), f'{self.ckp_dir}/agent{epoch+1}.zip')
+
             self._n_updates += 1
             if not continue_training:
                 break
@@ -302,7 +310,6 @@ class PPO(OnPolicyAlgorithm):
     def learn(
         self: SelfPPO,
         total_timesteps: int,
-        iteration_number_for_log: int,
         callback: MaybeCallback = None,
         log_interval: int = 1,
         tb_log_name: str = "PPO",
@@ -318,5 +325,4 @@ class PPO(OnPolicyAlgorithm):
             reset_num_timesteps=reset_num_timesteps,
             progress_bar=progress_bar,
             first_iteration=first_iteration,
-            iteration_number_for_log = iteration_number_for_log,
         )

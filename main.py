@@ -5,9 +5,14 @@ from sklearn.neighbors import NearestNeighbors
 from scipy.spatial.distance import euclidean
 from collections import OrderedDict
 import torch
+from torch.optim import Adam
 import time
-from stable_baselines3.common.utils import get_latest_run_id
-# from stable_baselines3.common.base_class import BaseAlgorithm
+import os
+from stable_baselines3.common.utils import get_latest_run_id, safe_mean
+from stable_baselines3.common.evaluation import evaluate_policy
+import warnings
+
+warnings.filterwarnings("ignore")
 
 device = "cpu"
 
@@ -34,18 +39,13 @@ def elastic(es, neighbors, D):
 
 # Search the empty space policies
 def empty_center(data, coor, neighbor, use_momentum, movestep, numiter):
-    print("-------------------")
     orig_coor = coor.copy()
     cum_mag = 0
     gamma = 0.9 # discount factor
     momentum = np.zeros(coor.shape)
     es_configs = []
     for i in range(numiter):
-        print(i)
-        contains_nan = np.isnan(coor).any()
-        print("Contains NaN:", contains_nan)
-        print(coor)
-        print("-------------------")
+        
         distances_, adjs_ = neighbor.kneighbors(coor)
         if i % 20 == 0:
             if use_momentum:
@@ -74,24 +74,27 @@ def empty_center(data, coor, neighbor, use_momentum, movestep, numiter):
 
 def load_weights(arng, directory, env):
     policies = []
-    for i in arng:
+
+    for i in range(N_EPOCHS):
         policy_vec = []
 
-        new_model = PPO("MlpPolicy", env, verbose=0, device='cpu')
-        new_model.load(f'logs/{directory}/models/agent{i}.zip', device='cpu')
+        # new_model = PPO("MlpPolicy", env, verbose=0, device='cpu')
+        # new_model.load(f'logs/{directory}/models/agent{i}.zip', device='cpu')
 
-        # print(new_model.policy)
+        ckp = torch.load(f'logs/{directory}/models/agent{i+1}.zip', map_location=torch.device('cpu'))
 
-        ckp = new_model.policy.state_dict()
-        
+        # ckp = new_model.policy.state_dict()
         ckp_layers = ckp.keys()
+
         for layer in ckp_layers:
-            if 'policy' in layer:
+            if 'value_net' not in layer:
                 policy_vec.append(ckp[layer].detach().numpy().reshape(-1))
 
         policy_vec = np.concatenate(policy_vec)
         policies.append(policy_vec)
+
     policies = np.array(policies)
+
     return policies
 
 def dump_weights(agent_net, es_models):
@@ -100,15 +103,7 @@ def dump_weights(agent_net, es_models):
         policy = OrderedDict()
         pivot = 0
         for layer in agent_net:
-            # if args.policy == 'ppo_actor':
-            #     if 'actor_mean' not in layer:
-            #         policy[layer] = agent_net[layer]
-            #     else:
-            #         sp = agent_net[layer].reshape(-1).shape[0]
-            #         policy[layer] = ptu.FloatTensor(es_models[i][pivot : pivot + sp].reshape(agent_net[layer].shape))
-            #         pivot += sp
-            # else:
-            if 'policy' not in layer:
+            if 'value_net' in layer:
                 policy[layer] = agent_net[layer]
             else:
                 sp = agent_net[layer].reshape(-1).shape[0]
@@ -119,6 +114,9 @@ def dump_weights(agent_net, es_models):
 
 # Nearest neighbor search plus empty space search
 def search_empty_space_policies(algo, directory, start, end, env, agent_num=10):
+    print("---------------------------------")
+    print("Searching empty space policies")
+
     dt = load_weights(range(start, end), directory, env)
     print(dt.shape)
     neigh = NearestNeighbors(n_neighbors=6)
@@ -127,20 +125,15 @@ def search_empty_space_policies(algo, directory, start, end, env, agent_num=10):
     _, adjs = neigh.kneighbors(dt[-agent_num:])
     points = dt[adjs[:, 1:]]
     points = points.mean(axis=1)
-    print(points.shape)
 
     policies = []
-    print(len(points))
-    print(points)
     for p in points:
         a = empty_center(dt, p.reshape(1, -1), neigh, use_momentum=True, movestep=0.001, numiter=400)
         policies.append(a[1])
     policies = np.concatenate(policies)
     print(policies.shape)
 
-    quit()
-
-    agents = dump_weights(algo.agent.state_dict(), policies)
+    agents = dump_weights(algo.policy.state_dict(), policies)
 
     # Calculate the nearest neighbors of the agents
     neigh = NearestNeighbors(n_neighbors=6)
@@ -160,6 +153,13 @@ def search_empty_space_policies(algo, directory, start, end, env, agent_num=10):
     
     return agents, average_distance
 
+def load_state_dict(algo, params):
+    algo.policy.load_state_dict(params)
+    algo.policy.optimizer = algo.policy.optimizer_class(algo.policy.parameters(), lr=algo.learning_rate)
+    algo.policy.to(device)
+
+# ------------------------------------------------------------------------------------------------------------------------------
+
 env_name = "Ant-v5"
 env = gym.make(env_name)
 # print(env.action_space, env.observation_space)
@@ -167,10 +167,21 @@ env = gym.make(env_name)
 n_steps_per_rollout = 200
 
 START_ITER = 1000
-SEARCH_INTERV = 10
-NUM_ITERS = START_ITER + 100
+SEARCH_INTERV = 1
+NUM_ITERS = START_ITER + 10
+N_EPOCHS = 10
 
-model = PPO("MlpPolicy", env, verbose=0, seed=0, n_steps=n_steps_per_rollout, batch_size=50, device='cpu', tensorboard_log='logs/'+env_name+"/")
+exp = "PPO_empty_space"
+DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
+ckp_dir = f'logs/{DIR}/models'
+
+model = PPO("MlpPolicy", env, verbose=0, seed=0, 
+            n_steps=n_steps_per_rollout, 
+            batch_size=50, 
+            n_epochs=N_EPOCHS, 
+            device='cpu', 
+            tensorboard_log='logs/'+env_name+"/",
+            ckp_dir=ckp_dir)
 
 # print("Starting Initial training")
 # model.learn(total_timesteps=START_ITER*n_steps_per_rollout, log_interval=50)
@@ -190,17 +201,13 @@ obs = vec_env.reset()
 
 print("Starting evaluation")
 
-exp = "PPO_empty_space"
-DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
-
 distanceArray = []
 start_time = time.time()
 timeArray = []
 
 for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
     print(i)
-    model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout, 
-                iteration_number_for_log = i+1,
+    model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
                 log_interval=1, 
                 tb_log_name=exp, 
                 reset_num_timesteps=True if i == START_ITER else False, 
@@ -208,15 +215,30 @@ for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
                 )
     
     agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+    distanceArray.append(distance)
+    
+    cum_rews = []
 
-    if i == START_ITER +10:
-        break
+    for j, a in enumerate(agents):
+        model.policy.load_state_dict(a)
+        model.policy.to(device)
+        
+        returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=5, deterministic=True)[0]
+        print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
+        cum_rews.append(returns_trains)
+        
+    np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
+    np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+    timeArray.append(time.time() - start_time)
 
-# ret = 0
-# for i in range(10):
-#     action, _states = model.predict(obs, deterministic=True)
-#     obs, reward, done, info = vec_env.step(action)
-#     ret += reward
-#     print(f'Reward: {reward}')
+    best_idx = np.argsort(cum_rews)[-1]
+    best_agent = agents[best_idx]
+    print(f'the best agent: {best_idx}, avg policy: {cum_rews[best_idx]}')
+    load_state_dict(model, best_agent)
+
+np.save(f'logs/{DIR}/distance.npy', distanceArray)
+np.save(f'logs/{DIR}/time.npy', timeArray)
+print("Average distance of random agents to nearest neighbors:", distanceArray)
+print("Time taken for each iteration:", timeArray)
 
 env.close()
