@@ -72,6 +72,45 @@ def empty_center(data, coor, neighbor, use_momentum, movestep, numiter):
     else:
         return np.linalg.norm(coor - orig_coor), np.array(es_configs)
 
+def random_walk(data, coor, neighbor, use_momentum, movestep, numiter):
+    orig_coor = coor.copy()
+    cum_mag = 0
+    gamma = 0.9  # discount factor
+    momentum = np.zeros(coor.shape)
+    rw_configs = []
+
+    for i in range(numiter):
+        # Generate a random direction
+        direction = np.random.uniform(-1, 1, coor.shape)
+        
+        # Normalize the random direction
+        mag = np.linalg.norm(direction)
+        if mag < 1e-7:
+            break
+        direction /= mag
+        
+        if use_momentum:
+            direction = direction * mag / (cum_mag + mag) + momentum * cum_mag / (cum_mag + mag)
+
+        coor += direction * movestep
+        
+        if use_momentum:
+            cum_mag = gamma * cum_mag + mag
+            momentum = gamma * momentum + direction
+            momentum /= np.linalg.norm(momentum)
+        
+        # Store configurations periodically for elastic search purposes
+        if i % 20 == 0:
+            if use_momentum:
+                rw_configs.extend(coor.tolist())
+
+    rw_configs.extend(coor.tolist())
+
+    if not use_momentum:
+        return np.linalg.norm(coor - orig_coor), coor
+    else:
+        return np.linalg.norm(coor - orig_coor), np.array(rw_configs)
+
 def load_weights(arng, directory, env):
     policies = []
 
@@ -214,6 +253,92 @@ def random_search_policies(algo, directory, start, end, env, agent_num=10):
     
     return agents, average_distance
 
+# Neighbor search plus random walk
+def neighbor_search_random_walk(algo, directory, start, end, env, agent_num=10):
+    dt = load_weights(range(start, end), directory, env)
+    print(dt.shape)
+    neigh = NearestNeighbors(n_neighbors=6)
+    neigh.fit(dt)
+
+    _, adjs = neigh.kneighbors(dt[-agent_num:])
+    points = dt[adjs[:, 1:]]
+    points = points.mean(axis=1)
+    print(points.shape)
+
+    policies = []
+    print(len(points))
+    for p in points:
+        a = random_walk(dt, p.reshape(1, -1), neigh, use_momentum=True, movestep=0.001, numiter=400)
+        policies.append(a[1])
+    policies = np.concatenate(policies)
+    print(policies.shape)
+
+    agents = dump_weights(algo.policy.state_dict(), policies)
+
+    # Calculate the nearest neighbors of the agents
+    neigh = NearestNeighbors(n_neighbors=6)
+    neigh.fit(policies)
+
+    _, adjs = neigh.kneighbors(policies)
+    points = policies[adjs[:, 1:]]
+    points = points.mean(axis=1)
+    print(points.shape)
+
+    # Calculate the distance of each agent to the mean of the nearest neighbors
+    distances = [euclidean(policy, point) for policy, point in zip(policies, points)]
+
+    # Average distance
+    average_distance = np.mean(distances)
+    print("Average distance of agents to nearest neighbors:", average_distance)
+    
+    return agents, average_distance
+
+# Random Sampling plus empty space search
+def random_search_empty_space_policies(algo, directory, start, end, env, agent_num=10):
+    dt = load_weights(range(start, end), directory, env)
+    print(dt.shape)
+    neigh = NearestNeighbors(n_neighbors=6)
+    neigh.fit(dt)
+
+    # Fit the Gaussian model to the training data with MLE
+    mean, covariance = fit_gaussian_model(dt)
+    # print("Mean of the Gaussian model:", mean)
+    # print("Covariance of the Gaussian model:", covariance)
+
+    # Sample from the fitted Gaussian distribution
+    points = np.random.multivariate_normal(mean, covariance, agent_num)
+    print("Shape of generated points:", points.shape)
+
+    # print("done")
+
+    policies = []
+    print(len(points))
+    for p in points:
+        a = empty_center(dt, p.reshape(1, -1), neigh, use_momentum=True, movestep=0.001, numiter=400)
+        policies.append(a[1])
+    policies = np.concatenate(policies)
+    print(policies.shape)
+
+    agents = dump_weights(algo.policy.state_dict(), policies)
+
+    # Calculate the nearest neighbors of the random agents
+    neigh = NearestNeighbors(n_neighbors=6)
+    neigh.fit(policies)
+
+    _, adjs = neigh.kneighbors(policies)
+    points = policies[adjs[:, 1:]]
+    points = points.mean(axis=1)
+    print(points.shape)
+
+    # Calculate the distance of each random agent to the mean of the nearest neighbors
+    distances = [euclidean(policy, point) for policy, point in zip(policies, points)]
+
+    # Average distance
+    average_distance = np.mean(distances)
+    print("Average distance of agents to nearest neighbors:", average_distance)
+    
+    return agents, average_distance
+
 def load_state_dict(algo, params):
     algo.policy.load_state_dict(params)
     algo.policy.optimizer = algo.policy.optimizer_class(algo.policy.parameters(), lr=algo.learning_rate)
@@ -232,7 +357,7 @@ SEARCH_INTERV = 1
 NUM_ITERS = START_ITER + 10
 N_EPOCHS = 10
 
-exp = "PPO_random_search"
+exp = "PPO_random_search_empty_space"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -276,7 +401,9 @@ for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
                 )
     
     # agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-    agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+    # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+    # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+    agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
     distanceArray.append(distance)
     
     cum_rews = []
