@@ -29,25 +29,25 @@ directory = "../logs/Ant-v5/PPO_empty_space"+iterationString
 print("------------------------------------")
 print("Working on empty_space directory")
 rewards = []
-# try:
-for filename in os.listdir(directory):
-    # Check if the filename starts with "results"
-    if filename.startswith('results'):
-        # print(filename)
-        # Load the rewards
-        results = np.load(directory + "/" + filename)
-        # Find the maximum reward
-        max_reward = np.max(results)
-        # Append the maximum reward to the rewards list
-        rewards.append(max_reward)
+try:
+    for filename in os.listdir(directory):
+        # Check if the filename starts with "results"
+        if filename.startswith('results'):
+            # print(filename)
+            # Load the rewards
+            results = np.load(directory + "/" + filename)
+            # Find the maximum reward
+            max_reward = np.max(results)
+            # Append the maximum reward to the rewards list
+            rewards.append(max_reward)
 
-# Choose appropriate value from the rewards
-rewards = rewards[::x_step_size]
+    # Choose appropriate value from the rewards
+    rewards = rewards[::x_step_size]
 
-# Plot the rewards
-plt.plot(x, rewards, label="Neighbor Sampling+Empty Space")
-# except :
-#     print("Error in empty space directory")
+    # Plot the rewards
+    plt.plot(x, rewards, label="Neighbor Sampling+Empty Space")
+except :
+    print("Error in empty space directory")
 
 # -------------------------------------------------------
 
@@ -77,6 +77,35 @@ try:
     plt.plot(x, rewards, label="Normal Training")
 except:
     print("Error in normal train directory")
+
+# -------------------------------------------------------
+
+# Load the rewards from the nn_random_walk directory
+
+# Loop through the directories and load the rewards
+directory = "../logs/Ant-v5/PPO_neighbor_search_random_walk"+iterationString
+print("------------------------------------")
+print("Working on nn_random_walk directory")
+rewards = []
+try:
+    for filename in os.listdir(directory):
+        # Check if the filename starts with "results"
+        if filename.startswith('results'):
+            # print(filename)
+            # Load the rewards
+            results = np.load(directory + "/" + filename)
+            # Find the maximum reward
+            max_reward = np.max(results)
+            # Append the maximum reward to the rewards list
+            rewards.append(max_reward)
+
+    # Choose appropriate value from the rewards
+    rewards = rewards[::x_step_size]
+
+    # Plot the rewards
+    plt.plot(x, rewards, label="Neighbor Sampling+Random Walk")
+except:
+    print("Error in nn random walk directory")
 
 # -------------------------------------------------------
 

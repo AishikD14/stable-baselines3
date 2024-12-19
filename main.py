@@ -434,6 +434,7 @@ obs = vec_env.reset()
 print("Starting evaluation")
 
 normal_train = False
+
 distanceArray = []
 start_time = time.time()
 timeArray = []
