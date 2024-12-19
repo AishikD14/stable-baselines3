@@ -1,10 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=espace
-#SBATCH --output=/home/aideb/stable-baselines3/base_job_output/base_out_800.txt
-#SBATCH --error=/home/aideb/stable-baselines3/base_job_output/base_err_800.txt
-#SBATCH --time=00-00:30
+#SBATCH --output=/home/aideb/stable-baselines3/base_job_output/ppo_empty_space_out.txt
+#SBATCH --error=/home/aideb/stable-baselines3/base_job_output/ppo_empty_space_err.txt
+#SBATCH --time=15-00:00
 #SBATCH --mem=50000
-#SBATCH --gres=gpu:1
 
 # Test CUDA compiler (not needed by deep learning people, we just use the python libraries)
 # /cm/shared/apps/cuda11.1/toolkit/11.1.1/bin/nvcc -o saxpy /home/aideb/cuda_c_code/saxpy.cu && ./saxpy
