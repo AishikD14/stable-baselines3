@@ -109,6 +109,64 @@ except:
 
 # -------------------------------------------------------
 
+# Load the rewards from the rsample_empty_space directory
+
+# Loop through the directories and load the rewards
+directory = "../logs/Ant-v5/PPO_random_search_empty_space"+iterationString
+print("------------------------------------")
+print("Working on rsample_empty_space directory")
+rewards = []
+try:
+    for filename in os.listdir(directory):
+        # Check if the filename starts with "results"
+        if filename.startswith('results'):
+            # print(filename)
+            # Load the rewards
+            results = np.load(directory + "/" + filename)
+            # Find the maximum reward
+            max_reward = np.max(results)
+            # Append the maximum reward to the rewards list
+            rewards.append(max_reward)
+
+    # Choose appropriate value from the rewards
+    rewards = rewards[::x_step_size]
+
+    # Plot the rewards
+    plt.plot(x, rewards, label="Random Sample+Empty Space")
+except:
+    print("Error in rsample empty space directory")
+
+# -------------------------------------------------------
+
+# Load the rewards from the rsample_random_walk directory
+
+# Loop through the directories and load the rewards
+directory = "../logs/Ant-v5/PPO_random_search_random_walk"+iterationString
+print("------------------------------------")
+print("Working on rsample_random_walk directory")
+rewards = []
+try:
+    for filename in os.listdir(directory):
+        # Check if the filename starts with "results"
+        if filename.startswith('results'):
+            # print(filename)
+            # Load the rewards
+            results = np.load(directory + "/" + filename)
+            # Find the maximum reward
+            max_reward = np.max(results)
+            # Append the maximum reward to the rewards list
+            rewards.append(max_reward)
+
+    # Choose appropriate value from the rewards
+    rewards = rewards[::x_step_size]
+
+    # Plot the rewards
+    plt.plot(x, rewards, label="Random Sample+Random Walk")
+except:
+    print("Error in rsample random walk directory")
+
+# -------------------------------------------------------
+
 # Load the rewards from the normal_train directory
 
 # Loop through the directories and load the rewards

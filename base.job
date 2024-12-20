@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=espace3
-#SBATCH --output=/home/aideb/stable-baselines3/base_job_output/ppo_random_search_random_walk_out.txt
-#SBATCH --error=/home/aideb/stable-baselines3/base_job_output/ppo_random_search_random_walk_err.txt
+#SBATCH --job-name=espace
+#SBATCH --output=/home/aideb/stable-baselines3/base_job_output/ppo_empty_space_out.txt
+#SBATCH --error=/home/aideb/stable-baselines3/base_job_output/ppo_empty_space_err.txt
 #SBATCH --time=15-00:00
 #SBATCH --mem=50000
 
