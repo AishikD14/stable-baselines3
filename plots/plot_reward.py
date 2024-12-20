@@ -4,19 +4,13 @@ import os
 
 start_iteration = 1000
 
-end_iteration = 1010
-x_step_size = 1
-iterationString = ""
+# end_iteration = 1010
+# x_step_size = 1
+# iterationString = ""
 
-# end_iteration = 800
-# x_step_size = 5
-# iterationString = "_" + str(end_iteration)
-
-# total_reward_length = (end_iteration - start_iteration) / 10
-
-# Create x values as indices starting from 1
-# x_val = np.arange(1, total_reward_length + 1, x_step_size)
-# x = [300 + 10 * x for x in x_val]
+end_iteration = 1100
+x_step_size = 10
+iterationString = "_1"
 
 x = np.arange(start_iteration+1, end_iteration+1, x_step_size)
 
