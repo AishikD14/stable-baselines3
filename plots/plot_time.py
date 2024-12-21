@@ -4,9 +4,13 @@ import os
 
 start_iteration = 1000
 
-end_iteration = 1010
-x_step_size = 1
-iterationString = ""
+# end_iteration = 1010
+# x_step_size = 1
+# iterationString = ""
+
+end_iteration = 1100
+x_step_size = 10
+iterationString = "_1"
 
 x = np.arange(start_iteration+1, end_iteration+1, x_step_size)
 
@@ -53,6 +57,8 @@ try:
     for i in range(1, len(times)):
         time[i] = times[i] - times[i-1]
 
+    time = time[::x_step_size]
+
     # Plot the rewards
     plt.plot(x, time, label="Neighbor Sampling+Empty Space")
 except :
@@ -76,6 +82,8 @@ try:
 
     for i in range(1, len(times)):
         time[i] = times[i] - times[i-1]
+
+    time = time[::x_step_size]
 
     # Plot the rewards
     plt.plot(x, time, label="Neighbor Sampling+Random Walk")
@@ -101,6 +109,8 @@ try:
     for i in range(1, len(times)):
         time[i] = times[i] - times[i-1]
 
+    time = time[::x_step_size]
+
     # Plot the rewards
     plt.plot(x, time, label="Random Sample+Empty Space")
 except:
@@ -124,6 +134,8 @@ try:
 
     for i in range(1, len(times)):
         time[i] = times[i] - times[i-1]
+
+    time = time[::x_step_size]
 
     # Plot the rewards
     plt.plot(x, time, label="Random Sample+Random Walk")
@@ -149,6 +161,8 @@ try:
 
     for i in range(1, len(times)):
         time[i] = times[i] - times[i-1]
+
+    time = time[::x_step_size]
 
     # Plot the rewards
     plt.plot(x, time, label="Normal Training")
