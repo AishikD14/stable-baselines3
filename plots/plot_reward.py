@@ -190,6 +190,35 @@ except:
 
 # -------------------------------------------------------
 
+# Load the rewards from the random sample directory
+
+# Loop through the directories and load the rewards
+directory = "../logs/Ant-v5/PPO_empty_space_Annoy"+iterationString
+print("------------------------------------")
+print("Working on PPO_empty_space_Annoy directory")
+rewards = []
+try:
+    for filename in os.listdir(directory):
+        # Check if the filename starts with "results"
+        if filename.startswith('results'):
+            # print(filename)
+            # Load the rewards
+            results = np.load(directory + "/" + filename)
+            # Find the maximum reward
+            max_reward = np.max(results)
+            # Append the maximum reward to the rewards list
+            rewards.append(max_reward)
+
+    # Choose appropriate value from the rewards
+    rewards = rewards[::x_step_size]
+
+    # Plot the rewards
+    plt.plot(x, rewards, label="PPO_empty_space_Annoy")
+except:
+    print("Error in PPO_empty_space_Annoy directory")
+
+# -------------------------------------------------------
+
 plt.xlabel('Iteration')
 plt.ylabel('Max Reward')
 # Customize the x-axis to show every value

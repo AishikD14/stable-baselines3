@@ -1,3 +1,5 @@
 JobID, Log Name, Output Name, Description
 espace, PPO_empty_space_1, ppo_empty_space_out, PPO_empty_space on 100 iterations
 espace1, PPO_neighbor_search_random_walk, ppo_neighbor_search_random_walk_out, PPO_neighbor_search_random_walk on 100 iterations
+espace, PPO_2, ppo_5M_steps_out, ppo_5M_steps with max_episode_steps=200
+espace1, PPO_empty_space_Annoy_1, ppo_empty_space_annoy_out, PPO_empty_space with Annoy on 100 iterations
