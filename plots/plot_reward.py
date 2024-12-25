@@ -190,7 +190,7 @@ except:
 
 # -------------------------------------------------------
 
-# Load the rewards from the random sample directory
+# Load the rewards from the PPO_empty_space_Annoy directory
 
 # Loop through the directories and load the rewards
 directory = "../logs/Ant-v5/PPO_empty_space_Annoy"+iterationString
@@ -216,6 +216,64 @@ try:
     plt.plot(x, rewards, label="PPO_empty_space_Annoy")
 except:
     print("Error in PPO_empty_space_Annoy directory")
+
+# -------------------------------------------------------
+
+# Load the rewards from the PPO_empty_space_Faiss directory
+
+# Loop through the directories and load the rewards
+directory = "../logs/Ant-v5/PPO_empty_space_Faiss"+iterationString
+print("------------------------------------")
+print("Working on PPO_empty_space_Faiss directory")
+rewards = []
+try:
+    for filename in os.listdir(directory):
+        # Check if the filename starts with "results"
+        if filename.startswith('results'):
+            # print(filename)
+            # Load the rewards
+            results = np.load(directory + "/" + filename)
+            # Find the maximum reward
+            max_reward = np.max(results)
+            # Append the maximum reward to the rewards list
+            rewards.append(max_reward)
+
+    # Choose appropriate value from the rewards
+    rewards = rewards[::x_step_size]
+
+    # Plot the rewards
+    plt.plot(x, rewards, label="PPO_empty_space_FAISS")
+except:
+    print("Error in PPO_empty_space_Faiss directory")
+
+# -------------------------------------------------------
+
+# Load the rewards from the random sample directory
+
+# Loop through the directories and load the rewards
+directory = "../logs/Ant-v5/PPO_empty_space_hnswlib"+iterationString
+print("------------------------------------")
+print("Working on PPO_empty_space_hnswlib directory")
+rewards = []
+try:
+    for filename in os.listdir(directory):
+        # Check if the filename starts with "results"
+        if filename.startswith('results'):
+            # print(filename)
+            # Load the rewards
+            results = np.load(directory + "/" + filename)
+            # Find the maximum reward
+            max_reward = np.max(results)
+            # Append the maximum reward to the rewards list
+            rewards.append(max_reward)
+
+    # Choose appropriate value from the rewards
+    rewards = rewards[::x_step_size]
+
+    # Plot the rewards
+    plt.plot(x, rewards, label="PPO_empty_space_hnswlib")
+except:
+    print("Error in PPO_empty_space_hnswlib directory")
 
 # -------------------------------------------------------
 
