@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=espace1
+#SBATCH --job-name=espace2
 #SBATCH --output=/home/aideb/stable-baselines3/base_job_output/ppo_empty_space_hnswlib_out.txt
 #SBATCH --error=/home/aideb/stable-baselines3/base_job_output/ppo_empty_space_hnswlib_err.txt
 #SBATCH --time=15-00:00

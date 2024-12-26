@@ -193,7 +193,8 @@ except:
 # Load the rewards from the PPO_empty_space_Annoy directory
 
 # Loop through the directories and load the rewards
-directory = "../logs/Ant-v5/PPO_empty_space_Annoy"+iterationString
+# directory = "../logs/Ant-v5/PPO_empty_space_Annoy"+iterationString
+directory = "../logs/Ant-v5/PPO_empty_space_Annoy_2"
 print("------------------------------------")
 print("Working on PPO_empty_space_Annoy directory")
 rewards = []
@@ -222,7 +223,8 @@ except:
 # Load the rewards from the PPO_empty_space_Faiss directory
 
 # Loop through the directories and load the rewards
-directory = "../logs/Ant-v5/PPO_empty_space_Faiss"+iterationString
+# directory = "../logs/Ant-v5/PPO_empty_space_Faiss"+iterationString
+directory = "../logs/Ant-v5/PPO_empty_space_Faiss_2"
 print("------------------------------------")
 print("Working on PPO_empty_space_Faiss directory")
 rewards = []
@@ -251,7 +253,8 @@ except:
 # Load the rewards from the random sample directory
 
 # Loop through the directories and load the rewards
-directory = "../logs/Ant-v5/PPO_empty_space_hnswlib"+iterationString
+# directory = "../logs/Ant-v5/PPO_empty_space_hnswlib"+iterationString
+directory = "../logs/Ant-v5/PPO_empty_space_hnswlib_2"
 print("------------------------------------")
 print("Working on PPO_empty_space_hnswlib directory")
 rewards = []

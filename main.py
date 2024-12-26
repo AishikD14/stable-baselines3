@@ -21,6 +21,48 @@ def FloatTensor(*args, **kwargs):
     arr = np.array(*args)
     return torch.FloatTensor(arr, **kwargs).to(device)
 
+class ANNAnnoy:
+    def __init__(self, dimension, n_neighbors) -> None:
+        from annoy import AnnoyIndex
+        self.index = AnnoyIndex(dimension, 'euclidean')
+        self.index.set_seed(42)
+        self.index.build(10)
+        self.n_neighbors = n_neighbors
+        self.samples = None
+    def fit(self, samples):
+        for i, s in enumerate(samples):
+            self.index.add_item(i, s)
+        self.samples = np.concatenate((self.samples, samples)) if self.samples is not None else samples
+    def query(self, coor):
+        indices,  distances = self.index.get_nns_by_vector(coor[0], self.n_neighbors, include_distances=True)
+        return [indices], [distances]
+    
+class ANNFaiss:
+    def __init__(self, dimension, n_neighbors) -> None:
+        import faiss
+        self.index = faiss.IndexFlatL2(dimension)
+        self.n_neighbors = n_neighbors
+        self.samples = None
+    def fit(self, samples):
+        self.index.add(samples.astype(np.float32))
+    def query(self, coor):
+        distances, indices = self.index.search(coor.astype(np.float32), self.n_neighbors)
+        return indices, distances
+
+class ANNHnswlib:
+    def __init__(self, dimension, n_neighbors) -> None:
+        import hnswlib
+        self.index = hnswlib.Index(space='l2', dim=dimension)
+        self.index.init_index(max_elements=10000, ef_construction=200, M=16)
+        self.n_neighbors = n_neighbors
+        self.samples = None
+    def fit(self, samples):
+        self.index.add_items(samples, np.arange(samples.shape[0]))
+        self.index.set_ef(50)
+    def query(self, coor):
+        indices,  distances = self.index.knn_query(coor, self.n_neighbors)
+        return indices, distances
+    
 def F(epsilon, sigma, d):
     return 6 * epsilon * (2 * (sigma / d)**13 - (sigma / d)**7) / sigma
 
@@ -46,7 +88,13 @@ def empty_center(data, coor, neighbor, use_momentum, movestep, numiter):
     es_configs = []
     for i in range(numiter):
         
-        distances_, adjs_ = neighbor.kneighbors(coor)
+        # Calculate the nearest neighbors of the agents using KNN
+        # distances_, adjs_ = neighbor.kneighbors(coor)
+
+        # Calculate the nearest neighbors of the agents using Approximate Nearest Neighbors
+        adjs_, distances_ = neighbor.query(coor)
+        adjs_ = np.array(adjs_)
+
         if i % 20 == 0:
             if use_momentum:
                 es_configs.extend(coor.tolist())
@@ -158,10 +206,20 @@ def search_empty_space_policies(algo, directory, start, end, env, agent_num=10):
 
     dt = load_weights(range(start, end), directory, env)
     print(dt.shape)
-    neigh = NearestNeighbors(n_neighbors=6)
-    neigh.fit(dt)
 
-    _, adjs = neigh.kneighbors(dt[-agent_num:])
+    # Calculate the nearest neighbors of the agents using KNN
+    # neigh = NearestNeighbors(n_neighbors=6)
+    # neigh.fit(dt)
+    # _, adjs = neigh.kneighbors(dt[-agent_num:])
+
+    # Calculate the nearest neighbors of the agents using Approximate Nearest Neighbors
+    # neigh = ANNAnnoy(dimension=dt.shape[1], n_neighbors=6)
+    # neigh = ANNFaiss(dimension=dt.shape[1], n_neighbors=6)
+    neigh = ANNHnswlib(dimension=dt.shape[1], n_neighbors=6)
+    neigh.fit(dt)
+    adjs, _ = neigh.query(dt[-agent_num:])
+    adjs = np.array(adjs)
+
     points = dt[adjs[:, 1:]]
     points = points.mean(axis=1)
 
@@ -174,11 +232,19 @@ def search_empty_space_policies(algo, directory, start, end, env, agent_num=10):
 
     agents = dump_weights(algo.policy.state_dict(), policies)
 
-    # Calculate the nearest neighbors of the agents
-    neigh = NearestNeighbors(n_neighbors=6)
-    neigh.fit(policies)
+    # Calculate the nearest neighbors of the agents using KNN
+    # neigh = NearestNeighbors(n_neighbors=6)
+    # neigh.fit(policies)
+    # _, adjs = neigh.kneighbors(policies)
 
-    _, adjs = neigh.kneighbors(policies)
+    # Calculate the nearest neighbors of the agents using Approximate Nearest Neighbors
+    # neigh = ANNAnnoy(dimension=policies.shape[1], n_neighbors=6)
+    # neigh = ANNFaiss(dimension=policies.shape[1], n_neighbors=6)
+    neigh = ANNHnswlib(dimension=policies.shape[1], n_neighbors=6)
+    neigh.fit(policies)
+    adjs, _ = neigh.query(policies)
+    adjs = np.array(adjs)
+    
     points = policies[adjs[:, 1:]]
     points = points.mean(axis=1)
     print(points.shape)
@@ -394,16 +460,18 @@ def load_state_dict(algo, params):
 
 env_name = "Ant-v5"
 env = gym.make(env_name)
+# env = gym.make(env_name, max_episode_steps=200, terminate_when_unhealthy=False)
 # print(env.action_space, env.observation_space)
 
 n_steps_per_rollout = 200
 
 START_ITER = 1000
+# START_ITER = 25000
 SEARCH_INTERV = 1
-NUM_ITERS = START_ITER + 10
+NUM_ITERS = START_ITER + 100
 N_EPOCHS = 10
 
-exp = "PPO_normal_train"
+exp = "PPO_empty_space_hnswlib"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -416,9 +484,9 @@ model = PPO("MlpPolicy", env, verbose=0, seed=0,
             ckp_dir=ckp_dir)
 
 # print("Starting Initial training")
-# model.learn(total_timesteps=START_ITER*n_steps_per_rollout, log_interval=50)
-# model.save("full_exp_on_ppo/models/ppo_ant")
-# print("Initial training done")
+# model.learn(total_timesteps=START_ITER*n_steps_per_rollout, log_interval=50, tb_log_name=exp)
+# model.save("full_exp_on_ppo/models/ppo_ant_5M_1")
+# print("Initial training done") 
 # quit()
 
 print("Loading Initial saved model")
@@ -449,11 +517,11 @@ if not normal_train:
                     first_iteration=True if i == START_ITER else False,
                     )
         
-        # agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+        agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
         # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
         # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
         # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-        agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+        # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
         distanceArray.append(distance)
         
         cum_rews = []
@@ -482,6 +550,7 @@ if not normal_train:
 
 else:
     for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
+        print(i)
         model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
                     log_interval=1, 
                     tb_log_name=exp, 
