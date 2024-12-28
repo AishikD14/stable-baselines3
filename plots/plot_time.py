@@ -172,6 +172,87 @@ except:
 
 # -------------------------------------------------------
 
+# Load the rewards from the PPO_empty_space_Annoy directory
+
+# Loop through the directories and load the rewards
+directory = "../logs/Ant-v5/PPO_empty_space_Annoy"+iterationString
+# directory = "../logs/Ant-v5/PPO_empty_space_Annoy_2"
+print("------------------------------------")
+print("Working on PPO_empty_space_Annoy directory")
+rewards = []
+try:
+    times = np.load(directory + "/time.npy")
+    times = list(times)
+
+    time = [0]*len(times)
+    time[0] = times[0]
+
+    for i in range(1, len(times)):
+        time[i] = times[i] - times[i-1]
+
+    time = time[::x_step_size]
+
+    # Plot the rewards
+    plt.plot(x, time, label="PPO_empty_space_Annoy")
+except:
+    print("Error in PPO_empty_space_Annoy directory")
+
+# -------------------------------------------------------
+
+# Load the rewards from the PPO_empty_space_Faiss directory
+
+# Loop through the directories and load the rewards
+directory = "../logs/Ant-v5/PPO_empty_space_Faiss"+iterationString
+# directory = "../logs/Ant-v5/PPO_empty_space_Faiss_2"
+print("------------------------------------")
+print("Working on PPO_empty_space_Faiss directory")
+rewards = []
+try:
+    times = np.load(directory + "/time.npy")
+    times = list(times)
+
+    time = [0]*len(times)
+    time[0] = times[0]
+
+    for i in range(1, len(times)):
+        time[i] = times[i] - times[i-1]
+
+    time = time[::x_step_size]
+
+    # Plot the rewards
+    plt.plot(x, time, label="PPO_empty_space_FAISS")
+except:
+    print("Error in PPO_empty_space_Faiss directory")
+
+# -------------------------------------------------------
+
+# Load the rewards from the random sample directory
+
+# Loop through the directories and load the rewards
+directory = "../logs/Ant-v5/PPO_empty_space_hnswlib"+iterationString
+# directory = "../logs/Ant-v5/PPO_empty_space_hnswlib_2"
+print("------------------------------------")
+print("Working on PPO_empty_space_hnswlib directory")
+rewards = []
+try:
+    times = np.load(directory + "/time.npy")
+    times = list(times)
+
+    time = [0]*len(times)
+    time[0] = times[0]
+
+    for i in range(1, len(times)):
+        time[i] = times[i] - times[i-1]
+
+    time = time[::x_step_size]
+
+    # Plot the rewards
+    plt.plot(x, time, label="PPO_empty_space_hnswlib")
+except:
+    print("Error in PPO_empty_space_hnswlib directory")
+
+# -------------------------------------------------------
+
 plt.xlabel('Iteration')
 plt.ylabel('Time Taken (s)')
 # Customize the x-axis to show every value
