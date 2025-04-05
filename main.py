@@ -1,4 +1,5 @@
 import gymnasium as gym
+from gymnasium.envs.registration import register
 from stable_baselines3 import PPO
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
@@ -80,7 +81,7 @@ def elastic(es, neighbors, D):
     return direction
 
 # Search the empty space policies
-def empty_center(data, coor, neighbor, use_momentum, movestep, numiter):
+def empty_center(data, coor, neighbor, use_ANN, use_momentum, movestep, numiter):
     orig_coor = coor.copy()
     cum_mag = 0
     gamma = 0.9 # discount factor
@@ -88,12 +89,14 @@ def empty_center(data, coor, neighbor, use_momentum, movestep, numiter):
     es_configs = []
     for i in range(numiter):
         
-        # Calculate the nearest neighbors of the agents using KNN
-        # distances_, adjs_ = neighbor.kneighbors(coor)
+        if not use_ANN:
+            # Calculate the nearest neighbors of the agents using KNN
+            distances_, adjs_ = neighbor.kneighbors(coor)
 
-        # Calculate the nearest neighbors of the agents using Approximate Nearest Neighbors
-        adjs_, distances_ = neighbor.query(coor)
-        adjs_ = np.array(adjs_)
+        else:
+            # Calculate the nearest neighbors of the agents using Approximate Nearest Neighbors
+            adjs_, distances_ = neighbor.query(coor)
+            adjs_ = np.array(adjs_)
 
         if i % 20 == 0:
             if use_momentum:
@@ -200,50 +203,60 @@ def dump_weights(agent_net, es_models):
     return policies
 
 # Nearest neighbor search plus empty space search
-def search_empty_space_policies(algo, directory, start, end, env, agent_num=10):
+def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_lib, agent_num=10):
     print("---------------------------------")
     print("Searching empty space policies")
 
     dt = load_weights(range(start, end), directory, env)
     print(dt.shape)
 
-    # Calculate the nearest neighbors of the agents using KNN
-    # neigh = NearestNeighbors(n_neighbors=6)
-    # neigh.fit(dt)
-    # _, adjs = neigh.kneighbors(dt[-agent_num:])
+    if not use_ANN:
+        # Calculate the nearest neighbors of the agents using KNN
+        neigh = NearestNeighbors(n_neighbors=6)
+        neigh.fit(dt)
+        _, adjs = neigh.kneighbors(dt[-agent_num:])
 
-    # Calculate the nearest neighbors of the agents using Approximate Nearest Neighbors
-    # neigh = ANNAnnoy(dimension=dt.shape[1], n_neighbors=6)
-    # neigh = ANNFaiss(dimension=dt.shape[1], n_neighbors=6)
-    neigh = ANNHnswlib(dimension=dt.shape[1], n_neighbors=6)
-    neigh.fit(dt)
-    adjs, _ = neigh.query(dt[-agent_num:])
-    adjs = np.array(adjs)
+    else:
+        # Calculate the nearest neighbors of the agents using Approximate Nearest Neighbors
+        if ANN_lib == "Annoy":
+            neigh = ANNAnnoy(dimension=dt.shape[1], n_neighbors=6)
+        elif ANN_lib == "Faiss":
+            neigh = ANNFaiss(dimension=dt.shape[1], n_neighbors=6)
+        elif ANN_lib == "Hnswlib":
+            neigh = ANNHnswlib(dimension=dt.shape[1], n_neighbors=6)
+        neigh.fit(dt)
+        adjs, _ = neigh.query(dt[-agent_num:])
+        adjs = np.array(adjs)
 
     points = dt[adjs[:, 1:]]
     points = points.mean(axis=1)
 
     policies = []
     for p in points:
-        a = empty_center(dt, p.reshape(1, -1), neigh, use_momentum=True, movestep=0.001, numiter=400)
+        a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=400)
         policies.append(a[1])
     policies = np.concatenate(policies)
     print(policies.shape)
 
     agents = dump_weights(algo.policy.state_dict(), policies)
 
-    # Calculate the nearest neighbors of the agents using KNN
-    # neigh = NearestNeighbors(n_neighbors=6)
-    # neigh.fit(policies)
-    # _, adjs = neigh.kneighbors(policies)
+    if not use_ANN:
+        # Calculate the nearest neighbors of the agents using KNN
+        neigh = NearestNeighbors(n_neighbors=6)
+        neigh.fit(policies)
+        _, adjs = neigh.kneighbors(policies)
 
-    # Calculate the nearest neighbors of the agents using Approximate Nearest Neighbors
-    # neigh = ANNAnnoy(dimension=policies.shape[1], n_neighbors=6)
-    # neigh = ANNFaiss(dimension=policies.shape[1], n_neighbors=6)
-    neigh = ANNHnswlib(dimension=policies.shape[1], n_neighbors=6)
-    neigh.fit(policies)
-    adjs, _ = neigh.query(policies)
-    adjs = np.array(adjs)
+    else:
+        # Calculate the nearest neighbors of the agents using Approximate Nearest Neighbors
+        if ANN_lib == "Annoy":
+            neigh = ANNAnnoy(dimension=policies.shape[1], n_neighbors=6)
+        elif ANN_lib == "Faiss":
+            neigh = ANNFaiss(dimension=policies.shape[1], n_neighbors=6)
+        elif ANN_lib == "Hnswlib":
+            neigh = ANNHnswlib(dimension=policies.shape[1], n_neighbors=6)
+        neigh.fit(policies)
+        adjs, _ = neigh.query(policies)
+        adjs = np.array(adjs)
     
     points = policies[adjs[:, 1:]]
     points = points.mean(axis=1)
@@ -458,41 +471,75 @@ def load_state_dict(algo, params):
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
-env_name = "Ant-v5"
-env = gym.make(env_name)
-# env = gym.make(env_name, max_episode_steps=200, terminate_when_unhealthy=False)
+register(id='AntDir-v5', entry_point='environments.antdir:AntDirEnv',)
+
+# env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+env_name = "AntDir-v5" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
+
+# env = gym.make(env_name) # single goal task
+# env = gym.make(env_name, max_episode_steps=200, terminate_when_unhealthy=False) # Not using the below line because it is giving less reward
+goal = np.random.uniform(0, 3.1416)
+env = gym.make(env_name, goal=goal) # multi-task learning
+
 # print(env.action_space, env.observation_space)
 
 n_steps_per_rollout = 200
 
-START_ITER = 1000
-# START_ITER = 25000
-SEARCH_INTERV = 1
-NUM_ITERS = START_ITER + 100
+# --------------------------------------------------------------------------------------------------------------
+
+# START_ITER = 1000   #For 200k steps initialisation (Normal hyperparameters)
+START_ITER = 5000   #For 1M steps initialisation (Optimal hyperparameters)
+# START_ITER = 25000  #For 5M steps initialisation (Just used for visualization right now)
+
+SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
+
+NUM_ITERS = START_ITER + 100 # Just for testing
+# NUM_ITERS = START_ITER + 20000 #5M steps
+
 N_EPOCHS = 10
 
-exp = "PPO_empty_space_hnswlib"
+# ---------------------------------------------------------------------------------------------------------------
+
+exp = "PPO_empty_space"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
+# Normal hyperparameters
+# model = PPO("MlpPolicy", env, verbose=0, seed=0, 
+#             n_steps=n_steps_per_rollout, 
+#             batch_size=50, 
+#             n_epochs=N_EPOCHS, 
+#             device='cpu', 
+#             tensorboard_log='logs/'+env_name+"/",
+#             ckp_dir=ckp_dir)
+
+# Best hyperparameters
 model = PPO("MlpPolicy", env, verbose=0, seed=0, 
-            n_steps=n_steps_per_rollout, 
-            batch_size=50, 
-            n_epochs=N_EPOCHS, 
-            device='cpu', 
-            tensorboard_log='logs/'+env_name+"/",
-            ckp_dir=ckp_dir)
+                n_steps=512, 
+                batch_size=32, 
+                gamma=0.98,
+                ent_coef=4.9646e-07,
+                learning_rate=1.90609e-05,
+                clip_range=0.1,
+                max_grad_norm=0.6,
+                n_epochs=10,
+                gae_lambda=0.8,
+                vf_coef=0.677239,
+                device=device, 
+                tensorboard_log='logs/'+env_name+"/",
+                ckp_dir=ckp_dir)
 
 # print("Starting Initial training")
 # model.learn(total_timesteps=START_ITER*n_steps_per_rollout, log_interval=50, tb_log_name=exp)
-# model.save("full_exp_on_ppo/models/ppo_ant_5M_1")
+# model.save("full_exp_on_ppo/models/ppo_ant_2")
 # print("Initial training done") 
 # quit()
 
 print("Loading Initial saved model")
 
 # Load model
-model.set_parameters("full_exp_on_ppo/models/ppo_ant", device='cpu')
+# model.set_parameters("full_exp_on_ppo/models/ppo_ant", device='cpu') # Normal hyperparameters
+model.set_parameters("full_exp_on_ppo/models/ppo_ant_2", device='cpu') # Best hyperparameters
 
 print("Model loaded")
 
@@ -502,6 +549,8 @@ obs = vec_env.reset()
 print("Starting evaluation")
 
 normal_train = False
+use_ANN = False
+ANN_lib = "Annoy"
 
 distanceArray = []
 start_time = time.time()
@@ -517,7 +566,7 @@ if not normal_train:
                     first_iteration=True if i == START_ITER else False,
                     )
         
-        agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+        agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib)
         # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
         # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
         # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
