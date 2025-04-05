@@ -2,15 +2,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-start_iteration = 1000
-
+# start_iteration = 1000
 # end_iteration = 1010
 # x_step_size = 1
 # iterationString = ""
 
-end_iteration = 1100
+# start_iteration = 1000
+# end_iteration = 1100
+# x_step_size = 10
+# iterationString = "_2"
+
+start_iteration = 5000
+end_iteration = 5100
 x_step_size = 10
-iterationString = "_1"
+iterationString = "_optimal_5M_1"
 
 x = np.arange(start_iteration+1, end_iteration+1, x_step_size)
 
@@ -39,7 +44,7 @@ try:
     rewards = rewards[::x_step_size]
 
     # Plot the rewards
-    plt.plot(x, rewards, label="Random Sample")
+    # plt.plot(x, rewards, label="Random Sample")
 except:
     print("Error in random sample directory")
 
@@ -66,6 +71,8 @@ try:
 
     # Choose appropriate value from the rewards
     rewards = rewards[::x_step_size]
+
+    rewards = rewards[:len(x)]
 
     # Plot the rewards
     plt.plot(x, rewards, label="Neighbor Sampling+Empty Space")
@@ -96,8 +103,10 @@ try:
     # Choose appropriate value from the rewards
     rewards = rewards[::x_step_size]
 
+    rewards = rewards[:len(x)]
+
     # Plot the rewards
-    plt.plot(x, rewards, label="Neighbor Sampling+Random Walk")
+    # plt.plot(x, rewards, label="Neighbor Sampling+Random Walk")
 except:
     print("Error in nn random walk directory")
 
@@ -126,7 +135,7 @@ try:
     rewards = rewards[::x_step_size]
 
     # Plot the rewards
-    plt.plot(x, rewards, label="Random Sample+Empty Space")
+    # plt.plot(x, rewards, label="Random Sample+Empty Space")
 except:
     print("Error in rsample empty space directory")
 
@@ -154,8 +163,10 @@ try:
     # Choose appropriate value from the rewards
     rewards = rewards[::x_step_size]
 
+    rewards = rewards[:len(x)]
+
     # Plot the rewards
-    plt.plot(x, rewards, label="Random Sample+Random Walk")
+    # plt.plot(x, rewards, label="Random Sample+Random Walk")
 except:
     print("Error in rsample random walk directory")
 
@@ -183,8 +194,10 @@ try:
     # Choose appropriate value from the rewards
     rewards = rewards[::x_step_size]
 
+    rewards = rewards[:len(x)]
+
     # Plot the rewards
-    plt.plot(x, rewards, label="Normal Training")
+    # plt.plot(x, rewards, label="Normal Training")
 except:
     print("Error in normal train directory")
 
@@ -214,7 +227,7 @@ try:
     rewards = rewards[::x_step_size]
 
     # Plot the rewards
-    plt.plot(x, rewards, label="PPO_empty_space_Annoy")
+    # plt.plot(x, rewards, label="PPO_empty_space_Annoy")
 except:
     print("Error in PPO_empty_space_Annoy directory")
 
@@ -244,7 +257,7 @@ try:
     rewards = rewards[::x_step_size]
 
     # Plot the rewards
-    plt.plot(x, rewards, label="PPO_empty_space_FAISS")
+    # plt.plot(x, rewards, label="PPO_empty_space_FAISS")
 except:
     print("Error in PPO_empty_space_Faiss directory")
 
@@ -274,16 +287,16 @@ try:
     rewards = rewards[::x_step_size]
 
     # Plot the rewards
-    plt.plot(x, rewards, label="PPO_empty_space_hnswlib")
+    # plt.plot(x, rewards, label="PPO_empty_space_hnswlib")
 except:
     print("Error in PPO_empty_space_hnswlib directory")
 
 # -------------------------------------------------------
 
-plt.xlabel('Iteration')
+plt.xlabel('Samples (x200)')
 plt.ylabel('Max Reward')
 # Customize the x-axis to show every value
-plt.xticks(x)
+# plt.xticks(x)
 # plt.yticks(np.arange(200, 700, 50))
 # plt.ylim(200, 700)
 plt.title('Reward Plot')
