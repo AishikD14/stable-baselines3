@@ -1,28 +1,29 @@
-JobID, Log Name, Output Name, Description
-espace, PPO_empty_space_1, ppo_empty_space_out, PPO_empty_space on 100 iterations
-espace1, PPO_neighbor_search_random_walk, ppo_neighbor_search_random_walk_out, PPO_neighbor_search_random_walk on 100 iterations
-espace, PPO_2, ppo_5M_steps_out, ppo_5M_steps with max_episode_steps=200
-espace1, PPO_empty_space_Annoy_1, ppo_empty_space_annoy_out, PPO_empty_space with Annoy on 100 iterations with max_episode_steps=200
-espace, PPO_empty_space_Faiss_1, ppo_empty_space_faiss_out, PPO_empty_space with Faiss on 100 iterations with max_episode_steps=200
-espace1, PPO_empty_space_hnswlib_1, ppo_empty_space_hnswlib_out, PPO_empty_space with hnswlib on 100 iterations with max_episode_steps=200
-
-espace, PPO_empty_space_2, ppo_empty_space_out, PPO_empty_space on 100 iterations without max_episode_steps=200; gamma=0.9, Ongoing
-espace3, PPO_neighbor_search_random_walk_2, ppo_neighbor_search_random_walk_out, PPO_neighbor_search_random_walk on 100 iterations without max_episode_steps=200
-espace4, PPO_random_search_random_walk_2, ppo_random_search_random_walk_out, PPO_random_search random walk on 100 iterations without max_episode_steps=200, Ongoing
+Log Name, Output Name, Description, JobId, Status
+PPO_empty_space_1, ppo_empty_space_out, PPO_empty_space on 100 iterations
+PPO_neighbor_search_random_walk, ppo_neighbor_search_random_walk_out, PPO_neighbor_search_random_walk on 100 iterations
+PPO_2, ppo_5M_steps_out, ppo_5M_steps with max_episode_steps=200
+PPO_empty_space_Annoy_1, ppo_empty_space_annoy_out, PPO_empty_space with Annoy on 100 iterations with max_episode_steps=200
+PPO_empty_space_Faiss_1, ppo_empty_space_faiss_out, PPO_empty_space with Faiss on 100 iterations with max_episode_steps=200
+PPO_empty_space_hnswlib_1, ppo_empty_space_hnswlib_out, PPO_empty_space with hnswlib on 100 iterations with max_episode_steps=200
+--------------------
+PPO_empty_space_2, ppo_empty_space_out, PPO_empty_space on 100 iterations without max_episode_steps=200; gamma=0.9
+PPO_neighbor_search_random_walk_2, ppo_neighbor_search_random_walk_out, PPO_neighbor_search_random_walk on 100 iterations without max_episode_steps=200
+PPO_random_search_random_walk_2, ppo_random_search_random_walk_out, PPO_random_search random walk on 100 iterations without max_episode_steps=200, espace4, Ongoing
+PPO_normal_train_2, ppo_normal_train_out, PPO normal train on 100 iterations without max_episode_steps=200
 -------------------
-espace, PPO_empty_space_Annoy_2, ppo_empty_space_annoy_out, PPO_empty_space with Annoy on 100 iterations without max_episode_steps=200
-espace1, PPO_empty_space_Faiss_2, ppo_empty_space_faiss_out, PPO_empty_space with Faiss on 100 iterations without max_episode_steps=200
-espace2, PPO_empty_space_hnswlib_2, ppo_empty_space_hnswlib_out, PPO_empty_space with hnswlib on 100 iterations without max_episode_steps=200
-
-espace, PPO_3, ppo_init_out, ppo_ant_5M_2.zip, PPO Init for 5M steps with Xinyu hyperparameters
-
-espace, PPO_empty_space_optimal, ppo_empty_space_out, PPO_empty_space on 100 iterations with Xinyu hyperparameters
-espace1, PPO_neighbor_search_random_walk_optimal, ppo_neighbor_search_random_walk_out, PPO_neighbor_search_random_walk on 100 iterations with Xinyu hyperparameters
-espace2, PPO_random_search_optimal, ppo_random_search_out, PPO_random_search on 100 iterations with Xinyu hyperparameters
-espace3, PPO_random_search_empty_space_optimal, ppo_random_search_empty_space_out, PPO_random_search_empty_space on 100 iterations with Xinyu hyperparameters
-espace4, PPO_random_search_random_walk_optimal, ppo_random_search_random_walk_out, PPO_random_search_random_walk on 100 iterations with Xinyu hyperparameters
-
-espace5, PPO_empty_space_optimal_5M, ppo_empty_space_5M_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.9, Ongoing
-espace6, PPO_neighbor_search_random_walk_optimal_5M, ppo_neighbor_search_random_walk_5M_out, PPO_neighbor_search_random_walk on 5M iterations with Xinyu hyperparameters, Ongoing
-espace7, PPO_random_search_random_walk_optimal_5M, ppo_random_search_random_walk_5M_out, PPO_random_search_random_walk on 5M iterations with Xinyu hyperparameters, Ongoing
-espace8, PPO_empty_space_optimal_5M_2, ppo_empty_space_5M_2_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.5, Ongoing
+PPO_empty_space_Annoy_2, ppo_empty_space_annoy_out, PPO_empty_space with Annoy on 100 iterations without max_episode_steps=200
+PPO_empty_space_Faiss_2, ppo_empty_space_faiss_out, PPO_empty_space with Faiss on 100 iterations without max_episode_steps=200
+PPO_empty_space_hnswlib_2, ppo_empty_space_hnswlib_out, PPO_empty_space with hnswlib on 100 iterations without max_episode_steps=200
+-----------------
+PPO_3, ppo_init_out, ppo_ant_5M_2.zip; PPO Init for 5M steps with Xinyu hyperparameters
+-----------------
+PPO_empty_space_optimal, ppo_empty_space_out, PPO_empty_space on 100 iterations with Xinyu hyperparameters
+PPO_neighbor_search_random_walk_optimal, ppo_neighbor_search_random_walk_out, PPO_neighbor_search_random_walk on 100 iterations with Xinyu hyperparameters
+PPO_random_search_optimal, ppo_random_search_out, PPO_random_search on 100 iterations with Xinyu hyperparameters
+PPO_random_search_empty_space_optimal, ppo_random_search_empty_space_out, PPO_random_search_empty_space on 100 iterations with Xinyu hyperparameters
+PPO_random_search_random_walk_optimal, ppo_random_search_random_walk_out, PPO_random_search_random_walk on 100 iterations with Xinyu hyperparameters
+----------------
+PPO_empty_space_optimal_5M, ppo_empty_space_5M_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.9, espace5, Ongoing
+PPO_neighbor_search_random_walk_optimal_5M, ppo_neighbor_search_random_walk_5M_out, PPO_neighbor_search_random_walk on 5M iterations with Xinyu hyperparameters, espace6, Ongoing
+PPO_random_search_random_walk_optimal_5M, ppo_random_search_random_walk_5M_out, PPO_random_search_random_walk on 5M iterations with Xinyu hyperparameters, espace7, Ongoing
+PPO_empty_space_optimal_5M_2, ppo_empty_space_5M_2_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.5, espace8, Ongoing

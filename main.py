@@ -478,6 +478,7 @@ env_name = "AntDir-v5" # Part of the Meta-World or Meta-RL (meta-reinforcement l
 
 # env = gym.make(env_name) # single goal task
 # env = gym.make(env_name, max_episode_steps=200, terminate_when_unhealthy=False) # Not using the below line because it is giving less reward
+# ----------------------------
 goal = np.random.uniform(0, 3.1416)
 env = gym.make(env_name, goal=goal) # multi-task learning
 
@@ -496,11 +497,11 @@ SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can
 NUM_ITERS = START_ITER + 100 # Just for testing
 # NUM_ITERS = START_ITER + 20000 #5M steps
 
-N_EPOCHS = 10
+N_EPOCHS = 10 # Since set to 10 updates per rollout
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO_empty_space"
+exp = "PPO_normal_train_2"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
