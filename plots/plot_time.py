@@ -149,7 +149,7 @@ try:
     time = time[:len(x)]
 
     # Plot the rewards
-    # plt.plot(x, time, label="Random Sample+Random Walk")
+    plt.plot(x, time, label="Random Sample+Random Walk")
 
 except:
     print("Error in rsample random walk directory")

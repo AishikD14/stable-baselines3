@@ -7,15 +7,15 @@ import os
 # x_step_size = 1
 # iterationString = ""
 
-# start_iteration = 1000
-# end_iteration = 1100
-# x_step_size = 10
-# iterationString = "_2"
-
-start_iteration = 5000
-end_iteration = 5100
+start_iteration = 1000
+end_iteration = 1100
 x_step_size = 10
-iterationString = "_optimal_5M_1"
+iterationString = "_2"
+
+# start_iteration = 5000
+# end_iteration = 5100
+# x_step_size = 10
+# iterationString = "_optimal_5M_1"
 
 x = np.arange(start_iteration+1, end_iteration+1, x_step_size)
 
@@ -106,7 +106,7 @@ try:
     rewards = rewards[:len(x)]
 
     # Plot the rewards
-    # plt.plot(x, rewards, label="Neighbor Sampling+Random Walk")
+    plt.plot(x, rewards, label="Neighbor Sampling+Random Walk")
 except:
     print("Error in nn random walk directory")
 
@@ -166,7 +166,7 @@ try:
     rewards = rewards[:len(x)]
 
     # Plot the rewards
-    # plt.plot(x, rewards, label="Random Sample+Random Walk")
+    plt.plot(x, rewards, label="Random Sample+Random Walk")
 except:
     print("Error in rsample random walk directory")
 
@@ -197,7 +197,7 @@ try:
     rewards = rewards[:len(x)]
 
     # Plot the rewards
-    # plt.plot(x, rewards, label="Normal Training")
+    plt.plot(x, rewards, label="Normal Training")
 except:
     print("Error in normal train directory")
 

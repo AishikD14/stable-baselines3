@@ -8,7 +8,7 @@ PPO_empty_space_hnswlib_1, ppo_empty_space_hnswlib_out, PPO_empty_space with hns
 --------------------
 PPO_empty_space_2, ppo_empty_space_out, PPO_empty_space on 100 iterations without max_episode_steps=200; gamma=0.9
 PPO_neighbor_search_random_walk_2, ppo_neighbor_search_random_walk_out, PPO_neighbor_search_random_walk on 100 iterations without max_episode_steps=200
-PPO_random_search_random_walk_2, ppo_random_search_random_walk_out, PPO_random_search random walk on 100 iterations without max_episode_steps=200, espace4, Ongoing
+PPO_random_search_random_walk_2, ppo_random_search_random_walk_out, PPO_random_search random walk on 100 iterations without max_episode_steps=200
 PPO_normal_train_2, ppo_normal_train_out, PPO normal train on 100 iterations without max_episode_steps=200
 -------------------
 PPO_empty_space_Annoy_2, ppo_empty_space_annoy_out, PPO_empty_space with Annoy on 100 iterations without max_episode_steps=200
