@@ -13,7 +13,7 @@ import os
 # iterationString = "_2"
 
 start_iteration = 5000
-end_iteration = 5263
+end_iteration = 5721
 x_step_size = 10
 iterationString = "_optimal_5M_1"
 
@@ -75,7 +75,38 @@ try:
     rewards = rewards[:len(x)]
 
     # Plot the rewards
-    plt.plot(x, rewards, label="Neighbor Sampling+Empty Space")
+    # plt.plot(x, rewards, label="Neighbor Sampling+Empty Space (gamma=0.9)")
+except :
+    print("Error in empty space directory")
+
+# -------------------------------------------------------
+
+# Load the rewards from the empty space directory
+
+# Loop through the directories and load the rewards
+directory = "../logs/Ant-v5/PPO_empty_space_optimal_5M_2"
+print("------------------------------------")
+print("Working on empty_space directory")
+rewards = []
+try:
+    for filename in os.listdir(directory):
+        # Check if the filename starts with "results"
+        if filename.startswith('results'):
+            # print(filename)
+            # Load the rewards
+            results = np.load(directory + "/" + filename)
+            # Find the maximum reward
+            max_reward = np.max(results)
+            # Append the maximum reward to the rewards list
+            rewards.append(max_reward)
+
+    # Choose appropriate value from the rewards
+    rewards = rewards[::x_step_size]
+
+    rewards = rewards[:len(x)]
+
+    # Plot the rewards
+    plt.plot(x, rewards, label="Neighbor Sampling+Empty Space(gamma=0.5)")
 except :
     print("Error in empty space directory")
 
