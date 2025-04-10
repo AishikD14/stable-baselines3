@@ -471,16 +471,13 @@ def load_state_dict(algo, params):
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
-register(id='AntDir-v5', entry_point='environments.antdir:AntDirEnv',)
+env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+# env_name = "AntDir-v5" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
-# env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
-env_name = "AntDir-v5" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
-
-# env = gym.make(env_name) # single goal task
-# env = gym.make(env_name, max_episode_steps=200, terminate_when_unhealthy=False) # Not using the below line because it is giving less reward
+env = gym.make(env_name) # single goal task
 # ----------------------------
-goal = np.random.uniform(0, 3.1416)
-env = gym.make(env_name, goal=goal) # multi-task learning
+# goal = np.random.uniform(0, 3.1416)
+# env = gym.make(env_name, goal=goal) # multi-task learning
 
 # print(env.action_space, env.observation_space)
 
@@ -494,14 +491,14 @@ START_ITER = 5000   #For 1M steps initialisation (Optimal hyperparameters)
 
 SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
 
-NUM_ITERS = START_ITER + 100 # Just for testing
-# NUM_ITERS = START_ITER + 20000 #5M steps
+# NUM_ITERS = START_ITER + 100 # Just for testing
+NUM_ITERS = START_ITER + 20000 #5M steps
 
 N_EPOCHS = 10 # Since set to 10 updates per rollout
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO_normal_train_2"
+exp = "PPO_normal_train_optimal_5M"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
