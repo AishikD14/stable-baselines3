@@ -4,6 +4,7 @@ from typing import Union
 import numpy as np
 import torch as th
 from gymnasium import spaces
+from gym import spaces as gymspaces
 from torch.nn import functional as F
 
 
@@ -115,7 +116,7 @@ def preprocess_obs(
 
     assert isinstance(obs, th.Tensor), f"Expecting a torch Tensor, but got {type(obs)}"
 
-    if isinstance(observation_space, spaces.Box):
+    if isinstance(observation_space, spaces.Box) or isinstance(observation_space, gymspaces.box.Box):
         if normalize_images and is_image_space(observation_space):
             return obs.float() / 255.0
         return obs.float()
@@ -149,7 +150,7 @@ def get_obs_shape(
     :param observation_space:
     :return:
     """
-    if isinstance(observation_space, spaces.Box):
+    if isinstance(observation_space, spaces.Box) or isinstance(observation_space, gymspaces.box.Box):
         return observation_space.shape
     elif isinstance(observation_space, spaces.Discrete):
         # Observation is an int
@@ -183,6 +184,8 @@ def get_flattened_obs_dim(observation_space: spaces.Space) -> int:
         return sum(observation_space.nvec)
     else:
         # Use Gym internal method
+        if isinstance(observation_space, gymspaces.box.Box):
+            return gymspaces.utils.flatdim(observation_space)
         return spaces.utils.flatdim(observation_space)
 
 
@@ -193,7 +196,7 @@ def get_action_dim(action_space: spaces.Space) -> int:
     :param action_space:
     :return:
     """
-    if isinstance(action_space, spaces.Box):
+    if isinstance(action_space, spaces.Box) or isinstance(action_space, gymspaces.box.Box):
         return int(np.prod(action_space.shape))
     elif isinstance(action_space, spaces.Discrete):
         # Action is an int

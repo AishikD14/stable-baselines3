@@ -4,6 +4,7 @@ from typing import Any, ClassVar, Optional, TypeVar, Union
 import numpy as np
 import torch as th
 from gymnasium import spaces
+from gym import spaces as gymspaces
 from torch.nn import functional as F
 import os
 
@@ -134,6 +135,7 @@ class PPO(OnPolicyAlgorithm):
                 spaces.Discrete,
                 spaces.MultiDiscrete,
                 spaces.MultiBinary,
+                gymspaces.Box
             ),
         )
 

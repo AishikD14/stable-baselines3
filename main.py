@@ -1,5 +1,4 @@
 import gymnasium as gym
-from gymnasium.envs.registration import register
 from stable_baselines3 import PPO
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
@@ -12,6 +11,7 @@ import os
 from stable_baselines3.common.utils import get_latest_run_id, safe_mean
 from stable_baselines3.common.evaluation import evaluate_policy
 import warnings
+from environments.make_env import make_env
 
 warnings.filterwarnings("ignore")
 
@@ -471,10 +471,13 @@ def load_state_dict(algo, params):
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
-env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
-# env_name = "AntDir-v5" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
+# env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
-env = gym.make(env_name) # single goal task
+# env = gym.make(env_name) # single goal task
+env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1)
+print("Environment created")
+print(env.action_space, env.observation_space)
 # ----------------------------
 # goal = np.random.uniform(0, 3.1416)
 # env = gym.make(env_name, goal=goal) # multi-task learning
@@ -498,7 +501,7 @@ N_EPOCHS = 10 # Since set to 10 updates per rollout
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO_normal_train_optimal_5M"
+exp = "PPO"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -513,7 +516,8 @@ ckp_dir = f'logs/{DIR}/models'
 
 # Best hyperparameters
 model = PPO("MlpPolicy", env, verbose=0, seed=0, 
-                n_steps=512, 
+                # n_steps=512, 
+                n_steps=200,
                 batch_size=32, 
                 gamma=0.98,
                 ent_coef=4.9646e-07,
@@ -528,10 +532,10 @@ model = PPO("MlpPolicy", env, verbose=0, seed=0,
                 ckp_dir=ckp_dir)
 
 # print("Starting Initial training")
-# model.learn(total_timesteps=START_ITER*n_steps_per_rollout, log_interval=50, tb_log_name=exp)
-# model.save("full_exp_on_ppo/models/ppo_ant_2")
-# print("Initial training done") 
-# quit()
+model.learn(total_timesteps=START_ITER*n_steps_per_rollout, log_interval=50, tb_log_name=exp)
+model.save("full_exp_on_ppo/models/ppo_antdir_5M")
+print("Initial training done") 
+quit()
 
 print("Loading Initial saved model")
 

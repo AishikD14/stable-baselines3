@@ -10,6 +10,7 @@ from typing import Optional, Union
 
 import cloudpickle
 import gymnasium as gym
+from gym import spaces as gymspaces
 import numpy as np
 import torch as th
 from gymnasium import spaces
@@ -391,6 +392,7 @@ def is_vectorized_observation(observation: Union[int, np.ndarray], observation_s
 
     is_vec_obs_func_dict = {
         spaces.Box: is_vectorized_box_observation,
+        gymspaces.box.Box: is_vectorized_box_observation,
         spaces.Discrete: is_vectorized_discrete_observation,
         spaces.MultiDiscrete: is_vectorized_multidiscrete_observation,
         spaces.MultiBinary: is_vectorized_multibinary_observation,

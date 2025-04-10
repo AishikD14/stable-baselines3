@@ -7,6 +7,9 @@ import numpy as np
 import torch as th
 from gymnasium import spaces
 
+from gym import spaces as gymspaces
+from environments.wrappers import VariBadWrapper
+
 from stable_baselines3.common.base_class import BaseAlgorithm
 from stable_baselines3.common.buffers import DictRolloutBuffer, RolloutBuffer
 from stable_baselines3.common.callbacks import BaseCallback
@@ -14,8 +17,6 @@ from stable_baselines3.common.policies import ActorCriticPolicy
 from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedule
 from stable_baselines3.common.utils import obs_as_tensor, safe_mean
 from stable_baselines3.common.vec_env import VecEnv
-
-from stable_baselines3.common.utils import get_latest_run_id
 
 SelfOnPolicyAlgorithm = TypeVar("SelfOnPolicyAlgorithm", bound="OnPolicyAlgorithm")
 
@@ -201,13 +202,15 @@ class OnPolicyAlgorithm(BaseAlgorithm):
             with th.no_grad():
                 # Convert to pytorch tensor or to TensorDict
                 obs_tensor = obs_as_tensor(self._last_obs, self.device)
+                if obs_tensor.dim() == 1:
+                    obs_tensor = obs_tensor.reshape(1, -1)
                 actions, values, log_probs = self.policy(obs_tensor)
             actions = actions.cpu().numpy()
 
             # Rescale and perform action
             clipped_actions = actions
 
-            if isinstance(self.action_space, spaces.Box):
+            if isinstance(self.action_space, spaces.Box) or isinstance(self.action_space, gymspaces.box.Box):
                 if self.policy.squash_output:
                     # Unscale the actions to match env bounds
                     # if they were previously squashed (scaled in [-1, 1])
@@ -218,6 +221,12 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                     clipped_actions = np.clip(actions, self.action_space.low, self.action_space.high)
 
             new_obs, rewards, dones, infos = env.step(clipped_actions)
+
+            if new_obs.ndim != obs_tensor.dim():
+                new_obs = new_obs.reshape(obs_tensor.shape)
+                self._last_obs = self._last_obs.reshape(obs_tensor.shape)
+                rewards, dones, infos = \
+                    np.array([rewards]).reshape(values.shape), np.array([dones]).reshape(values.shape), [infos]
 
             self.num_timesteps += env.num_envs
 
@@ -256,6 +265,9 @@ class OnPolicyAlgorithm(BaseAlgorithm):
             )
             self._last_obs = new_obs  # type: ignore[assignment]
             self._last_episode_starts = dones
+
+            if isinstance(env, VariBadWrapper) and np.all(dones):
+                self._last_obs = env.reset()
 
         with th.no_grad():
             # Compute value for the last timestep
@@ -339,6 +351,9 @@ class OnPolicyAlgorithm(BaseAlgorithm):
 
             self.train()
 
+            if isinstance(self.env, VariBadWrapper) and self.num_timesteps % 10000 == 0:
+                self.evaluate(self.num_timesteps)
+
         callback.on_training_end()
 
         return self
@@ -347,3 +362,31 @@ class OnPolicyAlgorithm(BaseAlgorithm):
         state_dicts = ["policy", "policy.optimizer"]
 
         return state_dicts, []
+
+    def evaluate(self, num_timesteps):
+        obs = self.env.reset(0)
+        ret = 0
+        for i in range(self.n_steps):
+            obs_tensor = obs_as_tensor(obs, self.device).reshape(1, -1)
+            actions, _, _ = self.policy(obs_tensor)
+            actions = actions.cpu().detach().numpy()
+
+            # Rescale and perform action
+            clipped_actions = actions
+
+            if isinstance(self.action_space, spaces.Box) or isinstance(self.action_space, gymspaces.box.Box):
+                if self.policy.squash_output:
+                    # Unscale the actions to match env bounds
+                    # if they were previously squashed (scaled in [-1, 1])
+                    clipped_actions = self.policy.unscale_action(clipped_actions)
+                else:
+                    # Otherwise, clip the actions to avoid out of bound error
+                    # as we are sampling from an unbounded Gaussian distribution
+                    clipped_actions = np.clip(actions, self.action_space.low, self.action_space.high)
+
+            new_obs, rewards, dones, infos = self.env.step(clipped_actions)
+            if new_obs.ndim != obs_tensor.dim():
+                new_obs = new_obs.reshape(obs_tensor.shape)
+            obs = new_obs
+            ret += rewards
+        print(f'Reward at iter {num_timesteps}: {ret}')

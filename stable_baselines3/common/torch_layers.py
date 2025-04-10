@@ -43,6 +43,8 @@ class FlattenExtractor(BaseFeaturesExtractor):
         self.flatten = nn.Flatten()
 
     def forward(self, observations: th.Tensor) -> th.Tensor:
+        if observations.dim() == 1:
+            observations = observations.reshape(1, -1)
         return self.flatten(observations)
 
 

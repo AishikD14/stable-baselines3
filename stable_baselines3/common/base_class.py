@@ -14,6 +14,8 @@ import numpy as np
 import torch as th
 from gymnasium import spaces
 
+from environments.wrappers import VariBadWrapper
+
 from stable_baselines3.common import utils
 from stable_baselines3.common.callbacks import BaseCallback, CallbackList, ConvertCallback, ProgressBarCallback
 from stable_baselines3.common.env_util import is_wrapped
@@ -166,8 +168,9 @@ class BaseAlgorithm(ABC):
 
         # Create and wrap the env if needed
         if env is not None:
-            env = maybe_make_env(env, self.verbose)
-            env = self._wrap_env(env, self.verbose, monitor_wrapper)
+            if not isinstance(env, VariBadWrapper):
+                env = maybe_make_env(env, self.verbose)
+                env = self._wrap_env(env, self.verbose, monitor_wrapper)
 
             self.observation_space = env.observation_space
             self.action_space = env.action_space

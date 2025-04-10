@@ -6,6 +6,7 @@ from typing import Any, Optional, TypeVar, Union
 import numpy as np
 import torch as th
 from gymnasium import spaces
+from gym import spaces as gymspaces
 from torch import nn
 from torch.distributions import Bernoulli, Categorical, Normal
 
@@ -675,7 +676,7 @@ def make_proba_distribution(
     if dist_kwargs is None:
         dist_kwargs = {}
 
-    if isinstance(action_space, spaces.Box):
+    if isinstance(action_space, spaces.Box) or isinstance(action_space, gymspaces.box.Box):
         cls = StateDependentNoiseDistribution if use_sde else DiagGaussianDistribution
         return cls(get_action_dim(action_space), **dist_kwargs)
     elif isinstance(action_space, spaces.Discrete):
