@@ -532,16 +532,17 @@ model = PPO("MlpPolicy", env, verbose=0, seed=0,
                 ckp_dir=ckp_dir)
 
 # print("Starting Initial training")
-model.learn(total_timesteps=START_ITER*n_steps_per_rollout, log_interval=50, tb_log_name=exp)
-model.save("full_exp_on_ppo/models/ppo_antdir_5M")
-print("Initial training done") 
-quit()
+# model.learn(total_timesteps=START_ITER*n_steps_per_rollout, log_interval=50, tb_log_name=exp)
+# model.save("full_exp_on_ppo/models/ppo_antdir_5M")
+# print("Initial training done") 
+# quit()
 
 print("Loading Initial saved model")
 
 # Load model
-# model.set_parameters("full_exp_on_ppo/models/ppo_ant", device='cpu') # Normal hyperparameters
-model.set_parameters("full_exp_on_ppo/models/ppo_ant_2", device='cpu') # Best hyperparameters
+# model.set_parameters("full_exp_on_ppo/models/ppo_ant", device='cpu') # Normal hyperparameters for Ant
+# model.set_parameters("full_exp_on_ppo/models/ppo_ant_2", device='cpu') # Best hyperparameters for Ant
+model.set_parameters("full_exp_on_ppo/models/ppo_antdir_1M", device='cpu') # Best hyperparameters for Antdir
 
 print("Model loaded")
 

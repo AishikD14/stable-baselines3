@@ -1,0 +1,123 @@
+No devices were found
+running build_ext
+building 'mujoco_py.cymj' extension
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home/aideb
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home/aideb/miniconda3
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home/aideb/miniconda3/envs
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home/aideb/miniconda3/envs/basenv2
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home/aideb/miniconda3/envs/basenv2/lib
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home/aideb/miniconda3/envs/basenv2/lib/python3.10
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/gl
+gcc -pthread -B /home/aideb/miniconda3/envs/basenv2/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/aideb/miniconda3/envs/basenv2/include -fPIC -O2 -isystem /home/aideb/miniconda3/envs/basenv2/include -fPIC -I/home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py -I/home/aideb/.mujoco/mujoco210/include -I/home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/numpy/core/include -I/home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/vendor/egl -I/home/aideb/miniconda3/envs/basenv2/include/python3.10 -c /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/cymj.c -o /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/cymj.o -fopenmp -w
+gcc -pthread -B /home/aideb/miniconda3/envs/basenv2/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /home/aideb/miniconda3/envs/basenv2/include -fPIC -O2 -isystem /home/aideb/miniconda3/envs/basenv2/include -fPIC -I/home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py -I/home/aideb/.mujoco/mujoco210/include -I/home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/numpy/core/include -I/home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/vendor/egl -I/home/aideb/miniconda3/envs/basenv2/include/python3.10 -c /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/gl/eglshim.c -o /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/gl/eglshim.o -fopenmp -w
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/lib.linux-x86_64-3.10
+creating /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/lib.linux-x86_64-3.10/mujoco_py
+gcc -pthread -B /home/aideb/miniconda3/envs/basenv2/compiler_compat -shared -Wl,--allow-shlib-undefined -Wl,-rpath,/home/aideb/miniconda3/envs/basenv2/lib -Wl,-rpath-link,/home/aideb/miniconda3/envs/basenv2/lib -L/home/aideb/miniconda3/envs/basenv2/lib -Wl,--allow-shlib-undefined -Wl,-rpath,/home/aideb/miniconda3/envs/basenv2/lib -Wl,-rpath-link,/home/aideb/miniconda3/envs/basenv2/lib -L/home/aideb/miniconda3/envs/basenv2/lib /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/cymj.o /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/temp.linux-x86_64-3.10/home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/gl/eglshim.o -L/home/aideb/.mujoco/mujoco210/bin -Wl,-R/home/aideb/.mujoco/mujoco210/bin -lmujoco210 -lglewegl -o /home/aideb/miniconda3/envs/basenv2/lib/python3.10/site-packages/mujoco_py/generated/_pyxbld_2.1.2.14_310_linuxgpuextensionbuilder/lib.linux-x86_64-3.10/mujoco_py/cymj.cpython-310-x86_64-linux-gnu.so -fopenmp
+Environment created
+Box(-1.0, 1.0, (8,), float32) Box(-inf, inf, (27,), float64)
+Reward at iter 10000: -115.42956144610513
+Reward at iter 20000: -404.9762137914347
+Reward at iter 30000: -188.6005459310229
+Reward at iter 40000: -225.80469573695635
+Reward at iter 50000: -154.8163774282263
+Reward at iter 60000: -187.1537946825452
+Reward at iter 70000: -169.61543559071038
+Reward at iter 80000: -188.06477764099404
+Reward at iter 90000: -172.7290130225745
+Reward at iter 100000: -174.24107768116488
+Reward at iter 110000: -100.04229245554691
+Reward at iter 120000: -146.08109629840897
+Reward at iter 130000: -132.88717517757144
+Reward at iter 140000: -134.903202309502
+Reward at iter 150000: -204.86664171926245
+Reward at iter 160000: -162.20147276057455
+Reward at iter 170000: -141.10869488018156
+Reward at iter 180000: -74.10154847756353
+Reward at iter 190000: -71.49331177698706
+Reward at iter 200000: -152.00264188155774
+Reward at iter 210000: -229.28954587385329
+Reward at iter 220000: -15.396226482647505
+Reward at iter 230000: -82.00824795943258
+Reward at iter 240000: -128.65031712791
+Reward at iter 250000: -113.84244307408319
+Reward at iter 260000: -120.3061596083893
+Reward at iter 270000: -41.81908104044816
+Reward at iter 280000: -151.4147276434251
+Reward at iter 290000: -91.18681183647014
+Reward at iter 300000: -106.16844525899492
+Reward at iter 310000: -59.88586096470253
+Reward at iter 320000: -91.09532170517625
+Reward at iter 330000: -52.74004192498435
+Reward at iter 340000: -111.01451602781293
+Reward at iter 350000: -68.08915469912783
+Reward at iter 360000: -63.01361491280066
+Reward at iter 370000: -23.57038333967965
+Reward at iter 380000: 17.288626609470153
+Reward at iter 390000: -60.02959522543205
+Reward at iter 400000: -38.344314070820154
+Reward at iter 410000: -39.71749115591735
+Reward at iter 420000: -96.05560444908983
+Reward at iter 430000: -42.26505971472381
+Reward at iter 440000: -19.37225855193765
+Reward at iter 450000: -14.003880894140226
+Reward at iter 460000: -13.30875220088939
+Reward at iter 470000: -8.3218279198614
+Reward at iter 480000: -72.66249042851103
+Reward at iter 490000: 7.320349870598424
+Reward at iter 500000: 55.592292606230274
+Reward at iter 510000: -61.89536345865757
+Reward at iter 520000: 2.6462001454069517
+Reward at iter 530000: -5.808630507843249
+Reward at iter 540000: -9.21588703783385
+Reward at iter 550000: -33.62244636331069
+Reward at iter 560000: 23.18553436722909
+Reward at iter 570000: -15.57821402921332
+Reward at iter 580000: 12.408553382470128
+Reward at iter 590000: -8.139756195274908
+Reward at iter 600000: 23.643842998403493
+Reward at iter 610000: 41.43815947247495
+Reward at iter 620000: 141.62303620449498
+Reward at iter 630000: -18.761060587798237
+Reward at iter 640000: 10.194554313807618
+Reward at iter 650000: 64.65044192684066
+Reward at iter 660000: 26.277942801056163
+Reward at iter 670000: 52.69081619811889
+Reward at iter 680000: -31.49026800796952
+Reward at iter 690000: 50.89530842380376
+Reward at iter 700000: 13.114665305343843
+Reward at iter 710000: 52.0319020437769
+Reward at iter 720000: 68.75544074988954
+Reward at iter 730000: 73.08593745356416
+Reward at iter 740000: 88.38858927862243
+Reward at iter 750000: 130.84882878363058
+Reward at iter 760000: 106.36384440005031
+Reward at iter 770000: 21.58758603424611
+Reward at iter 780000: 74.29235642870148
+Reward at iter 790000: 94.78061730559591
+Reward at iter 800000: 56.312158138595024
+Reward at iter 810000: 87.99789579972753
+Reward at iter 820000: 107.15034557343523
+Reward at iter 830000: 118.49509903394072
+Reward at iter 840000: 61.55989476151562
+Reward at iter 850000: 96.09371623548483
+Reward at iter 860000: 162.36588068341447
+Reward at iter 870000: 229.343215820668
+Reward at iter 880000: 77.47432183567611
+Reward at iter 890000: 153.84443647679956
+Reward at iter 900000: 168.08062978884496
+Reward at iter 910000: 141.9819384394949
+Reward at iter 920000: 107.69052518201569
+Reward at iter 930000: 176.04844566384233
+Reward at iter 940000: 199.13421787759242
+Reward at iter 950000: 118.1718453726897
+Reward at iter 960000: 175.78163846155337
+Reward at iter 970000: 185.38712652316215
+Reward at iter 980000: 177.56541768547802
+Reward at iter 990000: 71.21042734120674
+Reward at iter 1000000: 98.42258611628577
+Initial training done
