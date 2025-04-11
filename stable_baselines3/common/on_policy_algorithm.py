@@ -389,4 +389,4 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 new_obs = new_obs.reshape(obs_tensor.shape)
             obs = new_obs
             ret += rewards
-        print(f'Reward at iter {num_timesteps}: {ret}')
+        # print(f'Reward at iter {num_timesteps}: {ret}')
