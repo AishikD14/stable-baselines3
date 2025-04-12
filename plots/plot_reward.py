@@ -13,9 +13,12 @@ import os
 # iterationString = "_2"
 
 start_iteration = 5000
-end_iteration = 5721
+end_iteration = 5243
 x_step_size = 10
 iterationString = "_optimal_5M_1"
+
+# env = "Ant-v5"
+env = "AntDir-v0"
 
 x = np.arange(start_iteration+1, end_iteration+1, x_step_size)
 
@@ -24,7 +27,7 @@ x = np.arange(start_iteration+1, end_iteration+1, x_step_size)
 # Load the rewards from the random sample directory
 
 # Loop through the directories and load the rewards
-directory = "../logs/Ant-v5/PPO_random_search"+iterationString
+directory = "../logs/"+env+"/PPO_random_search"+iterationString
 print("------------------------------------")
 print("Working on random_sample directory")
 rewards = []
@@ -53,7 +56,7 @@ except:
 # Load the rewards from the empty space directory
 
 # Loop through the directories and load the rewards
-directory = "../logs/Ant-v5/PPO_empty_space"+iterationString
+directory = "../logs/"+env+"/PPO_empty_space"+iterationString
 print("------------------------------------")
 print("Working on empty_space directory")
 rewards = []
@@ -75,7 +78,7 @@ try:
     rewards = rewards[:len(x)]
 
     # Plot the rewards
-    # plt.plot(x, rewards, label="Neighbor Sampling+Empty Space (gamma=0.9)")
+    plt.plot(x, rewards, label="Neighbor Sampling+Empty Space (gamma=0.9)")
 except :
     print("Error in empty space directory")
 
@@ -84,7 +87,7 @@ except :
 # Load the rewards from the empty space directory
 
 # Loop through the directories and load the rewards
-directory = "../logs/Ant-v5/PPO_empty_space_optimal_5M_2"
+directory = "../logs/"+env+"/PPO_empty_space_optimal_5M_2_1"
 print("------------------------------------")
 print("Working on empty_space directory")
 rewards = []
@@ -112,10 +115,41 @@ except :
 
 # -------------------------------------------------------
 
+# Load the rewards from the empty space directory
+
+# Loop through the directories and load the rewards
+directory = "../logs/"+env+"/PPO_empty_space_optimal_5M_3_1"
+print("------------------------------------")
+print("Working on empty_space directory")
+rewards = []
+try:
+    for filename in os.listdir(directory):
+        # Check if the filename starts with "results"
+        if filename.startswith('results'):
+            # print(filename)
+            # Load the rewards
+            results = np.load(directory + "/" + filename)
+            # Find the maximum reward
+            max_reward = np.max(results)
+            # Append the maximum reward to the rewards list
+            rewards.append(max_reward)
+
+    # Choose appropriate value from the rewards
+    rewards = rewards[::x_step_size]
+
+    rewards = rewards[:len(x)]
+
+    # Plot the rewards
+    plt.plot(x, rewards, label="Neighbor Sampling+Empty Space(gamma=0.3)")
+except :
+    print("Error in empty space directory")
+
+# -------------------------------------------------------
+
 # Load the rewards from the nn_random_walk directory
 
 # Loop through the directories and load the rewards
-directory = "../logs/Ant-v5/PPO_neighbor_search_random_walk"+iterationString
+directory = "../logs/"+env+"/PPO_neighbor_search_random_walk"+iterationString
 print("------------------------------------")
 print("Working on nn_random_walk directory")
 rewards = []
@@ -137,7 +171,7 @@ try:
     rewards = rewards[:len(x)]
 
     # Plot the rewards
-    # plt.plot(x, rewards, label="Neighbor Sampling+Random Walk")
+    plt.plot(x, rewards, label="Neighbor Sampling+Random Walk")
 except:
     print("Error in nn random walk directory")
 
@@ -146,7 +180,7 @@ except:
 # Load the rewards from the rsample_empty_space directory
 
 # Loop through the directories and load the rewards
-directory = "../logs/Ant-v5/PPO_random_search_empty_space"+iterationString
+directory = "../logs/"+env+"/PPO_random_search_empty_space"+iterationString
 print("------------------------------------")
 print("Working on rsample_empty_space directory")
 rewards = []
@@ -175,7 +209,7 @@ except:
 # Load the rewards from the rsample_random_walk directory
 
 # Loop through the directories and load the rewards
-directory = "../logs/Ant-v5/PPO_random_search_random_walk"+iterationString
+directory = "../logs/"+env+"/PPO_random_search_random_walk"+iterationString
 print("------------------------------------")
 print("Working on rsample_random_walk directory")
 rewards = []
@@ -197,7 +231,7 @@ try:
     rewards = rewards[:len(x)]
 
     # Plot the rewards
-    # plt.plot(x, rewards, label="Random Sample+Random Walk")
+    plt.plot(x, rewards, label="Random Sample+Random Walk")
 except:
     print("Error in rsample random walk directory")
 
@@ -206,7 +240,7 @@ except:
 # Load the rewards from the normal_train directory
 
 # Loop through the directories and load the rewards
-directory = "../logs/Ant-v5/PPO_normal_train"+iterationString
+directory = "../logs/"+env+"/PPO_normal_train"+iterationString
 print("------------------------------------")
 print("Working on normal_train directory")
 rewards = []
@@ -237,8 +271,8 @@ except:
 # Load the rewards from the PPO_empty_space_Annoy directory
 
 # Loop through the directories and load the rewards
-# directory = "../logs/Ant-v5/PPO_empty_space_Annoy"+iterationString
-directory = "../logs/Ant-v5/PPO_empty_space_Annoy_2"
+# directory = "../logs/"+env+"/PPO_empty_space_Annoy"+iterationString
+directory = "../logs/"+env+"/PPO_empty_space_Annoy_2"
 print("------------------------------------")
 print("Working on PPO_empty_space_Annoy directory")
 rewards = []
@@ -267,8 +301,8 @@ except:
 # Load the rewards from the PPO_empty_space_Faiss directory
 
 # Loop through the directories and load the rewards
-# directory = "../logs/Ant-v5/PPO_empty_space_Faiss"+iterationString
-directory = "../logs/Ant-v5/PPO_empty_space_Faiss_2"
+# directory = "../logs/"+env+"/PPO_empty_space_Faiss"+iterationString
+directory = "../logs/"+env+"/PPO_empty_space_Faiss_2"
 print("------------------------------------")
 print("Working on PPO_empty_space_Faiss directory")
 rewards = []
@@ -297,8 +331,8 @@ except:
 # Load the rewards from the random sample directory
 
 # Loop through the directories and load the rewards
-# directory = "../logs/Ant-v5/PPO_empty_space_hnswlib"+iterationString
-directory = "../logs/Ant-v5/PPO_empty_space_hnswlib_2"
+# directory = "../logs/"+env+"/PPO_empty_space_hnswlib"+iterationString
+directory = "../logs/"+env+"/PPO_empty_space_hnswlib_2"
 print("------------------------------------")
 print("Working on PPO_empty_space_hnswlib directory")
 rewards = []
