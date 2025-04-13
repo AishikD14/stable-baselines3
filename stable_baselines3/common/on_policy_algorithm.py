@@ -351,8 +351,10 @@ class OnPolicyAlgorithm(BaseAlgorithm):
 
             self.train()
 
-            if isinstance(self.env, VariBadWrapper) and self.num_timesteps % 10000 == 0:
-                self.evaluate(self.num_timesteps)
+            # if isinstance(self.env, VariBadWrapper) and self.num_timesteps % 10000 == 0:
+            # eval_interval = self.n_steps * 20
+            # if self.num_timesteps % eval_interval == 0:
+            #     self.evaluate(self.num_timesteps)
 
         callback.on_training_end()
 
@@ -364,7 +366,8 @@ class OnPolicyAlgorithm(BaseAlgorithm):
         return state_dicts, []
 
     def evaluate(self, num_timesteps):
-        obs = self.env.reset(0)
+        # obs = self.env.reset(0)
+        obs = self.env.reset()
         ret = 0
         for i in range(self.n_steps):
             obs_tensor = obs_as_tensor(obs, self.device).reshape(1, -1)
@@ -389,4 +392,4 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 new_obs = new_obs.reshape(obs_tensor.shape)
             obs = new_obs
             ret += rewards
-        # print(f'Reward at iter {num_timesteps}: {ret}')
+        print(f'Reward at iter {num_timesteps}: {ret}')
