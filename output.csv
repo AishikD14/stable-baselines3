@@ -42,3 +42,6 @@ PPO_empty_space_optimal_5M_3_1, ppo_empty_space_5M_3_out, PPO_empty_space on 5M 
 PPO_neighbor_search_random_walk_optimal_5M, ppo_neighbor_search_random_walk_5M_out, PPO_neighbor_search_random_walk on 5M iterations with Xinyu hyperparameters, espace12, Ongoing
 PPO_random_search_random_walk_optimal_5M, ppo_random_search_random_walk_5M_out, PPO_random_search_random_walk on 5M iterations with Xinyu hyperparameters, espace13, Ongoing
 PPO_normal_train_optimal_5M, ppo_normal_train_5M_out, PPO normal train on 5M iterations with Xinyu hyperparameters, espace14, Ongoing
+----------------
+PPO_empty_space_ls, ppo_empty_space_ls_out, PPO_empty_space with 100 iterations - 300k; gamma=0.9, espace15, Ongoing
+PPO_empty_space_ls_2, ppo_empty_space_ls_2_out, PPO_empty_space with 60 iterations & 3 evaluation - 120k; gamma=0.9, espace16, Ongoing

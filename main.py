@@ -502,7 +502,7 @@ N_EPOCHS = 10 # Since set to 10 updates per rollout
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO"
+exp = "PPO_empty_space_ls"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -578,6 +578,7 @@ if not normal_train:
         distanceArray.append(distance)
         
         cum_rews = []
+        best_agent_index = []
 
         for j, a in enumerate(agents):
             model.policy.load_state_dict(a)
@@ -594,6 +595,8 @@ if not normal_train:
         best_idx = np.argsort(cum_rews)[-1]
         best_agent = agents[best_idx]
         print(f'the best agent: {best_idx}, avg policy: {cum_rews[best_idx]}')
+        best_agent_index.append(best_idx)
+        np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
         load_state_dict(model, best_agent)
 
     np.save(f'logs/{DIR}/distance.npy', distanceArray)
