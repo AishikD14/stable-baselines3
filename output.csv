@@ -2,7 +2,6 @@ Log Name, Output Name, Description, JobId, Status
 Ant-v5
 PPO_empty_space_1, ppo_empty_space_out, PPO_empty_space on 100 iterations
 PPO_neighbor_search_random_walk, ppo_neighbor_search_random_walk_out, PPO_neighbor_search_random_walk on 100 iterations
-PPO_2, ppo_5M_steps_out, ppo_5M_steps with max_episode_steps=200
 PPO_empty_space_Annoy_1, ppo_empty_space_annoy_out, PPO_empty_space with Annoy on 100 iterations with max_episode_steps=200
 PPO_empty_space_Faiss_1, ppo_empty_space_faiss_out, PPO_empty_space with Faiss on 100 iterations with max_episode_steps=200
 PPO_empty_space_hnswlib_1, ppo_empty_space_hnswlib_out, PPO_empty_space with hnswlib on 100 iterations with max_episode_steps=200
@@ -16,7 +15,9 @@ PPO_empty_space_Annoy_2, ppo_empty_space_annoy_out, PPO_empty_space with Annoy o
 PPO_empty_space_Faiss_2, ppo_empty_space_faiss_out, PPO_empty_space with Faiss on 100 iterations without max_episode_steps=200
 PPO_empty_space_hnswlib_2, ppo_empty_space_hnswlib_out, PPO_empty_space with hnswlib on 100 iterations without max_episode_steps=200
 -----------------
-PPO_3, ppo_init_out, ppo_ant_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
+PPO_2, ppo_init_out, ppo_ant_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
+PPO_3, ppo_init_1M_out, ppo_ant_1M_1.zip; PPO Init for 1M steps with Xinyu hyperparameters and new codebase, espace15, Ongoing
+PPO_4, ppo_init_5M_out, ppo_ant_5M_1.zip; PPO Init for 5M steps with Xinyu hyperparameters and new codebase, espace16, Ongoing
 -----------------
 PPO_empty_space_optimal, ppo_empty_space_out, PPO_empty_space on 100 iterations with Xinyu hyperparameters
 PPO_neighbor_search_random_walk_optimal, ppo_neighbor_search_random_walk_out, PPO_neighbor_search_random_walk on 100 iterations with Xinyu hyperparameters

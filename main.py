@@ -471,14 +471,15 @@ def load_state_dict(algo, params):
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
-# env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
-env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
+env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+# env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
-# env = gym.make(env_name) # single goal task
-env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1)
+env = gym.make(env_name) # For Ant-v5
+# env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1) # For AntDir-v0
+
 print("Environment created")
 print(env.action_space, env.observation_space)
-# ----------------------------
+# ------------------------------------------------------------------------------------------------------------
 # goal = np.random.uniform(0, 3.1416)
 # env = gym.make(env_name, goal=goal) # multi-task learning
 
@@ -516,8 +517,8 @@ ckp_dir = f'logs/{DIR}/models'
 
 # Best hyperparameters
 model = PPO("MlpPolicy", env, verbose=0, seed=0, 
-                # n_steps=512, 
-                n_steps=200,
+                n_steps=512, 
+                # n_steps=200,
                 batch_size=32, 
                 gamma=0.98,
                 ent_coef=4.9646e-07,
@@ -533,16 +534,16 @@ model = PPO("MlpPolicy", env, verbose=0, seed=0,
 
 # print("Starting Initial training")
 # model.learn(total_timesteps=START_ITER*n_steps_per_rollout, log_interval=50, tb_log_name=exp)
-# model.save("full_exp_on_ppo/models/ppo_antdir_5M")
+# model.save("full_exp_on_ppo/models/ppo_ant_5M_1")
 # print("Initial training done") 
 # quit()
 
 print("Loading Initial saved model")
 
 # Load model
-# model.set_parameters("full_exp_on_ppo/models/ppo_ant", device='cpu') # Normal hyperparameters for Ant
-# model.set_parameters("full_exp_on_ppo/models/ppo_ant_2", device='cpu') # Best hyperparameters for Ant
-model.set_parameters("full_exp_on_ppo/models/ppo_antdir_1M", device='cpu') # Best hyperparameters for Antdir
+# model.set_parameters("full_exp_on_ppo/models/ppo_ant_200k", device='cpu') # Normal hyperparameters for Ant
+model.set_parameters("full_exp_on_ppo/models/ppo_ant_1M", device='cpu') # Best hyperparameters for Ant
+# model.set_parameters("full_exp_on_ppo/models/ppo_antdir_1M", device='cpu') # Best hyperparameters for Antdir
 
 print("Model loaded")
 
