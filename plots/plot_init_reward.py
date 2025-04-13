@@ -2,7 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import re
 
-file = "../base_job_output/AntDir/ppo_init_1M_out.txt"
+# env = "Ant"
+env = "AntDir"
+
+file = "../base_job_output/"+env+"/ppo_init_1M_out.txt"
 
 reward_values = []
 
@@ -40,7 +43,7 @@ plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
 
 # ---------------------------------------------------------------------------------
 
-file = "../base_job_output/AntDir/ppo_init_5M_out.txt"
+file = "../base_job_output/"+env+"/ppo_init_5M_out.txt"
 
 reward_values = []
 
@@ -79,7 +82,7 @@ plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
 # ---------------------------------------------------------------------------------
 
 plt.title("Rewards over Iterations")
-plt.xlabel("Iteration (x10000)")
+plt.xlabel("Samples (x10000)")
 plt.ylabel("Reward")
 plt.grid()
 plt.legend()

@@ -16,8 +16,8 @@ PPO_empty_space_Faiss_2, ppo_empty_space_faiss_out, PPO_empty_space with Faiss o
 PPO_empty_space_hnswlib_2, ppo_empty_space_hnswlib_out, PPO_empty_space with hnswlib on 100 iterations without max_episode_steps=200
 -----------------
 PPO_2, ppo_init_out, ppo_ant_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
-PPO_3, ppo_init_1M_out, ppo_ant_1M_1.zip; PPO Init for 1M steps with Xinyu hyperparameters and new codebase, espace3, Ongoing
-PPO_4, ppo_init_5M_out, ppo_ant_5M_1.zip; PPO Init for 5M steps with Xinyu hyperparameters and new codebase, espace4, Ongoing
+PPO_3, ppo_init_1M_out, ppo_ant_1M_1.zip; PPO Init for 1M steps with Xinyu hyperparameters and new codebase
+PPO_4, ppo_init_5M_out, ppo_ant_5M_1.zip; PPO Init for 5M steps with Xinyu hyperparameters and new codebase
 -----------------
 PPO_empty_space_optimal, ppo_empty_space_out, PPO_empty_space on 100 iterations with Xinyu hyperparameters
 PPO_neighbor_search_random_walk_optimal, ppo_neighbor_search_random_walk_out, PPO_neighbor_search_random_walk on 100 iterations with Xinyu hyperparameters
@@ -41,7 +41,7 @@ PPO_empty_space_optimal_5M_2_1, ppo_empty_space_5M_2_out, PPO_empty_space on 5M 
 PPO_empty_space_optimal_5M_3_1, ppo_empty_space_5M_3_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.3, espace11, Ongoing
 PPO_neighbor_search_random_walk_optimal_5M, ppo_neighbor_search_random_walk_5M_out, PPO_neighbor_search_random_walk on 5M iterations with Xinyu hyperparameters, espace12, Ongoing
 PPO_random_search_random_walk_optimal_5M, ppo_random_search_random_walk_5M_out, PPO_random_search_random_walk on 5M iterations with Xinyu hyperparameters, espace13, Ongoing
-PPO_normal_train_optimal_5M, ppo_normal_train_5M_out, PPO normal train on 5M iterations with Xinyu hyperparameters, espace14, Ongoing
+PPO_normal_train_optimal_5M, ppo_normal_train_5M_out, PPO normal train on 5M iterations with Xinyu hyperparameters
 ----------------
 PPO_empty_space_ls, ppo_empty_space_ls_out, PPO_empty_space with 100 iterations - 300k; gamma=0.9, espace15, Ongoing
 PPO_empty_space_ls_2, ppo_empty_space_ls_2_out, PPO_empty_space with 60 iterations & 3 evaluation - 120k; gamma=0.9, espace16, Ongoing

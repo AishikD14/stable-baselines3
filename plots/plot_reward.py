@@ -13,7 +13,7 @@ import os
 # iterationString = "_2"
 
 start_iteration = 5000
-end_iteration = 5243
+end_iteration = 5707
 x_step_size = 10
 iterationString = "_optimal_5M_1"
 
@@ -21,6 +21,8 @@ iterationString = "_optimal_5M_1"
 env = "AntDir-v0"
 
 x = np.arange(start_iteration+1, end_iteration+1, x_step_size)
+
+# plt.figure(figsize=(10, 6))
 
 # -------------------------------------------------------
 
@@ -109,7 +111,7 @@ try:
     rewards = rewards[:len(x)]
 
     # Plot the rewards
-    plt.plot(x, rewards, label="Neighbor Sampling+Empty Space(gamma=0.5)")
+    # plt.plot(x, rewards, label="Neighbor Sampling+Empty Space(gamma=0.5)")
 except :
     print("Error in empty space directory")
 
@@ -140,7 +142,7 @@ try:
     rewards = rewards[:len(x)]
 
     # Plot the rewards
-    plt.plot(x, rewards, label="Neighbor Sampling+Empty Space(gamma=0.3)")
+    # plt.plot(x, rewards, label="Neighbor Sampling+Empty Space(gamma=0.3)")
 except :
     print("Error in empty space directory")
 
@@ -171,7 +173,7 @@ try:
     rewards = rewards[:len(x)]
 
     # Plot the rewards
-    plt.plot(x, rewards, label="Neighbor Sampling+Random Walk")
+    # plt.plot(x, rewards, label="Neighbor Sampling+Random Walk")
 except:
     print("Error in nn random walk directory")
 
@@ -231,7 +233,7 @@ try:
     rewards = rewards[:len(x)]
 
     # Plot the rewards
-    plt.plot(x, rewards, label="Random Sample+Random Walk")
+    # plt.plot(x, rewards, label="Random Sample+Random Walk")
 except:
     print("Error in rsample random walk directory")
 
