@@ -237,7 +237,7 @@ def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_l
 
     policies = []
     for p in points:
-        a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=60)
+        a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=400)
         policies.append(a[1])
     policies = np.concatenate(policies)
     print(policies.shape)
@@ -615,7 +615,7 @@ if not normal_train:
             model.policy.load_state_dict(a)
             model.policy.to(device)
             
-            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
+            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=5, deterministic=True)[0]
             print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
             cum_rews.append(returns_trains)
             advantage_rew.append(advantage_evaluation(model))
