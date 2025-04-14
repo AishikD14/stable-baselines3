@@ -12,6 +12,7 @@ from stable_baselines3.common.utils import get_latest_run_id, safe_mean
 from stable_baselines3.common.evaluation import evaluate_policy
 import warnings
 from environments.make_env import make_env
+import pandas as pd
 
 warnings.filterwarnings("ignore")
 
@@ -231,9 +232,12 @@ def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_l
     points = dt[adjs[:, 1:]]
     points = points.mean(axis=1)
 
+    # Choose every second point
+    # points = points[::2]
+
     policies = []
     for p in points:
-        a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=400)
+        a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=60)
         policies.append(a[1])
     policies = np.concatenate(policies)
     print(policies.shape)
@@ -469,6 +473,32 @@ def load_state_dict(algo, params):
     algo.policy.optimizer = algo.policy.optimizer_class(algo.policy.parameters(), lr=algo.learning_rate)
     algo.policy.to(device)
 
+# Function to evaluate the advantage of the policy
+def advantage_evaluation(model):
+    iss = []
+    with torch.no_grad():
+        for rollout_data in model.rollout_buffer.get(model.batch_size):
+            actions = rollout_data.actions
+
+            values, log_prob, entropy = model.policy.evaluate_actions(rollout_data.observations, actions)
+            values = values.flatten()
+            # Normalize advantage
+            advantages = rollout_data.advantages
+            # Normalization does not make sense if mini batchsize == 1, see GH issue #325
+            if model.normalize_advantage and len(advantages) > 1:
+                advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
+
+            # ratio between old and new policy, should be one at the first iteration
+            ratio = torch.exp(log_prob - rollout_data.old_log_prob)
+            # -importance_sampling = advantages * ratio
+            # iss.append(importance_sampling.sum().item())
+            policy_loss_1 = advantages * ratio
+            policy_loss_2 = advantages * torch.clamp(ratio, 0.9, 1.1)
+            policy_loss = -torch.min(policy_loss_1, policy_loss_2).sum()
+            iss.append(policy_loss.item())
+    iss = np.sum(iss)
+    return iss
+
 # ------------------------------------------------------------------------------------------------------------------------------
 
 env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
@@ -579,18 +609,29 @@ if not normal_train:
         
         cum_rews = []
         best_agent_index = []
+        advantage_rew = []
 
         for j, a in enumerate(agents):
             model.policy.load_state_dict(a)
             model.policy.to(device)
             
-            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=5, deterministic=True)[0]
+            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
             print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
             cum_rews.append(returns_trains)
+            advantage_rew.append(advantage_evaluation(model))
             
         np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
         np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
         timeArray.append(time.time() - start_time)
+
+        df = pd.DataFrame({
+            'advantage': advantage_rew,
+            'online': cum_rews
+        })
+        corr_pear = df.corr(method='pearson')
+        corr_spearman = df.corr(method='spearman')
+        print("Pearson correlation coefficient:", corr_pear['advantage'][1])
+        print("Spearman correlation coefficient:", corr_spearman['advantage'][1])
 
         best_idx = np.argsort(cum_rews)[-1]
         best_agent = agents[best_idx]

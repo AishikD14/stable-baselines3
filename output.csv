@@ -49,3 +49,6 @@ Ant-v5 Less Evaluations
 ----------------
 PPO_empty_space_ls, ppo_empty_space_ls_out, PPO_empty_space with 100 iterations - 300k; gamma=0.9, espace15, Ongoing
 PPO_empty_space_ls_2, ppo_empty_space_ls_2_out, PPO_empty_space with 60 iterations & 3 evaluation - 120k; gamma=0.9, espace16, Ongoing
+PPO_empty_space_ls_3, ppo_empty_space_ls_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9, espace17, Ongoing
+PPO_empty_space_ls_4, ppo_empty_space_ls_4_out, PPO_empty_space with 100 iterations & advantage estimation - 300k; gamma=0.9, espace18, Ongoing
+PPO_empty_space_ls_5, ppo_empty_space_ls_5_out, PPO_empty_space with 60 iterations & 3 evaluation & advantage estimation - 120k; gamma=0.9, espace19, Ongoing
