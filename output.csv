@@ -18,8 +18,8 @@ PPO_empty_space_hnswlib_2, ppo_empty_space_hnswlib_out, PPO_empty_space with hns
 PPO_2, ppo_init_out, ppo_ant_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
 PPO_3, ppo_init_1M_out, ppo_ant_1M_1.zip; PPO Init for 1M steps with Xinyu hyperparameters and new codebase
 PPO_4, ppo_init_5M_out, ppo_ant_5M_1.zip; PPO Init for 5M steps with Xinyu hyperparameters and new codebase
-PPO_5, ppo_init_1M_1_out, ppo_ant_1M_2.zip; PPO Init for 1M steps with Xinyu hyperparameters and new codebase and evaluate_policy, espace3, Ongoing
-PPO_6, ppo_init_5M_1_out, ppo_ant_5M_2.zip; PPO Init for 5M steps with Xinyu hyperparameters and new codebase and evaluate_policy, espace4, Ongoing
+PPO_5, ppo_init_1M_1_out, ppo_ant_1M_2.zip; PPO Init for 1M steps with Xinyu hyperparameters and new codebase and evaluate_policy
+PPO_6, ppo_init_5M_1_out, ppo_ant_5M_2.zip; PPO Init for 5M steps with Xinyu hyperparameters and new codebase and evaluate_policy
 -----------------
 PPO_empty_space_optimal, ppo_empty_space_out, PPO_empty_space on 100 iterations with Xinyu hyperparameters
 PPO_neighbor_search_random_walk_optimal, ppo_neighbor_search_random_walk_out, PPO_neighbor_search_random_walk on 100 iterations with Xinyu hyperparameters
