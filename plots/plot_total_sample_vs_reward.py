@@ -5,16 +5,16 @@ import os
 env = "Ant-v5"
 # env = "AntDir-v0"
 
-start_iteration = 5000
+start_iteration = 1
 
 # Ant-v5
-plot_list = [
-    ["PPO_empty_space_optimal_5M_1", "Neighbor Sampling+Empty Space (gamma=0.9)"],
-    ["PPO_empty_space_optimal_5M_2", "Neighbor Sampling+Empty Space(gamma=0.5)"],
-    ["PPO_neighbor_search_random_walk_optimal_5M_1", "Neighbor Sampling+Random Walk"],
-    ["PPO_random_search_random_walk_optimal_5M_1", "Random Sample+Random Walk"],
-    ["PPO_normal_train_optimal_5M_1", "Normal Training"]
-]
+# plot_list = [
+#     ["PPO_empty_space_optimal_5M_1", "Neighbor Sampling+Empty Space (gamma=0.9)"],
+#     ["PPO_empty_space_optimal_5M_2", "Neighbor Sampling+Empty Space(gamma=0.5)"],
+#     ["PPO_neighbor_search_random_walk_optimal_5M_1", "Neighbor Sampling+Random Walk"],
+#     ["PPO_random_search_random_walk_optimal_5M_1", "Random Sample+Random Walk"],
+#     ["PPO_normal_train_optimal_5M_1", "Normal Training"]
+# ]
 
 # AntDir-v0
 # plot_list = [
@@ -27,13 +27,13 @@ plot_list = [
 # ]
 
 # Ant-v5 Less evaluations
-# plot_list = [
-#     ["PPO_empty_space_ls_1", "PPO_empty_space with 100 iterations - 300k"],
-#     ["PPO_empty_space_ls_2", "PPO_empty_space with 60 iterations & 3 evaluation - 120k"],
-#     ["PPO_empty_space_ls_3", "PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k"],
-#     ["PPO_empty_space_optimal_5M_1", "PPO_empty_space normal - 1M"],
-#     ["PPO_normal_train_optimal_5M_1", "Normal Training"]
-# ]
+plot_list = [
+    ["PPO_empty_space_ls_1", "PPO_empty_space with 100 iterations - 300k"],
+    ["PPO_empty_space_ls_2", "PPO_empty_space with 60 iterations & 3 evaluation - 120k"],
+    ["PPO_empty_space_ls_3", "PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k"],
+    ["PPO_empty_space_optimal_5M_1", "PPO_empty_space normal - 1M"],
+    ["PPO_normal_train_optimal_5M_1", "Normal Training"]
+]
 
 plot_metrics = []
 
@@ -90,7 +90,7 @@ for i, plot_metric in enumerate(plot_metrics):
     plt.plot(x, smoothed, label=plot_list[i][1])
     plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
 
-plt.xlabel('Samples (x200)')
+plt.xlabel('Samples (x512)')
 plt.ylabel('Max Reward')
 plt.title('Reward Plot')
 plt.grid()

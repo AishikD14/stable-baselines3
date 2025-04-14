@@ -90,7 +90,7 @@ for i, plot_metric in enumerate(plot_metrics):
     plt.plot(x, smoothed, label=plot_list[i][1])
     plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
 
-plt.xlabel('Samples (x200)')
+plt.xlabel('Samples (x512)')
 plt.ylabel('Max Reward')
 plt.title('Reward Plot')
 plt.grid()
