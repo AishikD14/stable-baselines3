@@ -17,6 +17,7 @@ from stable_baselines3.common.policies import ActorCriticPolicy
 from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedule
 from stable_baselines3.common.utils import obs_as_tensor, safe_mean
 from stable_baselines3.common.vec_env import VecEnv
+from stable_baselines3.common.evaluation import evaluate_policy
 
 SelfOnPolicyAlgorithm = TypeVar("SelfOnPolicyAlgorithm", bound="OnPolicyAlgorithm")
 
@@ -354,7 +355,9 @@ class OnPolicyAlgorithm(BaseAlgorithm):
             # if isinstance(self.env, VariBadWrapper) and self.num_timesteps % 10000 == 0:
             # eval_interval = self.n_steps * 20
             # if self.num_timesteps % eval_interval == 0:
-            #     self.evaluate(self.num_timesteps)
+            #     # self.evaluate(self.num_timesteps)
+            #     returns_trains = evaluate_policy(self, self.get_env(), n_eval_episodes=5, deterministic=True)[0]
+            #     print(f'Reward at iter {self.num_timesteps}: {returns_trains}')
 
         callback.on_training_end()
 
