@@ -515,7 +515,7 @@ print(env.action_space, env.observation_space)
 
 # print(env.action_space, env.observation_space)
 
-n_steps_per_rollout = 200
+n_steps_per_rollout = 512
 
 # --------------------------------------------------------------------------------------------------------------
 
@@ -526,7 +526,8 @@ START_ITER = 5000   #For 1M steps initialisation (Optimal hyperparameters)
 SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
 
 # NUM_ITERS = START_ITER + 100 # Just for testing
-NUM_ITERS = START_ITER + 20000 #5M steps
+# NUM_ITERS = START_ITER + 20000 #5M steps (n_steps_per_rollout = 200)
+NUM_ITERS = START_ITER + 7812 #5M steps (n_steps_per_rollout = 512)
 
 N_EPOCHS = 10 # Since set to 10 updates per rollout
 
@@ -547,7 +548,7 @@ ckp_dir = f'logs/{DIR}/models'
 
 # Best hyperparameters
 model = PPO("MlpPolicy", env, verbose=0, seed=0, 
-                n_steps=512, 
+                n_steps=n_steps_per_rollout, 
                 # n_steps=200,
                 batch_size=32, 
                 gamma=0.98,
@@ -572,7 +573,7 @@ print("Loading Initial saved model")
 
 # Load model
 # model.set_parameters("full_exp_on_ppo/models/ppo_ant_200k", device='cpu') # Normal hyperparameters for Ant
-model.set_parameters("full_exp_on_ppo/models/ppo_ant_1M", device='cpu') # Best hyperparameters for Ant
+model.set_parameters("full_exp_on_ppo/models/ppo_ant_1M_2", device='cpu') # Best hyperparameters for Ant
 # model.set_parameters("full_exp_on_ppo/models/ppo_antdir_1M", device='cpu') # Best hyperparameters for Antdir
 
 print("Model loaded")

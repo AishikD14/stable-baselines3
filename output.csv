@@ -53,3 +53,8 @@ PPO_empty_space_ls_3, ppo_empty_space_ls_3_out, PPO_empty_space with 60 iteratio
 PPO_empty_space_ls_4, ppo_empty_space_ls_4_out, PPO_empty_space with 100 iterations & advantage estimation - 300k; gamma=0.9, espace18, Ongoing
 PPO_empty_space_ls_5, ppo_empty_space_ls_5_out, PPO_empty_space with 60 iterations & 3 evaluation & advantage estimation - 120k; gamma=0.9, espace19, Ongoing
 PPO_empty_space_ls_6, ppo_empty_space_ls_6_out, PPO_empty_space normal & advantage estimation - 1M; gamma=0.9, espace20, Ongoing
+-----------------
+Using ppo_ant_1M_2.zip
+----------------
+PPO_empty_space_ls_7, ppo_empty_space_ls_7_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5, espace1, Ongoing
+PPO_empty_space_ls_8, ppo_empty_space_ls_8_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace2, Ongoing

@@ -28,10 +28,13 @@ start_iteration = 1
 
 # Ant-v5 Less evaluations
 plot_list = [
-    ["PPO_empty_space_ls_1", "PPO_empty_space with 100 iterations - 300k"],
-    ["PPO_empty_space_ls_2", "PPO_empty_space with 60 iterations & 3 evaluation - 120k"],
-    ["PPO_empty_space_ls_3", "PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k"],
-    ["PPO_empty_space_optimal_5M_1", "PPO_empty_space normal - 1M"],
+    ["PPO_empty_space_ls_1", "PPO_empty_space with 100 iterations-300k(gamma=0.9)"],
+    ["PPO_empty_space_ls_2", "PPO_empty_space with 60 iterations & 3 evaluation-120k(gamma=0.9)"],
+    ["PPO_empty_space_ls_3", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.9)"],
+    ["PPO_empty_space_optimal_5M_1", "PPO_empty_space normal-1M(gamma=0.9)"],
+    ["PPO_empty_space_ls_7", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.5)"],
+    ["PPO_empty_space_optimal_5M_2", "PPO_empty_space normal-1M(gamma=0.5)"],
+    ["PPO_empty_space_ls_8", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.3)"],
     ["PPO_normal_train_optimal_5M_1", "Normal Training"]
 ]
 
