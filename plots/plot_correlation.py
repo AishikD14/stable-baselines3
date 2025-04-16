@@ -5,7 +5,7 @@ import re
 env = "Ant"
 # env = "AntDir"
 
-start_iteration = 5000
+start_iteration = 1
 
 file = "../base_job_output/"+env+"/ppo_empty_space_ls_6_out.txt"
 
@@ -79,7 +79,7 @@ plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
 # ------------------------------------------------------------------------------
 
 plt.title("Rewards over Iterations")
-plt.xlabel("Samples (x200)")
+plt.xlabel("Samples (x512)")
 plt.ylabel("Reward")
 plt.grid()
 plt.legend()
