@@ -85,7 +85,7 @@ def elastic(es, neighbors, D):
 def empty_center(data, coor, neighbor, use_ANN, use_momentum, movestep, numiter):
     orig_coor = coor.copy()
     cum_mag = 0
-    gamma = 0.9 # discount factor
+    gamma = 0.3 # discount factor
     momentum = np.zeros(coor.shape)
     es_configs = []
     for i in range(numiter):
@@ -233,11 +233,11 @@ def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_l
     points = points.mean(axis=1)
 
     # Choose every second point
-    # points = points[::2]
+    points = points[::2]
 
     policies = []
     for p in points:
-        a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=400)
+        a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=60)
         policies.append(a[1])
     policies = np.concatenate(policies)
     print(policies.shape)
@@ -502,8 +502,8 @@ def advantage_evaluation(model):
 # ------------------------------------------------------------------------------------------------------------------------------
 
 # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
-env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
-# env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
+# env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
+env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
 # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
 # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
 
@@ -568,7 +568,7 @@ model = PPO("MlpPolicy", env, verbose=0, seed=0,
                 ckp_dir=ckp_dir)
 
 # print("Starting Initial training")
-# model.learn(total_timesteps=5000000, log_interval=50, tb_log_name=exp)
+# model.learn(total_timesteps=5000000, log_interval=50, tb_log_name=exp, init_call=True)
 # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_5M")
 # print("Initial training done") 
 # quit()
@@ -581,8 +581,8 @@ print("Loading Initial saved model")
 # model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_200k", device='cpu') # Normal hyperparameters for Ant
 
 # model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_1M_2", device='cpu') # Best hyperparameters for Ant
-model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_half_cheetah_1M", device='cpu') # Best hyperparameters for HalfCheetah
-# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_1M", device='cpu') # Best hyperparameters for Hopper
+# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_half_cheetah_1M", device='cpu') # Best hyperparameters for HalfCheetah
+model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_1M", device='cpu') # Best hyperparameters for Hopper
 # model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_walker2d_1M", device='cpu') # Best hyperparameters for Walker
 # model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_1M", device='cpu') # Best hyperparameters for Humanoid
 
@@ -630,7 +630,7 @@ if not normal_train:
             model.policy.load_state_dict(a)
             model.policy.to(device)
             
-            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=5, deterministic=True)[0]
+            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
             print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
             cum_rews.append(returns_trains)
             advantage_rew.append(advantage_evaluation(model))

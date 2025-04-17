@@ -18,8 +18,8 @@ PPO_empty_space_hnswlib_2, ppo_empty_space_hnswlib_out, PPO_empty_space with hns
 PPO_2, ppo_init_out, ppo_ant_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
 PPO_3, ppo_init_1M_out, ppo_ant_1M_1.zip; PPO Init for 1M steps with Xinyu hyperparameters and new codebase
 PPO_4, ppo_init_5M_out, ppo_ant_5M_1.zip; PPO Init for 5M steps with Xinyu hyperparameters and new codebase
-PPO_5, ppo_init_1M_1_out, ppo_ant_1M_2.zip; PPO Init for 1M steps with Xinyu hyperparameters and new codebase and evaluate_policy
-PPO_6, ppo_init_5M_1_out, ppo_ant_5M_2.zip; PPO Init for 5M steps with Xinyu hyperparameters and new codebase and evaluate_policy
+PPO_5, ppo_init_1M_1_out, ppo_ant_1M_2.zip; PPO Init for 1M steps with Xinyu hyperparameters & new codebase & evaluate_policy
+PPO_6, ppo_init_5M_1_out, ppo_ant_5M_2.zip; PPO Init for 5M steps with Xinyu hyperparameters & new codebase & evaluate_policy
 -----------------
 PPO_empty_space_optimal, ppo_empty_space_out, PPO_empty_space on 100 iterations with Xinyu hyperparameters
 PPO_neighbor_search_random_walk_optimal, ppo_neighbor_search_random_walk_out, PPO_neighbor_search_random_walk on 100 iterations with Xinyu hyperparameters
@@ -64,19 +64,23 @@ HalfCheetah-v5
 PPO_1, ppo_init_1M_out, ppo_half_cheetah_1M.zip; PPO Init for 1M steps with Xinyu hyperparameters
 PPO_2, ppo_init_5M_out, ppo_half_cheetah_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
 PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace3, Ongoing
+PPO_3, ppo_init_5M_out, PPO Init for 5M steps with Xinyu hyperparameters, espace4, Ongoing
 ----------------
 Hopper-v5
 ----------------
 PPO_1, ppo_init_1M_out, ppo_hopper_1M.zip; PPO Init for 1M steps with Xinyu hyperparameters
 PPO_2, ppo_init_5M_out, ppo_hopper_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
 PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, have to run
+PPO_3, ppo_init_5M_out, PPO Init for 5M steps with Xinyu hyperparameters, espace18, Ongoing
 ----------------
 Walker2d-v5
 ----------------
 PPO_1, ppo_init_1M_out, ppo_walker2d_1M.zip; PPO Init for 1M steps with Xinyu hyperparameters
 PPO_2, ppo_init_5M_out, ppo_walker2d_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
+PPO_3, ppo_init_5M_out, PPO Init for 5M steps with Xinyu hyperparameters, espace19, Ongoing
 ----------------
 Humanoid-v5
 ----------------
 PPO_1, ppo_init_1M_out, ppo_humanoid_1M.zip; PPO Init for 1M steps with Xinyu hyperparameters
 PPO_2, ppo_init_5M_out, ppo_humanoid_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
+PPO_3, ppo_init_5M_out, PPO Init for 5M steps with Xinyu hyperparameters, espace20, Ongoing

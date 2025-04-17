@@ -318,6 +318,7 @@ class PPO(OnPolicyAlgorithm):
         reset_num_timesteps: bool = True,
         progress_bar: bool = False,
         first_iteration: Optional[bool] = True,
+        init_call: Optional[bool] = False,
     ) -> SelfPPO:
         return super().learn(
             total_timesteps=total_timesteps,
@@ -327,4 +328,5 @@ class PPO(OnPolicyAlgorithm):
             reset_num_timesteps=reset_num_timesteps,
             progress_bar=progress_bar,
             first_iteration=first_iteration,
+            init_call=init_call,
         )
