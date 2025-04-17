@@ -503,9 +503,9 @@ def advantage_evaluation(model):
 
 # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
 # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
-env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
+# env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
 # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
-# env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
 
 # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -580,13 +580,18 @@ print("Loading Initial saved model")
 # Load model
 # model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_200k", device='cpu') # Normal hyperparameters for Ant
 
-# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_1M_2", device='cpu') # Best hyperparameters for Ant
-# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_half_cheetah_1M", device='cpu') # Best hyperparameters for HalfCheetah
-model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_1M", device='cpu') # Best hyperparameters for Hopper
-# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_walker2d_1M", device='cpu') # Best hyperparameters for Walker
-# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_1M", device='cpu') # Best hyperparameters for Humanoid
-
-# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_antdir_1M", device='cpu') # Best hyperparameters for Antdir
+if env_name == "Ant-v5":
+    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_1M_2", device='cpu') # Best hyperparameters for Ant
+elif env_name == "HalfCheetah-v5":
+    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_half_cheetah_1M", device='cpu') # Best hyperparameters for HalfCheetah
+elif env_name == "Hopper-v5":
+    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_1M", device='cpu') # Best hyperparameters for Hopper
+elif env_name == "Walker2d-v5":
+    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_walker2d_1M", device='cpu') # Best hyperparameters for Walker
+elif env_name == "Humanoid-v5":
+    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_1M", device='cpu') # Best hyperparameters for Humanoid
+elif env_name == "AntDir-v0":
+    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_antdir_1M", device='cpu') # Best hyperparameters for Antdir
 
 print("Model loaded")
 
