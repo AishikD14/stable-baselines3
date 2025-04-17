@@ -501,10 +501,15 @@ def advantage_evaluation(model):
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
-env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+# env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
+# env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
+# env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
+# env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+
 # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
-env = gym.make(env_name) # For Ant-v5
+env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
 # env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1) # For AntDir-v0
 
 print("Environment created")
@@ -533,7 +538,7 @@ N_EPOCHS = 10 # Since set to 10 updates per rollout
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO_empty_space_ls"
+exp = "PPO_empty_space"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -548,8 +553,7 @@ ckp_dir = f'logs/{DIR}/models'
 
 # Best hyperparameters
 model = PPO("MlpPolicy", env, verbose=0, seed=0, 
-                n_steps=n_steps_per_rollout, 
-                # n_steps=200,
+                n_steps=n_steps_per_rollout,
                 batch_size=32, 
                 gamma=0.98,
                 ent_coef=4.9646e-07,
@@ -564,19 +568,29 @@ model = PPO("MlpPolicy", env, verbose=0, seed=0,
                 ckp_dir=ckp_dir)
 
 # print("Starting Initial training")
-# model.learn(total_timesteps=START_ITER*n_steps_per_rollout, log_interval=50, tb_log_name=exp)
-# model.save("full_exp_on_ppo/models/ppo_ant_5M_1")
+# model.learn(total_timesteps=5000000, log_interval=50, tb_log_name=exp)
+# model.save("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_5M")
 # print("Initial training done") 
 # quit()
+
+# ----------------------------------------------------------------------------------------------------------------
 
 print("Loading Initial saved model")
 
 # Load model
-# model.set_parameters("full_exp_on_ppo/models/ppo_ant_200k", device='cpu') # Normal hyperparameters for Ant
-model.set_parameters("full_exp_on_ppo/models/ppo_ant_1M_2", device='cpu') # Best hyperparameters for Ant
-# model.set_parameters("full_exp_on_ppo/models/ppo_antdir_1M", device='cpu') # Best hyperparameters for Antdir
+# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_200k", device='cpu') # Normal hyperparameters for Ant
+
+# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_1M_2", device='cpu') # Best hyperparameters for Ant
+model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_half_cheetah_1M", device='cpu') # Best hyperparameters for HalfCheetah
+# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_1M", device='cpu') # Best hyperparameters for Hopper
+# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_walker2d_1M", device='cpu') # Best hyperparameters for Walker
+# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_1M", device='cpu') # Best hyperparameters for Humanoid
+
+# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_antdir_1M", device='cpu') # Best hyperparameters for Antdir
 
 print("Model loaded")
+
+# -------------------------------------------------------------------------------------------------------------
 
 vec_env = model.get_env()
 obs = vec_env.reset()
