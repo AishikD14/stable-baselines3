@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 import re
 
 # env = "Ant"
-# env = "HalfCheetah-v5"
+env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
+# env = "Humanoid-v5"
 # env = "AntDir"
 
 # Plot
@@ -86,7 +86,7 @@ plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
 # ---------------------------------------------------------------------------------
 
 plt.title("Rewards over Iterations")
-plt.xlabel("Samples (x10000)")
+plt.xlabel("Samples (x512)")
 plt.ylabel("Reward")
 plt.grid()
 plt.legend()
