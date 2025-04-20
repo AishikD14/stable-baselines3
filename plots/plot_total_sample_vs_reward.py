@@ -15,9 +15,9 @@ start_iteration = 1
 # plot_list = [
 #     ["PPO_empty_space_optimal_5M_1", "Neighbor Sampling+Empty Space (gamma=0.9)"],
 #     ["PPO_empty_space_optimal_5M_2", "Neighbor Sampling+Empty Space(gamma=0.5)"],
-#     ["PPO_neighbor_search_random_walk_optimal_5M_1", "Neighbor Sampling+Random Walk"],
-#     ["PPO_random_search_random_walk_optimal_5M_1", "Random Sample+Random Walk"],
-#     ["PPO_normal_train_optimal_5M_1", "Normal Training"]
+#     ["PPO_neighbor_search_random_walk_optimal_5M", "Neighbor Sampling+Random Walk"],
+#     ["PPO_random_search_random_walk_optimal_5M", "Random Sample+Random Walk"],
+#     ["PPO_normal_train_optimal_5M", "Normal Training"]
 # ]
 
 # AntDir-v0
@@ -27,7 +27,7 @@ start_iteration = 1
 #     ["PPO_empty_space_optimal_5M_3_1", "Neighbor Sampling+Empty Space(gamma=0.3)"],
 #     ["PPO_neighbor_search_random_walk_optimal_5M_1", "Neighbor Sampling+Random Walk"],
 #     ["PPO_random_search_random_walk_optimal_5M_1", "Random Sample+Random Walk"],
-#     ["PPO_normal_train_optimal_5M_1", "Normal Training"]
+#     ["PPO_normal_train_optimal_5M", "Normal Training"]
 # ]
 
 # Ant-v5 Less evaluations
@@ -39,7 +39,7 @@ start_iteration = 1
 #     ["PPO_empty_space_ls_7", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.5)"],
 #     ["PPO_empty_space_optimal_5M_2", "PPO_empty_space normal-1M(gamma=0.5)"],
 #     ["PPO_empty_space_ls_8", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.3)"],
-#     ["PPO_normal_train_optimal_5M_1", "Normal Training"]
+#     ["PPO_normal_train_optimal_5M", "Normal Training"]
 # ]
 
 # Other envs

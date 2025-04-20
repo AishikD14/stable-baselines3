@@ -28,10 +28,10 @@ PPO_random_search_empty_space_optimal, ppo_random_search_empty_space_out, PPO_ra
 PPO_random_search_random_walk_optimal, ppo_random_search_random_walk_out, PPO_random_search_random_walk on 100 iterations with Xinyu hyperparameters
 ----------------
 PPO_empty_space_optimal_5M_1, ppo_empty_space_5M_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.9, espace5, Ongoing
-PPO_neighbor_search_random_walk_optimal_5M_1, ppo_neighbor_search_random_walk_5M_out, PPO_neighbor_search_random_walk on 5M iterations with Xinyu hyperparameters, espace6, Stopped
-PPO_random_search_random_walk_optimal_5M_1, ppo_random_search_random_walk_5M_out, PPO_random_search_random_walk on 5M iterations with Xinyu hyperparameters, espace7, Stopped
+PPO_neighbor_search_random_walk_optimal_5M, ppo_neighbor_search_random_walk_5M_out, PPO_neighbor_search_random_walk on 5M iterations with Xinyu hyperparameters, espace6, Stopped
+PPO_random_search_random_walk_optimal_5M, ppo_random_search_random_walk_5M_out, PPO_random_search_random_walk on 5M iterations with Xinyu hyperparameters, espace7, Stopped
 PPO_empty_space_optimal_5M_2, ppo_empty_space_5M_2_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.5, espace8, Ongoing
-PPO_normal_train_optimal_5M_1, ppo_normal_train_5M_out, PPO normal train on 5M iterations with Xinyu hyperparameters
+PPO_normal_train_optimal_5M, ppo_normal_train_5M_out, PPO normal train on 5M iterations with Xinyu hyperparameters
 ----------------
 AntDir-v0
 ----------------
@@ -43,7 +43,7 @@ PPO_empty_space_optimal_5M_2_1, ppo_empty_space_5M_2_out, PPO_empty_space on 5M 
 PPO_empty_space_optimal_5M_3_1, ppo_empty_space_5M_3_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.3, espace11, Ongoing
 PPO_neighbor_search_random_walk_optimal_5M_1, ppo_neighbor_search_random_walk_5M_out, PPO_neighbor_search_random_walk on 5M iterations with Xinyu hyperparameters, espace12, Ongoing
 PPO_random_search_random_walk_optimal_5M_1, ppo_random_search_random_walk_5M_out, PPO_random_search_random_walk on 5M iterations with Xinyu hyperparameters, espace13, Ongoing
-PPO_normal_train_optimal_5M_1, ppo_normal_train_5M_out, PPO normal train on 5M iterations with Xinyu hyperparameters
+PPO_normal_train_optimal_5M, ppo_normal_train_5M_out, PPO normal train on 5M iterations with Xinyu hyperparameters
 ----------------
 Ant-v5 Less Evaluations
 ----------------
