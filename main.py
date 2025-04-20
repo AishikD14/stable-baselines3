@@ -13,6 +13,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 import warnings
 from environments.make_env import make_env
 import pandas as pd
+from stable_baselines3.common.fqe import FQE
 
 warnings.filterwarnings("ignore")
 
@@ -233,11 +234,11 @@ def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_l
     points = points.mean(axis=1)
 
     # Choose every second point
-    points = points[::2]
+    # points = points[::2]
 
     policies = []
     for p in points:
-        a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=60)
+        a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=400)
         policies.append(a[1])
     policies = np.concatenate(policies)
     print(policies.shape)
@@ -475,37 +476,30 @@ def load_state_dict(algo, params):
 
 # Function to evaluate the advantage of the policy
 def advantage_evaluation(model):
+    fqe = FQE(model.replay_buffer.obs_shape[0], model.replay_buffer.action_dim, lr=3e-4, gamma=model.gamma, device=model.device)
+    fqe.build_q_net(model)
+    q_loss = fqe.train(fqe.model, fqe.model.batch_size, 10)
+    # print(f'q_loss: {q_loss}')
     iss = []
-    with torch.no_grad():
-        for rollout_data in model.rollout_buffer.get(model.batch_size):
-            actions = rollout_data.actions
-
-            values, log_prob, entropy = model.policy.evaluate_actions(rollout_data.observations, actions)
-            values = values.flatten()
-            # Normalize advantage
-            advantages = rollout_data.advantages
-            # Normalization does not make sense if mini batchsize == 1, see GH issue #325
-            if model.normalize_advantage and len(advantages) > 1:
-                advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
-
-            # ratio between old and new policy, should be one at the first iteration
-            ratio = torch.exp(log_prob - rollout_data.old_log_prob)
-            # -importance_sampling = advantages * ratio
-            # iss.append(importance_sampling.sum().item())
-            policy_loss_1 = advantages * ratio
-            policy_loss_2 = advantages * torch.clamp(ratio, 0.9, 1.1)
-            policy_loss = -torch.min(policy_loss_1, policy_loss_2).sum()
-            iss.append(policy_loss.item())
+    for rollout_data in model.rollout_buffer.get(model.batch_size):
+        
+        obs = rollout_data.observations
+        actions, _, _ = model.policy(obs)
+        obs_act = torch.cat((obs, actions), dim=1)
+        q1_pred = fqe.qf1(obs_act)
+        # q2_pred = model.policy.qf2(obs_act)
+        # q = torch.min(q1_pred, q2_pred)
+        iss.append(q1_pred.sum().item())
     iss = np.sum(iss)
     return iss
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
-# env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
 # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
 # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
 # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
-env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+# env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
 
 # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -538,7 +532,7 @@ N_EPOCHS = 10 # Since set to 10 updates per rollout
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO_empty_space"
+exp = "PPO_empty_space_ls"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -568,8 +562,8 @@ model = PPO("MlpPolicy", env, verbose=0, seed=0,
                 ckp_dir=ckp_dir)
 
 # print("Starting Initial training")
-# model.learn(total_timesteps=5000000, log_interval=50, tb_log_name=exp, init_call=True)
-# model.save("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_5M")
+# model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
+# # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_5M")
 # print("Initial training done") 
 # quit()
 
@@ -635,7 +629,7 @@ if not normal_train:
             model.policy.load_state_dict(a)
             model.policy.to(device)
             
-            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
+            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=5, deterministic=True)[0]
             print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
             cum_rews.append(returns_trains)
             advantage_rew.append(advantage_evaluation(model))

@@ -11,7 +11,7 @@ from gym import spaces as gymspaces
 from environments.wrappers import VariBadWrapper
 
 from stable_baselines3.common.base_class import BaseAlgorithm
-from stable_baselines3.common.buffers import DictRolloutBuffer, RolloutBuffer
+from stable_baselines3.common.buffers import DictRolloutBuffer, RolloutBuffer, ReplayBuffer
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.policies import ActorCriticPolicy
 from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedule
@@ -136,6 +136,13 @@ class OnPolicyAlgorithm(BaseAlgorithm):
             n_envs=self.n_envs,
             **self.rollout_buffer_kwargs,
         )
+        self.replay_buffer = ReplayBuffer(
+            buffer_size=min(self.n_steps * 20, 1e5),
+            observation_space=self.observation_space,
+            action_space=self.action_space,
+            device=self.device,
+            n_envs=self.n_envs,
+        )
         self.policy = self.policy_class(  # type: ignore[assignment]
             self.observation_space, self.action_space, self.lr_schedule, use_sde=self.use_sde, **self.policy_kwargs
         )
@@ -169,6 +176,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
         callback: BaseCallback,
         rollout_buffer: RolloutBuffer,
         n_rollout_steps: int,
+        replay_buffer: ReplayBuffer=None,
     ) -> bool:
         """
         Collect experiences using the current policy and fill a ``RolloutBuffer``.
@@ -264,6 +272,15 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 values,
                 log_probs,
             )
+            if replay_buffer is not None:
+                replay_buffer.add(
+                    self._last_obs,  # type: ignore[arg-type]
+                    new_obs,
+                    actions,
+                    rewards,
+                    dones,
+                    infos,
+                )
             self._last_obs = new_obs  # type: ignore[assignment]
             self._last_episode_starts = dones
 
@@ -338,7 +355,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
         assert self.env is not None
 
         while self.num_timesteps < total_timesteps:
-            continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+            continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps, replay_buffer=self.replay_buffer)
 
             if not continue_training:
                 break
