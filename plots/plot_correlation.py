@@ -7,7 +7,7 @@ env = "Ant"
 
 start_iteration = 1
 
-file = "../base_job_output/"+env+"/ppo_empty_space_ls_6_out.txt"
+file = "../base_job_output/"+env+"/ppo_empty_space_ls_9_out.txt"
 
 perason_reward_values = []
 spearman_reward_values = []
