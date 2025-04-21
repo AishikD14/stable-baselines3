@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-# env = "Ant-v5"
-env = "HalfCheetah-v5"
+env = "Ant-v5"
+# env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
@@ -16,8 +16,7 @@ start_iteration = 1
 #     ["PPO_empty_space_optimal_5M_1", "Neighbor Sampling+Empty Space (gamma=0.9)"],
 #     ["PPO_empty_space_optimal_5M_2", "Neighbor Sampling+Empty Space(gamma=0.5)"],
 #     ["PPO_neighbor_search_random_walk_optimal_5M", "Neighbor Sampling+Random Walk"],
-#     ["PPO_random_search_random_walk_optimal_5M", "Random Sample+Random Walk"],
-#     ["PPO_normal_train_optimal_5M", "Normal Training"]
+#     ["PPO_random_search_random_walk_optimal_5M", "Random Sample+Random Walk"]
 # ]
 
 # AntDir-v0
@@ -31,21 +30,20 @@ start_iteration = 1
 # ]
 
 # Ant-v5 Less evaluations
-# plot_list = [
-#     ["PPO_empty_space_ls_1", "PPO_empty_space with 100 iterations-300k(gamma=0.9)"],
-#     ["PPO_empty_space_ls_2", "PPO_empty_space with 60 iterations & 3 evaluation-120k(gamma=0.9)"],
-#     ["PPO_empty_space_ls_3", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.9)"],
-#     ["PPO_empty_space_optimal_5M_1", "PPO_empty_space normal-1M(gamma=0.9)"],
-#     ["PPO_empty_space_ls_7", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.5)"],
-#     ["PPO_empty_space_optimal_5M_2", "PPO_empty_space normal-1M(gamma=0.5)"],
-#     ["PPO_empty_space_ls_8", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.3)"],
-#     ["PPO_normal_train_optimal_5M", "Normal Training"]
-# ]
+plot_list = [
+    # ["PPO_empty_space_ls_1", "PPO_empty_space with 100 iterations-300k(gamma=0.9)"],
+    # ["PPO_empty_space_ls_2", "PPO_empty_space with 60 iterations & 3 evaluation-120k(gamma=0.9)"],
+    # ["PPO_empty_space_ls_3", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.9)"],
+    # ["PPO_empty_space_optimal_5M_1", "PPO_empty_space normal-1M(gamma=0.9)"],
+    # ["PPO_empty_space_ls_7", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.5)"],
+    # ["PPO_empty_space_optimal_5M_2", "PPO_empty_space normal-1M(gamma=0.5)"],
+    ["PPO_empty_space_ls_8", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.3)"]
+]
 
 # Other envs
-plot_list = [
-    ["PPO_empty_space_1", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.3)"],
-]
+# plot_list = [
+#     ["PPO_empty_space_1", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.3)"],
+# ]
 
 plot_metrics = []
 
