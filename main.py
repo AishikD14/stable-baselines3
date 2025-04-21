@@ -532,7 +532,7 @@ N_EPOCHS = 10 # Since set to 10 updates per rollout
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO_empty_space_ls"
+exp = "PPO"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -562,7 +562,7 @@ model = PPO("MlpPolicy", env, verbose=0, seed=0,
                 ckp_dir=ckp_dir)
 
 # print("Starting Initial training")
-# model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
+# model.learn(total_timesteps=5000000, log_interval=50, tb_log_name=exp, init_call=True)
 # # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_5M")
 # print("Initial training done") 
 # quit()
@@ -575,7 +575,7 @@ print("Loading Initial saved model")
 # model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_200k", device='cpu') # Normal hyperparameters for Ant
 
 if env_name == "Ant-v5":
-    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_1M_2", device='cpu') # Best hyperparameters for Ant
+    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_1M", device='cpu') # Best hyperparameters for Ant
 elif env_name == "HalfCheetah-v5":
     model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_half_cheetah_1M", device='cpu') # Best hyperparameters for HalfCheetah
 elif env_name == "Hopper-v5":

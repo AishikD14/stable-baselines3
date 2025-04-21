@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import re
 
-# env = "Ant"
-env = "HalfCheetah-v5"
+env = "Ant"
+# env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
