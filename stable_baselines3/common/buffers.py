@@ -366,6 +366,7 @@ class RolloutBuffer(BaseBuffer):
     observations: np.ndarray
     actions: np.ndarray
     rewards: np.ndarray
+    next_obs: np.ndarray
     advantages: np.ndarray
     returns: np.ndarray
     episode_starts: np.ndarray
@@ -392,6 +393,7 @@ class RolloutBuffer(BaseBuffer):
         self.observations = np.zeros((self.buffer_size, self.n_envs, *self.obs_shape), dtype=np.float32)
         self.actions = np.zeros((self.buffer_size, self.n_envs, self.action_dim), dtype=np.float32)
         self.rewards = np.zeros((self.buffer_size, self.n_envs), dtype=np.float32)
+        self.next_obs = np.zeros((self.buffer_size, self.n_envs, *self.obs_shape), dtype=np.float32)
         self.returns = np.zeros((self.buffer_size, self.n_envs), dtype=np.float32)
         self.episode_starts = np.zeros((self.buffer_size, self.n_envs), dtype=np.float32)
         self.values = np.zeros((self.buffer_size, self.n_envs), dtype=np.float32)
@@ -442,6 +444,7 @@ class RolloutBuffer(BaseBuffer):
         obs: np.ndarray,
         action: np.ndarray,
         reward: np.ndarray,
+        next_obs: np.ndarray,
         episode_start: np.ndarray,
         value: th.Tensor,
         log_prob: th.Tensor,
@@ -464,6 +467,7 @@ class RolloutBuffer(BaseBuffer):
         # as numpy cannot broadcast (n_discrete,) to (n_discrete, 1)
         if isinstance(self.observation_space, spaces.Discrete):
             obs = obs.reshape((self.n_envs, *self.obs_shape))
+            next_obs = next_obs.reshape((self.n_envs, *self.obs_shape))
 
         # Reshape to handle multi-dim and discrete action spaces, see GH #970 #1392
         action = action.reshape((self.n_envs, self.action_dim))
@@ -471,6 +475,7 @@ class RolloutBuffer(BaseBuffer):
         self.observations[self.pos] = np.array(obs)
         self.actions[self.pos] = np.array(action)
         self.rewards[self.pos] = np.array(reward)
+        self.next_obs[self.pos] = np.array(next_obs)
         self.episode_starts[self.pos] = np.array(episode_start)
         self.values[self.pos] = value.clone().cpu().numpy().flatten()
         self.log_probs[self.pos] = log_prob.clone().cpu().numpy()
@@ -487,6 +492,7 @@ class RolloutBuffer(BaseBuffer):
                 "observations",
                 "actions",
                 "values",
+                "next_obs",
                 "log_probs",
                 "advantages",
                 "returns",
@@ -513,6 +519,7 @@ class RolloutBuffer(BaseBuffer):
         data = (
             self.observations[batch_inds],
             self.actions[batch_inds],
+            self.next_obs[batch_inds],
             self.values[batch_inds].flatten(),
             self.log_probs[batch_inds].flatten(),
             self.advantages[batch_inds].flatten(),

@@ -268,6 +268,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 self._last_obs,  # type: ignore[arg-type]
                 actions,
                 rewards,
+                new_obs,
                 self._last_episode_starts,  # type: ignore[arg-type]
                 values,
                 log_probs,

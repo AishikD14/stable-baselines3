@@ -238,7 +238,7 @@ def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_l
 
     policies = []
     for p in points:
-        a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=400)
+        a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=60)
         policies.append(a[1])
     policies = np.concatenate(policies)
     print(policies.shape)
@@ -474,6 +474,13 @@ def load_state_dict(algo, params):
     algo.policy.optimizer = algo.policy.optimizer_class(algo.policy.parameters(), lr=algo.learning_rate)
     algo.policy.to(device)
 
+def evaluation_callback(localvars, globalvars):
+    if 'dones' in localvars:
+        for i in range(len(localvars['current_lengths'])):
+            if localvars['current_lengths'][i] >= 1000:
+                localvars['dones'][i] = True
+    return
+
 # Function to evaluate the advantage of the policy
 def advantage_evaluation(model):
     fqe = FQE(model.replay_buffer.obs_shape[0], model.replay_buffer.action_dim, lr=3e-4, gamma=model.gamma, device=model.device)
@@ -487,11 +494,16 @@ def advantage_evaluation(model):
         actions, _, _ = model.policy(obs)
         obs_act = torch.cat((obs, actions), dim=1)
         q1_pred = fqe.qf1(obs_act)
-        # q2_pred = model.policy.qf2(obs_act)
-        # q = torch.min(q1_pred, q2_pred)
-        iss.append(q1_pred.sum().item())
+        
+        new_obs = rollout_data.next_obs
+        new_actions, _, _ = model.policy(new_obs)
+        new_obs_act = torch.cat((new_obs, new_actions), dim=1)
+        q1_next = fqe.qf1(new_obs_act)
+        iss.append(q1_pred.sum().item() + q1_next.sum().item())
+
+        # iss.append(q1_pred.sum().item() + q_next.sum().item())
     iss = np.sum(iss)
-    return iss
+    return iss, q_loss
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
@@ -532,7 +544,7 @@ N_EPOCHS = 10 # Since set to 10 updates per rollout
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO"
+exp = "PPO_fqe"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -624,35 +636,68 @@ if not normal_train:
         cum_rews = []
         best_agent_index = []
         advantage_rew = []
+        q_losses = []
 
         for j, a in enumerate(agents):
             model.policy.load_state_dict(a)
             model.policy.to(device)
             
-            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=5, deterministic=True)[0]
-            print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
-            cum_rews.append(returns_trains)
-            advantage_rew.append(advantage_evaluation(model))
+            # Online evaluation
+            # returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=5, deterministic=True)[0]
+            # print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
+            # cum_rews.append(returns_trains)
+
+            # Q-function evaluation
+            q_adv, q_loss = advantage_evaluation(model)
+            advantage_rew.append(q_adv)
+            q_losses.append(q_loss)
             
         np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
         np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
         timeArray.append(time.time() - start_time)
 
-        df = pd.DataFrame({
-            'advantage': advantage_rew,
-            'online': cum_rews
-        })
-        corr_pear = df.corr(method='pearson')
-        corr_spearman = df.corr(method='spearman')
-        print("Pearson correlation coefficient:", corr_pear['advantage'][1])
-        print("Spearman correlation coefficient:", corr_spearman['advantage'][1])
+        # Correlation calculation
+        # df = pd.DataFrame({
+        #     'advantage': advantage_rew,
+        #     'online': cum_rews
+        # })
+        # corr_pear = df.corr(method='pearson')
+        # corr_spearman = df.corr(method='spearman')
+        # print("Pearson correlation coefficient:", corr_pear['advantage'][1])
+        # print("Spearman correlation coefficient:", corr_spearman['advantage'][1])
 
-        best_idx = np.argsort(cum_rews)[-1]
-        best_agent = agents[best_idx]
-        print(f'the best agent: {best_idx}, avg policy: {cum_rews[best_idx]}')
+        # Using the best agent from the top 5
+        top_5_idx = np.argsort(advantage_rew)[-5:]
+        top_5_agents = np.array(agents)[top_5_idx]
+        best_agent, best_idx, returns_trains = None, None, -float('inf')
+        dummy_env = gym.make(env_name)
+        for idx, tagent in enumerate(top_5_agents):
+            model.policy.load_state_dict(tagent)
+            model.policy.to(device)
+            cur_return = evaluate_policy(model, dummy_env, n_eval_episodes=2, callback=evaluation_callback, deterministic=True)[0]
+            if cur_return > returns_trains:
+                returns_trains = cur_return
+                best_idx = idx
+        best_agent = top_5_agents[best_idx]
+
+        # Using the best agent from all
+        # best_idx = np.argsort(advantage_rew)[-3]
+        # best_agent = agents[best_idx]
+        # returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=1, deterministic=True)[0]
+
+        print(f'the best agent: {best_idx}, avg policy: {returns_trains}')
+        print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
         best_agent_index.append(best_idx)
         np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
         load_state_dict(model, best_agent)
+
+        # Finding the best agent from online evaluation
+        # best_idx = np.argsort(cum_rews)[-1]
+        # best_agent = agents[best_idx]
+        # print(f'the best agent: {best_idx}, avg policy: {cum_rews[best_idx]}')
+        # best_agent_index.append(best_idx)
+        # np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+        # load_state_dict(model, best_agent)
 
     np.save(f'logs/{DIR}/distance.npy', distanceArray)
     np.save(f'logs/{DIR}/time.npy', timeArray)
