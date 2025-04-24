@@ -22,8 +22,8 @@ PPO_random_search_empty_space_optimal, ppo_random_search_empty_space_out, PPO_ra
 PPO_random_search_random_walk_optimal, ppo_random_search_random_walk_out, PPO_random_search_random_walk on 100 iterations with Xinyu hyperparameters
 ----------------
 PPO_empty_space_optimal_5M_1, ppo_empty_space_5M_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.9, espace5, Ongoing
-PPO_neighbor_search_random_walk_optimal_5M, ppo_neighbor_search_random_walk_5M_out, PPO_neighbor_search_random_walk on 5M iterations with Xinyu hyperparameters, espace6, Stopped
-PPO_random_search_random_walk_optimal_5M, ppo_random_search_random_walk_5M_out, PPO_random_search_random_walk on 5M iterations with Xinyu hyperparameters, espace7, Stopped
+PPO_neighbor_search_random_walk_optimal_5M, ppo_neighbor_search_random_walk_5M_out, PPO_neighbor_search_random_walk on 5M iterations with Xinyu hyperparameters, , Stopped
+PPO_random_search_random_walk_optimal_5M, ppo_random_search_random_walk_5M_out, PPO_random_search_random_walk on 5M iterations with Xinyu hyperparameters, , Stopped
 PPO_empty_space_optimal_5M_2, ppo_empty_space_5M_2_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.5, espace8, Ongoing
 PPO_normal_train_optimal_5M, ppo_normal_train_5M_out, PPO normal train on 5M iterations with Xinyu hyperparameters
 ----------------
@@ -44,11 +44,11 @@ Ant-v5 Less Evaluations
 PPO_empty_space_ls_1, ppo_empty_space_ls_out, PPO_empty_space with 100 iterations - 300k; gamma=0.9, espace15, Ongoing
 PPO_empty_space_ls_2, ppo_empty_space_ls_2_out, PPO_empty_space with 60 iterations & 3 evaluation - 120k; gamma=0.9, espace16, Ongoing
 PPO_empty_space_ls_3, ppo_empty_space_ls_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9, espace17, Ongoing
-PPO_empty_space_ls_4, ppo_empty_space_ls_4_out, PPO_empty_space with 100 iterations & advantage estimation - 300k; gamma=0.9
-PPO_empty_space_ls_5, ppo_empty_space_ls_5_out, PPO_empty_space with 60 iterations & 3 evaluation & advantage estimation - 120k; gamma=0.9
-PPO_empty_space_ls_6, ppo_empty_space_ls_6_out, PPO_empty_space normal & advantage estimation - 1M; gamma=0.9
+PPO_empty_space_ls_4, ppo_empty_space_ls_4_out, PPO_empty_space with 100 iterations & advantage estimation - 300k; gamma=0.9, , Stopped
+PPO_empty_space_ls_5, ppo_empty_space_ls_5_out, PPO_empty_space with 60 iterations & 3 evaluation & advantage estimation - 120k; gamma=0.9, , Stopped
+PPO_empty_space_ls_6, ppo_empty_space_ls_6_out, PPO_empty_space normal & advantage estimation - 1M; gamma=0.9, , Stopped
 PPO_empty_space_ls_7, ppo_empty_space_ls_7_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5
-PPO_empty_space_ls_9, ppo_empty_space_ls_9_out, PPO_empty_space normal & advantage estimation for fqe v1- 1M; gamma=0.3, Stopped
+PPO_empty_space_ls_9, ppo_empty_space_ls_9_out, PPO_empty_space normal & advantage estimation for fqe v1- 1M; gamma=0.3, , Stopped
 ----------------
 FQE Evaluation
 ----------------
@@ -84,5 +84,5 @@ Humanoid-v5
 ----------------
 PPO_1, ppo_init_1M_out, ppo_humanoid_1M.zip; PPO Init for 1M steps with Xinyu hyperparameters
 PPO_2, ppo_init_5M_out, ppo_humanoid_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
-PPO_3, ppo_init_1M_1_out, ppo_humanoid_1M_1.zip; PPO Init for 1M steps with new hyperparameters, espace1
+PPO_3, ppo_init_1M_1_out, ppo_humanoid_1M_1.zip; PPO Init for 1M steps with new hyperparameters
 PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
