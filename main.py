@@ -14,6 +14,9 @@ import warnings
 from environments.make_env import make_env
 import pandas as pd
 from stable_baselines3.common.fqe import FQE
+import torch.nn as nn
+import argparse
+from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid
 
 warnings.filterwarnings("ignore")
 
@@ -507,13 +510,29 @@ def advantage_evaluation(model):
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
-env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+parser = argparse.ArgumentParser()
+args, rest_args = parser.parse_known_args()
+
+# env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
 # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
 # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
 # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
-# env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
 
 # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
+
+if env_name == "AntDir-v0":
+    args = args_ant_dir.get_args(rest_args)
+elif env_name == "Ant-v5":
+    args = args_ant.get_args(rest_args)
+elif env_name == "Hopper-v5":
+    args = args_hopper.get_args(rest_args)
+elif env_name == "HalfCheetah-v5":
+    args = args_half_cheetah.get_args(rest_args)
+elif env_name == "Walker2d-v5":
+    args = args_walker2d.get_args(rest_args)
+elif env_name == "Humanoid-v5":
+    args = args_humanoid.get_args(rest_args)
 
 env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
 # env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1) # For AntDir-v0
@@ -544,9 +563,23 @@ N_EPOCHS = 10 # Since set to 10 updates per rollout
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO_fqe"
+exp = "PPO_test"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
+
+activation_fn_map = {
+    'ReLU': nn.ReLU,
+    'Tanh': nn.Tanh,
+    'LeakyReLU': nn.LeakyReLU
+}
+
+if hasattr(args, 'use_policy_kwargs') and args.use_policy_kwargs:
+    policy_kwargs = {
+        "net_arch": [dict(pi=args.pi_layers, vf=args.vf_layers)],
+        "activation_fn": activation_fn_map[args.activation_fn]
+    }
+else:
+    policy_kwargs = None
 
 # Normal hyperparameters
 # model = PPO("MlpPolicy", env, verbose=0, seed=0, 
@@ -557,25 +590,64 @@ ckp_dir = f'logs/{DIR}/models'
 #             tensorboard_log='logs/'+env_name+"/",
 #             ckp_dir=ckp_dir)
 
-# Best hyperparameters
-model = PPO("MlpPolicy", env, verbose=0, seed=0, 
-                n_steps=n_steps_per_rollout,
-                batch_size=32, 
-                gamma=0.98,
-                ent_coef=4.9646e-07,
-                learning_rate=1.90609e-05,
-                clip_range=0.1,
-                max_grad_norm=0.6,
-                n_epochs=10,
-                gae_lambda=0.8,
-                vf_coef=0.677239,
-                device=device, 
-                tensorboard_log='logs/'+env_name+"/",
-                ckp_dir=ckp_dir)
+# -------------------------------------------------------------
+ppo_kwargs  = dict(
+    policy=args.policy,
+    env=args.env,
+    verbose=args.verbose,
+    seed=args.seed,
+    n_steps=args.n_steps_per_rollout,
+    batch_size=args.batch_size,
+    gamma=args.gamma,
+    ent_coef=args.ent_coef,
+    learning_rate=args.learning_rate,
+    clip_range=args.clip_range,
+    max_grad_norm=args.max_grad_norm,
+    n_epochs=args.n_epochs,
+    gae_lambda=args.gae_lambda,
+    vf_coef=args.vf_coef,
+    device=args.device,
+    tensorboard_log=args.tensorboard_log,
+    ckp_dir=ckp_dir
+)
+
+if policy_kwargs:
+    ppo_kwargs["policy_kwargs"] = policy_kwargs
+
+model = PPO(**ppo_kwargs)
+
+# Best hyperparameters for Humanoid
+# model = PPO(
+#     policy="MlpPolicy",
+#     env=env,
+#     verbose=0,
+#     seed=0,
+#     n_steps=4096,
+#     batch_size=256,
+#     gamma=0.995,
+#     gae_lambda=0.92,
+#     ent_coef=0.001,
+#     learning_rate=2.5e-4,
+#     clip_range=0.15,
+#     max_grad_norm=0.3,
+#     n_epochs=5,
+#     vf_coef=0.7,
+#     device=device,
+#     tensorboard_log='logs/'+env_name+"/",
+#     ckp_dir=ckp_dir,
+#     policy_kwargs={
+#         "net_arch": [dict(pi=[512,512], vf=[512,512])],
+#         "log_std_init": -0.5,
+#         "ortho_init": False
+#     }
+# )
+
+# ---------------------------------------------------------------------------------------------------------------
+
 
 # print("Starting Initial training")
 # model.learn(total_timesteps=5000000, log_interval=50, tb_log_name=exp, init_call=True)
-# # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_5M")
+# model.save("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_5M_1")
 # print("Initial training done") 
 # quit()
 
@@ -586,18 +658,21 @@ print("Loading Initial saved model")
 # Load model
 # model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_200k", device='cpu') # Normal hyperparameters for Ant
 
-if env_name == "Ant-v5":
-    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_1M", device='cpu') # Best hyperparameters for Ant
-elif env_name == "HalfCheetah-v5":
-    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_half_cheetah_1M", device='cpu') # Best hyperparameters for HalfCheetah
-elif env_name == "Hopper-v5":
-    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_1M", device='cpu') # Best hyperparameters for Hopper
-elif env_name == "Walker2d-v5":
-    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_walker2d_1M", device='cpu') # Best hyperparameters for Walker
-elif env_name == "Humanoid-v5":
-    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_1M", device='cpu') # Best hyperparameters for Humanoid
-elif env_name == "AntDir-v0":
-    model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_antdir_1M", device='cpu') # Best hyperparameters for Antdir
+model.set_parameters(args.init_model_path, device=args.device) # Best hyperparameters
+
+# if env_name == "Ant-v5":
+#     # model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_1M", device='cpu') # Best hyperparameters for Ant
+#     model.set_parameters(args.init_model_path, device=args.device) # Best hyperparameters for Ant
+# elif env_name == "HalfCheetah-v5":
+#     model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_half_cheetah_1M", device='cpu') # Best hyperparameters for HalfCheetah
+# elif env_name == "Hopper-v5":
+#     model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_1M", device='cpu') # Best hyperparameters for Hopper
+# elif env_name == "Walker2d-v5":
+#     model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_walker2d_1M", device='cpu') # Best hyperparameters for Walker
+# elif env_name == "Humanoid-v5":
+#     model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_1M", device='cpu') # Best hyperparameters for Humanoid
+# elif env_name == "AntDir-v0":
+#     model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_antdir_1M", device='cpu') # Best hyperparameters for Antdir
 
 print("Model loaded")
 
@@ -654,6 +729,7 @@ if not normal_train:
             
         np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
         np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+        np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
         timeArray.append(time.time() - start_time)
 
         # Correlation calculation
