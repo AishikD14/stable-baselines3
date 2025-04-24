@@ -48,7 +48,7 @@ PPO_empty_space_ls_4, ppo_empty_space_ls_4_out, PPO_empty_space with 100 iterati
 PPO_empty_space_ls_5, ppo_empty_space_ls_5_out, PPO_empty_space with 60 iterations & 3 evaluation & advantage estimation - 120k; gamma=0.9
 PPO_empty_space_ls_6, ppo_empty_space_ls_6_out, PPO_empty_space normal & advantage estimation - 1M; gamma=0.9
 PPO_empty_space_ls_7, ppo_empty_space_ls_7_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5
-PPO_empty_space_ls_9, ppo_empty_space_ls_9_out, PPO_empty_space normal & advantage estimation - 1M; gamma=0.3, espace18, Ongoing
+PPO_empty_space_ls_9, ppo_empty_space_ls_9_out, PPO_empty_space normal & advantage estimation for fqe v1- 1M; gamma=0.3, Stopped
 ----------------
 FQE Evaluation
 ----------------
@@ -84,4 +84,5 @@ Humanoid-v5
 ----------------
 PPO_1, ppo_init_1M_out, ppo_humanoid_1M.zip; PPO Init for 1M steps with Xinyu hyperparameters
 PPO_2, ppo_init_5M_out, ppo_humanoid_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
+PPO_3, ppo_init_1M_1_out, ppo_humanoid_1M_1.zip; PPO Init for 1M steps with new hyperparameters, espace1
 PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
