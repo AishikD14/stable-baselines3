@@ -2,17 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import re
 
-env = "Ant"
+# env = "Ant"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
-# env = "Walker2d-v5"
+env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "AntDir"
 
 # Plot
 plt.figure(figsize=(10, 6))
 
-file = "../base_job_output/"+env+"/ppo_init_1M_out.txt"
+file = "../base_job_output/"+env+"/ppo_init_1M_1_out.txt"
 
 reward_values = []
 
@@ -80,8 +80,8 @@ stds = np.array([
 x = np.arange(len(smoothed))
 
 # Plot
-plt.plot(x, smoothed, label="Normal Training (5M)")
-plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
+# plt.plot(x, smoothed, label="Normal Training (5M)")
+# plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
 
 # ---------------------------------------------------------------------------------
 
