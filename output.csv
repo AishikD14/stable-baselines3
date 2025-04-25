@@ -71,7 +71,7 @@ Hopper-v5
 PPO_1, ppo_init_1M_out, ppo_hopper_1M.zip; PPO Init for 1M steps with Xinyu hyperparameters
 PPO_2, ppo_init_5M_out, ppo_hopper_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
 PPO_3, ppo_init_1M_1_out, ppo_hopper_1M_1.zip; PPO Init for 1M steps with new hyperparameters
-PPO_4, ppo_init_5M_1_out, ppo_hopper_5M_1.zip; PPO Init for 5M steps with new hyperparameters, espace1, Ongoing
+PPO_4, ppo_init_5M_1_out, ppo_hopper_5M_1.zip; PPO Init for 5M steps with new hyperparameters
 PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 ----------------
 Walker2d-v5
@@ -79,7 +79,7 @@ Walker2d-v5
 PPO_1, ppo_init_1M_out, ppo_walker2d_1M.zip; PPO Init for 1M steps with Xinyu hyperparameters
 PPO_2, ppo_init_5M_out, ppo_walker2d_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
 PPO_3, ppo_init_1M_1_out, ppo_walker2d_1M_1.zip; PPO Init for 1M steps with new hyperparameters
-PPO_4, ppo_init_5M_1_out, ppo_walker2d_5M_1.zip; PPO Init for 5M steps with new hyperparameters, espace2, Ongoing
+PPO_4, ppo_init_5M_1_out, ppo_walker2d_5M_1.zip; PPO Init for 5M steps with new hyperparameters
 PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 ----------------
 Humanoid-v5
@@ -87,5 +87,5 @@ Humanoid-v5
 PPO_1, ppo_init_1M_out, ppo_humanoid_1M.zip; PPO Init for 1M steps with Xinyu hyperparameters
 PPO_2, ppo_init_5M_out, ppo_humanoid_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
 PPO_3, ppo_init_1M_1_out, ppo_humanoid_1M_1.zip; PPO Init for 1M steps with new hyperparameters
-PPO_4, ppo_init_5M_1_out, ppo_humanoid_5M_1.zip; PPO Init for 5M steps with new hyperparameters, espace3, Ongoing
+PPO_4, ppo_init_5M_1_out, ppo_humanoid_5M_1.zip; PPO Init for 5M steps with new hyperparameters
 PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
