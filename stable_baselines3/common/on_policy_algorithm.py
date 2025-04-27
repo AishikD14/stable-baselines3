@@ -137,7 +137,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
             **self.rollout_buffer_kwargs,
         )
         self.replay_buffer = ReplayBuffer(
-            buffer_size=min(self.n_steps * 20, 1e5),
+            buffer_size=100_000,
             observation_space=self.observation_space,
             action_space=self.action_space,
             device=self.device,

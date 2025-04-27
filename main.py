@@ -237,7 +237,7 @@ def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_l
     points = points.mean(axis=1)
 
     # Choose every second point
-    # points = points[::2]
+    points = points[::2]
 
     policies = []
     for p in points:
@@ -485,37 +485,26 @@ def evaluation_callback(localvars, globalvars):
     return
 
 # Function to evaluate the advantage of the policy
-def advantage_evaluation(model):
-    fqe = FQE(model.replay_buffer.obs_shape[0], model.replay_buffer.action_dim, lr=3e-4, gamma=model.gamma, device=model.device)
+def advantage_evaluation(model, horizon=1000):
+    fqe = FQE(model.replay_buffer.obs_shape[0], model.replay_buffer.action_dim, lr=1e-4, gamma=model.gamma, device='cuda:0')
     fqe.build_q_net(model)
-    q_loss = fqe.train(fqe.model, fqe.model.batch_size, 10)
-    # print(f'q_loss: {q_loss}')
-    iss = []
-    for rollout_data in model.rollout_buffer.get(model.batch_size):
-        
-        obs = rollout_data.observations
-        actions, _, _ = model.policy(obs)
-        obs_act = torch.cat((obs, actions), dim=1)
-        q1_pred = fqe.qf1(obs_act)
-        
-        new_obs = rollout_data.next_obs
-        new_actions, _, _ = model.policy(new_obs)
-        new_obs_act = torch.cat((new_obs, new_actions), dim=1)
-        q1_next = fqe.qf1(new_obs_act)
-        iss.append(q1_pred.sum().item() + q1_next.sum().item())
-
-        # iss.append(q1_pred.sum().item() + q_next.sum().item())
-    iss = np.sum(iss)
-    return iss, q_loss
+    q_loss = fqe.train(fqe.model, 256, 10)
+    s0 = [model.env.reset() for _ in range(100)]
+    s0 = FloatTensor(s0)
+    s0 = s0.squeeze(1)
+    act, _, _ = model.policy(s0)
+    q_pred = fqe.predict(s0, act.detach(), horizon=horizon)
+    # print(f'q_pred: {q_pred}, q_loss: {q_loss}')
+    return q_pred, q_loss
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+# env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
 # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
-# env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
+env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
 # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
 # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
 
@@ -549,20 +538,25 @@ n_steps_per_rollout = args.n_steps_per_rollout
 
 # --------------------------------------------------------------------------------------------------------------
 
-START_ITER = 5000   #For 1M steps initialisation (Optimal hyperparameters)
-# START_ITER = 25000  #For 5M steps initialisation (Just used for visualization right now)
+# START_ITER = 5000   #For 1M steps initialisation (Optimal hyperparameters)
+# # START_ITER = 25000  #For 5M steps initialisation (Just used for visualization right now)
 
+# SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
+
+# # NUM_ITERS = START_ITER + 100 # Just for testing
+# # NUM_ITERS = START_ITER + 20000 #5M steps (n_steps_per_rollout = 200)
+# NUM_ITERS = START_ITER + 7812 #5M steps (n_steps_per_rollout = 512)
+
+# N_EPOCHS = 10 # Since set to 10 updates per rollout
+
+START_ITER = 1000000 // args.n_steps_per_rollout
 SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
-
-# NUM_ITERS = START_ITER + 100 # Just for testing
-# NUM_ITERS = START_ITER + 20000 #5M steps (n_steps_per_rollout = 200)
-NUM_ITERS = START_ITER + 7812 #5M steps (n_steps_per_rollout = 512)
-
-N_EPOCHS = args.n_epochs # Since set to 10 updates per rollout
+NUM_ITERS = 5000000 // args.n_steps_per_rollout
+N_EPOCHS = args.n_epochs
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO"
+exp = "PPO_empty_space_ls"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -630,6 +624,8 @@ print("Model loaded")
 vec_env = model.get_env()
 obs = vec_env.reset()
 
+# model.learn(total_timesteps=1000, log_interval=50, tb_log_name=exp, init_call=True)
+
 print("Starting evaluation")
 
 normal_train = False
@@ -667,7 +663,7 @@ if not normal_train:
             model.policy.to(device)
             
             # Online evaluation
-            # returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=5, deterministic=True)[0]
+            # returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
             # print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
             # cum_rews.append(returns_trains)
 
@@ -675,9 +671,13 @@ if not normal_train:
             q_adv, q_loss = advantage_evaluation(model)
             advantage_rew.append(q_adv)
             q_losses.append(q_loss)
-            
+
+        print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
+        print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
+        # print(f'ave cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
+
         np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
-        np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+        # np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
         np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
         timeArray.append(time.time() - start_time)
 
@@ -711,7 +711,6 @@ if not normal_train:
         # returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=1, deterministic=True)[0]
 
         print(f'the best agent: {best_idx}, avg policy: {returns_trains}')
-        print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
         best_agent_index.append(best_idx)
         np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
         load_state_dict(model, best_agent)
