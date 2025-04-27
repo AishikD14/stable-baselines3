@@ -513,11 +513,11 @@ def advantage_evaluation(model):
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-# env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
 # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
 # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
 # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
-env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+# env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
 
 # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -545,7 +545,7 @@ print(env.action_space, env.observation_space)
 
 # print(env.action_space, env.observation_space)
 
-n_steps_per_rollout = 512
+n_steps_per_rollout = args.n_steps_per_rollout
 
 # --------------------------------------------------------------------------------------------------------------
 
@@ -559,7 +559,7 @@ SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can
 # NUM_ITERS = START_ITER + 20000 #5M steps (n_steps_per_rollout = 200)
 NUM_ITERS = START_ITER + 7812 #5M steps (n_steps_per_rollout = 512)
 
-N_EPOCHS = 10 # Since set to 10 updates per rollout
+N_EPOCHS = args.n_epochs # Since set to 10 updates per rollout
 
 # ---------------------------------------------------------------------------------------------------------------
 
@@ -578,22 +578,16 @@ if hasattr(args, 'use_policy_kwargs') and args.use_policy_kwargs:
         "net_arch": [dict(pi=args.pi_layers, vf=args.vf_layers)],
         "activation_fn": activation_fn_map[args.activation_fn]
     }
+    if hasattr(args, 'log_std_init'):
+        policy_kwargs["log_std_init"] = args.log_std_init
+    if hasattr(args, 'ortho_init'):
+        policy_kwargs["ortho_init"] = args.ortho_init
 else:
     policy_kwargs = None
 
-# Normal hyperparameters
-# model = PPO("MlpPolicy", env, verbose=0, seed=0, 
-#             n_steps=n_steps_per_rollout, 
-#             batch_size=50, 
-#             n_epochs=N_EPOCHS, 
-#             device='cpu', 
-#             tensorboard_log='logs/'+env_name+"/",
-#             ckp_dir=ckp_dir)
-
-# -------------------------------------------------------------
 ppo_kwargs  = dict(
     policy=args.policy,
-    env=args.env,
+    env=env,
     verbose=args.verbose,
     seed=args.seed,
     n_steps=args.n_steps_per_rollout,
@@ -616,32 +610,6 @@ if policy_kwargs:
 
 model = PPO(**ppo_kwargs)
 
-# Best hyperparameters for Humanoid
-# model = PPO(
-#     policy="MlpPolicy",
-#     env=env,
-#     verbose=0,
-#     seed=0,
-#     n_steps=4096,
-#     batch_size=256,
-#     gamma=0.995,
-#     gae_lambda=0.92,
-#     ent_coef=0.001,
-#     learning_rate=2.5e-4,
-#     clip_range=0.15,
-#     max_grad_norm=0.3,
-#     n_epochs=5,
-#     vf_coef=0.7,
-#     device=device,
-#     tensorboard_log='logs/'+env_name+"/",
-#     ckp_dir=ckp_dir,
-#     policy_kwargs={
-#         "net_arch": [dict(pi=[512,512], vf=[512,512])],
-#         "log_std_init": -0.5,
-#         "ortho_init": False
-#     }
-# )
-
 # ---------------------------------------------------------------------------------------------------------------
 
 
@@ -655,24 +623,7 @@ model = PPO(**ppo_kwargs)
 
 print("Loading Initial saved model")
 
-# Load model
-# model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_200k", device='cpu') # Normal hyperparameters for Ant
-
-model.set_parameters(args.init_model_path, device=args.device) # Best hyperparameters
-
-# if env_name == "Ant-v5":
-#     # model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_ant_1M", device='cpu') # Best hyperparameters for Ant
-#     model.set_parameters(args.init_model_path, device=args.device) # Best hyperparameters for Ant
-# elif env_name == "HalfCheetah-v5":
-#     model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_half_cheetah_1M", device='cpu') # Best hyperparameters for HalfCheetah
-# elif env_name == "Hopper-v5":
-#     model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_1M", device='cpu') # Best hyperparameters for Hopper
-# elif env_name == "Walker2d-v5":
-#     model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_walker2d_1M", device='cpu') # Best hyperparameters for Walker
-# elif env_name == "Humanoid-v5":
-#     model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_1M", device='cpu') # Best hyperparameters for Humanoid
-# elif env_name == "AntDir-v0":
-#     model.set_parameters("full_exp_on_ppo/models/"+env_name+"/ppo_antdir_1M", device='cpu') # Best hyperparameters for Antdir
+model.set_parameters(args.init_model_path, device=args.device)
 
 print("Model loaded")
 

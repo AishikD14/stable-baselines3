@@ -3,7 +3,7 @@ import argparse
 def get_args(rest_args):
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('--env', default='Hopper-v5', type=str, help='Gym environment ID')
+    parser.add_argument('--env-name', default='Hopper-v5', type=str, help='Gym environment ID')
     parser.add_argument('--policy', default='MlpPolicy', type=str, help='Policy architecture')
     parser.add_argument('--verbose', default=0, type=int, help='Verbosity level')
     parser.add_argument('--seed', default=0, type=int, help='Random seed')
