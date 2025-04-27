@@ -549,7 +549,6 @@ n_steps_per_rollout = args.n_steps_per_rollout
 
 # --------------------------------------------------------------------------------------------------------------
 
-# START_ITER = 1000   #For 200k steps initialisation (Normal hyperparameters)
 START_ITER = 5000   #For 1M steps initialisation (Optimal hyperparameters)
 # START_ITER = 25000  #For 5M steps initialisation (Just used for visualization right now)
 
@@ -563,7 +562,7 @@ N_EPOCHS = args.n_epochs # Since set to 10 updates per rollout
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO_test"
+exp = "PPO"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -612,10 +611,9 @@ model = PPO(**ppo_kwargs)
 
 # ---------------------------------------------------------------------------------------------------------------
 
-
 # print("Starting Initial training")
 # model.learn(total_timesteps=5000000, log_interval=50, tb_log_name=exp, init_call=True)
-# model.save("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_5M_1")
+# model.save("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_5M_2")
 # print("Initial training done") 
 # quit()
 
