@@ -58,6 +58,7 @@ PPO_empty_space_ls_8, ppo_empty_space_ls_8_out, PPO_empty_space with 60 iteratio
 PPO_empty_space_ls_11, ppo_empty_space_ls_11_out, Advantage estimation using top 5 agent and 2 evaluation & new fqe- 10k; gamma=0.3, espace20, Ongoing
 PPO_test_1, ppo_empty_space_test_out, Normal training with 10512 steps per rollout
 PPO_test_2, ppo_empty_space_test_1_out, Normal training with 10512 steps per rollout & batch_size=657
+PPO_baseline_1, ppo_baseline_1_out, Normal training with 10512 steps per rollout & batch_size=657, espace5, Ongoing
 ----------------
 HalfCheetah-v5
 ----------------
@@ -65,6 +66,7 @@ PPO_1, ppo_init_1M_out, ppo_half_cheetah_1M.zip; PPO Init for 1M steps with Xiny
 PPO_2, ppo_init_5M_out, ppo_half_cheetah_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
 PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 PPO_empty_space_ls_1, ppo_empty_space_ls_1_out, Advantage estimation using top 5 agent and 2 evaluation & new fqe- 10k; gamma=0.3, espace1, Ongoing
+PPO_baseline_1, ppo_baseline_1_out, Normal training with 10512 steps per rollout & batch_size=657, espace6, Ongoing
 ----------------
 Hopper-v5
 ----------------

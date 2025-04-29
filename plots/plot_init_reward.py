@@ -4,8 +4,8 @@ import re
 
 # env = "Ant"
 # env = "HalfCheetah-v5"
-# env = "Hopper-v5"
-env = "Walker2d-v5"
+env = "Hopper-v5"
+# env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "AntDir"
 
@@ -43,12 +43,12 @@ stds = np.array([
 # X-axis values aligned with smoothed curve
 x = np.arange(len(smoothed))
 
-plt.plot(x, smoothed, label="Normal Training (1M)")
-plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
+# plt.plot(x, smoothed, label="Normal Training (1M)")
+# plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
 
 # ---------------------------------------------------------------------------------
 
-file = "../base_job_output/"+env+"/ppo_init_5M_out.txt"
+file = "../base_job_output/"+env+"/ppo_init_5M_2_out.txt"
 
 reward_values = []
 
@@ -80,8 +80,8 @@ stds = np.array([
 x = np.arange(len(smoothed))
 
 # Plot
-# plt.plot(x, smoothed, label="Normal Training (5M)")
-# plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
+plt.plot(x, smoothed, label="Normal Training (5M)")
+plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
 
 # ---------------------------------------------------------------------------------
 

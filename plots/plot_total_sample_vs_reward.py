@@ -15,18 +15,18 @@ start_iteration = 1953
 # Ant-v5
 # plot_list = [
     # ["PPO_empty_space_optimal_5M_1", "Neighbor Sampling+Empty Space (gamma=0.9)"],
-    # ["PPO_empty_space_optimal_5M_2", "Neighbor Sampling+Empty Space(gamma=0.5)"],
-    # ["PPO_neighbor_search_random_walk_optimal_5M", "Neighbor Sampling+Random Walk"],
-    # ["PPO_random_search_random_walk_optimal_5M", "Random Sample+Random Walk"]
+#     ["PPO_empty_space_optimal_5M_2", "Neighbor Sampling+Empty Space(gamma=0.5)"],
+#     ["PPO_neighbor_search_random_walk_optimal_5M", "Neighbor Sampling+Random Walk"],
+#     ["PPO_random_search_random_walk_optimal_5M", "Random Sample+Random Walk"]
 # ]
 
 # AntDir-v0
 # plot_list = [
-#     ["PPO_empty_space_optimal_5M_1", "Neighbor Sampling+Empty Space (gamma=0.9)"],
-#     ["PPO_empty_space_optimal_5M_2_1", "Neighbor Sampling+Empty Space(gamma=0.5)"],
-#     ["PPO_empty_space_optimal_5M_3_1", "Neighbor Sampling+Empty Space(gamma=0.3)"],
-#     ["PPO_neighbor_search_random_walk_optimal_5M_1", "Neighbor Sampling+Random Walk"],
-#     ["PPO_random_search_random_walk_optimal_5M_1", "Random Sample+Random Walk"],
+    # ["PPO_empty_space_optimal_5M_1", "Neighbor Sampling+Empty Space (gamma=0.9)"],
+    # ["PPO_empty_space_optimal_5M_2_1", "Neighbor Sampling+Empty Space(gamma=0.5)"],
+    # ["PPO_empty_space_optimal_5M_3_1", "Neighbor Sampling+Empty Space(gamma=0.3)"],
+    # ["PPO_neighbor_search_random_walk_optimal_5M_1", "Neighbor Sampling+Random Walk"],
+    # ["PPO_random_search_random_walk_optimal_5M_1", "Random Sample+Random Walk"],
 #     ["PPO_normal_train_optimal_5M", "Normal Training"]
 # ]
 
@@ -43,7 +43,10 @@ start_iteration = 1953
 
 # Ant-v5 FQE evaluations
 plot_list = [
-    ["PPO_empty_space_ls_10", "Advantage estimation using top 5 agent and 2 evaluation- 10k; gamma=0.3", "adv_results"],
+    ["PPO_empty_space_ls_11", "Advantage estimation using top 5 agent and 2 evaluation & new fqe- 10k; gamma=0.3"],
+    # ["PPO_test_1", "Normal training"],
+    ["PPO_test_2", "Normal training with batch_size=657"],
+    # ["PPO_empty_space_ls_1", "Advantage estimation using top 5 agent and 2 evaluation & new fqe- 10k; gamma=0.3"],
 ]
 
 # Other envs
