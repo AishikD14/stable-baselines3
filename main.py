@@ -502,10 +502,10 @@ def advantage_evaluation(model, horizon=1000):
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+# env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
 # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
 # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
-# env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
+env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
 # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
 
 # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
@@ -606,8 +606,8 @@ model = PPO(**ppo_kwargs)
 # ---------------------------------------------------------------------------------------------------------------
 
 # print("Starting Initial training")
-# model.learn(total_timesteps=5000000, log_interval=50, tb_log_name=exp, init_call=True)
-# model.save("full_exp_on_ppo/models/"+env_name+"/ppo_walker2d_5M_2")
+# model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
+# model.save("full_exp_on_ppo/models/"+env_name+"/ppo_walker2d_1M_2")
 # print("Initial training done") 
 # quit()
 
@@ -635,6 +635,10 @@ ANN_lib = "Annoy"
 distanceArray = []
 start_time = time.time()
 timeArray = []
+
+if exp == "PPO_baseline":
+    START_ITER = 1953
+    NUM_ITERS = 9765
 
 if not normal_train:
     for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
