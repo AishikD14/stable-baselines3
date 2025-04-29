@@ -45,13 +45,13 @@ start_iteration = 1953
 plot_list = [
     ["PPO_empty_space_ls_11", "Advantage estimation using top 5 agent and 2 evaluation & new fqe- 10k; gamma=0.3"],
     # ["PPO_test_1", "Normal training"],
-    ["PPO_test_2", "Normal training with batch_size=657"],
+    # ["PPO_test_2", "Normal training with batch_size=657"],
     # ["PPO_empty_space_ls_1", "Advantage estimation using top 5 agent and 2 evaluation & new fqe- 10k; gamma=0.3"],
 ]
 
-# Other envs
+# Baseline
 # plot_list = [
-#     ["PPO_empty_space", "PPO_empty_space with 60 iterations & 3 evaluation & every other point-60k(gamma=0.3)"],
+#     ["PPO_baseline_1", "Normal training with 10512 steps per rollout & batch_size=657"],
 # ]
 
 plot_metrics = []
