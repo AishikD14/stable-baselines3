@@ -49,10 +49,6 @@ PPO_empty_space_ls_5, ppo_empty_space_ls_5_out, PPO_empty_space with 60 iteratio
 PPO_empty_space_ls_6, ppo_empty_space_ls_6_out, PPO_empty_space normal & advantage estimation - 1M; gamma=0.9, , Stopped
 PPO_empty_space_ls_7, ppo_empty_space_ls_7_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5
 PPO_empty_space_ls_9, ppo_empty_space_ls_9_out, PPO_empty_space normal & advantage estimation for fqe v1- 1M; gamma=0.3, , Stopped
-----------------
-FQE Evaluation
-----------------
-PPO_empty_space_ls_10, ppo_empty_space_ls_10_out, Advantage estimation using top 5 agent and 2 evaluation- 10k; gamma=0.3, espace19, Ongoing
 -----------------
 Ant-v5
 ----------------
