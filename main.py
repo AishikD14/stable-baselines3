@@ -502,9 +502,9 @@ def advantage_evaluation(model, horizon=1000):
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-# env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
 # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
-env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
+# env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
 # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
 # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
 
@@ -556,7 +556,7 @@ N_EPOCHS = args.n_epochs
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO_empty_space_ls"
+exp = "PPO"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -607,7 +607,7 @@ model = PPO(**ppo_kwargs)
 
 # print("Starting Initial training")
 # model.learn(total_timesteps=5000000, log_interval=50, tb_log_name=exp, init_call=True)
-# model.save("full_exp_on_ppo/models/"+env_name+"/ppo_humanoid_5M_2")
+# model.save("full_exp_on_ppo/models/"+env_name+"/ppo_walker2d_5M_2")
 # print("Initial training done") 
 # quit()
 
@@ -663,9 +663,9 @@ if not normal_train:
             model.policy.to(device)
             
             # Online evaluation
-            # returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
-            # print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
-            # cum_rews.append(returns_trains)
+            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=5, deterministic=True)[0]
+            print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
+            cum_rews.append(returns_trains)
 
             # Q-function evaluation
             q_adv, q_loss = advantage_evaluation(model)
@@ -674,22 +674,22 @@ if not normal_train:
 
         print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
         print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
-        # print(f'ave cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
+        print(f'ave cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
 
         np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
-        # np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+        np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
         np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
         timeArray.append(time.time() - start_time)
 
         # Correlation calculation
-        # df = pd.DataFrame({
-        #     'advantage': advantage_rew,
-        #     'online': cum_rews
-        # })
-        # corr_pear = df.corr(method='pearson')
-        # corr_spearman = df.corr(method='spearman')
-        # print("Pearson correlation coefficient:", corr_pear['advantage'][1])
-        # print("Spearman correlation coefficient:", corr_spearman['advantage'][1])
+        df = pd.DataFrame({
+            'advantage': advantage_rew,
+            'online': cum_rews
+        })
+        corr_pear = df.corr(method='pearson')
+        corr_spearman = df.corr(method='spearman')
+        print("Pearson correlation coefficient:", corr_pear['advantage'][1])
+        print("Spearman correlation coefficient:", corr_spearman['advantage'][1])
 
         # Using the best agent from the top 5
         top_5_idx = np.argsort(advantage_rew)[-5:]
