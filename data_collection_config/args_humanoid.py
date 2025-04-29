@@ -14,7 +14,7 @@ def get_args(rest_args):
     parser.add_argument('--learning-rate', default=2.5e-4, type=float)
     parser.add_argument('--clip-range', default=0.15, type=float)
     parser.add_argument('--max-grad-norm', default=0.3, type=float)
-    parser.add_argument('--n-epochs', default=10, type=int)
+    parser.add_argument('--n-epochs', default=5, type=int)
     parser.add_argument('--vf-coef', default=0.7, type=float)
 
     parser.add_argument('--device', default='cpu', type=str, help='Device to use: cpu or cuda')
