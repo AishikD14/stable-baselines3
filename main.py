@@ -556,7 +556,7 @@ N_EPOCHS = args.n_epochs
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO"
+exp = "PPO_empty_space"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -631,6 +631,7 @@ print("Starting evaluation")
 normal_train = False
 use_ANN = False
 ANN_lib = "Annoy"
+online_eval = True
 
 distanceArray = []
 start_time = time.time()
@@ -667,65 +668,65 @@ if not normal_train:
             model.policy.to(device)
             
             # Online evaluation
-            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=5, deterministic=True)[0]
+            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
             print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
             cum_rews.append(returns_trains)
 
             # Q-function evaluation
-            q_adv, q_loss = advantage_evaluation(model)
-            advantage_rew.append(q_adv)
-            q_losses.append(q_loss)
+            if not online_eval:
+                q_adv, q_loss = advantage_evaluation(model)
+                advantage_rew.append(q_adv)
+                q_losses.append(q_loss)
 
-        print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
-        print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
+        if not online_eval:
+            print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
+            print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
         print(f'ave cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
 
         np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
         np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
-        np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
+        if not online_eval:
+            np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
         timeArray.append(time.time() - start_time)
 
         # Correlation calculation
-        df = pd.DataFrame({
-            'advantage': advantage_rew,
-            'online': cum_rews
-        })
-        corr_pear = df.corr(method='pearson')
-        corr_spearman = df.corr(method='spearman')
-        print("Pearson correlation coefficient:", corr_pear['advantage'][1])
-        print("Spearman correlation coefficient:", corr_spearman['advantage'][1])
+        if not online_eval:
+            df = pd.DataFrame({
+                'advantage': advantage_rew,
+                'online': cum_rews
+            })
+            corr_pear = df.corr(method='pearson')
+            corr_spearman = df.corr(method='spearman')
+            print("Pearson correlation coefficient:", corr_pear['advantage'][1])
+            print("Spearman correlation coefficient:", corr_spearman['advantage'][1])
 
-        # Using the best agent from the top 5
-        top_5_idx = np.argsort(advantage_rew)[-5:]
-        top_5_agents = np.array(agents)[top_5_idx]
-        best_agent, best_idx, returns_trains = None, None, -float('inf')
-        dummy_env = gym.make(env_name)
-        for idx, tagent in enumerate(top_5_agents):
-            model.policy.load_state_dict(tagent)
-            model.policy.to(device)
-            cur_return = evaluate_policy(model, dummy_env, n_eval_episodes=2, callback=evaluation_callback, deterministic=True)[0]
-            if cur_return > returns_trains:
-                returns_trains = cur_return
-                best_idx = idx
-        best_agent = top_5_agents[best_idx]
+            # Using the best agent from the top 5
+            top_5_idx = np.argsort(advantage_rew)[-5:]
+            top_5_agents = np.array(agents)[top_5_idx]
+            best_agent, best_idx, returns_trains = None, None, -float('inf')
+            dummy_env = gym.make(env_name)
+            for idx, tagent in enumerate(top_5_agents):
+                model.policy.load_state_dict(tagent)
+                model.policy.to(device)
+                cur_return = evaluate_policy(model, dummy_env, n_eval_episodes=2, callback=evaluation_callback, deterministic=True)[0]
+                if cur_return > returns_trains:
+                    returns_trains = cur_return
+                    best_idx = idx
+            best_agent = top_5_agents[best_idx]
 
-        # Using the best agent from all
-        # best_idx = np.argsort(advantage_rew)[-3]
-        # best_agent = agents[best_idx]
-        # returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=1, deterministic=True)[0]
-
-        print(f'the best agent: {best_idx}, avg policy: {returns_trains}')
-        best_agent_index.append(best_idx)
-        np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
-        load_state_dict(model, best_agent)
+            print(f'the best agent: {best_idx}, avg policy: {returns_trains}')
+            best_agent_index.append(best_idx)
+            np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+            load_state_dict(model, best_agent)
 
         # Finding the best agent from online evaluation
-        # best_idx = np.argsort(cum_rews)[-1]
-        # best_agent = agents[best_idx]
-        # print(f'the best agent: {best_idx}, avg policy: {cum_rews[best_idx]}')
-        # best_agent_index.append(best_idx)
-        # np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
-        # load_state_dict(model, best_agent)
+        if online_eval:
+            best_idx = np.argsort(cum_rews)[-1]
+            best_agent = agents[best_idx]
+            print(f'the best agent: {best_idx}, avg policy: {cum_rews[best_idx]}')
+            best_agent_index.append(best_idx)
+            np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+            load_state_dict(model, best_agent)
 
     np.save(f'logs/{DIR}/distance.npy', distanceArray)
     np.save(f'logs/{DIR}/time.npy', timeArray)
@@ -744,7 +745,7 @@ else:
 
         cum_rews = []
 
-        returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=5, deterministic=True)[0]
+        returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
         print(f'avg return on policy: {returns_trains}')
         cum_rews.append(returns_trains)
         np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
