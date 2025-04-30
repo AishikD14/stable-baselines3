@@ -8,6 +8,12 @@ def get_args(rest_args):
     parser.add_argument('--seed', default=0, type=int, help='Random seed')
     parser.add_argument('--n-steps-per-rollout', default=512, type=int)
     parser.add_argument('--batch-size', default=32, type=int)
+    # parser.add_argument('--n-steps-per-rollout', default=10512, type=int, help='Number of steps per rollout')  #For Baseline calculation search=1
+    # parser.add_argument('--batch-size', default=657, type=int, help='Batch size') # For Baseline calculation search=1
+    # parser.add_argument('--n-steps-per-rollout', default=5512, type=int, help='Number of steps per rollout')  #For Baseline calculation search=2
+    # parser.add_argument('--batch-size', default=345, type=int, help='Batch size') # For Baseline calculation search=2
+    # parser.add_argument('--n-steps-per-rollout', default=3845, type=int, help='Number of steps per rollout')  #For Baseline calculation search=3
+    # parser.add_argument('--batch-size', default=240, type=int, help='Batch size') # For Baseline calculation search=3
     parser.add_argument('--gamma', default=0.98, type=float)
     parser.add_argument('--gae-lambda', default=0.8, type=float)
     parser.add_argument('--ent-coef', default=4.9646e-07, type=float)
