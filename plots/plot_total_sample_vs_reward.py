@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-# env = "Ant-v5"
-env = "HalfCheetah-v5"
+env = "Ant-v5"
+# env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
@@ -22,11 +22,11 @@ start_iteration = 1953
 
 # AntDir-v0
 # plot_list = [
-    # ["PPO_empty_space_optimal_5M_1", "Neighbor Sampling+Empty Space (gamma=0.9)"],
-    # ["PPO_empty_space_optimal_5M_2_1", "Neighbor Sampling+Empty Space(gamma=0.5)"],
-    # ["PPO_empty_space_optimal_5M_3_1", "Neighbor Sampling+Empty Space(gamma=0.3)"],
-    # ["PPO_neighbor_search_random_walk_optimal_5M_1", "Neighbor Sampling+Random Walk"],
-    # ["PPO_random_search_random_walk_optimal_5M_1", "Random Sample+Random Walk"],
+#     ["PPO_empty_space_optimal_5M_1", "Neighbor Sampling+Empty Space (gamma=0.9)"],
+#     ["PPO_empty_space_optimal_5M_2_1", "Neighbor Sampling+Empty Space(gamma=0.5)"],
+#     ["PPO_empty_space_optimal_5M_3_1", "Neighbor Sampling+Empty Space(gamma=0.3)"],
+#     ["PPO_neighbor_search_random_walk_optimal_5M_1", "Neighbor Sampling+Random Walk"],
+#     ["PPO_random_search_random_walk_optimal_5M_1", "Random Sample+Random Walk"],
 #     ["PPO_normal_train_optimal_5M", "Normal Training"]
 # ]
 
@@ -42,21 +42,32 @@ start_iteration = 1953
 # ]
 
 # Ant-v5 FQE evaluations
-# plot_list = [
+plot_list = [
     # ["PPO_empty_space_ls_11", "FQE top 5 agent & 2 eval & search=1 -10k; gamma=0.3"],
-    # ["PPO_baseline_1", "Baseline with search=1 -10k"],
+    ["PPO_baseline_1", "Baseline with search=1 -10k"],
     # ["PPO_empty_space_ls_12", "FQE top 5 agent & 2 eval & search=2- 10k; gamma=0.3"],
     # ["PPO_baseline_2", "Baseline with search=2 -10k"],
-#     ["PPO_empty_space_ls_13", "FQE top 5 agent & 2 eval & search=3- 10k; gamma=0.3"],
-#     ["PPO_baseline_3", "Baseline with search=3 -10k"],
-#     ["PPO_empty_space_ls_8", "Online eval with 60 iter & 3 eval & every other point -60k; gamma=0.3"], # Upper bound
-# ]
+    # ["PPO_empty_space_ls_13", "FQE top 5 agent & 2 eval & search=3- 10k; gamma=0.3"],
+    # ["PPO_baseline_3", "Baseline with search=3 -10k"],
+    # ["PPO_empty_space_ls_8", "Online eval with 60 iter & 3 eval & every other point -60k; gamma=0.3"], # Upper bound
+]
 
 # HalfCheetah-v5 FQE evaluations
 # plot_list = [
-#     ["PPO_empty_space_ls_1", "FQE top 5 agent and 2 eval & search=1- 10k; gamma=0.3"],
-#     ["PPO_baseline_1", "Baseline with search=1 -10k"],
+#     # ["PPO_empty_space_ls_1", "FQE top 5 agent and 2 eval & search=1- 10k; gamma=0.3"],
+#     # ["PPO_baseline_1", "Baseline with search=1 -10k"],
+#     # ["PPO_empty_space_ls_2", "FQE top 5 agent and 2 eval & search=2- 10k; gamma=0.3"],
+#     # ["PPO_baseline_2", "Baseline with search=2 -10k"],
+#     ["PPO_empty_space_ls_3", "FQE top 5 agent and 2 eval & search=3- 10k; gamma=0.3"],
+#     ["PPO_baseline_3", "Baseline with search=3 -10k"],
 #     ["PPO_empty_space", "Online eval with 60 iter & 3 eval & every other point-60k; gamma=0.3"], # Upper bound
+# ]
+
+# Walker2d-v5 FQE evaluations
+# plot_list = [
+#     # ["PPO_empty_space_ls_1", "FQE top 5 agent and 2 eval & search=1- 10k; gamma=0.3"],
+#     # ["PPO_baseline_1", "Baseline with search=1 -10k"],
+#     ["PPO_empty_space_1", "Online eval with 60 iter & 3 eval & every other point-60k; gamma=0.3"], # Upper bound
 # ]
 
 # Baseline
