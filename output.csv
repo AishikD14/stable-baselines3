@@ -59,7 +59,7 @@ PPO_empty_space_ls_11, ppo_empty_space_ls_11_out, Advantage estimation using top
 PPO_empty_space_ls_12, ppo_empty_space_ls_12_out, Advantage estimation using top 5 agent & 2 evaluation & new fqe & search=2- 10k; gamma=0.3, espace7, Ongoing
 PPO_empty_space_ls_13, ppo_empty_space_ls_13_out, Advantage estimation using top 5 agent & 2 evaluation & new fqe & search=3- 10k; gamma=0.3, espace8, Ongoing
 PPO_baseline_1, ppo_baseline_1_out, Normal training with 10512 steps per rollout & batch_size=657; search=1
-PPO_baseline_2, ppo_baseline_2_out, Normal training with 5512 steps per rollout & batch_size=345; search=2, espace6, Ongoing
+PPO_baseline_2, ppo_baseline_2_out, Normal training with 5512 steps per rollout & batch_size=345; search=2
 PPO_baseline_3, ppo_baseline_3_out, Normal training with 3845 steps per rollout & batch_size=240; search=3
 ----------------
 HalfCheetah-v5
