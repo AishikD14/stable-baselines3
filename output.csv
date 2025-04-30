@@ -91,4 +91,4 @@ Humanoid-v5
 ----------------
 PPO_3, ppo_init_1M_out, ppo_humanoid_1M.zip; PPO Init for 1M steps with new hyperparameters, espace2, Ongoing
 PPO_2, ppo_init_5M_out, ppo_humanoid_5M_3.zip; PPO Init for 5M steps with new hyperparameters
-PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
+PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, ,// Need to run again
