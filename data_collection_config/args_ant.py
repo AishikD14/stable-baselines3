@@ -9,8 +9,12 @@ def get_args(rest_args):
     parser.add_argument('--seed', default=0, type=int, help='Random seed')
     parser.add_argument('--n-steps-per-rollout', default=512, type=int, help='Number of steps per rollout')
     parser.add_argument('--batch-size', default=32, type=int, help='Batch size')
-    # parser.add_argument('--n-steps-per-rollout', default=10512, type=int, help='Number of steps per rollout')  #For Baseline calculation
-    # parser.add_argument('--batch-size', default=657, type=int, help='Batch size') # For Baseline calculation
+    # parser.add_argument('--n-steps-per-rollout', default=10512, type=int, help='Number of steps per rollout')  #For Baseline calculation search=1
+    # parser.add_argument('--batch-size', default=657, type=int, help='Batch size') # For Baseline calculation search=1
+    # parser.add_argument('--n-steps-per-rollout', default=5512, type=int, help='Number of steps per rollout')  #For Baseline calculation search=2
+    # parser.add_argument('--batch-size', default=345, type=int, help='Batch size') # For Baseline calculation search=2
+    # parser.add_argument('--n-steps-per-rollout', default=3845, type=int, help='Number of steps per rollout')  #For Baseline calculation search=3
+    # parser.add_argument('--batch-size', default=240, type=int, help='Batch size') # For Baseline calculation search=3
     parser.add_argument('--gamma', default=0.98, type=float, help='Discount factor')
     parser.add_argument('--ent-coef', default=4.9646e-07, type=float, help='Entropy coefficient')
     parser.add_argument('--learning-rate', default=1.90609e-05, type=float, help='Learning rate')
@@ -28,12 +32,3 @@ def get_args(rest_args):
     args = parser.parse_args(rest_args)
 
     return args
-
-# Normal hyperparameters
-# model = PPO("MlpPolicy", env, verbose=0, seed=0, 
-#             n_steps=n_steps_per_rollout, 
-#             batch_size=50, 
-#             n_epochs=N_EPOCHS, 
-#             device='cpu', 
-#             tensorboard_log='logs/'+env_name+"/",
-#             ckp_dir=ckp_dir)
