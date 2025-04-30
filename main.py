@@ -504,8 +504,8 @@ args, rest_args = parser.parse_known_args()
 
 # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
 # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
-# env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
-env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
+env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
+# env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
 # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
 
 # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
@@ -556,7 +556,7 @@ N_EPOCHS = args.n_epochs
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO_empty_space"
+exp = "PPO"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -577,6 +577,14 @@ if hasattr(args, 'use_policy_kwargs') and args.use_policy_kwargs:
         policy_kwargs["ortho_init"] = args.ortho_init
 else:
     policy_kwargs = None
+
+if hasattr(args, 'use_normalize_kwargs') and args.use_normalize_kwargs:
+    normalize_kwargs = {
+        "norm_obs": args.norm_obs,
+        "norm_reward": args.norm_reward
+    }
+else:
+    normalize_kwargs = None
 
 ppo_kwargs  = dict(
     policy=args.policy,
@@ -601,13 +609,16 @@ ppo_kwargs  = dict(
 if policy_kwargs:
     ppo_kwargs["policy_kwargs"] = policy_kwargs
 
+if normalize_kwargs:
+    ppo_kwargs["normalize_kwargs"] = normalize_kwargs
+
 model = PPO(**ppo_kwargs)
 
 # ---------------------------------------------------------------------------------------------------------------
 
 # print("Starting Initial training")
-# model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-# model.save("full_exp_on_ppo/models/"+env_name+"/ppo_walker2d_1M_2")
+# model.learn(total_timesteps=5000000, log_interval=50, tb_log_name=exp, init_call=True)
+# model.save("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_5M_1")
 # print("Initial training done") 
 # quit()
 
@@ -631,7 +642,7 @@ print("Starting evaluation")
 normal_train = False
 use_ANN = False
 ANN_lib = "Annoy"
-online_eval = True
+online_eval = False
 
 distanceArray = []
 start_time = time.time()
