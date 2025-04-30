@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-env = "Ant-v5"
-# env = "HalfCheetah-v5"
+# env = "Ant-v5"
+env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
@@ -42,18 +42,20 @@ start_iteration = 1953
 # ]
 
 # Ant-v5 FQE evaluations
-plot_list = [
-    ["PPO_empty_space_ls_11", "FQE top 5 agent & 2 eval & search=1- 10k; gamma=0.3"],
-    # ["PPO_empty_space_ls_12", "FQE top 5 agent & 2 eval & search=2- 10k; gamma=0.3"],
-    # ["PPO_empty_space_ls_13", "FQE top 5 agent & 2 eval & search=3- 10k; gamma=0.3"],
-    # ["PPO_empty_space_ls_8", "Online eval with 60 iter & 3 eval & every other point-60k; gamma=0.3"],
-    # ["PPO_baseline_1", "Baseline with batch_size=657"],
-]
+# plot_list = [
+#     ["PPO_empty_space_ls_11", "FQE top 5 agent & 2 eval & search=1- 10k; gamma=0.3"],
+#     ["PPO_empty_space_ls_12", "FQE top 5 agent & 2 eval & search=2- 10k; gamma=0.3"],
+#     ["PPO_empty_space_ls_13", "FQE top 5 agent & 2 eval & search=3- 10k; gamma=0.3"],
+#     ["PPO_empty_space_ls_8", "Online eval with 60 iter & 3 eval & every other point-60k; gamma=0.3"],
+#     ["PPO_baseline_1", "Baseline with batch_size=657"],
+# ]
 
 # HalfCheetah-v5 FQE evaluations
-# plot_list = [
-#     ["PPO_empty_space_ls_1", "FQE top 5 agent and 2 eval & search=1- 10k; gamma=0.3"],
-# ]
+plot_list = [
+    ["PPO_empty_space_ls_1", "FQE top 5 agent and 2 eval & search=1- 10k; gamma=0.3"],
+    # ["PPO_empty_space", "Online eval with 60 iter & 3 eval & every other point-60k; gamma=0.3"],
+    # ["PPO_baseline_1", "Baseline with batch_size=657"],
+]
 
 # Baseline
 # plot_list = [
