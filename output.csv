@@ -32,11 +32,11 @@ AntDir-v0
 PPO_1, ppo_init_1M_out, ppo_antdir_1M.zip; PPO Init for 1M steps with Xinyu hyperparameters
 PPO_2, ppo_init_5M_out, ppo_antdir_5M.zip; PPO Init for 5M steps with Xinyu hyperparameters
 ----------------
-PPO_empty_space_optimal_5M_1, ppo_empty_space_5M_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.9, espace9, Ongoing
-PPO_empty_space_optimal_5M_2_1, ppo_empty_space_5M_2_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.5, espace10, Ongoing
-PPO_empty_space_optimal_5M_3_1, ppo_empty_space_5M_3_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.3, espace11, Ongoing
-PPO_neighbor_search_random_walk_optimal_5M_1, ppo_neighbor_search_random_walk_5M_out, PPO_neighbor_search_random_walk on 5M iterations with Xinyu hyperparameters, espace12, Ongoing
-PPO_random_search_random_walk_optimal_5M_1, ppo_random_search_random_walk_5M_out, PPO_random_search_random_walk on 5M iterations with Xinyu hyperparameters, espace13, Ongoing
+PPO_empty_space_optimal_5M_1, ppo_empty_space_5M_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.9, , Stopped
+PPO_empty_space_optimal_5M_2_1, ppo_empty_space_5M_2_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.5, , Stopped
+PPO_empty_space_optimal_5M_3_1, ppo_empty_space_5M_3_out, PPO_empty_space on 5M iterations with Xinyu hyperparameters; gamma=0.3, , Stopped
+PPO_neighbor_search_random_walk_optimal_5M_1, ppo_neighbor_search_random_walk_5M_out, PPO_neighbor_search_random_walk on 5M iterations with Xinyu hyperparameters, , Stopped
+PPO_random_search_random_walk_optimal_5M_1, ppo_random_search_random_walk_5M_out, PPO_random_search_random_walk on 5M iterations with Xinyu hyperparameters, , Stopped
 PPO_normal_train_optimal_5M, ppo_normal_train_5M_out, PPO normal train on 5M iterations with Xinyu hyperparameters
 ----------------
 Ant-v5 Less Evaluations
