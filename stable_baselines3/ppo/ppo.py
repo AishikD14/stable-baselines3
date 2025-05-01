@@ -139,6 +139,8 @@ class PPO(OnPolicyAlgorithm):
             ),
         )
 
+        self.env_name = env.spec.id
+
         # Sanity check, otherwise it will lead to noisy gradient and NaN
         # because of the advantage normalization
         if normalize_advantage:
@@ -175,6 +177,8 @@ class PPO(OnPolicyAlgorithm):
             self._setup_model()
 
         self.ckp_dir = kwargs['ckp_dir'] if 'ckp_dir' in kwargs else None
+
+        self.current_iteration = 1
 
     def _setup_model(self) -> None:
         super()._setup_model()
@@ -282,14 +286,22 @@ class PPO(OnPolicyAlgorithm):
                 # Clip grad norm
                 th.nn.utils.clip_grad_norm_(self.policy.parameters(), self.max_grad_norm)
                 self.policy.optimizer.step()
-
+            
             if self.ckp_dir is not None:
                 os.makedirs(self.ckp_dir, exist_ok=True)
-                th.save(self.policy.state_dict(), f'{self.ckp_dir}/agent{epoch+1}.zip')
+                if self.env_name == 'Hopper-v5':
+                    if self.current_iteration % 2 == 1:
+                        th.save(self.policy.state_dict(), f'{self.ckp_dir}/agent{epoch+1}.zip')
+                    else:
+                        th.save(self.policy.state_dict(), f'{self.ckp_dir}/agent{epoch+6}.zip')
+                else:
+                    th.save(self.policy.state_dict(), f'{self.ckp_dir}/agent{epoch+1}.zip')
 
             self._n_updates += 1
             if not continue_training:
                 break
+
+        self.current_iteration += 1
 
         explained_var = explained_variance(self.rollout_buffer.values.flatten(), self.rollout_buffer.returns.flatten())
 
