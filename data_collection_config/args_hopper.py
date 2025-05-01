@@ -24,12 +24,17 @@ def get_args(rest_args):
     parser.add_argument('--init-model-path', default='full_exp_on_ppo/models/Hopper-v5/ppo_hopper_1M', type=str, help='Base directory for init model')
 
     # Policy kwargs
-    parser.add_argument('--use-policy-kwargs', action='store_true', help='Enable custom policy_kwargs')
+    parser.add_argument('--use-policy-kwargs', default=True, type=bool, help='Enable custom policy_kwargs')
     parser.add_argument('--pi-layers', nargs='+', type=int, default=[256, 256], help='Hidden layer sizes for policy network')
     parser.add_argument('--vf-layers', nargs='+', type=int, default=[256, 256], help='Hidden layer sizes for value network')
     parser.add_argument('--activation-fn', default='ReLU', type=str, choices=['ReLU', 'Tanh', 'LeakyReLU'], help='Activation function name')
     parser.add_argument('--log-std-init', default=-2, type=float, help='Initial log standard deviation')
-    parser.add_argument('--ortho-init', action='store_false', help='Disable orthogonal initialization (default: True)')
+    parser.add_argument('--ortho-init', default=False, type=bool, help='Disable orthogonal initialization (default: True)')
+
+    # Normalize kwargs
+    parser.add_argument('--use-normalize-kwargs', default=True, type=bool, help='Enable custom normalize_kwargs')
+    parser.add_argument('--norm-obs', default=True, type=bool, help='Normalize observations')
+    parser.add_argument('--norm-reward', default=False, type=bool, help='Normalize rewards')
 
     args = parser.parse_args(rest_args)
 
