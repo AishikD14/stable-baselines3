@@ -170,7 +170,7 @@ def random_walk(data, coor, neighbor, use_momentum, movestep, numiter):
 def load_weights(arng, directory, env):
     policies = []
 
-    for i in range(N_EPOCHS):
+    for i in range(10):
         policy_vec = []
 
         # new_model = PPO("MlpPolicy", env, verbose=0, device='cpu')
@@ -502,9 +502,9 @@ def advantage_evaluation(model, horizon=1000):
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-# env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
 # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
-env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
+# env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
 # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
 # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
 
@@ -556,7 +556,7 @@ N_EPOCHS = args.n_epochs
 
 # ---------------------------------------------------------------------------------------------------------------
 
-exp = "PPO"
+exp = "PPO_test"
 DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
 ckp_dir = f'logs/{DIR}/models'
 
@@ -617,8 +617,8 @@ model = PPO(**ppo_kwargs)
 # ---------------------------------------------------------------------------------------------------------------
 
 # print("Starting Initial training")
-# model.learn(total_timesteps=5000000, log_interval=50, tb_log_name=exp, init_call=True)
-# model.save("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_5M_1")
+# model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
+# model.save("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_1M_1")
 # print("Initial training done") 
 # quit()
 
