@@ -97,5 +97,5 @@ PPO_empty_space_ls_1, ppo_empty_space_ls_1_out, Advantage estimation using top 5
 PPO_empty_space_ls_2, ppo_empty_space_ls_2_out, Advantage estimation using top 5 agent & 2 evaluation & new fqe & search=2- 10k; gamma=0.3, espace9, Ongoing
 PPO_empty_space_ls_3, ppo_empty_space_ls_3_out, Advantage estimation using top 5 agent & 2 evaluation & new fqe & search=3- 10k; gamma=0.3, espace10, Ongoing
 PPO_baseline_1, ppo_baseline_1_out, Normal training with 10512 steps per rollout & batch_size=657; search=1, espace11, Ongoing
-PPO_baseline_2, ppo_baseline_2_out, Normal training with 5512 steps per rollout & batch_size=345; search=2, espace12, Ongoing
+PPO_baseline_2, ppo_baseline_2_out, Normal training with 5512 steps per rollout & batch_size=345; search=2
 PPO_baseline_3, ppo_baseline_3_out, Normal training with 3845 steps per rollout & batch_size=240; search=3
