@@ -24,6 +24,7 @@ from sklearn.model_selection import train_test_split
 from d3rlpy.models.encoders import VectorEncoderFactory
 from d3rlpy.algos import QLearningAlgoBase
 from d3rlpy.base import LearnableConfig
+from d3rlpy.constants import ActionSpace
 import matplotlib.pyplot as plt
 
 warnings.filterwarnings("ignore")
@@ -722,35 +723,112 @@ print("Starting evaluation")
 
 # ------------------------------------------------------------------------------------------------------------------
 
+# Define a minimal nn.Module to satisfy base class requirements for _impl
+class DummyImpl(torch.nn.Module):
+    """
+    A minimal placeholder implementation module required by QLearningAlgoBase.
+    FQE uses its own implementation but the base class needs this structure.
+    Methods here might be called during initialization or by base class logic,
+    but FQE's core fitting loop relies on the wrapper's predict_* methods.
+    """
+    def __init__(self, observation_shape, action_size, device):
+        super().__init__()
+        self.observation_shape = observation_shape
+        self.action_size = action_size
+        self.device = device
+        # Add a dummy parameter to ensure the module has parameters and can be moved to device
+        # This helps avoid potential issues with device placement checks.
+        self.dummy_param = torch.nn.Parameter(torch.empty(0))
+
+    def forward(self, x: torch.Tensor, action: torch.Tensor | None = None) -> torch.Tensor:
+        # Return dummy zeros with the expected batch dimension and Q-value shape (batch, 1)
+        batch_size = x.shape[0]
+        return torch.zeros((batch_size, 1), device=self.device)
+
+    def predict_value(self, x: torch.Tensor, action: torch.Tensor, with_std: bool = False) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
+        # Return dummy values if called directly on impl
+        batch_size = x.shape[0]
+        zeros = torch.zeros((batch_size, 1), device=self.device)
+        if with_std:
+            return zeros, zeros
+        else:
+            return zeros
+
+    def predict_best_action(self, x: torch.Tensor) -> torch.Tensor:
+        # Return dummy zeros with appropriate action shape.
+        batch_size = x.shape[0]
+        # For continuous action space, action_size is the dimension
+        # For discrete, it would be the number of actions (not handled here)
+        action_shape = (batch_size, self.action_size) if isinstance(self.action_size, int) else (batch_size,) + tuple(self.action_size) # Handle tuple shapes
+        return torch.zeros(action_shape, device=self.device)
+
 class PPOQWrapper(QLearningAlgoBase):
     def __init__(self, ppo_policy):
         super().__init__(
             config=LearnableConfig(),
-            device=ppo_policy.device
+            device=str(ppo_policy.device),
+            enable_ddp=False
         )
         self.ppo = ppo_policy
+        self._action_size = None # To store action size/shape
+        self._observation_shape = None # To store observation shape
+        print(f"PPOQWrapper initialized on device: {self.device}")
+
+    def get_action_type(self):
+        return ActionSpace.CONTINUOUS  # For PPO in continuous control tasks
         
     # 1. Mandatory method for network initialization
     def inner_create_impl(self, observation_shape, action_size):
-        class PPOTwinQ(torch.nn.Module):
-            def __init__(self, ppo):
-                super().__init__()
-                self.ppo = ppo
+        # class PPOTwinQ(torch.nn.Module):
+        #     def __init__(self, ppo):
+        #         super().__init__()
+        #         self.ppo = ppo
                 
-            def forward(self, x, action=None):
-                with torch.no_grad():
-                    return self.ppo.critic(x).unsqueeze(-1)
+        #     def forward(self, x, action=None):
+        #         with torch.no_grad():
+        #             return self.ppo.critic(x).reshape(-1, 1)
                     
-        self.impl = PPOTwinQ(self.ppo)
+        # self._impl = PPOTwinQ(self.ppo)
+
+        # Minimal implementation to satisfy FQE's checks
+        # class DummyImpl(torch.nn.Module):
+        #     def forward(self, x, action=None):
+        #         return torch.zeros(x.shape[0], 1)  # Placeholder
+        
+        # self._impl = DummyImpl()
+
+        self._impl = self.ppo.policy  # Use PPO's policy directly
+
+        # Simplified Q-network that delegates to PPO's actor/critic
+        # class FQECompatQ(torch.nn.Module):
+        #     def __init__(self, wrapper):
+        #         super().__init__()
+        #         self.wrapper = wrapper
+                
+        #     def predict_best_action(self, x):
+        #         return self.wrapper.predict(x)
+                
+        #     def forward(self, x, action=None):
+        #         # Use PPO's critic for Q-values
+        #         with torch.no_grad():
+        #             return self.wrapper.ppo.critic(x).reshape(-1, 1)
+        
+        # self._impl = FQECompatQ(self)
         
     # 2. Required for dataset compatibility
     def build_with_dataset(self, dataset):
-        self._build_network(dataset.observation_shape, dataset.action_size)
+        self.create_impl(dataset.episodes[0].serialize()['observations'].shape, dataset.episodes[0].serialize()['actions'].shape)
 
     # 3. Action prediction method
     def predict(self, x):
-        with torch.no_grad():
-            return self.ppo.actor(x.cpu().numpy())  # Adapt to your PPO's API
+        if isinstance(x, torch.Tensor):
+            x = x.cpu().numpy()
+        # Stable-Baselines3's official prediction interface
+        action, _ = self.ppo.predict(x, deterministic=True)
+        return action
+        
+    def predict_best_action(self, x):
+        return self.predict(x)  # For policy-based algorithms, best=current
 
 # load from HDF5
 with open("ppo_ant_d3rlpy_buffer.h5", "rb") as f:
@@ -768,29 +846,38 @@ ppo_wrapper.build_with_dataset(dataset)
 # Split into training and testing episodes
 # train_episodes, test_episodes = train_test_split(dataset.episodes, test_size=0.2)
 
+# print("--------------------------------------------------------------------------------")
+# print("Initializing d3rlpy BC")
+
+# # Create BC (continuous) with config
+# bc_config = BCConfig(encoder_factory=VectorEncoderFactory())
+# bc = bc_config.create(device='cpu')  # or 'cpu' if no GPU
+
+# # Train BC model
+# bc.build_with_dataset(dataset)
+
+# print("--------------------------------------------------------------------------------")
+
+# bc.fit(
+#     dataset,
+#     n_steps=100,  # Typically needs more epochs than 10
+# )
+
 print("--------------------------------------------------------------------------------")
-print("Initializing d3rlpy BC")
+print("Initialzing d3rlpy FQE")
 
-# Create BC (continuous) with config
-bc_config = BCConfig(encoder_factory=VectorEncoderFactory())
-bc = bc_config.create(device='cpu')  # or 'cpu' if no GPU
-
-# Train BC model
-bc.build_with_dataset(dataset)
-
-print("--------------------------------------------------------------------------------")
-
-bc.fit(
-    dataset,
-    n_steps=100,  # Typically needs more epochs than 10
-)
+# Run FQE
+fqe = d3rlpy.ope.FQE(
+        algo=ppo_wrapper, 
+        config=d3rlpy.ope.FQEConfig(
+            learning_rate=3e-4,
+            target_update_interval=100
+        )
+    )
 
 print("--------------------------------------------------------------------------------")
 print("Fitting d3rlpy FQE")
 
-# Run FQE
-fqe = d3rlpy.ope.FQE(algo=bc, config=d3rlpy.ope.FQEConfig())
-# fqe.build_with_dataset(dataset)
 output = fqe.fit(dataset, 
         n_steps=10000,
         n_steps_per_epoch=1000,
