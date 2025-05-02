@@ -18,9 +18,13 @@ import torch.nn as nn
 import argparse
 from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid
 from d3rlpy.algos import BCConfig
-from d3rlpy.ope import FQE
+import d3rlpy
 from d3rlpy.dataset import MDPDataset
 from sklearn.model_selection import train_test_split
+from d3rlpy.models.encoders import VectorEncoderFactory
+from d3rlpy.algos import QLearningAlgoBase
+from d3rlpy.base import LearnableConfig
+import matplotlib.pyplot as plt
 
 warnings.filterwarnings("ignore")
 
@@ -502,24 +506,75 @@ def advantage_evaluation(model, horizon=1000):
     return q_pred, q_loss
 
 def d3rl_evaluation(model):
-    terminals = model.replay_buffer.dones
-    timeouts = model.replay_buffer.timeouts
+    print(model.replay_buffer.observations.shape)
+    print(model.replay_buffer.actions.shape)
+    print(model.replay_buffer.rewards.shape)
+    print(model.replay_buffer.dones.shape)
+
+    # Flatten the replay buffer data
+    # observations = model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1])
+    # actions = model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1])
+    # rewards = model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1])
+    # dones = model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+
+    # print("Observations shape:", observations.shape)
+    # print("Actions shape:", actions.shape)
+    # print("Rewards shape:", rewards.shape)
+    # print("Terminals shape:", dones.shape)
+
+    # quit()
+
+    # terminals = model.replay_buffer.dones
 
     # Check if either terminals or timeouts contain any True value
-    if not (np.any(terminals) or np.any(timeouts)):
-        print("[INFO] No terminal or timeout flags found. Forcing terminal flags every", args.n_steps_per_rollout, "steps.")
-        terminals = np.zeros_like(model.replay_buffer.rewards, dtype=bool)
-        terminals[args.n_steps_per_rollout - 1 :: args.n_steps_per_rollout] = True
-        timeouts = np.zeros_like(model.replay_buffer.rewards, dtype=bool)  # still needed by d3rlpy
+    # if not (np.any(terminals) or np.any(timeouts)):
+    print("[INFO] Forcing terminal flags every", args.n_steps_per_rollout, "steps.")
+    terminals = np.zeros_like(model.replay_buffer.rewards, dtype=bool)
+    terminals[args.n_steps_per_rollout - 1 :: args.n_steps_per_rollout] = True
+
+    # Flatten the replay buffer data
+    observations = model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1])
+    actions = model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1])
+    rewards = model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1])
+    terminals =terminals.reshape(-1, terminals.shape[-1])
+
+    print("Observations shape:", observations.shape)
+    print("Actions shape:", actions.shape)
+    print("Rewards shape:", rewards.shape)
+    print("Terminals shape:", terminals.shape)
 
     # Build and return the MDPDataset
     dataset = MDPDataset(
-        observations=model.replay_buffer.observations,
-        actions=model.replay_buffer.actions,
-        rewards=model.replay_buffer.rewards,
-        terminals=terminals,
-        timeouts=timeouts
+        observations=observations,
+        actions=actions,
+        rewards=rewards,
+        terminals=terminals
     )
+
+    dataset.dump("ppo_ant_d3rlpy_buffer.h5")
+
+    print("Observation shape:", dataset.episodes[0])
+    quit()
+
+    # Split into training and testing episodes
+    train_episodes, test_episodes = train_test_split(dataset.episodes, test_size=0.2)
+
+    # Create BC (continuous) with config
+    bc_config = BCConfig()
+    bc = bc_config.create(device='cuda')  # or 'cpu' if no GPU
+
+    # Train BC model
+    bc.build_with_dataset(dataset)
+    bc.fit(train_episodes, n_epochs=10)
+
+    # Run FQE
+    fqe = d3rlpy.ope.FQE(algo=bc, device='cuda')  # or 'cpu'
+    fqe.build_with_dataset(dataset)
+    fqe.fit(train_episodes, n_epochs=10)
+
+    # Estimate return of the learned BC policy
+    estimated_return = fqe.predict_value(test_episodes)
+    print(f"Estimated return via FQE: {estimated_return:.2f}")
 
     quit()
 
@@ -665,6 +720,117 @@ obs = vec_env.reset()
 
 print("Starting evaluation")
 
+# ------------------------------------------------------------------------------------------------------------------
+
+class PPOQWrapper(QLearningAlgoBase):
+    def __init__(self, ppo_policy):
+        super().__init__(
+            config=LearnableConfig(),
+            device=ppo_policy.device
+        )
+        self.ppo = ppo_policy
+        
+    # 1. Mandatory method for network initialization
+    def inner_create_impl(self, observation_shape, action_size):
+        class PPOTwinQ(torch.nn.Module):
+            def __init__(self, ppo):
+                super().__init__()
+                self.ppo = ppo
+                
+            def forward(self, x, action=None):
+                with torch.no_grad():
+                    return self.ppo.critic(x).unsqueeze(-1)
+                    
+        self.impl = PPOTwinQ(self.ppo)
+        
+    # 2. Required for dataset compatibility
+    def build_with_dataset(self, dataset):
+        self._build_network(dataset.observation_shape, dataset.action_size)
+
+    # 3. Action prediction method
+    def predict(self, x):
+        with torch.no_grad():
+            return self.ppo.actor(x.cpu().numpy())  # Adapt to your PPO's API
+
+# load from HDF5
+with open("ppo_ant_d3rlpy_buffer.h5", "rb") as f:
+    dataset = d3rlpy.dataset.ReplayBuffer.load(f, d3rlpy.dataset.InfiniteBuffer())
+
+# print("Observation shape:", dataset.episodes[0].serialize()['observations'].shape)
+# print("Action shape:", dataset.episodes[0].serialize()['actions'].shape)
+# print("Reward shape:", dataset.episodes[0].serialize()['rewards'].shape)
+# print("Terminal shape:", dataset.episodes[0].serialize()['terminated'].shape)
+
+# Create FQE-compatible wrapper
+ppo_wrapper = PPOQWrapper(model)
+ppo_wrapper.build_with_dataset(dataset) 
+
+# Split into training and testing episodes
+# train_episodes, test_episodes = train_test_split(dataset.episodes, test_size=0.2)
+
+print("--------------------------------------------------------------------------------")
+print("Initializing d3rlpy BC")
+
+# Create BC (continuous) with config
+bc_config = BCConfig(encoder_factory=VectorEncoderFactory())
+bc = bc_config.create(device='cpu')  # or 'cpu' if no GPU
+
+# Train BC model
+bc.build_with_dataset(dataset)
+
+print("--------------------------------------------------------------------------------")
+
+bc.fit(
+    dataset,
+    n_steps=100,  # Typically needs more epochs than 10
+)
+
+print("--------------------------------------------------------------------------------")
+print("Fitting d3rlpy FQE")
+
+# Run FQE
+fqe = d3rlpy.ope.FQE(algo=bc, config=d3rlpy.ope.FQEConfig())
+# fqe.build_with_dataset(dataset)
+output = fqe.fit(dataset, 
+        n_steps=10000,
+        n_steps_per_epoch=1000,
+        evaluators={
+            'init_value': d3rlpy.metrics.InitialStateValueEstimationEvaluator(),
+            'soft_opc': d3rlpy.metrics.SoftOPCEvaluator(return_threshold=-300),
+        },
+        show_progress=True,
+    )
+
+print("--------------------------------------------------------------------------------")
+print("FQE output: ", output)
+# print("FQE output: ", output['init_value'])
+# print("FQE output: ", output['soft_opc'])
+
+print("--------------------------------------------------------------------------------")
+# print("Estimating return")
+
+# Estimate return of the learned BC policy
+# estimated_return = fqe.predict_value(dataset.episodes[0].serialize()['observations'], dataset.episodes[0].serialize()['actions'])
+
+# print("---------------------------------------------------------------------------------")
+# print("Estimated return via FQE: ", estimated_return)
+
+# print("Estimated return via FQE: ", estimated_return.mean())
+
+# print("Estimated return via FQE: ", estimated_return.std())
+
+# Plot the estimated return
+# plt.plot(estimated_return)
+# plt.title("Estimated Return via FQE")
+# plt.xlabel("Time Step")
+# plt.ylabel("Estimated Return")
+# plt.grid()
+# plt.show()
+
+quit()
+
+# -------------------------------------------------------------------------------------------------------------------
+
 normal_train = False
 use_ANN = False
 ANN_lib = "Annoy"
@@ -705,9 +871,9 @@ if not normal_train:
             model.policy.to(device)
             
             # Online evaluation
-            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
-            print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
-            cum_rews.append(returns_trains)
+            # returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
+            # print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
+            # cum_rews.append(returns_trains)
 
             # Q-function evaluation
             if not online_eval:
