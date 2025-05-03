@@ -99,3 +99,15 @@ PPO_empty_space_ls_3, ppo_empty_space_ls_3_out, Advantage estimation using top 5
 PPO_baseline_1, ppo_baseline_1_out, Normal training with 10512 steps per rollout & batch_size=657; search=1
 PPO_baseline_2, ppo_baseline_2_out, Normal training with 5512 steps per rollout & batch_size=345; search=2
 PPO_baseline_3, ppo_baseline_3_out, Normal training with 3845 steps per rollout & batch_size=240; search=3
+----------------
+CartPole-v1
+----------------
+PPO_1, ppo_init_3M_out, ppo_cartpole_3M.zip; PPO Init for 3M steps with new hyperparameters, espace7, Ongoing
+----------------
+MountainCar-v0
+----------------
+PPO_1, ppo_init_3M_out, ppo_mountaincar_3M.zip; PPO Init for 3M steps with new hyperparameters, espace8, Ongoing
+----------------
+Pendulum-v1
+----------------
+PPO_1, ppo_init_3M_out, ppo_pendulum_3M.zip; PPO Init for 3M steps with new hyperparameters, espace11, Ongoing
