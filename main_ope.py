@@ -26,6 +26,7 @@ from d3rlpy.algos import QLearningAlgoBase
 from d3rlpy.base import LearnableConfig
 from d3rlpy.constants import ActionSpace
 import matplotlib.pyplot as plt
+from d3rlpy.torch_utility import TorchMiniBatch
 
 warnings.filterwarnings("ignore")
 
@@ -772,63 +773,147 @@ class PPOQWrapper(QLearningAlgoBase):
         self.ppo = ppo_policy
         self._action_size = None # To store action size/shape
         self._observation_shape = None # To store observation shape
+        self.device = str(ppo_policy.device) # Store device for consistency
         print(f"PPOQWrapper initialized on device: {self.device}")
 
-    def get_action_type(self):
-        return ActionSpace.CONTINUOUS  # For PPO in continuous control tasks
+    def get_action_type(self) -> ActionSpace:
+        # Determine action space type from the SB3 model if possible
+        # if isinstance(self.ppo.action_space, gym.spaces.Box):
+        #      print("Detected Continuous action space.")
+        #      return ActionSpace.CONTINUOUS
+        # elif isinstance(self.ppo.action_space, gym.spaces.Discrete):
+        #      print("Detected Discrete action space.")
+        #      return ActionSpace.DISCRETE
+        # else:
+        #      print("Warning: Unknown action space type. Assuming Continuous.")
+        return ActionSpace.CONTINUOUS # Default or raise error
         
     # 1. Mandatory method for network initialization
-    def inner_create_impl(self, observation_shape, action_size):
-        # class PPOTwinQ(torch.nn.Module):
-        #     def __init__(self, ppo):
-        #         super().__init__()
-        #         self.ppo = ppo
-                
-        #     def forward(self, x, action=None):
-        #         with torch.no_grad():
-        #             return self.ppo.critic(x).reshape(-1, 1)
-                    
-        # self._impl = PPOTwinQ(self.ppo)
+    def inner_create_impl(self, observation_shape: tuple[int, ...], action_size: int | tuple[int, ...]) -> None:
+        """ Creates the minimal placeholder _impl required by the base class. """
+        print(f"Wrapper inner_create_impl: obs_shape={observation_shape}, action_size={action_size}")
+        self._observation_shape = observation_shape
+        self._action_size = action_size
+        # Create the DummyImpl with the correct shapes and device
+        self._impl = DummyImpl(observation_shape, action_size, self.device).to(self.device)
+        print(f"DummyImpl created on device: {next(self._impl.parameters()).device}")
 
-        # Minimal implementation to satisfy FQE's checks
-        # class DummyImpl(torch.nn.Module):
-        #     def forward(self, x, action=None):
-        #         return torch.zeros(x.shape[0], 1)  # Placeholder
-        
-        # self._impl = DummyImpl()
-
-        self._impl = self.ppo.policy  # Use PPO's policy directly
-
-        # Simplified Q-network that delegates to PPO's actor/critic
-        # class FQECompatQ(torch.nn.Module):
-        #     def __init__(self, wrapper):
-        #         super().__init__()
-        #         self.wrapper = wrapper
-                
-        #     def predict_best_action(self, x):
-        #         return self.wrapper.predict(x)
-                
-        #     def forward(self, x, action=None):
-        #         # Use PPO's critic for Q-values
-        #         with torch.no_grad():
-        #             return self.wrapper.ppo.critic(x).reshape(-1, 1)
-        
-        # self._impl = FQECompatQ(self)
-        
     # 2. Required for dataset compatibility
     def build_with_dataset(self, dataset):
-        self.create_impl(dataset.episodes[0].serialize()['observations'].shape, dataset.episodes[0].serialize()['actions'].shape)
+        """ Infers shapes from dataset and calls create_impl. """
+        if not dataset.episodes:
+             raise ValueError("Dataset must contain at least one episode to infer shapes.")
 
-    # 3. Action prediction method
-    def predict(self, x):
+        # Get shapes directly from the dataset object properties
+        obs_shape = dataset.episodes[0].serialize()['observations'].shape
+        action_shape = dataset.episodes[0].serialize()['actions'].shape # This is usually the shape tuple, e.g., (8,)
+
+        # Determine action_size based on action type
+        action_type = self.get_action_type()
+        if action_type == ActionSpace.CONTINUOUS:
+             # For continuous, action_size is often the dimension (first element of shape)
+             # Check if action_shape is like (dim,)
+             if isinstance(action_shape, tuple) and len(action_shape) == 1:
+                  action_size = action_shape[0]
+             else:
+                  # Handle multi-dimensional continuous actions if necessary
+                  action_size = action_shape # Keep the shape tuple
+                  print(f"Using action shape tuple as action_size: {action_size}")
+        elif action_type == ActionSpace.DISCRETE:
+             # For discrete, action_size is the number of possible actions
+             action_size = dataset.get_action_size()
+             if action_size is None:
+                  raise ValueError("Could not determine discrete action size from dataset.")
+        else:
+             raise ValueError(f"Unsupported action type: {action_type}")
+        
+        print(f"Building wrapper with: obs_shape={obs_shape}, action_size={action_size} (type: {action_type})")
+        # Call create_impl (which calls inner_create_impl)
+        self.create_impl(obs_shape, action_size)
+        print(f"Wrapper built. Impl set: {self._impl is not None}")
+
+    # 3. Internal helper for prediction (handles numpy/tensor conversion)
+    def _predict_sb3(self, x: torch.Tensor | np.ndarray) -> np.ndarray:
+        """ Handles input conversion and calls SB3 PPO predict. """
         if isinstance(x, torch.Tensor):
-            x = x.cpu().numpy()
-        # Stable-Baselines3's official prediction interface
-        action, _ = self.ppo.predict(x, deterministic=True)
+            # Move tensor to CPU and convert to numpy for SB3
+            x_np = x.cpu().numpy()
+        elif isinstance(x, np.ndarray):
+            x_np = x
+        else:
+            raise TypeError(f"Unsupported input type for prediction: {type(x)}")
+
+        # Use SB3's prediction (deterministic=True for evaluation)
+        action, _ = self.ppo.predict(x_np, deterministic=True)
         return action
         
-    def predict_best_action(self, x):
-        return self.predict(x)  # For policy-based algorithms, best=current
+    # 4. Method FQE calls to get policy actions a' = pi(s')
+    @torch.no_grad() # Ensure no gradients are computed during prediction
+    def predict_best_action(self, x: torch.Tensor) -> torch.Tensor:
+        """ Predicts the best action using the PPO policy (deterministic). """
+        print("This is the predict_best_action method")
+        # Use the helper to get numpy action
+        np_actions = self._predict_sb3(x)
+        # Convert result back to tensor on the correct device for d3rlpy
+        return torch.tensor(np_actions, dtype=torch.float32).to(self.device)
+    
+    # 5. Method FQE calls to get value estimates V(s') for targets
+    @torch.no_grad() # Ensure no gradients are computed during value prediction
+    def predict_value(self,
+                      x: torch.Tensor,
+                      action: torch.Tensor | None = None, # Action ignored for PPO critic V(s)
+                      with_std: bool = False
+                      ) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
+        """ Predicts the state value V(s) using the PPO critic. """
+        # Ensure input is a tensor on the correct device
+        if isinstance(x, np.ndarray):
+            # Convert numpy to tensor if needed (unlikely if called from d3rlpy)
+            x_tensor = torch.tensor(x, dtype=torch.float32).to(self.device)
+        elif x.device != self.device:
+             # Move tensor to the correct device if it's not already there
+             x_tensor = x.to(self.device)
+        else:
+            x_tensor = x
+
+        # Access the critic/value network within the SB3 policy object
+        # Common attribute names are 'value_net' or 'vf_net'. Check your SB3 version/policy.
+        if hasattr(self.ppo.policy, 'value_net') and self.ppo.policy.value_net is not None:
+            values = self.ppo.policy.value_net(x_tensor)
+        # elif hasattr(self.ppo.policy, 'critic') and self.ppo.policy.critic is not None: # Less common for SB3 PPO's V(s) net
+        #     values = self.ppo.policy.critic(x_tensor)
+        elif hasattr(self.ppo.policy, 'vf_net') and self.ppo.policy.vf_net is not None: # Another possible name
+             values = self.ppo.policy.vf_net(x_tensor)
+        else:
+             # You might need to inspect self.ppo.policy to find the correct attribute
+             raise AttributeError("Could not find the value network (e.g., 'value_net', 'vf_net') in the PPO policy object. Please verify the attribute name.")
+
+        # Ensure output shape is (batch_size, 1) as expected by d3rlpy
+        values = values.reshape(-1, 1)
+
+        if with_std:
+            # Standard PPO critic doesn't output standard deviation
+            # Return zeros as placeholder
+            std = torch.zeros_like(values)
+            return values, std
+        else:
+            return values
+        
+    # --- Other necessary overrides ---
+
+    def save_model(self, fname: str) -> None:
+        """ Saving the wrapper itself is not standard. Save the SB3 model separately. """
+        print(f"PPOQWrapper.save_model called: Skipping wrapper save. Save the original SB3 PPO model using ppo.save('{fname}') instead.")
+        pass
+
+    def load_model(self, fname: str) -> None:
+        """ Loading into the wrapper is not standard. Load the SB3 model before creating the wrapper. """
+        print(f"PPOQWrapper.load_model called: Skipping wrapper load. Load the SB3 PPO model using PPO.load('{fname}') and then create the wrapper.")
+        pass
+
+    def update(self, batch: TorchMiniBatch) -> dict[str, float]:
+        """ FQE handles its own updates. This wrapper should not perform updates. """
+        # Return empty dict to satisfy the base class method signature
+        return {}    
 
 # load from HDF5
 with open("ppo_ant_d3rlpy_buffer.h5", "rb") as f:
@@ -839,9 +924,22 @@ with open("ppo_ant_d3rlpy_buffer.h5", "rb") as f:
 # print("Reward shape:", dataset.episodes[0].serialize()['rewards'].shape)
 # print("Terminal shape:", dataset.episodes[0].serialize()['terminated'].shape)
 
-# Create FQE-compatible wrapper
-ppo_wrapper = PPOQWrapper(model)
-ppo_wrapper.build_with_dataset(dataset) 
+# 3. Create the FQE-compatible wrapper
+print("\nCreating PPOQWrapper...")
+try:
+    ppo_wrapper = PPOQWrapper(model)
+    # Set the device explicitly if needed (though it should inherit from model)
+    # ppo_wrapper.to(model.device) # Usually not needed if super().__init__ handles it
+
+    # 4. Build the wrapper internals using dataset info
+    print("Building wrapper with dataset...")
+    ppo_wrapper.build_with_dataset(dataset)
+
+except Exception as e:
+    print(f"Error creating or building the PPOQWrapper: {e}")
+    import traceback
+    traceback.print_exc()
+    exit()
 
 # Split into training and testing episodes
 # train_episodes, test_episodes = train_test_split(dataset.episodes, test_size=0.2)
@@ -864,34 +962,59 @@ ppo_wrapper.build_with_dataset(dataset)
 # )
 
 print("--------------------------------------------------------------------------------")
-print("Initialzing d3rlpy FQE")
 
-# Run FQE
-fqe = d3rlpy.ope.FQE(
-        algo=ppo_wrapper, 
+# 5. Configure and Run FQE
+print("\nConfiguring FQE...")
+try:
+    fqe = d3rlpy.ope.FQE(
+        algo=ppo_wrapper, # Pass the wrapper instance
         config=d3rlpy.ope.FQEConfig(
-            learning_rate=3e-4,
-            target_update_interval=100
+            learning_rate=3e-4,         # Learning rate for FQE's internal Q-network
+            target_update_interval=100, # How often to update FQE's target network
+            # You might need to adjust other FQEConfig parameters:
+            # batch_size=256,
+            # gamma=0.99, # Discount factor (should match training if possible)
         )
     )
 
-print("--------------------------------------------------------------------------------")
-print("Fitting d3rlpy FQE")
+    print("--------------------------------------------------------------------------------")
+    print("Fitting d3rlpy FQE...")
 
-output = fqe.fit(dataset, 
-        n_steps=10000,
-        n_steps_per_epoch=1000,
+    # Consider using a smaller number of steps for initial testing
+    N_STEPS = 10000 # 10000
+    N_STEPS_PER_EPOCH = 1000 # 1000
+
+    output = fqe.fit(
+        dataset,
+        n_steps=N_STEPS,
+        n_steps_per_epoch=N_STEPS_PER_EPOCH,
         evaluators={
+            # Estimates the expected value of the initial states according to FQE's learned Q-function
             'init_value': d3rlpy.metrics.InitialStateValueEstimationEvaluator(),
-            'soft_opc': d3rlpy.metrics.SoftOPCEvaluator(return_threshold=-300),
+            # Soft Off-Policy Classification: Measures if the policy achieves a certain return threshold
+            'soft_opc': d3rlpy.metrics.SoftOPCEvaluator(return_threshold=-300), # Adjust threshold based on env/task
         },
         show_progress=True,
+        # Optional: For logging results with tensorboard or wandb
+        # experiment_name="FQE_on_PPO_Ant_Run",
+        # logdir="d3rlpy_logs",
     )
 
-print("--------------------------------------------------------------------------------")
-print("FQE output: ", output)
-# print("FQE output: ", output['init_value'])
-# print("FQE output: ", output['soft_opc'])
+    print("\nFQE Fitting completed.")
+    # output contains the metrics from the last epoch
+    print("Final Epoch Metrics:", output)
+
+    # You can access the learned Q-function from FQE if needed
+    # q_func_at_epoch_10 = fqe.predict_value(some_states, some_actions) # Using FQE's learned Q
+
+    # The primary result is often the initial state value estimate
+    initial_state_value = output[-1]['init_value'] # Get from the last epoch's results
+    print(f"Estimated Initial State Value: {initial_state_value}")
+
+except Exception as e:
+    print(f"Error during FQE configuration or fitting: {e}")
+    import traceback
+    traceback.print_exc()
 
 print("--------------------------------------------------------------------------------")
 # print("Estimating return")
