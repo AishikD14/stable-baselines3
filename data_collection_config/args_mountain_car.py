@@ -7,6 +7,7 @@ def get_args(rest_args):
     parser.add_argument('--policy', default='MlpPolicy', type=str, help='Policy architecture')
     parser.add_argument('--verbose', default=0, type=int, help='Verbosity level')
     parser.add_argument('--seed', default=0, type=int, help='Random seed')
+    parser.add_argument('--n-envs', default=16, type=int, help='Number of parallel environments')
     parser.add_argument('--n-steps-per-rollout', default=16, type=int, help='Number of steps per rollout')
     # parser.add_argument('--batch-size', default=32, type=int, help='Batch size')
     parser.add_argument('--gamma', default=0.99, type=float, help='Discount factor')

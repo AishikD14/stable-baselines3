@@ -16,7 +16,7 @@ import pandas as pd
 from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car
+from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum
 
 warnings.filterwarnings("ignore")
 
@@ -509,7 +509,8 @@ args, rest_args = parser.parse_known_args()
 # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
 
 # env_name = "CartPole-v1" # For cartpole (single goal task)
-env_name = "MountainCar-v0" # For mountain car (single goal task)
+# env_name = "MountainCar-v0" # For mountain car (single goal task)
+env_name = "Pendulum-v1" # For pendulum (single goal task)
 
 # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -529,6 +530,8 @@ elif env_name == "CartPole-v1":
     args = args_cartpole.get_args(rest_args)
 elif env_name == "MountainCar-v0":
     args = args_mountain_car.get_args(rest_args)
+elif env_name == "Pendulum-v1":
+    args = args_pendulum.get_args(rest_args)
 
 env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
 # env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1) # For AntDir-v0
@@ -628,6 +631,15 @@ if hasattr(args, 'learning_rate'):
 if hasattr(args, 'batch_size'): 
     ppo_kwargs["batch_size"] = args.batch_size
 
+if hasattr(args, 'normalize'):
+    ppo_kwargs["normalize"] = args.normalize
+
+if hasattr(args, 'n-envs'):
+    ppo_kwargs["n_envs"] = args.n_envs
+
+if hasattr(args, 'sde_sample_freq'):
+    ppo_kwargs["sde_sample_freq"] = args.sde_sample_freq
+
 if policy_kwargs:
     ppo_kwargs["policy_kwargs"] = policy_kwargs
 
@@ -640,7 +652,7 @@ model = PPO(**ppo_kwargs)
 
 print("Starting Initial training")
 model.learn(total_timesteps=3000000, log_interval=50, tb_log_name=exp, init_call=True)
-model.save("full_exp_on_ppo/models/"+env_name+"/ppo_mountaincar_3M")
+model.save("full_exp_on_ppo/models/"+env_name+"/ppo_pendulum_3M")
 print("Initial training done") 
 quit()
 
