@@ -17,6 +17,7 @@ def get_args(rest_args):
     parser.add_argument('--n-epochs', default=4, type=int, help='Number of epochs per update')
     parser.add_argument('--gae-lambda', default=0.8, type=float, help='GAE lambda')
     # parser.add_argument('--vf-coef', default=0.677239, type=float, help='Value function coefficient')
+    parser.add_argument('--normalize', default=True, type=bool, help='Normalize observations and rewards')
 
     parser.add_argument('--device', default='cpu', type=str, help='Device to use: cpu or cuda')
     parser.add_argument('--tensorboard-log', default='logs/MountainCar-v0/', type=str, help='Base directory for tensorboard logs')
