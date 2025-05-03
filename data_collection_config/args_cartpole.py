@@ -14,10 +14,8 @@ def get_args(rest_args):
     parser.add_argument('--ent-coef', default=0.0, type=float, help='Entropy coefficient')
     parser.add_argument('--learning-rate', default="0.001", type=float, help='Learning rate')
     parser.add_argument('--clip-range', default="0.2", type=float, help='Clip range for PPO')
-    # parser.add_argument('--max-grad-norm', default=0.6, type=float, help='Max gradient norm')
     parser.add_argument('--n-epochs', default=20, type=int, help='Number of epochs per update')
     parser.add_argument('--gae-lambda', default=0.8, type=float, help='GAE lambda')
-    # parser.add_argument('--vf-coef', default=0.677239, type=float, help='Value function coefficient')
 
     parser.add_argument('--device', default='cpu', type=str, help='Device to use: cpu or cuda')
     parser.add_argument('--tensorboard-log', default='logs/CartPole-v1/', type=str, help='Base directory for tensorboard logs')
