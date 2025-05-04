@@ -103,13 +103,13 @@ PPO_baseline_3, ppo_baseline_3_out, Normal training with 3845 steps per rollout 
 CartPole-v1
 ----------------
 PPO_1, ppo_init_1M_out, ppo_cartpole_1M.zip; PPO Init for 1M steps with new hyperparameters
-PPO_2, ppo_init_3M_out, ppo_cartpole_3M.zip; PPO Init for 3M steps with new hyperparameters, espace3, Ongoing
+PPO_2, ppo_init_3M_out, ppo_cartpole_3M.zip; PPO Init for 3M steps with new hyperparameters
 PPO_empty_space_1, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace7, Ongoing
 ----------------
 MountainCar-v0
 ----------------
 PPO_1, ppo_init_1M_out, ppo_mountaincar_1M.zip; PPO Init for 1M steps with new hyperparameters
-PPO_2, ppo_init_3M_out, ppo_mountaincar_3M.zip; PPO Init for 3M steps with new hyperparameters, espace2, Ongoing
+PPO_2, ppo_init_3M_out, ppo_mountaincar_3M.zip; PPO Init for 3M steps with new hyperparameters
 PPO_empty_space_1, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, , //Need to run
 ----------------
 Pendulum-v1
