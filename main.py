@@ -17,6 +17,7 @@ from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
 from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum
+from stable_baselines3.common.vec_env import SubprocVecEnv
 
 warnings.filterwarnings("ignore")
 
@@ -499,304 +500,318 @@ def advantage_evaluation(model, horizon=1000):
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
-parser = argparse.ArgumentParser()
-args, rest_args = parser.parse_known_args()
+if __name__ == "__main__":
 
-# env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
-# env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
-# env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
-# env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
-# env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+    parser = argparse.ArgumentParser()
+    args, rest_args = parser.parse_known_args()
 
-# env_name = "CartPole-v1" # For cartpole (single goal task)
-# env_name = "MountainCar-v0" # For mountain car (single goal task)
-env_name = "Pendulum-v1" # For pendulum (single goal task)
+    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
+    # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
+    # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
+    # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
 
-# env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
+    env_name = "CartPole-v1" # For cartpole (single goal task)
+    # env_name = "MountainCar-v0" # For mountain car (single goal task)
+    # env_name = "Pendulum-v1" # For pendulum (single goal task)
 
-if env_name == "AntDir-v0":
-    args = args_ant_dir.get_args(rest_args)
-elif env_name == "Ant-v5":
-    args = args_ant.get_args(rest_args)
-elif env_name == "Hopper-v5":
-    args = args_hopper.get_args(rest_args)
-elif env_name == "HalfCheetah-v5":
-    args = args_half_cheetah.get_args(rest_args)
-elif env_name == "Walker2d-v5":
-    args = args_walker2d.get_args(rest_args)
-elif env_name == "Humanoid-v5":
-    args = args_humanoid.get_args(rest_args)
-elif env_name == "CartPole-v1":
-    args = args_cartpole.get_args(rest_args)
-elif env_name == "MountainCar-v0":
-    args = args_mountain_car.get_args(rest_args)
-elif env_name == "Pendulum-v1":
-    args = args_pendulum.get_args(rest_args)
+    # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
-env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
-# env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1) # For AntDir-v0
+    if env_name == "AntDir-v0":
+        args = args_ant_dir.get_args(rest_args)
+    elif env_name == "Ant-v5":
+        args = args_ant.get_args(rest_args)
+    elif env_name == "Hopper-v5":
+        args = args_hopper.get_args(rest_args)
+    elif env_name == "HalfCheetah-v5":
+        args = args_half_cheetah.get_args(rest_args)
+    elif env_name == "Walker2d-v5":
+        args = args_walker2d.get_args(rest_args)
+    elif env_name == "Humanoid-v5":
+        args = args_humanoid.get_args(rest_args)
+    elif env_name == "CartPole-v1":
+        args = args_cartpole.get_args(rest_args)
+    elif env_name == "MountainCar-v0":
+        args = args_mountain_car.get_args(rest_args)
+    elif env_name == "Pendulum-v1":
+        args = args_pendulum.get_args(rest_args)
 
-print("Environment created")
-print(env.action_space, env.observation_space)
-# ------------------------------------------------------------------------------------------------------------
-# goal = np.random.uniform(0, 3.1416)
-# env = gym.make(env_name, goal=goal) # multi-task learning
-
-# print(env.action_space, env.observation_space)
-
-n_steps_per_rollout = args.n_steps_per_rollout
-
-# --------------------------------------------------------------------------------------------------------------
-
-# START_ITER = 5000   #For 1M steps initialisation (Optimal hyperparameters)
-# # START_ITER = 25000  #For 5M steps initialisation (Just used for visualization right now)
-
-# SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
-
-# # NUM_ITERS = START_ITER + 100 # Just for testing
-# # NUM_ITERS = START_ITER + 20000 #5M steps (n_steps_per_rollout = 200)
-# NUM_ITERS = START_ITER + 7812 #5M steps (n_steps_per_rollout = 512)
-
-# N_EPOCHS = 10 # Since set to 10 updates per rollout
-
-START_ITER = 1000000 // args.n_steps_per_rollout
-SEARCH_INTERV = 2 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
-NUM_ITERS = 3000000 // args.n_steps_per_rollout
-N_EPOCHS = args.n_epochs
-
-# ---------------------------------------------------------------------------------------------------------------
-
-exp = "PPO"
-DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
-ckp_dir = f'logs/{DIR}/models'
-
-activation_fn_map = {
-    'ReLU': nn.ReLU,
-    'Tanh': nn.Tanh,
-    'LeakyReLU': nn.LeakyReLU
-}
-
-if hasattr(args, 'use_policy_kwargs') and args.use_policy_kwargs:
-    policy_kwargs = {
-        "net_arch": [dict(pi=args.pi_layers, vf=args.vf_layers)],
-        "activation_fn": activation_fn_map[args.activation_fn]
-    }
-    if hasattr(args, 'log_std_init'):
-        policy_kwargs["log_std_init"] = args.log_std_init
-    if hasattr(args, 'ortho_init'):
-        policy_kwargs["ortho_init"] = args.ortho_init
-else:
-    policy_kwargs = None
-
-if hasattr(args, 'use_normalize_kwargs') and args.use_normalize_kwargs:
-    normalize_kwargs = {
-        "norm_obs": args.norm_obs,
-        "norm_reward": args.norm_reward
-    }
-else:
-    normalize_kwargs = None
-
-ppo_kwargs  = dict(
-    policy=args.policy,
-    env=env,
-    verbose=args.verbose,
-    seed=args.seed,
-    n_steps=args.n_steps_per_rollout,
-    # batch_size=args.batch_size,
-    gamma=args.gamma,
-    ent_coef=args.ent_coef,
-    # learning_rate=args.learning_rate,
-    # clip_range=args.clip_range,
-    # max_grad_norm=args.max_grad_norm,
-    n_epochs=args.n_epochs,
-    gae_lambda=args.gae_lambda,
-    # vf_coef=args.vf_coef,
-    device=args.device,
-    tensorboard_log=args.tensorboard_log,
-    ckp_dir=ckp_dir
-)
-
-if hasattr(args, 'max_grad_norm'):
-    ppo_kwargs["max_grad_norm"] = args.max_grad_norm
-
-if hasattr(args, 'vf_coef'):
-    ppo_kwargs["vf_coef"] = args.vf_coef
-
-if hasattr(args, 'clip_range'):
-    ppo_kwargs["clip_range"] = args.clip_range
-
-if hasattr(args, 'learning_rate'):
-    ppo_kwargs["learning_rate"] = args.learning_rate
-
-if hasattr(args, 'batch_size'): 
-    ppo_kwargs["batch_size"] = args.batch_size
-
-if hasattr(args, 'normalize'):
-    ppo_kwargs["normalize"] = args.normalize
-
-if hasattr(args, 'n-envs'):
-    ppo_kwargs["n_envs"] = args.n_envs
-
-if hasattr(args, 'sde_sample_freq'):
-    ppo_kwargs["sde_sample_freq"] = args.sde_sample_freq
-
-if policy_kwargs:
-    ppo_kwargs["policy_kwargs"] = policy_kwargs
-
-if normalize_kwargs:
-    ppo_kwargs["normalize_kwargs"] = normalize_kwargs
-
-model = PPO(**ppo_kwargs)
-
-# ---------------------------------------------------------------------------------------------------------------
-
-print("Starting Initial training")
-model.learn(total_timesteps=3000000, log_interval=50, tb_log_name=exp, init_call=True)
-model.save("full_exp_on_ppo/models/"+env_name+"/ppo_pendulum_3M")
-print("Initial training done") 
-quit()
-
-# ----------------------------------------------------------------------------------------------------------------
-
-print("Loading Initial saved model")
-
-model.set_parameters(args.init_model_path, device=args.device)
-
-print("Model loaded")
-
-# -------------------------------------------------------------------------------------------------------------
-
-vec_env = model.get_env()
-obs = vec_env.reset()
-
-# model.learn(total_timesteps=1000, log_interval=50, tb_log_name=exp, init_call=True)
-
-print("Starting evaluation")
-
-normal_train = False
-use_ANN = False
-ANN_lib = "Annoy"
-online_eval = False
-
-distanceArray = []
-start_time = time.time()
-timeArray = []
-
-if exp == "PPO_baseline":
-    START_ITER = 1953
-    NUM_ITERS = 9765
-
-if not normal_train:
-    for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
-        print(i)
-        model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
-                    log_interval=1, 
-                    tb_log_name=exp, 
-                    reset_num_timesteps=True if i == START_ITER else False, 
-                    first_iteration=True if i == START_ITER else False,
-                    )
-        
-        agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib)
-        # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-        # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-        # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-        # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-        distanceArray.append(distance)
-        
-        cum_rews = []
-        best_agent_index = []
-        advantage_rew = []
-        q_losses = []
-
-        for j, a in enumerate(agents):
-            model.policy.load_state_dict(a)
-            model.policy.to(device)
-            
-            # Online evaluation
-            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
-            print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
-            cum_rews.append(returns_trains)
-
-            # Q-function evaluation
-            if not online_eval:
-                q_adv, q_loss = advantage_evaluation(model)
-                advantage_rew.append(q_adv)
-                q_losses.append(q_loss)
-
-        if not online_eval:
-            print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
-            print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
-        print(f'ave cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
-
-        np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
-        np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
-        if not online_eval:
-            np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
-        timeArray.append(time.time() - start_time)
-
-        # Correlation calculation
-        if not online_eval:
-            df = pd.DataFrame({
-                'advantage': advantage_rew,
-                'online': cum_rews
-            })
-            corr_pear = df.corr(method='pearson')
-            corr_spearman = df.corr(method='spearman')
-            print("Pearson correlation coefficient:", corr_pear['advantage'][1])
-            print("Spearman correlation coefficient:", corr_spearman['advantage'][1])
-
-            # Using the best agent from the top 5
-            top_5_idx = np.argsort(advantage_rew)[-5:]
-            top_5_agents = np.array(agents)[top_5_idx]
-            best_agent, best_idx, returns_trains = None, None, -float('inf')
-            dummy_env = gym.make(env_name)
-            for idx, tagent in enumerate(top_5_agents):
-                model.policy.load_state_dict(tagent)
-                model.policy.to(device)
-                cur_return = evaluate_policy(model, dummy_env, n_eval_episodes=2, callback=evaluation_callback, deterministic=True)[0]
-                if cur_return > returns_trains:
-                    returns_trains = cur_return
-                    best_idx = idx
-            best_agent = top_5_agents[best_idx]
-
-            print(f'the best agent: {best_idx}, avg policy: {returns_trains}')
-            best_agent_index.append(best_idx)
-            np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
-            load_state_dict(model, best_agent)
-
-        # Finding the best agent from online evaluation
-        if online_eval:
-            best_idx = np.argsort(cum_rews)[-1]
-            best_agent = agents[best_idx]
-            print(f'the best agent: {best_idx}, avg policy: {cum_rews[best_idx]}')
-            best_agent_index.append(best_idx)
-            np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
-            load_state_dict(model, best_agent)
-
-    np.save(f'logs/{DIR}/distance.npy', distanceArray)
-    np.save(f'logs/{DIR}/time.npy', timeArray)
-    print("Average distance of random agents to nearest neighbors:", distanceArray)
-    print("Time taken for each iteration:", timeArray)
-
-else:
-    for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
-        print(i)
-        model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
-                    log_interval=1, 
-                    tb_log_name=exp, 
-                    reset_num_timesteps=True if i == START_ITER else False, 
-                    first_iteration=True if i == START_ITER else False,
-                    )
-
-        cum_rews = []
-
-        returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
-        print(f'avg return on policy: {returns_trains}')
-        cum_rews.append(returns_trains)
-        np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
-        timeArray.append(time.time() - start_time)
+    # ------------------------------------------------------------------------------------------------------------
+    def make_envs(env_name):
+        def _init():
+            return gym.make(env_name)
+        return _init
     
-    np.save(f'logs/{DIR}/time.npy', timeArray)
-    print("Time taken for each iteration:", timeArray)
+    if hasattr(args, 'n_envs') and args.n_envs > 1:
+        print("Creating multiple envs - ", args.n_envs)
+        # Create a list of environment functions
+        env_fns = [make_envs(env_name) for _ in range(args.n_envs)]
+        env = SubprocVecEnv(env_fns)
+    else:
+        env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+        
+    # env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1) # For AntDir-v0
 
-env.close()
+    print("Environment created")
+    print(env.action_space, env.observation_space)
+    
+    # ------------------------------------------------------------------------------------------------------------
+    # goal = np.random.uniform(0, 3.1416)
+    # env = gym.make(env_name, goal=goal) # multi-task learning
+
+    # print(env.action_space, env.observation_space)
+
+    n_steps_per_rollout = args.n_steps_per_rollout
+
+    # --------------------------------------------------------------------------------------------------------------
+
+    # START_ITER = 5000   #For 1M steps initialisation (Optimal hyperparameters)
+    # # START_ITER = 25000  #For 5M steps initialisation (Just used for visualization right now)
+
+    # SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
+
+    # # NUM_ITERS = START_ITER + 100 # Just for testing
+    # # NUM_ITERS = START_ITER + 20000 #5M steps (n_steps_per_rollout = 200)
+    # NUM_ITERS = START_ITER + 7812 #5M steps (n_steps_per_rollout = 512)
+
+    # N_EPOCHS = 10 # Since set to 10 updates per rollout
+
+    START_ITER = 1000000 // args.n_steps_per_rollout
+    SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
+    NUM_ITERS = 3000000 // args.n_steps_per_rollout
+    N_EPOCHS = args.n_epochs
+
+    # ---------------------------------------------------------------------------------------------------------------
+
+    exp = "PPO"
+    DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
+    ckp_dir = f'logs/{DIR}/models'
+
+    activation_fn_map = {
+        'ReLU': nn.ReLU,
+        'Tanh': nn.Tanh,
+        'LeakyReLU': nn.LeakyReLU
+    }
+
+    if hasattr(args, 'use_policy_kwargs') and args.use_policy_kwargs:
+        policy_kwargs = {
+            "net_arch": [dict(pi=args.pi_layers, vf=args.vf_layers)],
+            "activation_fn": activation_fn_map[args.activation_fn]
+        }
+        if hasattr(args, 'log_std_init'):
+            policy_kwargs["log_std_init"] = args.log_std_init
+        if hasattr(args, 'ortho_init'):
+            policy_kwargs["ortho_init"] = args.ortho_init
+    else:
+        policy_kwargs = None
+
+    if hasattr(args, 'use_normalize_kwargs') and args.use_normalize_kwargs:
+        normalize_kwargs = {
+            "norm_obs": args.norm_obs,
+            "norm_reward": args.norm_reward
+        }
+    else:
+        normalize_kwargs = None
+
+    ppo_kwargs  = dict(
+        policy=args.policy,
+        env=env,
+        verbose=args.verbose,
+        seed=args.seed,
+        n_steps=args.n_steps_per_rollout,
+        # batch_size=args.batch_size,
+        gamma=args.gamma,
+        ent_coef=args.ent_coef,
+        # learning_rate=args.learning_rate,
+        # clip_range=args.clip_range,
+        # max_grad_norm=args.max_grad_norm,
+        n_epochs=args.n_epochs,
+        gae_lambda=args.gae_lambda,
+        # vf_coef=args.vf_coef,
+        device=args.device,
+        tensorboard_log=args.tensorboard_log,
+        ckp_dir=ckp_dir
+    )
+
+    if hasattr(args, 'max_grad_norm'):
+        ppo_kwargs["max_grad_norm"] = args.max_grad_norm
+
+    if hasattr(args, 'vf_coef'):
+        ppo_kwargs["vf_coef"] = args.vf_coef
+
+    if hasattr(args, 'clip_range'):
+        ppo_kwargs["clip_range"] = args.clip_range
+
+    if hasattr(args, 'learning_rate'):
+        ppo_kwargs["learning_rate"] = args.learning_rate
+
+    if hasattr(args, 'batch_size'): 
+        ppo_kwargs["batch_size"] = args.batch_size
+
+    if hasattr(args, 'normalize'):
+        ppo_kwargs["normalize"] = args.normalize
+
+    if hasattr(args, 'n_envs'):
+        ppo_kwargs["n_envs"] = args.n_envs
+
+    if hasattr(args, 'sde_sample_freq'):
+        ppo_kwargs["sde_sample_freq"] = args.sde_sample_freq
+
+    if policy_kwargs:
+        ppo_kwargs["policy_kwargs"] = policy_kwargs
+
+    if normalize_kwargs:
+        ppo_kwargs["normalize_kwargs"] = normalize_kwargs
+
+    model = PPO(**ppo_kwargs)
+
+    # ---------------------------------------------------------------------------------------------------------------
+
+    print("Starting Initial training")
+    model.learn(total_timesteps=3000000, log_interval=50, tb_log_name=exp, init_call=True)
+    model.save("full_exp_on_ppo/models/"+env_name+"/ppo_cartpole_3M")
+    print("Initial training done") 
+    quit()
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    print("Loading Initial saved model")
+
+    model.set_parameters(args.init_model_path, device=args.device)
+
+    print("Model loaded")
+
+    # -------------------------------------------------------------------------------------------------------------
+
+    vec_env = model.get_env()
+    obs = vec_env.reset()
+
+    print("Starting evaluation")
+
+    normal_train = False
+    use_ANN = False
+    ANN_lib = "Annoy"
+    online_eval = True
+
+    distanceArray = []
+    start_time = time.time()
+    timeArray = []
+
+    if exp == "PPO_baseline":
+        START_ITER = 1953
+        NUM_ITERS = 9765
+
+    if not normal_train:
+        for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
+            print(i)
+            model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
+                        log_interval=1, 
+                        tb_log_name=exp, 
+                        reset_num_timesteps=True if i == START_ITER else False, 
+                        first_iteration=True if i == START_ITER else False,
+                        )
+            
+            agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib)
+            # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+            # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+            # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+            # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+            distanceArray.append(distance)
+            
+            cum_rews = []
+            best_agent_index = []
+            advantage_rew = []
+            q_losses = []
+
+            for j, a in enumerate(agents):
+                model.policy.load_state_dict(a)
+                model.policy.to(device)
+                
+                # Online evaluation
+                returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
+                print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
+                cum_rews.append(returns_trains)
+
+                # Q-function evaluation
+                if not online_eval:
+                    q_adv, q_loss = advantage_evaluation(model)
+                    advantage_rew.append(q_adv)
+                    q_losses.append(q_loss)
+
+            if not online_eval:
+                print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
+                print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
+            print(f'ave cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
+
+            np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
+            np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+            if not online_eval:
+                np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
+            timeArray.append(time.time() - start_time)
+
+            # Correlation calculation
+            if not online_eval:
+                df = pd.DataFrame({
+                    'advantage': advantage_rew,
+                    'online': cum_rews
+                })
+                corr_pear = df.corr(method='pearson')
+                corr_spearman = df.corr(method='spearman')
+                print("Pearson correlation coefficient:", corr_pear['advantage'][1])
+                print("Spearman correlation coefficient:", corr_spearman['advantage'][1])
+
+                # Using the best agent from the top 5
+                top_5_idx = np.argsort(advantage_rew)[-5:]
+                top_5_agents = np.array(agents)[top_5_idx]
+                best_agent, best_idx, returns_trains = None, None, -float('inf')
+                dummy_env = gym.make(env_name)
+                for idx, tagent in enumerate(top_5_agents):
+                    model.policy.load_state_dict(tagent)
+                    model.policy.to(device)
+                    cur_return = evaluate_policy(model, dummy_env, n_eval_episodes=2, callback=evaluation_callback, deterministic=True)[0]
+                    if cur_return > returns_trains:
+                        returns_trains = cur_return
+                        best_idx = idx
+                best_agent = top_5_agents[best_idx]
+
+                print(f'the best agent: {best_idx}, avg policy: {returns_trains}')
+                best_agent_index.append(best_idx)
+                np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+                load_state_dict(model, best_agent)
+
+            # Finding the best agent from online evaluation
+            if online_eval:
+                best_idx = np.argsort(cum_rews)[-1]
+                best_agent = agents[best_idx]
+                print(f'the best agent: {best_idx}, avg policy: {cum_rews[best_idx]}')
+                best_agent_index.append(best_idx)
+                np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+                load_state_dict(model, best_agent)
+
+        np.save(f'logs/{DIR}/distance.npy', distanceArray)
+        np.save(f'logs/{DIR}/time.npy', timeArray)
+        print("Average distance of random agents to nearest neighbors:", distanceArray)
+        print("Time taken for each iteration:", timeArray)
+
+    else:
+        for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
+            print(i)
+            model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
+                        log_interval=1, 
+                        tb_log_name=exp, 
+                        reset_num_timesteps=True if i == START_ITER else False, 
+                        first_iteration=True if i == START_ITER else False,
+                        )
+
+            cum_rews = []
+
+            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
+            print(f'avg return on policy: {returns_trains}')
+            cum_rews.append(returns_trains)
+            np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+            timeArray.append(time.time() - start_time)
+        
+        np.save(f'logs/{DIR}/time.npy', timeArray)
+        print("Time taken for each iteration:", timeArray)
+
+    env.close()

@@ -139,8 +139,6 @@ class PPO(OnPolicyAlgorithm):
             ),
         )
 
-        self.env_name = env.spec.id
-
         # Sanity check, otherwise it will lead to noisy gradient and NaN
         # because of the advantage normalization
         if normalize_advantage:
@@ -177,6 +175,11 @@ class PPO(OnPolicyAlgorithm):
             self._setup_model()
 
         self.ckp_dir = kwargs['ckp_dir'] if 'ckp_dir' in kwargs else None
+
+        if 'n_envs' in kwargs and kwargs['n_envs'] > 1:
+            self.env_name = env.get_attr("spec")[0].id
+        else:
+            self.env_name = env.spec.id
 
         self.current_iteration = 1
 
