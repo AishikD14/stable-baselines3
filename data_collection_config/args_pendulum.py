@@ -20,7 +20,7 @@ def get_args(rest_args):
     parser.add_argument('--device', default='cpu', type=str, help='Device to use: cpu or cuda')
     parser.add_argument('--tensorboard-log', default='logs/Pendulum-v1/', type=str, help='Base directory for tensorboard logs')
 
-    parser.add_argument('--init-model-path', default='full_exp_on_ppo/models/Pendulum-v1/ppo_pendulum_3M', type=str, help='Base directory for init model')
+    parser.add_argument('--init-model-path', default='full_exp_on_ppo/models/Pendulum-v1/ppo_pendulum_1M', type=str, help='Base directory for init model')
 
     args = parser.parse_args(rest_args)
 
