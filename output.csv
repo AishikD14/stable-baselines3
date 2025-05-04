@@ -78,7 +78,7 @@ Hopper-v5
 ----------------
 PPO_1, ppo_init_1M_out, ppo_hopper_1M.zip; PPO Init for 1M steps with new hyperparameters
 PPO_2, ppo_init_5M_out, ppo_hopper_5M.zip; PPO Init for 5M steps with new hyperparameters
-PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace3, Ongoing
+PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 PPO_empty_space_ls_1, ppo_empty_space_ls_1_out, Advantage estimation using top 5 agent and 2 evaluation & new fqe & search=2- 10k; gamma=0.3, espace6, Ongoing
 PPO_baseline_1, ppo_baseline_1_out, Normal training with 5512 steps per rollout & batch_size=345; search=2
 ----------------
@@ -86,13 +86,13 @@ Walker2d-v5
 ----------------
 PPO_1, ppo_init_1M_out, ppo_walker2d_1M.zip; PPO Init for 1M steps with new hyperparameters
 PPO_2, ppo_init_5M_out, ppo_walker2d_5M.zip; PPO Init for 5M steps with new hyperparameters
-PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace4, Ongoing
+PPO_empty_space, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 ----------------
 Humanoid-v5
 ----------------
 PPO_1, ppo_init_1M_out, ppo_humanoid_1M.zip; PPO Init for 1M steps with new hyperparameters
 PPO_2, ppo_init_5M_out, ppo_humanoid_5M.zip; PPO Init for 5M steps with new hyperparameters
-PPO_empty_space_1, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace2, Ongoing
+PPO_empty_space_1, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 PPO_empty_space_ls_1, ppo_empty_space_ls_1_out, Advantage estimation using top 5 agent and 2 evaluation & new fqe & search=1- 10k; gamma=0.3, espace5, Ongoing
 PPO_empty_space_ls_2, ppo_empty_space_ls_2_out, Advantage estimation using top 5 agent & 2 evaluation & new fqe & search=2- 10k; gamma=0.3, espace9, Ongoing
 PPO_empty_space_ls_3, ppo_empty_space_ls_3_out, Advantage estimation using top 5 agent & 2 evaluation & new fqe & search=3- 10k; gamma=0.3, espace10, Ongoing
@@ -102,13 +102,15 @@ PPO_baseline_3, ppo_baseline_3_out, Normal training with 3845 steps per rollout 
 ----------------
 CartPole-v1
 ----------------
-PPO_1, ppo_init_3M_out, ppo_cartpole_3M.zip; PPO Init for 3M steps with new hyperparameters
+PPO_1, ppo_init_1M_out, ppo_cartpole_1M.zip; PPO Init for 1M steps with new hyperparameters, espace3, Ongoing
+PPO_2, ppo_init_3M_out, ppo_cartpole_3M.zip; PPO Init for 3M steps with new hyperparameters
 ----------------
 MountainCar-v0
 ----------------
-PPO_1, ppo_init_3M_out, ppo_mountaincar_3M.zip; PPO Init for 3M steps with new hyperparameters, espace8, Ongoing
+PPO_1, ppo_init_1M_out, ppo_mountaincar_1M.zip; PPO Init for 1M steps with new hyperparameters, espace4, Ongoing
 ----------------
 Pendulum-v1
 ----------------
-PPO_1, ppo_init_1M_out, ppo_pendulum_1M.zip; PPO Init for 1M steps with new hyperparameters
+PPO_1, ppo_init_1M_out, ppo_pendulum_1M.zip; PPO Init for 1M steps with new hyperparameters, espace2, Ongoing
 PPO_2, ppo_init_3M_out, ppo_pendulum_3M.zip; PPO Init for 3M steps with new hyperparameters
+PPO_empty_space_1, ppo_empty_space_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
