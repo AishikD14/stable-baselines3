@@ -26,7 +26,7 @@ from d3rlpy.algos import QLearningAlgoBase
 from d3rlpy.base import LearnableConfig
 from d3rlpy.constants import ActionSpace
 import matplotlib.pyplot as plt
-from d3rlpy.torch_utility import TorchMiniBatch
+from d3rlpy.torch_utility import TorchMiniBatch, TorchObservation
 
 warnings.filterwarnings("ignore")
 
@@ -507,43 +507,72 @@ def advantage_evaluation(model, horizon=1000):
     # print(f'q_pred: {q_pred}, q_loss: {q_loss}')
     return q_pred, q_loss
 
+class PPOQWrapper(QLearningAlgoBase):
+    def __init__(self, ppo_policy):
+        super().__init__(config=LearnableConfig(), device=str(ppo_policy.device), enable_ddp=False)
+        self.ppo = ppo_policy
+        self._action_space = self.get_action_type()  # Explicitly set action space
+        self.device = str(ppo_policy.device) # Store device for consistency
+        print(f"PPOQWrapper initialized on device: {self.device}")
+
+    def get_action_type(self) -> ActionSpace:
+        return ActionSpace.CONTINUOUS # Default or raise error
+
+    # --- Critical Overrides ---
+    @torch.no_grad()
+    def predict_best_action(self, x: TorchObservation) -> torch.Tensor:
+        """Directly use PPO's policy without relying on _impl."""
+        if isinstance(x, (list, tuple)):  # Handle complex observations
+            x = [xi.to(self.device) for xi in x]
+        else:
+            x = x.to(self.device)
+        
+        # Convert to numpy for SB3 compatibility
+        x_np = x.cpu().numpy() if isinstance(x, torch.Tensor) else x
+        actions, _ = self.ppo.predict(x_np, deterministic=True)
+        return torch.as_tensor(actions, device=self.device)
+
+    @torch.no_grad()
+    def predict_value(self, x: TorchObservation, action: torch.Tensor) -> torch.Tensor:
+        """Directly access PPO's critic network."""
+        # Use the critic network as in your original code
+        if hasattr(self.ppo.policy, 'value_net'):
+            return self.ppo.policy.value_net(x)
+        else:
+            raise AttributeError("PPO critic network not found")
+
+    # --- Required Base Class Methods ---
+    def inner_create_impl(self, observation_shape, action_size):
+        # Directly use PPO networks instead of dummy
+        self._impl = self  # Bypass d3rlpy's impl requirement
+
+    def update(self, batch: TorchMiniBatch) -> dict:
+        """No-op since PPO isn't being trained."""
+        return {}
+
 def d3rl_evaluation(model):
-    print(model.replay_buffer.observations.shape)
-    print(model.replay_buffer.actions.shape)
-    print(model.replay_buffer.rewards.shape)
-    print(model.replay_buffer.dones.shape)
-
-    # Flatten the replay buffer data
-    # observations = model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1])
-    # actions = model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1])
-    # rewards = model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1])
-    # dones = model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
-
-    # print("Observations shape:", observations.shape)
-    # print("Actions shape:", actions.shape)
-    # print("Rewards shape:", rewards.shape)
-    # print("Terminals shape:", dones.shape)
-
-    # quit()
+    # print(model.replay_buffer.observations.shape)
+    # print(model.replay_buffer.actions.shape)
+    # print(model.replay_buffer.rewards.shape)
+    # print(model.replay_buffer.dones.shape)
 
     # terminals = model.replay_buffer.dones
 
-    # Check if either terminals or timeouts contain any True value
-    # if not (np.any(terminals) or np.any(timeouts)):
-    print("[INFO] Forcing terminal flags every", args.n_steps_per_rollout, "steps.")
-    terminals = np.zeros_like(model.replay_buffer.rewards, dtype=bool)
-    terminals[args.n_steps_per_rollout - 1 :: args.n_steps_per_rollout] = True
+    # print("[INFO] Forcing terminal flags every", args.n_steps_per_rollout, "steps.")
+    # terminals = np.zeros_like(model.replay_buffer.rewards, dtype=bool)
+    # terminals[args.n_steps_per_rollout - 1 :: args.n_steps_per_rollout] = True
 
     # Flatten the replay buffer data
     observations = model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1])
     actions = model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1])
     rewards = model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1])
-    terminals =terminals.reshape(-1, terminals.shape[-1])
+    terminals = model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+    # terminals =terminals.reshape(-1, terminals.shape[-1])
 
-    print("Observations shape:", observations.shape)
-    print("Actions shape:", actions.shape)
-    print("Rewards shape:", rewards.shape)
-    print("Terminals shape:", terminals.shape)
+    # print("Observations shape:", observations.shape)
+    # print("Actions shape:", actions.shape)
+    # print("Rewards shape:", rewards.shape)
+    # print("Terminals shape:", terminals.shape)
 
     # Build and return the MDPDataset
     dataset = MDPDataset(
@@ -553,32 +582,59 @@ def d3rl_evaluation(model):
         terminals=terminals
     )
 
-    dataset.dump("ppo_ant_d3rlpy_buffer.h5")
+    try:
+        ppo_wrapper = PPOQWrapper(model)
 
-    print("Observation shape:", dataset.episodes[0])
-    quit()
+        # 4. Build the wrapper internals using dataset info
+        ppo_wrapper.build_with_dataset(dataset)
 
-    # Split into training and testing episodes
-    train_episodes, test_episodes = train_test_split(dataset.episodes, test_size=0.2)
+    except Exception as e:
+        print(f"Error creating or building the PPOQWrapper: {e}")
+        import traceback
+        traceback.print_exc()
+        exit()
 
-    # Create BC (continuous) with config
-    bc_config = BCConfig()
-    bc = bc_config.create(device='cuda')  # or 'cpu' if no GPU
+    try:
+        fqe = d3rlpy.ope.FQE(
+            algo=ppo_wrapper, # Pass the wrapper instance
+            config=d3rlpy.ope.FQEConfig(
+                learning_rate=3e-4,         # Learning rate for FQE's internal Q-network
+                target_update_interval=100, # How often to update FQE's target network
+            )
+        )
 
-    # Train BC model
-    bc.build_with_dataset(dataset)
-    bc.fit(train_episodes, n_epochs=10)
+        print("--------------------------------------------------------------------------------")
+        print("Fitting d3rlpy FQE...")
 
-    # Run FQE
-    fqe = d3rlpy.ope.FQE(algo=bc, device='cuda')  # or 'cpu'
-    fqe.build_with_dataset(dataset)
-    fqe.fit(train_episodes, n_epochs=10)
+        # Consider using a smaller number of steps for initial testing
+        N_STEPS = 10000 # 10000
+        N_STEPS_PER_EPOCH = 1000 # 1000
 
-    # Estimate return of the learned BC policy
-    estimated_return = fqe.predict_value(test_episodes)
-    print(f"Estimated return via FQE: {estimated_return:.2f}")
+        output = fqe.fit(
+            dataset,
+            n_steps=N_STEPS,
+            n_steps_per_epoch=N_STEPS_PER_EPOCH,
+            evaluators={
+                # Estimates the expected value of the initial states according to FQE's learned Q-function
+                'init_value': d3rlpy.metrics.InitialStateValueEstimationEvaluator(),
+                # Soft Off-Policy Classification: Measures if the policy achieves a certain return threshold
+                'soft_opc': d3rlpy.metrics.SoftOPCEvaluator(return_threshold=1000), # Adjust threshold based on env/task
+            },
+            show_progress=True,
+        )
 
-    quit()
+        print("\nFQE Fitting completed.")
+
+        # The primary result is often the initial state value estimate
+        initial_state_value = output[-1][1]['init_value'] # Get from the last epoch's results
+        print(f"Estimated Initial State Value: {initial_state_value}")
+
+        return initial_state_value
+
+    except Exception as e:
+        print(f"Error during FQE configuration or fitting: {e}")
+        import traceback
+        traceback.print_exc()
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
@@ -724,323 +780,6 @@ print("Starting evaluation")
 
 # ------------------------------------------------------------------------------------------------------------------
 
-# Define a minimal nn.Module to satisfy base class requirements for _impl
-class DummyImpl(torch.nn.Module):
-    """
-    A minimal placeholder implementation module required by QLearningAlgoBase.
-    FQE uses its own implementation but the base class needs this structure.
-    Methods here might be called during initialization or by base class logic,
-    but FQE's core fitting loop relies on the wrapper's predict_* methods.
-    """
-    def __init__(self, observation_shape, action_size, device):
-        super().__init__()
-        self.observation_shape = observation_shape
-        self.action_size = action_size
-        self.device = device
-        # Add a dummy parameter to ensure the module has parameters and can be moved to device
-        # This helps avoid potential issues with device placement checks.
-        self.dummy_param = torch.nn.Parameter(torch.empty(0))
-
-    def forward(self, x: torch.Tensor, action: torch.Tensor | None = None) -> torch.Tensor:
-        # Return dummy zeros with the expected batch dimension and Q-value shape (batch, 1)
-        batch_size = x.shape[0]
-        return torch.zeros((batch_size, 1), device=self.device)
-
-    def predict_value(self, x: torch.Tensor, action: torch.Tensor, with_std: bool = False) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
-        # Return dummy values if called directly on impl
-        batch_size = x.shape[0]
-        zeros = torch.zeros((batch_size, 1), device=self.device)
-        if with_std:
-            return zeros, zeros
-        else:
-            return zeros
-
-    def predict_best_action(self, x: torch.Tensor) -> torch.Tensor:
-        # Return dummy zeros with appropriate action shape.
-        batch_size = x.shape[0]
-        # For continuous action space, action_size is the dimension
-        # For discrete, it would be the number of actions (not handled here)
-        action_shape = (batch_size, self.action_size) if isinstance(self.action_size, int) else (batch_size,) + tuple(self.action_size) # Handle tuple shapes
-        return torch.zeros(action_shape, device=self.device)
-
-class PPOQWrapper(QLearningAlgoBase):
-    def __init__(self, ppo_policy):
-        super().__init__(
-            config=LearnableConfig(),
-            device=str(ppo_policy.device),
-            enable_ddp=False
-        )
-        self.ppo = ppo_policy
-        self._action_size = None # To store action size/shape
-        self._observation_shape = None # To store observation shape
-        self.device = str(ppo_policy.device) # Store device for consistency
-        print(f"PPOQWrapper initialized on device: {self.device}")
-
-    def get_action_type(self) -> ActionSpace:
-        # Determine action space type from the SB3 model if possible
-        # if isinstance(self.ppo.action_space, gym.spaces.Box):
-        #      print("Detected Continuous action space.")
-        #      return ActionSpace.CONTINUOUS
-        # elif isinstance(self.ppo.action_space, gym.spaces.Discrete):
-        #      print("Detected Discrete action space.")
-        #      return ActionSpace.DISCRETE
-        # else:
-        #      print("Warning: Unknown action space type. Assuming Continuous.")
-        return ActionSpace.CONTINUOUS # Default or raise error
-        
-    # 1. Mandatory method for network initialization
-    def inner_create_impl(self, observation_shape: tuple[int, ...], action_size: int | tuple[int, ...]) -> None:
-        """ Creates the minimal placeholder _impl required by the base class. """
-        print(f"Wrapper inner_create_impl: obs_shape={observation_shape}, action_size={action_size}")
-        self._observation_shape = observation_shape
-        self._action_size = action_size
-        # Create the DummyImpl with the correct shapes and device
-        self._impl = DummyImpl(observation_shape, action_size, self.device).to(self.device)
-        print(f"DummyImpl created on device: {next(self._impl.parameters()).device}")
-
-    # 2. Required for dataset compatibility
-    def build_with_dataset(self, dataset):
-        """ Infers shapes from dataset and calls create_impl. """
-        if not dataset.episodes:
-             raise ValueError("Dataset must contain at least one episode to infer shapes.")
-
-        # Get shapes directly from the dataset object properties
-        obs_shape = dataset.episodes[0].serialize()['observations'].shape
-        action_shape = dataset.episodes[0].serialize()['actions'].shape # This is usually the shape tuple, e.g., (8,)
-
-        # Determine action_size based on action type
-        action_type = self.get_action_type()
-        if action_type == ActionSpace.CONTINUOUS:
-             # For continuous, action_size is often the dimension (first element of shape)
-             # Check if action_shape is like (dim,)
-             if isinstance(action_shape, tuple) and len(action_shape) == 1:
-                  action_size = action_shape[0]
-             else:
-                  # Handle multi-dimensional continuous actions if necessary
-                  action_size = action_shape # Keep the shape tuple
-                  print(f"Using action shape tuple as action_size: {action_size}")
-        elif action_type == ActionSpace.DISCRETE:
-             # For discrete, action_size is the number of possible actions
-             action_size = dataset.get_action_size()
-             if action_size is None:
-                  raise ValueError("Could not determine discrete action size from dataset.")
-        else:
-             raise ValueError(f"Unsupported action type: {action_type}")
-        
-        print(f"Building wrapper with: obs_shape={obs_shape}, action_size={action_size} (type: {action_type})")
-        # Call create_impl (which calls inner_create_impl)
-        self.create_impl(obs_shape, action_size)
-        print(f"Wrapper built. Impl set: {self._impl is not None}")
-
-    # 3. Internal helper for prediction (handles numpy/tensor conversion)
-    def _predict_sb3(self, x: torch.Tensor | np.ndarray) -> np.ndarray:
-        """ Handles input conversion and calls SB3 PPO predict. """
-        if isinstance(x, torch.Tensor):
-            # Move tensor to CPU and convert to numpy for SB3
-            x_np = x.cpu().numpy()
-        elif isinstance(x, np.ndarray):
-            x_np = x
-        else:
-            raise TypeError(f"Unsupported input type for prediction: {type(x)}")
-
-        # Use SB3's prediction (deterministic=True for evaluation)
-        action, _ = self.ppo.predict(x_np, deterministic=True)
-        return action
-        
-    # 4. Method FQE calls to get policy actions a' = pi(s')
-    @torch.no_grad() # Ensure no gradients are computed during prediction
-    def predict_best_action(self, x: torch.Tensor) -> torch.Tensor:
-        """ Predicts the best action using the PPO policy (deterministic). """
-        print("This is the predict_best_action method")
-        # Use the helper to get numpy action
-        np_actions = self._predict_sb3(x)
-        # Convert result back to tensor on the correct device for d3rlpy
-        return torch.tensor(np_actions, dtype=torch.float32).to(self.device)
-    
-    # 5. Method FQE calls to get value estimates V(s') for targets
-    @torch.no_grad() # Ensure no gradients are computed during value prediction
-    def predict_value(self,
-                      x: torch.Tensor,
-                      action: torch.Tensor | None = None, # Action ignored for PPO critic V(s)
-                      with_std: bool = False
-                      ) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
-        """ Predicts the state value V(s) using the PPO critic. """
-        # Ensure input is a tensor on the correct device
-        if isinstance(x, np.ndarray):
-            # Convert numpy to tensor if needed (unlikely if called from d3rlpy)
-            x_tensor = torch.tensor(x, dtype=torch.float32).to(self.device)
-        elif x.device != self.device:
-             # Move tensor to the correct device if it's not already there
-             x_tensor = x.to(self.device)
-        else:
-            x_tensor = x
-
-        # Access the critic/value network within the SB3 policy object
-        # Common attribute names are 'value_net' or 'vf_net'. Check your SB3 version/policy.
-        if hasattr(self.ppo.policy, 'value_net') and self.ppo.policy.value_net is not None:
-            values = self.ppo.policy.value_net(x_tensor)
-        # elif hasattr(self.ppo.policy, 'critic') and self.ppo.policy.critic is not None: # Less common for SB3 PPO's V(s) net
-        #     values = self.ppo.policy.critic(x_tensor)
-        elif hasattr(self.ppo.policy, 'vf_net') and self.ppo.policy.vf_net is not None: # Another possible name
-             values = self.ppo.policy.vf_net(x_tensor)
-        else:
-             # You might need to inspect self.ppo.policy to find the correct attribute
-             raise AttributeError("Could not find the value network (e.g., 'value_net', 'vf_net') in the PPO policy object. Please verify the attribute name.")
-
-        # Ensure output shape is (batch_size, 1) as expected by d3rlpy
-        values = values.reshape(-1, 1)
-
-        if with_std:
-            # Standard PPO critic doesn't output standard deviation
-            # Return zeros as placeholder
-            std = torch.zeros_like(values)
-            return values, std
-        else:
-            return values
-        
-    # --- Other necessary overrides ---
-
-    def save_model(self, fname: str) -> None:
-        """ Saving the wrapper itself is not standard. Save the SB3 model separately. """
-        print(f"PPOQWrapper.save_model called: Skipping wrapper save. Save the original SB3 PPO model using ppo.save('{fname}') instead.")
-        pass
-
-    def load_model(self, fname: str) -> None:
-        """ Loading into the wrapper is not standard. Load the SB3 model before creating the wrapper. """
-        print(f"PPOQWrapper.load_model called: Skipping wrapper load. Load the SB3 PPO model using PPO.load('{fname}') and then create the wrapper.")
-        pass
-
-    def update(self, batch: TorchMiniBatch) -> dict[str, float]:
-        """ FQE handles its own updates. This wrapper should not perform updates. """
-        # Return empty dict to satisfy the base class method signature
-        return {}    
-
-# load from HDF5
-with open("ppo_ant_d3rlpy_buffer.h5", "rb") as f:
-    dataset = d3rlpy.dataset.ReplayBuffer.load(f, d3rlpy.dataset.InfiniteBuffer())
-
-# print("Observation shape:", dataset.episodes[0].serialize()['observations'].shape)
-# print("Action shape:", dataset.episodes[0].serialize()['actions'].shape)
-# print("Reward shape:", dataset.episodes[0].serialize()['rewards'].shape)
-# print("Terminal shape:", dataset.episodes[0].serialize()['terminated'].shape)
-
-# 3. Create the FQE-compatible wrapper
-print("\nCreating PPOQWrapper...")
-try:
-    ppo_wrapper = PPOQWrapper(model)
-    # Set the device explicitly if needed (though it should inherit from model)
-    # ppo_wrapper.to(model.device) # Usually not needed if super().__init__ handles it
-
-    # 4. Build the wrapper internals using dataset info
-    print("Building wrapper with dataset...")
-    ppo_wrapper.build_with_dataset(dataset)
-
-except Exception as e:
-    print(f"Error creating or building the PPOQWrapper: {e}")
-    import traceback
-    traceback.print_exc()
-    exit()
-
-# Split into training and testing episodes
-# train_episodes, test_episodes = train_test_split(dataset.episodes, test_size=0.2)
-
-# print("--------------------------------------------------------------------------------")
-# print("Initializing d3rlpy BC")
-
-# # Create BC (continuous) with config
-# bc_config = BCConfig(encoder_factory=VectorEncoderFactory())
-# bc = bc_config.create(device='cpu')  # or 'cpu' if no GPU
-
-# # Train BC model
-# bc.build_with_dataset(dataset)
-
-# print("--------------------------------------------------------------------------------")
-
-# bc.fit(
-#     dataset,
-#     n_steps=100,  # Typically needs more epochs than 10
-# )
-
-print("--------------------------------------------------------------------------------")
-
-# 5. Configure and Run FQE
-print("\nConfiguring FQE...")
-try:
-    fqe = d3rlpy.ope.FQE(
-        algo=ppo_wrapper, # Pass the wrapper instance
-        config=d3rlpy.ope.FQEConfig(
-            learning_rate=3e-4,         # Learning rate for FQE's internal Q-network
-            target_update_interval=100, # How often to update FQE's target network
-            # You might need to adjust other FQEConfig parameters:
-            # batch_size=256,
-            # gamma=0.99, # Discount factor (should match training if possible)
-        )
-    )
-
-    print("--------------------------------------------------------------------------------")
-    print("Fitting d3rlpy FQE...")
-
-    # Consider using a smaller number of steps for initial testing
-    N_STEPS = 10000 # 10000
-    N_STEPS_PER_EPOCH = 1000 # 1000
-
-    output = fqe.fit(
-        dataset,
-        n_steps=N_STEPS,
-        n_steps_per_epoch=N_STEPS_PER_EPOCH,
-        evaluators={
-            # Estimates the expected value of the initial states according to FQE's learned Q-function
-            'init_value': d3rlpy.metrics.InitialStateValueEstimationEvaluator(),
-            # Soft Off-Policy Classification: Measures if the policy achieves a certain return threshold
-            'soft_opc': d3rlpy.metrics.SoftOPCEvaluator(return_threshold=-300), # Adjust threshold based on env/task
-        },
-        show_progress=True,
-        # Optional: For logging results with tensorboard or wandb
-        # experiment_name="FQE_on_PPO_Ant_Run",
-        # logdir="d3rlpy_logs",
-    )
-
-    print("\nFQE Fitting completed.")
-    # output contains the metrics from the last epoch
-    print("Final Epoch Metrics:", output)
-
-    # You can access the learned Q-function from FQE if needed
-    # q_func_at_epoch_10 = fqe.predict_value(some_states, some_actions) # Using FQE's learned Q
-
-    # The primary result is often the initial state value estimate
-    initial_state_value = output[-1]['init_value'] # Get from the last epoch's results
-    print(f"Estimated Initial State Value: {initial_state_value}")
-
-except Exception as e:
-    print(f"Error during FQE configuration or fitting: {e}")
-    import traceback
-    traceback.print_exc()
-
-print("--------------------------------------------------------------------------------")
-# print("Estimating return")
-
-# Estimate return of the learned BC policy
-# estimated_return = fqe.predict_value(dataset.episodes[0].serialize()['observations'], dataset.episodes[0].serialize()['actions'])
-
-# print("---------------------------------------------------------------------------------")
-# print("Estimated return via FQE: ", estimated_return)
-
-# print("Estimated return via FQE: ", estimated_return.mean())
-
-# print("Estimated return via FQE: ", estimated_return.std())
-
-# Plot the estimated return
-# plt.plot(estimated_return)
-# plt.title("Estimated Return via FQE")
-# plt.xlabel("Time Step")
-# plt.ylabel("Estimated Return")
-# plt.grid()
-# plt.show()
-
-quit()
-
-# -------------------------------------------------------------------------------------------------------------------
-
 normal_train = False
 use_ANN = False
 ANN_lib = "Annoy"
@@ -1074,27 +813,22 @@ if not normal_train:
         cum_rews = []
         best_agent_index = []
         advantage_rew = []
-        q_losses = []
 
         for j, a in enumerate(agents):
             model.policy.load_state_dict(a)
             model.policy.to(device)
             
             # Online evaluation
-            # returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
-            # print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
-            # cum_rews.append(returns_trains)
+            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
+            print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
+            cum_rews.append(returns_trains)
 
             # Q-function evaluation
             if not online_eval:
-                # q_adv, q_loss = advantage_evaluation(model)
-                # advantage_rew.append(q_adv)
-                # q_losses.append(q_loss)
-
-                d3rl_evaluation(model)
+                init_est = d3rl_evaluation(model)
+                advantage_rew.append(init_est)
 
         if not online_eval:
-            print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
             print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
         print(f'ave cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
 
@@ -1115,21 +849,9 @@ if not normal_train:
             print("Pearson correlation coefficient:", corr_pear['advantage'][1])
             print("Spearman correlation coefficient:", corr_spearman['advantage'][1])
 
-            # Using the best agent from the top 5
-            top_5_idx = np.argsort(advantage_rew)[-5:]
-            top_5_agents = np.array(agents)[top_5_idx]
-            best_agent, best_idx, returns_trains = None, None, -float('inf')
-            dummy_env = gym.make(env_name)
-            for idx, tagent in enumerate(top_5_agents):
-                model.policy.load_state_dict(tagent)
-                model.policy.to(device)
-                cur_return = evaluate_policy(model, dummy_env, n_eval_episodes=2, callback=evaluation_callback, deterministic=True)[0]
-                if cur_return > returns_trains:
-                    returns_trains = cur_return
-                    best_idx = idx
-            best_agent = top_5_agents[best_idx]
-
-            print(f'the best agent: {best_idx}, avg policy: {returns_trains}')
+            best_idx = np.argsort(advantage_rew)[-1]
+            best_agent = agents[best_idx]
+            print(f'the best agent: {best_idx}, avg policy: {advantage_rew[best_idx]}')
             best_agent_index.append(best_idx)
             np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
             load_state_dict(model, best_agent)
