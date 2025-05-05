@@ -1,23 +1,5 @@
-Tue Apr 29 11:58:35 2025       
-+---------------------------------------------------------------------------------------+
-| NVIDIA-SMI 530.30.02              Driver Version: 530.30.02    CUDA Version: 12.1     |
-|-----------------------------------------+----------------------+----------------------+
-| GPU  Name                  Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp  Perf            Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
-|                                         |                      |               MIG M. |
-|=========================================+======================+======================|
-|   0  Quadro RTX 8000                 On | 00000000:3F:00.0 Off |                  Off |
-| 33%   32C    P8               18W / 260W|      1MiB / 49152MiB |      0%      Default |
-|                                         |                      |                  N/A |
-+-----------------------------------------+----------------------+----------------------+
-                                                                                         
-+---------------------------------------------------------------------------------------+
-| Processes:                                                                            |
-|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
-|        ID   ID                                                             Usage      |
-|=======================================================================================|
-|  No running processes found                                                           |
-+---------------------------------------------------------------------------------------+
+No devices were found
+---------------------------------
 Environment created
 Box(-1.0, 1.0, (6,), float32) Box(-inf, inf, (17,), float64)
 Starting Initial training
@@ -1976,3 +1958,5 @@ Reward at iter 999424: 2304.3348016
 Reward at iter 999936: 2333.7743746
 Reward at iter 1000448: 1855.2399936000002
 Initial training done
+Saving replay buffer for later use
+Replay buffer saved
