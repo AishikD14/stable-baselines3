@@ -668,7 +668,7 @@ def policy_loss_evaluation(model):
         loss = policy_loss + model.ent_coef * entropy_loss
         total_loss.append(loss.item())
 
-    return np.mean(total_loss)*(-1)
+    return np.sum(total_loss)*(-1)
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
