@@ -11,14 +11,14 @@ parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-# env = "HalfCheetah-v5"
+env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "AntDir-v0"
 # env = "CartPole-v1"
 # env = "MountainCar-v0"
-env = "Pendulum-v1"
+# env = "Pendulum-v1"
 
 if env == "AntDir-v0":
     args = args_ant_dir.get_args(rest_args)
@@ -83,15 +83,15 @@ start_iteration = 1000000 // args.n_steps_per_rollout
 # ]
 
 # HalfCheetah-v5 FQE evaluations
-# plot_list = [
-#     # ["PPO_empty_space_ls_1", "FQE top 5 agent and 2 eval & search=1- 10k; gamma=0.3"],
-#     # ["PPO_baseline_1", "Baseline with search=1 -10k"],
-#     # ["PPO_empty_space_ls_2", "FQE top 5 agent and 2 eval & search=2- 5k; gamma=0.3"],
-#     # ["PPO_baseline_2", "Baseline with search=2 -5k"],
-#     ["PPO_empty_space_ls_3", "FQE top 5 agent and 2 eval & search=3- 3k; gamma=0.3"],
-#     ["PPO_baseline_3", "Baseline with search=3 -3k"],
-#     ["PPO_empty_space", "Online eval with 60 iter & 3 eval & every other point-60k; gamma=0.3"], # Upper bound
-# ]
+plot_list = [
+    ["PPO_empty_space_ls_1", "FQE top 5 agent and 2 eval & search=1- 10k; gamma=0.3"],
+    ["PPO_baseline_1", "Baseline with search=1 -10k"],
+    # ["PPO_empty_space_ls_2", "FQE top 5 agent and 2 eval & search=2- 5k; gamma=0.3"],
+    # ["PPO_baseline_2", "Baseline with search=2 -5k"],
+    # ["PPO_empty_space_ls_3", "FQE top 5 agent and 2 eval & search=3- 3k; gamma=0.3"],
+    # ["PPO_baseline_3", "Baseline with search=3 -3k"],
+    ["PPO_empty_space", "Online eval with 60 iter & 3 eval & every other point-60k; gamma=0.3"], # Upper bound
+]
 
 # Hopper-v5 FQE evaluations
 # plot_list = [
@@ -107,21 +107,28 @@ start_iteration = 1000000 // args.n_steps_per_rollout
 
 # Humanoid-v5 FQE evaluations
 # plot_list = [
-#     ["PPO_empty_space_ls_1", "FQE top 5 agent and 2 eval & search=1- 10k; gamma=0.3"],
-#     ["PPO_baseline_1", "Baseline with search=1 -10k"],
-#     # ["PPO_empty_space_ls_2", "FQE top 5 agent and 2 eval & search=2- 5k; gamma=0.3"],
-#     # ["PPO_baseline_2", "Baseline with search=2 -5k"],
+#     # ["PPO_empty_space_ls_1", "FQE top 5 agent and 2 eval & search=1- 10k; gamma=0.3"],
+#     # ["PPO_baseline_1", "Baseline with search=1 -10k"],
+#     ["PPO_empty_space_ls_2", "FQE top 5 agent and 2 eval & search=2- 5k; gamma=0.3"],
+#     ["PPO_baseline_2", "Baseline with search=2 -5k"],
 #     # ["PPO_empty_space_ls_3", "FQE top 5 agent and 2 eval & search=3- 3k; gamma=0.3"],
 #     # ["PPO_baseline_3", "Baseline with search=3 -3k"],
 #     ["PPO_empty_space_1", "Online eval with 60 iter & 3 eval & every other point-60k; gamma=0.3"], # Upper bound
 # ]
 
 # CartPole-v1 FQE evaluations
-plot_list = [
+# plot_list = [
     # ["PPO_empty_space_ls_1", "FQE top 5 agent and 2 eval & search=2- 10k; gamma=0.3"],
     # ["PPO_baseline_1", "Baseline with search=2 -10k"],
-    ["PPO_empty_space_1", "Online eval with 60 iter & 3 eval & every other point-60k; gamma=0.3"], # Upper bound
-]
+    # ["PPO_empty_space_1", "Online eval with 60 iter & 3 eval & every other point-60k; gamma=0.3"], # Upper bound
+# ]
+
+# Pendulum-v1 FQE evaluations
+# plot_list = [
+#     # ["PPO_empty_space_ls_1", "FQE top 5 agent and 2 eval & search=2- 10k; gamma=0.3"],
+#     ["PPO_baseline_1", "Baseline with search=1 -10k"],
+#     # ["PPO_empty_space_1", "Online eval with 60 iter & 3 eval & every other point-60k; gamma=0.3"], # Upper bound
+# ]
 
 plot_metrics = []
 
