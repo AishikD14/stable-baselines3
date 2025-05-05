@@ -560,8 +560,8 @@ def d3rl_evaluation(model):
     # Flatten the replay buffer data
     observations = model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1])
     actions = model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1])
-    rewards = model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1])
-    terminals = model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+    rewards = model.replay_buffer.rewards.reshape(-1, 1)
+    terminals = model.replay_buffer.dones.reshape(-1, 1)
     # terminals =terminals.reshape(-1, terminals.shape[-1])
 
     # print("Observations shape:", observations.shape)
@@ -735,7 +735,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO"
+    exp = "PPO_test"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -816,28 +816,28 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    print("Starting Initial training")
-    os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
+    # print("Starting Initial training")
+    # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
 
-    model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    model.save("full_exp_on_ppo/models/"+env_name+"/ppo_swimmer_1M")
+    # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
+    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_swimmer_1M")
 
-    print("Initial training done") 
+    # print("Initial training done") 
 
-    print("Saving replay buffer for later use")
-    os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
+    # print("Saving replay buffer for later use")
+    # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
 
-    # Save the replay buffer
-    np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer.npz',
-        observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
-        actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
-        rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
-        terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
-    )
+    # # Save the replay buffer
+    # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer.npz',
+    #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
+    #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
+    #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
+    #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+    # )
     
-    print("Replay buffer saved")
+    # print("Replay buffer saved")
 
-    quit()
+    # quit()
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -853,10 +853,10 @@ if __name__ == "__main__":
 
     # Load the replay buffer
     replay_buffer = np.load(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer.npz')
-    model.replay_buffer.observations = replay_buffer['observations']
-    model.replay_buffer.actions = replay_buffer['actions']
-    model.replay_buffer.rewards = replay_buffer['rewards']
-    model.replay_buffer.dones = replay_buffer['terminals']
+    model.replay_buffer.observations = replay_buffer['observations'] if args.n_envs == 1 else replay_buffer['observations'].reshape(-1, args.n_envs, replay_buffer['observations'].shape[-1])
+    model.replay_buffer.actions = replay_buffer['actions'] if args.n_envs == 1 else replay_buffer['actions'].reshape(-1, args.n_envs, replay_buffer['actions'].shape[-1])
+    model.replay_buffer.rewards = replay_buffer['rewards'] if args.n_envs == 1 else replay_buffer['rewards'].reshape(-1, args.n_envs)
+    model.replay_buffer.dones = replay_buffer['terminals'] if args.n_envs == 1 else replay_buffer['terminals'].reshape(-1, args.n_envs)
     print("Replay buffer loaded")
     print("Replay buffer shape: ", model.replay_buffer.observations.shape, model.replay_buffer.actions.shape, model.replay_buffer.rewards.shape, model.replay_buffer.dones.shape)
 
