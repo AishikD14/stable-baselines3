@@ -137,9 +137,10 @@ def empty_center(data, coor, neighbor, use_ANN, use_momentum, movestep, numiter)
         return np.linalg.norm(coor - orig_coor), np.array(es_configs)
 
 def random_walk(data, coor, neighbor, use_momentum, movestep, numiter):
+    use_momentum = False
     orig_coor = coor.copy()
     cum_mag = 0
-    gamma = 0.9  # discount factor
+    gamma = 0.3  # discount factor
     momentum = np.zeros(coor.shape)
     rw_configs = []
 
@@ -165,15 +166,15 @@ def random_walk(data, coor, neighbor, use_momentum, movestep, numiter):
         
         # Store configurations periodically for elastic search purposes
         if i % 20 == 0:
-            if use_momentum:
-                rw_configs.extend(coor.tolist())
+            # if use_momentum:
+            rw_configs.extend(coor.tolist())
 
     rw_configs.extend(coor.tolist())
 
-    if not use_momentum:
-        return np.linalg.norm(coor - orig_coor), coor
-    else:
-        return np.linalg.norm(coor - orig_coor), np.array(rw_configs)
+    # if not use_momentum:
+    #     return np.linalg.norm(coor - orig_coor), coor
+    # else:
+    return np.linalg.norm(coor - orig_coor), np.array(rw_configs)
 
 def load_weights(arng, directory, env):
     policies = []
@@ -350,20 +351,26 @@ def random_search_policies(algo, directory, start, end, env, agent_num=10):
 
 # Neighbor search plus random walk
 def neighbor_search_random_walk(algo, directory, start, end, env, agent_num=10):
+    print("---------------------------------")
+    print("Searching random policies")
+
     dt = load_weights(range(start, end), directory, env)
     print(dt.shape)
+
     neigh = NearestNeighbors(n_neighbors=6)
     neigh.fit(dt)
-
     _, adjs = neigh.kneighbors(dt[-agent_num:])
+
     points = dt[adjs[:, 1:]]
     points = points.mean(axis=1)
-    print(points.shape)
+
+    # Choose every second point
+    points = points[::2]
 
     policies = []
     print(len(points))
     for p in points:
-        a = random_walk(dt, p.reshape(1, -1), neigh, use_momentum=True, movestep=0.001, numiter=400)
+        a = random_walk(dt, p.reshape(1, -1), neigh, use_momentum=True, movestep=0.001, numiter=60)
         policies.append(a[1])
     policies = np.concatenate(policies)
     print(policies.shape)
@@ -373,8 +380,8 @@ def neighbor_search_random_walk(algo, directory, start, end, env, agent_num=10):
     # Calculate the nearest neighbors of the agents
     neigh = NearestNeighbors(n_neighbors=6)
     neigh.fit(policies)
-
     _, adjs = neigh.kneighbors(policies)
+    
     points = policies[adjs[:, 1:]]
     points = points.mean(axis=1)
     print(points.shape)
@@ -639,12 +646,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
-    env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
+    # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
@@ -735,7 +742,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_test"
+    exp = "PPO_neighbor_search_random_walk"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -799,6 +806,8 @@ if __name__ == "__main__":
 
     if hasattr(args, 'n_envs'):
         ppo_kwargs["n_envs"] = args.n_envs
+    else:
+        args.n_envs = 1
 
     if hasattr(args, 'sde_sample_freq'):
         ppo_kwargs["sde_sample_freq"] = args.sde_sample_freq
@@ -894,8 +903,8 @@ if __name__ == "__main__":
                         first_iteration=True if i == START_ITER else False,
                         )
             
-            agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib)
-            # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+            # agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib)
+            agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
             # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
             # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
             # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
