@@ -511,9 +511,9 @@ if __name__ == "__main__":
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
 
-    env_name = "CartPole-v1" # For cartpole (single goal task)
+    # env_name = "CartPole-v1" # For cartpole (single goal task)
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
-    # env_name = "Pendulum-v1" # For pendulum (single goal task)
+    env_name = "Pendulum-v1" # For pendulum (single goal task)
 
     # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -583,7 +583,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO"
+    exp = "PPO_baseline"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -667,11 +667,11 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    print("Starting Initial training")
-    model.learn(total_timesteps=3000000, log_interval=50, tb_log_name=exp, init_call=True)
-    model.save("full_exp_on_ppo/models/"+env_name+"/ppo_cartpole_3M")
-    print("Initial training done") 
-    quit()
+    # print("Starting Initial training")
+    # model.learn(total_timesteps=3000000, log_interval=50, tb_log_name=exp, init_call=True)
+    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_cartpole_3M")
+    # print("Initial training done") 
+    # quit()
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -688,7 +688,7 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = False
+    normal_train = True
     use_ANN = False
     ANN_lib = "Annoy"
     online_eval = True
@@ -698,8 +698,12 @@ if __name__ == "__main__":
     timeArray = []
 
     if exp == "PPO_baseline":
-        START_ITER = 1953
-        NUM_ITERS = 9765
+        # START_ITER = 1953
+        # NUM_ITERS = 9765
+
+        # For Pendulum-v1
+        START_ITER = 976
+        NUM_ITERS = 2930
 
     if not normal_train:
         for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
