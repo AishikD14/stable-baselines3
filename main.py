@@ -24,6 +24,7 @@ from d3rlpy.constants import ActionSpace
 import matplotlib.pyplot as plt
 from d3rlpy.torch_utility import TorchMiniBatch, TorchObservation
 import random
+import os
 
 warnings.filterwarnings("ignore")
 
@@ -550,11 +551,6 @@ class PPOQWrapper(QLearningAlgoBase):
 
 # Method for evaluating the FQE using d3rlpy
 def d3rl_evaluation(model):
-    # print(model.replay_buffer.observations.shape)
-    # print(model.replay_buffer.actions.shape)
-    # print(model.replay_buffer.rewards.shape)
-    # print(model.replay_buffer.dones.shape)
-
     # terminals = model.replay_buffer.dones
 
     # print("[INFO] Forcing terminal flags every", args.n_steps_per_rollout, "steps.")
@@ -620,6 +616,7 @@ def d3rl_evaluation(model):
                 # 'soft_opc': d3rlpy.metrics.SoftOPCEvaluator(return_threshold=1000), # Adjust threshold based on env/task
             },
             show_progress=True,
+            save_interval=N_STEPS//N_STEPS_PER_EPOCH,
         )
 
         print("\nFQE Fitting completed.")
@@ -816,9 +813,23 @@ if __name__ == "__main__":
     # ---------------------------------------------------------------------------------------------------------------
 
     # print("Starting Initial training")
-    # model.learn(total_timesteps=3000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_cartpole_3M")
+    # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
+    # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
+    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_ant_1M")
     # print("Initial training done") 
+
+    # print("Saving replay buffer for later use")
+    # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
+
+    # # Save the replay buffer
+    # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer.npz',
+    #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
+    #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
+    #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
+    #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+    # )
+    # print("Replay buffer saved")
+
     # quit()
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -830,6 +841,19 @@ if __name__ == "__main__":
     print("Model loaded")
 
     # -------------------------------------------------------------------------------------------------------------
+
+    print("Loading replay buffer")
+
+    # Load the replay buffer
+    replay_buffer = np.load(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer.npz')
+    model.replay_buffer.observations = replay_buffer['observations']
+    model.replay_buffer.actions = replay_buffer['actions']
+    model.replay_buffer.rewards = replay_buffer['rewards']
+    model.replay_buffer.dones = replay_buffer['terminals']
+    print("Replay buffer loaded")
+    print("Replay buffer shape: ", model.replay_buffer.observations.shape, model.replay_buffer.actions.shape, model.replay_buffer.rewards.shape, model.replay_buffer.dones.shape)
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     vec_env = model.get_env()
     obs = vec_env.reset()
