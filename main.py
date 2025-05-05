@@ -14,7 +14,7 @@ import pandas as pd
 # from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum
+from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
 from d3rlpy.dataset import MDPDataset
@@ -639,11 +639,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+    env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
@@ -663,6 +664,8 @@ if __name__ == "__main__":
         args = args_walker2d.get_args(rest_args)
     elif env_name == "Humanoid-v5":
         args = args_humanoid.get_args(rest_args)
+    elif env_name == "Swimmer-v5":
+        args = args_swimmer.get_args(rest_args)
     elif env_name == "CartPole-v1":
         args = args_cartpole.get_args(rest_args)
     elif env_name == "MountainCar-v0":
@@ -679,16 +682,20 @@ if __name__ == "__main__":
         np.random.seed(args.seed)
 
     # -------------------------------------------------------------------------------------------------------------
-
-    def make_envs(env_name):
-        def _init():
-            return gym.make(env_name)
+    
+    def make_envs(env_name, seed):
+        def _init(seed_offset):
+            def _thunk():
+                env = gym.make(env_name)
+                env.reset(seed=seed + seed_offset)
+                return env
+            return _thunk
         return _init
     
     if hasattr(args, 'n_envs') and args.n_envs > 1:
         print("Creating multiple envs - ", args.n_envs)
         # Create a list of environment functions
-        env_fns = [make_envs(env_name) for _ in range(args.n_envs)]
+        env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
         env = SubprocVecEnv(env_fns)
     else:
         env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
@@ -728,7 +735,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_test"
+    exp = "PPO"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -764,15 +771,9 @@ if __name__ == "__main__":
         verbose=args.verbose,
         seed=args.seed,
         n_steps=args.n_steps_per_rollout,
-        # batch_size=args.batch_size,
         gamma=args.gamma,
-        ent_coef=args.ent_coef,
-        # learning_rate=args.learning_rate,
-        # clip_range=args.clip_range,
-        # max_grad_norm=args.max_grad_norm,
         n_epochs=args.n_epochs,
         gae_lambda=args.gae_lambda,
-        # vf_coef=args.vf_coef,
         device=args.device,
         tensorboard_log=args.tensorboard_log,
         ckp_dir=ckp_dir
@@ -802,6 +803,9 @@ if __name__ == "__main__":
     if hasattr(args, 'sde_sample_freq'):
         ppo_kwargs["sde_sample_freq"] = args.sde_sample_freq
 
+    if hasattr(args, 'ent_coef'):
+        ppo_kwargs["ent_coef"] = args.ent_coef
+
     if policy_kwargs:
         ppo_kwargs["policy_kwargs"] = policy_kwargs
 
@@ -812,25 +816,28 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    # print("Starting Initial training")
-    # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
-    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_ant_1M")
-    # print("Initial training done") 
+    print("Starting Initial training")
+    os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
 
-    # print("Saving replay buffer for later use")
-    # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
+    model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
+    model.save("full_exp_on_ppo/models/"+env_name+"/ppo_swimmer_1M")
 
-    # # Save the replay buffer
-    # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer.npz',
-    #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
-    #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
-    #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
-    #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
-    # )
-    # print("Replay buffer saved")
+    print("Initial training done") 
 
-    # quit()
+    print("Saving replay buffer for later use")
+    os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
+
+    # Save the replay buffer
+    np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer.npz',
+        observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
+        actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
+        rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
+        terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+    )
+    
+    print("Replay buffer saved")
+
+    quit()
 
     # ----------------------------------------------------------------------------------------------------------------
 
