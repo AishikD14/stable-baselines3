@@ -286,7 +286,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
             self._last_episode_starts = dones
 
             if isinstance(env, VariBadWrapper) and np.all(dones):
-                self._last_obs = env.reset()
+                self._last_obs = env.reset(seed=self.seed)
 
         with th.no_grad():
             # Compute value for the last timestep
@@ -390,7 +390,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
 
     def evaluate(self, num_timesteps):
         # obs = self.env.reset(0)
-        obs = self.env.reset()
+        obs = self.env.reset(seed=self.seed)
         ret = 0
         for i in range(self.n_steps):
             obs_tensor = obs_as_tensor(obs, self.device).reshape(1, -1)

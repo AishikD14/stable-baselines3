@@ -23,6 +23,7 @@ from d3rlpy.base import LearnableConfig
 from d3rlpy.constants import ActionSpace
 import matplotlib.pyplot as plt
 from d3rlpy.torch_utility import TorchMiniBatch, TorchObservation
+import random
 
 warnings.filterwarnings("ignore")
 
@@ -491,11 +492,11 @@ def evaluation_callback(localvars, globalvars):
     return
 
 # Function to evaluate the advantage of the policy
-def advantage_evaluation(model, horizon=1000):
+def advantage_evaluation(model, args, horizon=1000):
     fqe = FQE(model.replay_buffer.obs_shape[0], model.replay_buffer.action_dim, lr=1e-4, gamma=model.gamma, device='cuda:0')
     fqe.build_q_net(model)
     q_loss = fqe.train(fqe.model, 256, 10)
-    s0 = [model.env.reset() for _ in range(100)]
+    s0 = [model.env.reset(seed=args.seed) for _ in range(100)]
     s0 = FloatTensor(s0)
     s0 = s0.squeeze(1)
     act, _, _ = model.policy(s0)
@@ -673,6 +674,15 @@ if __name__ == "__main__":
         args = args_pendulum.get_args(rest_args)
 
     # ------------------------------------------------------------------------------------------------------------
+
+    # Set the seed for reproducibility
+    if hasattr(args, 'seed'):
+        random.seed(args.seed)
+        torch.random.manual_seed(args.seed)
+        np.random.seed(args.seed)
+
+    # -------------------------------------------------------------------------------------------------------------
+
     def make_envs(env_name):
         def _init():
             return gym.make(env_name)
@@ -685,9 +695,11 @@ if __name__ == "__main__":
         env = SubprocVecEnv(env_fns)
     else:
         env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+        env.reset(seed=args.seed)
         
     # env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1) # For AntDir-v0
 
+    print("---------------------------------")
     print("Environment created")
     print(env.action_space, env.observation_space)
     
@@ -875,7 +887,7 @@ if __name__ == "__main__":
                 # Q-function evaluation
                 if not online_eval:
                     # Advantage estimation code
-                    # q_adv, q_loss = advantage_evaluation(model)
+                    # q_adv, q_loss = advantage_evaluation(model, args)
                     # advantage_rew.append(q_adv)
                     # q_losses.append(q_loss)
 
