@@ -1,4 +1,5 @@
 No devices were found
+---------------------------------
 Environment created
 Box(-1.0, 1.0, (8,), float32) Box(-inf, inf, (105,), float64)
 Starting Initial training
@@ -1957,3 +1958,5 @@ Reward at iter 999424: 926.8677478
 Reward at iter 999936: 946.6224108
 Reward at iter 1000448: 930.9486768
 Initial training done
+Saving replay buffer for later use
+Replay buffer saved
