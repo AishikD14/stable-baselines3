@@ -5,10 +5,8 @@ from sklearn.neighbors import NearestNeighbors
 from scipy.spatial.distance import euclidean
 from collections import OrderedDict
 import torch
-from torch.optim import Adam
 import time
-import os
-from stable_baselines3.common.utils import get_latest_run_id, safe_mean
+from stable_baselines3.common.utils import get_latest_run_id
 from stable_baselines3.common.evaluation import evaluate_policy
 import warnings
 from environments.make_env import make_env
@@ -17,11 +15,8 @@ from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
 from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid
-from d3rlpy.algos import BCConfig
 import d3rlpy
 from d3rlpy.dataset import MDPDataset
-from sklearn.model_selection import train_test_split
-from d3rlpy.models.encoders import VectorEncoderFactory
 from d3rlpy.algos import QLearningAlgoBase
 from d3rlpy.base import LearnableConfig
 from d3rlpy.constants import ActionSpace
@@ -618,7 +613,7 @@ def d3rl_evaluation(model):
                 # Estimates the expected value of the initial states according to FQE's learned Q-function
                 'init_value': d3rlpy.metrics.InitialStateValueEstimationEvaluator(),
                 # Soft Off-Policy Classification: Measures if the policy achieves a certain return threshold
-                'soft_opc': d3rlpy.metrics.SoftOPCEvaluator(return_threshold=1000), # Adjust threshold based on env/task
+                # 'soft_opc': d3rlpy.metrics.SoftOPCEvaluator(return_threshold=1000), # Adjust threshold based on env/task
             },
             show_progress=True,
         )
@@ -689,7 +684,7 @@ n_steps_per_rollout = args.n_steps_per_rollout
 # N_EPOCHS = 10 # Since set to 10 updates per rollout
 
 START_ITER = 1000000 // args.n_steps_per_rollout
-SEARCH_INTERV = 2 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
+SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
 NUM_ITERS = 3000000 // args.n_steps_per_rollout
 N_EPOCHS = args.n_epochs
 
