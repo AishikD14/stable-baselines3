@@ -5,19 +5,24 @@ from sklearn.neighbors import NearestNeighbors
 from scipy.spatial.distance import euclidean
 from collections import OrderedDict
 import torch
-from torch.optim import Adam
 import time
-import os
-from stable_baselines3.common.utils import get_latest_run_id, safe_mean
+from stable_baselines3.common.utils import get_latest_run_id
 from stable_baselines3.common.evaluation import evaluate_policy
 import warnings
 from environments.make_env import make_env
 import pandas as pd
-from stable_baselines3.common.fqe import FQE
+# from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
 from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum
 from stable_baselines3.common.vec_env import SubprocVecEnv
+import d3rlpy
+from d3rlpy.dataset import MDPDataset
+from d3rlpy.algos import QLearningAlgoBase
+from d3rlpy.base import LearnableConfig
+from d3rlpy.constants import ActionSpace
+import matplotlib.pyplot as plt
+from d3rlpy.torch_utility import TorchMiniBatch, TorchObservation
 
 warnings.filterwarnings("ignore")
 
@@ -498,6 +503,137 @@ def advantage_evaluation(model, horizon=1000):
     # print(f'q_pred: {q_pred}, q_loss: {q_loss}')
     return q_pred, q_loss
 
+# PPO Warppaer to wrap our empty space agent for calculating FQE
+class PPOQWrapper(QLearningAlgoBase):
+    def __init__(self, ppo_policy):
+        super().__init__(config=LearnableConfig(), device=str(ppo_policy.device), enable_ddp=False)
+        self.ppo = ppo_policy
+        self._action_space = self.get_action_type()  # Explicitly set action space
+        self.device = str(ppo_policy.device) # Store device for consistency
+        print(f"PPOQWrapper initialized on device: {self.device}")
+
+    def get_action_type(self) -> ActionSpace:
+        return ActionSpace.CONTINUOUS # Default or raise error
+
+    # --- Critical Overrides ---
+    @torch.no_grad()
+    def predict_best_action(self, x: TorchObservation) -> torch.Tensor:
+        """Directly use PPO's policy without relying on _impl."""
+        if isinstance(x, (list, tuple)):  # Handle complex observations
+            x = [xi.to(self.device) for xi in x]
+        else:
+            x = x.to(self.device)
+        
+        # Convert to numpy for SB3 compatibility
+        x_np = x.cpu().numpy() if isinstance(x, torch.Tensor) else x
+        actions, _ = self.ppo.predict(x_np, deterministic=True)
+        return torch.as_tensor(actions, device=self.device)
+
+    @torch.no_grad()
+    def predict_value(self, x: TorchObservation, action: torch.Tensor) -> torch.Tensor:
+        """Directly access PPO's critic network."""
+        # Use the critic network as in your original code
+        if hasattr(self.ppo.policy, 'value_net'):
+            return self.ppo.policy.value_net(x)
+        else:
+            raise AttributeError("PPO critic network not found")
+
+    # --- Required Base Class Methods ---
+    def inner_create_impl(self, observation_shape, action_size):
+        # Directly use PPO networks instead of dummy
+        self._impl = self  # Bypass d3rlpy's impl requirement
+
+    def update(self, batch: TorchMiniBatch) -> dict:
+        """No-op since PPO isn't being trained."""
+        return {}
+
+# Method for evaluating the FQE using d3rlpy
+def d3rl_evaluation(model):
+    # print(model.replay_buffer.observations.shape)
+    # print(model.replay_buffer.actions.shape)
+    # print(model.replay_buffer.rewards.shape)
+    # print(model.replay_buffer.dones.shape)
+
+    # terminals = model.replay_buffer.dones
+
+    # print("[INFO] Forcing terminal flags every", args.n_steps_per_rollout, "steps.")
+    # terminals = np.zeros_like(model.replay_buffer.rewards, dtype=bool)
+    # terminals[args.n_steps_per_rollout - 1 :: args.n_steps_per_rollout] = True
+
+    # Flatten the replay buffer data
+    observations = model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1])
+    actions = model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1])
+    rewards = model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1])
+    terminals = model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+    # terminals =terminals.reshape(-1, terminals.shape[-1])
+
+    # print("Observations shape:", observations.shape)
+    # print("Actions shape:", actions.shape)
+    # print("Rewards shape:", rewards.shape)
+    # print("Terminals shape:", terminals.shape)
+
+    # Build and return the MDPDataset
+    dataset = MDPDataset(
+        observations=observations,
+        actions=actions,
+        rewards=rewards,
+        terminals=terminals
+    )
+
+    try:
+        ppo_wrapper = PPOQWrapper(model)
+
+        # 4. Build the wrapper internals using dataset info
+        ppo_wrapper.build_with_dataset(dataset)
+
+    except Exception as e:
+        print(f"Error creating or building the PPOQWrapper: {e}")
+        import traceback
+        traceback.print_exc()
+        exit()
+
+    try:
+        fqe = d3rlpy.ope.FQE(
+            algo=ppo_wrapper, # Pass the wrapper instance
+            config=d3rlpy.ope.FQEConfig(
+                learning_rate=3e-4,         # Learning rate for FQE's internal Q-network
+                target_update_interval=100, # How often to update FQE's target network
+            )
+        )
+
+        print("--------------------------------------------------------------------------------")
+        print("Fitting d3rlpy FQE...")
+
+        # Consider using a smaller number of steps for initial testing
+        N_STEPS = 10000 # 10000
+        N_STEPS_PER_EPOCH = 1000 # 1000
+
+        output = fqe.fit(
+            dataset,
+            n_steps=N_STEPS,
+            n_steps_per_epoch=N_STEPS_PER_EPOCH,
+            evaluators={
+                # Estimates the expected value of the initial states according to FQE's learned Q-function
+                'init_value': d3rlpy.metrics.InitialStateValueEstimationEvaluator(),
+                # Soft Off-Policy Classification: Measures if the policy achieves a certain return threshold
+                # 'soft_opc': d3rlpy.metrics.SoftOPCEvaluator(return_threshold=1000), # Adjust threshold based on env/task
+            },
+            show_progress=True,
+        )
+
+        print("\nFQE Fitting completed.")
+
+        # The primary result is often the initial state value estimate
+        initial_state_value = output[-1][1]['init_value'] # Get from the last epoch's results
+        print(f"Estimated Initial State Value: {initial_state_value}")
+
+        return initial_state_value
+
+    except Exception as e:
+        print(f"Error during FQE configuration or fitting: {e}")
+        import traceback
+        traceback.print_exc()
+
 # ------------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
@@ -505,7 +641,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
@@ -513,7 +649,7 @@ if __name__ == "__main__":
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
-    env_name = "Pendulum-v1" # For pendulum (single goal task)
+    # env_name = "Pendulum-v1" # For pendulum (single goal task)
 
     # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -583,7 +719,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_baseline"
+    exp = "PPO_test"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -688,10 +824,10 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = True
+    normal_train = False
     use_ANN = False
     ANN_lib = "Annoy"
-    online_eval = True
+    online_eval = False
 
     distanceArray = []
     start_time = time.time()
@@ -725,7 +861,7 @@ if __name__ == "__main__":
             cum_rews = []
             best_agent_index = []
             advantage_rew = []
-            q_losses = []
+            # q_losses = []
 
             for j, a in enumerate(agents):
                 model.policy.load_state_dict(a)
@@ -738,14 +874,19 @@ if __name__ == "__main__":
 
                 # Q-function evaluation
                 if not online_eval:
-                    q_adv, q_loss = advantage_evaluation(model)
-                    advantage_rew.append(q_adv)
-                    q_losses.append(q_loss)
+                    # Advantage estimation code
+                    # q_adv, q_loss = advantage_evaluation(model)
+                    # advantage_rew.append(q_adv)
+                    # q_losses.append(q_loss)
+
+                    # d3rl FQE evaluation code
+                    init_est = d3rl_evaluation(model)
+                    advantage_rew.append(init_est)
 
             if not online_eval:
-                print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
+                # print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
                 print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
-            print(f'ave cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
+            print(f'avg cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
 
             np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
             np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
@@ -761,24 +902,39 @@ if __name__ == "__main__":
                 })
                 corr_pear = df.corr(method='pearson')
                 corr_spearman = df.corr(method='spearman')
+                corr_kendall = df.corr(method='kendall')
                 print("Pearson correlation coefficient:", corr_pear['advantage'][1])
                 print("Spearman correlation coefficient:", corr_spearman['advantage'][1])
+                print("Kendall Tau correlation coefficient:", corr_kendall['advantage']['online'])
+
+                # Code using Advantage estimiation
 
                 # Using the best agent from the top 5
-                top_5_idx = np.argsort(advantage_rew)[-5:]
-                top_5_agents = np.array(agents)[top_5_idx]
-                best_agent, best_idx, returns_trains = None, None, -float('inf')
-                dummy_env = gym.make(env_name)
-                for idx, tagent in enumerate(top_5_agents):
-                    model.policy.load_state_dict(tagent)
-                    model.policy.to(device)
-                    cur_return = evaluate_policy(model, dummy_env, n_eval_episodes=2, callback=evaluation_callback, deterministic=True)[0]
-                    if cur_return > returns_trains:
-                        returns_trains = cur_return
-                        best_idx = idx
-                best_agent = top_5_agents[best_idx]
+                # top_5_idx = np.argsort(advantage_rew)[-5:]
+                # top_5_agents = np.array(agents)[top_5_idx]
+                # best_agent, best_idx, returns_trains = None, None, -float('inf')
+                # dummy_env = gym.make(env_name)
+                # for idx, tagent in enumerate(top_5_agents):
+                #     model.policy.load_state_dict(tagent)
+                #     model.policy.to(device)
+                #     cur_return = evaluate_policy(model, dummy_env, n_eval_episodes=2, callback=evaluation_callback, deterministic=True)[0]
+                #     if cur_return > returns_trains:
+                #         returns_trains = cur_return
+                #         best_idx = idx
+                # best_agent = top_5_agents[best_idx]
 
-                print(f'the best agent: {best_idx}, avg policy: {returns_trains}')
+                # print(f'the best agent: {best_idx}, avg policy: {returns_trains}')
+                # best_agent_index.append(best_idx)
+                # np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+                # load_state_dict(model, best_agent)
+
+                # -----------------------------------------------------------------------------
+
+                # Code using d3rlpy FQE
+
+                best_idx = np.argsort(advantage_rew)[-1]
+                best_agent = agents[best_idx]
+                print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}')
                 best_agent_index.append(best_idx)
                 np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
                 load_state_dict(model, best_agent)
@@ -787,7 +943,7 @@ if __name__ == "__main__":
             if online_eval:
                 best_idx = np.argsort(cum_rews)[-1]
                 best_agent = agents[best_idx]
-                print(f'the best agent: {best_idx}, avg policy: {cum_rews[best_idx]}')
+                print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}')
                 best_agent_index.append(best_idx)
                 np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
                 load_state_dict(model, best_agent)
