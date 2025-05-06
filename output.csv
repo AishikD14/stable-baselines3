@@ -138,6 +138,7 @@ PPO_1, ppo_init_1M_out, ppo_ant_1M.zip; PPO Init for 1M steps with Xinyu hyperpa
 HalfCheetah-v5
 ----------------
 PPO_1, ppo_init_1M_out, ppo_half_cheetah_1M.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
+PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, espace2, Ongoing
 ----------------
 Walker2d-v5
 ----------------
