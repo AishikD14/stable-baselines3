@@ -3,3 +3,19 @@ Log Name, Output Name, Description, JobId, Status
 Ant-v5
 ----------------
 PPO_neighbor_search_random_walk_1, ppo_ns_random_walk_fqe_out, PPO_neighbor_search_random_walk & FQE with 60 iterations & every other point; gamma=0.3, exp1, Ongoing
+----------------
+HalfCheetah-v5
+----------------
+PPO_neighbor_search_random_walk_1, ppo_ns_random_walk_fqe_out, PPO_neighbor_search_random_walk & FQE with 60 iterations & every other point; gamma=0.3
+----------------
+Walker2d-v5
+----------------
+PPO_neighbor_search_random_walk_1, ppo_ns_random_walk_fqe_out, PPO_neighbor_search_random_walk & FQE with 60 iterations & every other point; gamma=0.3, exp2, Ongoing
+-----------------
+Swimmer-v5
+-----------------
+PPO_neighbor_search_random_walk_1, ppo_ns_random_walk_fqe_out, PPO_neighbor_search_random_walk & FQE with 60 iterations & every other point; gamma=0.3, exp3, Ongoing
+----------------
+Humanoid-v5
+----------------
+PPO_neighbor_search_random_walk_1, ppo_ns_random_walk_fqe_out, PPO_neighbor_search_random_walk & FQE with 60 iterations & every other point; gamma=0.3, exp4, Ongoing
