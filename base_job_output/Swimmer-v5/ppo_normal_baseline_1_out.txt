@@ -1,0 +1,3918 @@
+No devices were found
+Creating multiple envs -  4
+---------------------------------
+Environment created
+Box(-1.0, 1.0, (2,), float32) Box(-inf, inf, (8,), float64)
+Loading Initial saved model
+Model loaded
+Loading replay buffer
+Replay buffer loaded
+Replay buffer shape:  (25000, 4, 8) (25000, 4, 2) (25000, 4) (25000, 4)
+Starting evaluation
+976
+avg return on policy: 157.31376151715725
+977
+avg return on policy: 148.99350320964808
+978
+avg return on policy: 152.4634585382753
+979
+avg return on policy: 159.1075307812853
+980
+avg return on policy: 140.1300617333079
+981
+avg return on policy: 160.43808320062269
+982
+avg return on policy: 156.07035491463301
+983
+avg return on policy: 157.4290085896072
+984
+avg return on policy: 135.64054677847716
+985
+avg return on policy: 149.7447396887021
+986
+avg return on policy: 144.60402127520044
+987
+avg return on policy: 156.4662445095844
+988
+avg return on policy: 159.0677032572227
+989
+avg return on policy: 151.56197331282854
+990
+avg return on policy: 157.6247058054412
+991
+avg return on policy: 150.97917646732432
+992
+avg return on policy: 157.48290224880733
+993
+avg return on policy: 156.02145130937654
+994
+avg return on policy: 138.9634648296698
+995
+avg return on policy: 156.71462674954032
+996
+avg return on policy: 157.4315331221559
+997
+avg return on policy: 156.50027285751048
+998
+avg return on policy: 151.1975592396769
+999
+avg return on policy: 146.44702803565374
+1000
+avg return on policy: 157.7858741235116
+1001
+avg return on policy: 155.04259905756214
+1002
+avg return on policy: 141.7251358410936
+1003
+avg return on policy: 140.22129601941808
+1004
+avg return on policy: 151.03134214849806
+1005
+avg return on policy: 159.66858865203207
+1006
+avg return on policy: 143.66608978496515
+1007
+avg return on policy: 149.86186261812608
+1008
+avg return on policy: 155.93427312152176
+1009
+avg return on policy: 146.24896291599018
+1010
+avg return on policy: 139.40703790980265
+1011
+avg return on policy: 151.44772231354557
+1012
+avg return on policy: 154.06537546180698
+1013
+avg return on policy: 133.5014583672021
+1014
+avg return on policy: 141.81985260040048
+1015
+avg return on policy: 155.37198367525343
+1016
+avg return on policy: 146.2539242913733
+1017
+avg return on policy: 155.01242998279375
+1018
+avg return on policy: 152.54040772339067
+1019
+avg return on policy: 158.4895141087339
+1020
+avg return on policy: 147.76159974091823
+1021
+avg return on policy: 151.94964072537238
+1022
+avg return on policy: 157.9574120827461
+1023
+avg return on policy: 156.44181088722766
+1024
+avg return on policy: 154.41481984758562
+1025
+avg return on policy: 134.61774318530962
+1026
+avg return on policy: 137.652011591738
+1027
+avg return on policy: 151.3330158744981
+1028
+avg return on policy: 143.39969765201806
+1029
+avg return on policy: 155.92375554552714
+1030
+avg return on policy: 142.96802403342483
+1031
+avg return on policy: 137.13537100129915
+1032
+avg return on policy: 145.3611185690627
+1033
+avg return on policy: 142.56961846260717
+1034
+avg return on policy: 156.6716640124622
+1035
+avg return on policy: 153.50900045926485
+1036
+avg return on policy: 145.01932360504222
+1037
+avg return on policy: 142.34324596326243
+1038
+avg return on policy: 152.13724764918058
+1039
+avg return on policy: 158.2902896757702
+1040
+avg return on policy: 156.29750638503842
+1041
+avg return on policy: 142.19354818775454
+1042
+avg return on policy: 143.7718222352269
+1043
+avg return on policy: 140.28698031240674
+1044
+avg return on policy: 146.47933327461575
+1045
+avg return on policy: 141.73856744890728
+1046
+avg return on policy: 157.26794315884104
+1047
+avg return on policy: 151.8274933644117
+1048
+avg return on policy: 147.3482769324047
+1049
+avg return on policy: 144.3444970765568
+1050
+avg return on policy: 147.5753562925324
+1051
+avg return on policy: 149.17031067557943
+1052
+avg return on policy: 148.80425043650996
+1053
+avg return on policy: 137.3968954414159
+1054
+avg return on policy: 154.93944091541502
+1055
+avg return on policy: 153.66383145924644
+1056
+avg return on policy: 138.55692273811746
+1057
+avg return on policy: 153.3013295445395
+1058
+avg return on policy: 155.99500628979277
+1059
+avg return on policy: 152.18795627573937
+1060
+avg return on policy: 139.7591139724269
+1061
+avg return on policy: 148.7509276161613
+1062
+avg return on policy: 138.22854107758033
+1063
+avg return on policy: 154.81018720584817
+1064
+avg return on policy: 151.8275973535544
+1065
+avg return on policy: 148.34764095262634
+1066
+avg return on policy: 157.44049280714418
+1067
+avg return on policy: 141.5458652811793
+1068
+avg return on policy: 152.5340666541333
+1069
+avg return on policy: 149.44093518876744
+1070
+avg return on policy: 145.88901776552441
+1071
+avg return on policy: 148.89418985286986
+1072
+avg return on policy: 152.90345530329193
+1073
+avg return on policy: 139.9387799665047
+1074
+avg return on policy: 150.85021540512076
+1075
+avg return on policy: 139.86363197099413
+1076
+avg return on policy: 143.4677439186033
+1077
+avg return on policy: 155.1034254337404
+1078
+avg return on policy: 141.3706447783844
+1079
+avg return on policy: 150.29178531317345
+1080
+avg return on policy: 156.34424021788192
+1081
+avg return on policy: 141.98795634814363
+1082
+avg return on policy: 138.57382459488394
+1083
+avg return on policy: 141.22492106798632
+1084
+avg return on policy: 156.7488355196167
+1085
+avg return on policy: 155.29678676528124
+1086
+avg return on policy: 147.39976337966866
+1087
+avg return on policy: 150.06131054538182
+1088
+avg return on policy: 154.4385919323608
+1089
+avg return on policy: 136.8157550047362
+1090
+avg return on policy: 153.6867307374414
+1091
+avg return on policy: 149.6028300095862
+1092
+avg return on policy: 147.20029308328938
+1093
+avg return on policy: 137.88667832004117
+1094
+avg return on policy: 148.60755167724665
+1095
+avg return on policy: 147.47506691069714
+1096
+avg return on policy: 145.48802761418463
+1097
+avg return on policy: 152.5028661436273
+1098
+avg return on policy: 149.86850620656364
+1099
+avg return on policy: 143.62609488639308
+1100
+avg return on policy: 155.32130569057023
+1101
+avg return on policy: 136.22475939660413
+1102
+avg return on policy: 140.4275776128169
+1103
+avg return on policy: 135.78114346312296
+1104
+avg return on policy: 141.13685969495052
+1105
+avg return on policy: 146.2217924733487
+1106
+avg return on policy: 135.99072642830575
+1107
+avg return on policy: 151.42405635279508
+1108
+avg return on policy: 139.53653484409872
+1109
+avg return on policy: 153.13810340513672
+1110
+avg return on policy: 144.79974741486646
+1111
+avg return on policy: 140.29455747699015
+1112
+avg return on policy: 146.4670287952349
+1113
+avg return on policy: 150.9086079276005
+1114
+avg return on policy: 155.63433180078331
+1115
+avg return on policy: 148.58590083705758
+1116
+avg return on policy: 140.1655834975742
+1117
+avg return on policy: 153.45384245415246
+1118
+avg return on policy: 145.6672755944309
+1119
+avg return on policy: 148.63365505542302
+1120
+avg return on policy: 148.07092593322474
+1121
+avg return on policy: 153.70052388024476
+1122
+avg return on policy: 148.61070507299885
+1123
+avg return on policy: 149.2278088166508
+1124
+avg return on policy: 150.7563626652542
+1125
+avg return on policy: 141.46379896541325
+1126
+avg return on policy: 143.66410423066293
+1127
+avg return on policy: 154.21172798276618
+1128
+avg return on policy: 138.15269274930273
+1129
+avg return on policy: 148.4033333474133
+1130
+avg return on policy: 144.21098880770043
+1131
+avg return on policy: 145.7089531374365
+1132
+avg return on policy: 140.91923356528537
+1133
+avg return on policy: 142.99245448520418
+1134
+avg return on policy: 140.40681006238108
+1135
+avg return on policy: 146.59496655279898
+1136
+avg return on policy: 151.99496015743043
+1137
+avg return on policy: 146.81650460438343
+1138
+avg return on policy: 146.44149965666986
+1139
+avg return on policy: 145.7198225503494
+1140
+avg return on policy: 150.48818318971038
+1141
+avg return on policy: 150.13014532335418
+1142
+avg return on policy: 141.1633531912795
+1143
+avg return on policy: 145.37073051030654
+1144
+avg return on policy: 146.11076198187044
+1145
+avg return on policy: 146.6691054769567
+1146
+avg return on policy: 148.09995142035982
+1147
+avg return on policy: 149.87349333009695
+1148
+avg return on policy: 143.96372532263612
+1149
+avg return on policy: 148.0004950330956
+1150
+avg return on policy: 144.73028514326725
+1151
+avg return on policy: 140.3415532691334
+1152
+avg return on policy: 147.0265421346896
+1153
+avg return on policy: 146.70561721333877
+1154
+avg return on policy: 139.00660813909863
+1155
+avg return on policy: 144.51153961739325
+1156
+avg return on policy: 151.3879351582267
+1157
+avg return on policy: 146.3190745832399
+1158
+avg return on policy: 149.25707240276714
+1159
+avg return on policy: 148.74743992100085
+1160
+avg return on policy: 147.3285917512705
+1161
+avg return on policy: 151.40581100653583
+1162
+avg return on policy: 144.988033616244
+1163
+avg return on policy: 140.81281805793603
+1164
+avg return on policy: 154.2160427505488
+1165
+avg return on policy: 140.9693373037396
+1166
+avg return on policy: 146.2346867157903
+1167
+avg return on policy: 151.21090263361182
+1168
+avg return on policy: 145.01777711280093
+1169
+avg return on policy: 155.0069957704291
+1170
+avg return on policy: 139.06247447109766
+1171
+avg return on policy: 151.19529267148724
+1172
+avg return on policy: 154.55041265399137
+1173
+avg return on policy: 151.04322851213325
+1174
+avg return on policy: 157.1910034279871
+1175
+avg return on policy: 153.61818789264774
+1176
+avg return on policy: 151.0494137885152
+1177
+avg return on policy: 142.14851635445234
+1178
+avg return on policy: 146.7070865440428
+1179
+avg return on policy: 157.0857075470607
+1180
+avg return on policy: 151.6146832501911
+1181
+avg return on policy: 151.0349898951704
+1182
+avg return on policy: 144.29047512997522
+1183
+avg return on policy: 152.67192430324803
+1184
+avg return on policy: 153.62765110822318
+1185
+avg return on policy: 142.82065663526797
+1186
+avg return on policy: 149.75445706362103
+1187
+avg return on policy: 151.0283460109849
+1188
+avg return on policy: 150.68026632242865
+1189
+avg return on policy: 157.26742217061107
+1190
+avg return on policy: 152.3510993641444
+1191
+avg return on policy: 143.72907242987404
+1192
+avg return on policy: 148.11113758661273
+1193
+avg return on policy: 146.1432653717001
+1194
+avg return on policy: 137.2464842789718
+1195
+avg return on policy: 149.79553794359038
+1196
+avg return on policy: 145.4269934127717
+1197
+avg return on policy: 149.6465684935551
+1198
+avg return on policy: 143.3851133484143
+1199
+avg return on policy: 137.3203758404052
+1200
+avg return on policy: 149.33578643181795
+1201
+avg return on policy: 151.40304671999453
+1202
+avg return on policy: 149.51443242431012
+1203
+avg return on policy: 149.76408668266424
+1204
+avg return on policy: 141.5751955305434
+1205
+avg return on policy: 143.19236277160584
+1206
+avg return on policy: 138.68935578715403
+1207
+avg return on policy: 147.8378827729383
+1208
+avg return on policy: 149.7058824224821
+1209
+avg return on policy: 151.3665967223601
+1210
+avg return on policy: 155.4369364662358
+1211
+avg return on policy: 153.1535981723541
+1212
+avg return on policy: 155.815563553043
+1213
+avg return on policy: 149.33983409505507
+1214
+avg return on policy: 155.11271690601424
+1215
+avg return on policy: 145.91107461815454
+1216
+avg return on policy: 147.41029552979987
+1217
+avg return on policy: 148.0386853588013
+1218
+avg return on policy: 155.32254635991103
+1219
+avg return on policy: 148.60706581774855
+1220
+avg return on policy: 148.66900324134903
+1221
+avg return on policy: 157.78387306705847
+1222
+avg return on policy: 151.94330581709883
+1223
+avg return on policy: 143.5470091446017
+1224
+avg return on policy: 150.1772384463388
+1225
+avg return on policy: 139.89365561534586
+1226
+avg return on policy: 143.15635558536795
+1227
+avg return on policy: 142.91373424887857
+1228
+avg return on policy: 150.71595824818084
+1229
+avg return on policy: 146.99147429712556
+1230
+avg return on policy: 150.47773197776368
+1231
+avg return on policy: 145.71000024344139
+1232
+avg return on policy: 152.66284151150572
+1233
+avg return on policy: 149.09148792641338
+1234
+avg return on policy: 141.43289023362067
+1235
+avg return on policy: 159.04396925271612
+1236
+avg return on policy: 155.74948858456986
+1237
+avg return on policy: 155.9902955260894
+1238
+avg return on policy: 146.62508646302686
+1239
+avg return on policy: 140.43702189317955
+1240
+avg return on policy: 138.62295122349556
+1241
+avg return on policy: 151.83665075693457
+1242
+avg return on policy: 138.0993416331029
+1243
+avg return on policy: 144.41057870398848
+1244
+avg return on policy: 150.65211897552518
+1245
+avg return on policy: 143.3313160988878
+1246
+avg return on policy: 141.59897593645962
+1247
+avg return on policy: 139.56476785206942
+1248
+avg return on policy: 141.63537928919894
+1249
+avg return on policy: 153.2243349715818
+1250
+avg return on policy: 151.465818792715
+1251
+avg return on policy: 151.77813422900692
+1252
+avg return on policy: 150.24341422841215
+1253
+avg return on policy: 158.46112009087355
+1254
+avg return on policy: 154.46770878624264
+1255
+avg return on policy: 154.1998870515009
+1256
+avg return on policy: 150.38044581903952
+1257
+avg return on policy: 144.20954369447847
+1258
+avg return on policy: 153.59779727636376
+1259
+avg return on policy: 146.87681777903563
+1260
+avg return on policy: 144.8331461167673
+1261
+avg return on policy: 154.74133287412153
+1262
+avg return on policy: 145.57708320825475
+1263
+avg return on policy: 152.11896033612888
+1264
+avg return on policy: 147.1400827250759
+1265
+avg return on policy: 139.73562085675232
+1266
+avg return on policy: 141.30037711249696
+1267
+avg return on policy: 140.39219826683075
+1268
+avg return on policy: 142.7187814918691
+1269
+avg return on policy: 153.51381789484387
+1270
+avg return on policy: 140.82319761880714
+1271
+avg return on policy: 143.69979857162858
+1272
+avg return on policy: 149.03549011564178
+1273
+avg return on policy: 141.16065322975047
+1274
+avg return on policy: 142.331530210076
+1275
+avg return on policy: 152.86935119578993
+1276
+avg return on policy: 150.39727326174994
+1277
+avg return on policy: 145.92319881246468
+1278
+avg return on policy: 145.5250570859902
+1279
+avg return on policy: 147.44212744264988
+1280
+avg return on policy: 149.213718881716
+1281
+avg return on policy: 146.42838688332316
+1282
+avg return on policy: 146.9602642468118
+1283
+avg return on policy: 145.7820818633064
+1284
+avg return on policy: 140.09689904130013
+1285
+avg return on policy: 145.45652968378832
+1286
+avg return on policy: 145.9708331442748
+1287
+avg return on policy: 153.44494459891425
+1288
+avg return on policy: 142.9726751466128
+1289
+avg return on policy: 149.51881418459993
+1290
+avg return on policy: 143.4998185509698
+1291
+avg return on policy: 147.61741362469274
+1292
+avg return on policy: 148.41455757601736
+1293
+avg return on policy: 144.27758519153795
+1294
+avg return on policy: 144.191598764078
+1295
+avg return on policy: 152.48145145508818
+1296
+avg return on policy: 147.9304197348578
+1297
+avg return on policy: 142.73056563884563
+1298
+avg return on policy: 149.40441653647702
+1299
+avg return on policy: 144.95461606682355
+1300
+avg return on policy: 151.059097416323
+1301
+avg return on policy: 152.10260771721707
+1302
+avg return on policy: 138.19168112471317
+1303
+avg return on policy: 142.86596853724748
+1304
+avg return on policy: 150.97475037102384
+1305
+avg return on policy: 155.8661537327922
+1306
+avg return on policy: 151.6815956438892
+1307
+avg return on policy: 144.6180106699157
+1308
+avg return on policy: 141.7704316161519
+1309
+avg return on policy: 146.07117923956642
+1310
+avg return on policy: 151.99836392889415
+1311
+avg return on policy: 149.11200672784852
+1312
+avg return on policy: 153.4733434164215
+1313
+avg return on policy: 154.10424525433763
+1314
+avg return on policy: 150.97563097116543
+1315
+avg return on policy: 156.49699498221523
+1316
+avg return on policy: 145.28122243298506
+1317
+avg return on policy: 143.5284679811366
+1318
+avg return on policy: 148.0483788534638
+1319
+avg return on policy: 144.30702549374666
+1320
+avg return on policy: 143.62793483521375
+1321
+avg return on policy: 153.39380754125887
+1322
+avg return on policy: 142.56926047702723
+1323
+avg return on policy: 152.83958434366653
+1324
+avg return on policy: 144.69332741625183
+1325
+avg return on policy: 144.9494024733655
+1326
+avg return on policy: 144.41478885010397
+1327
+avg return on policy: 149.67623174594726
+1328
+avg return on policy: 147.59705226591333
+1329
+avg return on policy: 148.382694539705
+1330
+avg return on policy: 145.29870409808657
+1331
+avg return on policy: 149.17778562726392
+1332
+avg return on policy: 146.84958843806143
+1333
+avg return on policy: 141.0294820355982
+1334
+avg return on policy: 151.73199136624672
+1335
+avg return on policy: 143.96152941905464
+1336
+avg return on policy: 147.17116873810247
+1337
+avg return on policy: 135.6687765250041
+1338
+avg return on policy: 135.2031732677458
+1339
+avg return on policy: 145.80276950761404
+1340
+avg return on policy: 145.78689927159394
+1341
+avg return on policy: 149.60040287859974
+1342
+avg return on policy: 147.15162974052177
+1343
+avg return on policy: 136.8211516680319
+1344
+avg return on policy: 137.58697823471184
+1345
+avg return on policy: 153.73528517425908
+1346
+avg return on policy: 151.77551796974947
+1347
+avg return on policy: 149.01157047271573
+1348
+avg return on policy: 155.34788633301366
+1349
+avg return on policy: 155.94506521934363
+1350
+avg return on policy: 142.79641686896647
+1351
+avg return on policy: 148.11932742674082
+1352
+avg return on policy: 143.49157351599754
+1353
+avg return on policy: 142.18372085711252
+1354
+avg return on policy: 155.63261663441725
+1355
+avg return on policy: 153.47631039242188
+1356
+avg return on policy: 144.27707276491762
+1357
+avg return on policy: 140.68655514118487
+1358
+avg return on policy: 139.87649260508672
+1359
+avg return on policy: 136.51989021073928
+1360
+avg return on policy: 139.73398786112963
+1361
+avg return on policy: 146.22479184396664
+1362
+avg return on policy: 154.01111771375912
+1363
+avg return on policy: 153.21007532088677
+1364
+avg return on policy: 145.41681741206506
+1365
+avg return on policy: 139.1839493493164
+1366
+avg return on policy: 154.85969521696995
+1367
+avg return on policy: 151.80296458615553
+1368
+avg return on policy: 141.1555989903447
+1369
+avg return on policy: 153.84082733283662
+1370
+avg return on policy: 144.64797331105942
+1371
+avg return on policy: 141.22998562897988
+1372
+avg return on policy: 153.63673393131086
+1373
+avg return on policy: 156.47415967667607
+1374
+avg return on policy: 156.93827604139457
+1375
+avg return on policy: 153.46884348500387
+1376
+avg return on policy: 152.58764832826319
+1377
+avg return on policy: 139.90688681118732
+1378
+avg return on policy: 152.8511398715099
+1379
+avg return on policy: 138.2643176206716
+1380
+avg return on policy: 151.48458232559685
+1381
+avg return on policy: 146.03248130934517
+1382
+avg return on policy: 156.85911302632087
+1383
+avg return on policy: 154.85050030625894
+1384
+avg return on policy: 152.12908535982214
+1385
+avg return on policy: 151.08916330899123
+1386
+avg return on policy: 150.06050252711873
+1387
+avg return on policy: 147.115883307448
+1388
+avg return on policy: 146.52744922102784
+1389
+avg return on policy: 140.46663274289804
+1390
+avg return on policy: 147.77823369440497
+1391
+avg return on policy: 157.66686200218655
+1392
+avg return on policy: 142.26273354070096
+1393
+avg return on policy: 138.52638599267198
+1394
+avg return on policy: 138.7940400365378
+1395
+avg return on policy: 144.21516561601254
+1396
+avg return on policy: 142.31395005470551
+1397
+avg return on policy: 150.0234125168503
+1398
+avg return on policy: 153.78330563325179
+1399
+avg return on policy: 150.2008409986054
+1400
+avg return on policy: 148.52915763490958
+1401
+avg return on policy: 157.53730065472192
+1402
+avg return on policy: 151.70762154672744
+1403
+avg return on policy: 151.53315938593042
+1404
+avg return on policy: 142.74966607219778
+1405
+avg return on policy: 153.3579862391679
+1406
+avg return on policy: 140.8641887566795
+1407
+avg return on policy: 147.38957365344734
+1408
+avg return on policy: 153.8434203655463
+1409
+avg return on policy: 151.92735496189854
+1410
+avg return on policy: 150.76447772798915
+1411
+avg return on policy: 139.17267219719042
+1412
+avg return on policy: 143.33501104903547
+1413
+avg return on policy: 148.53276599080553
+1414
+avg return on policy: 156.89668180897675
+1415
+avg return on policy: 156.32527941453125
+1416
+avg return on policy: 158.86329148142391
+1417
+avg return on policy: 158.84552623908363
+1418
+avg return on policy: 148.5201054650073
+1419
+avg return on policy: 156.95936840391906
+1420
+avg return on policy: 154.31928631217627
+1421
+avg return on policy: 157.175552896682
+1422
+avg return on policy: 153.99607503842904
+1423
+avg return on policy: 156.14054780894585
+1424
+avg return on policy: 141.03763182470306
+1425
+avg return on policy: 158.0079955644572
+1426
+avg return on policy: 153.79790604260089
+1427
+avg return on policy: 135.60372709410672
+1428
+avg return on policy: 146.32386831154733
+1429
+avg return on policy: 157.70790109196153
+1430
+avg return on policy: 149.88899553280459
+1431
+avg return on policy: 137.32048322279172
+1432
+avg return on policy: 156.01682504334414
+1433
+avg return on policy: 147.36568413463212
+1434
+avg return on policy: 151.77359472327112
+1435
+avg return on policy: 152.57861706763575
+1436
+avg return on policy: 148.9662374635166
+1437
+avg return on policy: 145.6435029869726
+1438
+avg return on policy: 151.02196675118273
+1439
+avg return on policy: 144.03850343479616
+1440
+avg return on policy: 149.59180984669027
+1441
+avg return on policy: 151.3935074125108
+1442
+avg return on policy: 140.8898526332778
+1443
+avg return on policy: 149.3391305582534
+1444
+avg return on policy: 139.68158005217924
+1445
+avg return on policy: 158.13312952786336
+1446
+avg return on policy: 152.8640272187753
+1447
+avg return on policy: 155.84138040959328
+1448
+avg return on policy: 157.83491196112905
+1449
+avg return on policy: 156.26014561194282
+1450
+avg return on policy: 153.45409772973008
+1451
+avg return on policy: 151.59294658522685
+1452
+avg return on policy: 139.4712879977019
+1453
+avg return on policy: 151.29166440193467
+1454
+avg return on policy: 146.19875641018652
+1455
+avg return on policy: 156.61242394650932
+1456
+avg return on policy: 159.4136120624643
+1457
+avg return on policy: 147.50848605855097
+1458
+avg return on policy: 159.58890993215195
+1459
+avg return on policy: 149.33460320175914
+1460
+avg return on policy: 147.74245650776297
+1461
+avg return on policy: 150.1575010530198
+1462
+avg return on policy: 158.65056591370853
+1463
+avg return on policy: 145.73890891989177
+1464
+avg return on policy: 140.1656263721278
+1465
+avg return on policy: 136.2671682888833
+1466
+avg return on policy: 150.94159102587244
+1467
+avg return on policy: 145.2993119260734
+1468
+avg return on policy: 149.96214526312735
+1469
+avg return on policy: 153.1900835117331
+1470
+avg return on policy: 158.83431999967007
+1471
+avg return on policy: 142.7127481674416
+1472
+avg return on policy: 145.46840043253405
+1473
+avg return on policy: 143.69661279914888
+1474
+avg return on policy: 146.08620059011417
+1475
+avg return on policy: 152.4517435523762
+1476
+avg return on policy: 154.0210412495612
+1477
+avg return on policy: 156.9659780519769
+1478
+avg return on policy: 156.98044108253956
+1479
+avg return on policy: 159.60038494454002
+1480
+avg return on policy: 158.27864581677747
+1481
+avg return on policy: 154.15555410181344
+1482
+avg return on policy: 156.51848549933823
+1483
+avg return on policy: 151.49562409989952
+1484
+avg return on policy: 120.47342945110688
+1485
+avg return on policy: 159.27194136105584
+1486
+avg return on policy: 149.08572871722706
+1487
+avg return on policy: 152.25384035279583
+1488
+avg return on policy: 148.821490292917
+1489
+avg return on policy: 153.8893483302863
+1490
+avg return on policy: 157.30933904539958
+1491
+avg return on policy: 146.44455804747886
+1492
+avg return on policy: 155.29716951651355
+1493
+avg return on policy: 158.3492692303217
+1494
+avg return on policy: 141.75408551777937
+1495
+avg return on policy: 153.6845112090902
+1496
+avg return on policy: 151.1594074194162
+1497
+avg return on policy: 152.94378746012234
+1498
+avg return on policy: 160.09937611547082
+1499
+avg return on policy: 159.03221054709056
+1500
+avg return on policy: 156.89593742435545
+1501
+avg return on policy: 155.8518006103705
+1502
+avg return on policy: 153.0621421749651
+1503
+avg return on policy: 160.27366649070333
+1504
+avg return on policy: 147.55572649616684
+1505
+avg return on policy: 159.77854358620033
+1506
+avg return on policy: 145.28109572020895
+1507
+avg return on policy: 156.27446409285338
+1508
+avg return on policy: 150.17817360853425
+1509
+avg return on policy: 150.40373120749106
+1510
+avg return on policy: 142.15947248611167
+1511
+avg return on policy: 155.5620340138992
+1512
+avg return on policy: 158.33091802442013
+1513
+avg return on policy: 158.38675067839515
+1514
+avg return on policy: 151.43513105170973
+1515
+avg return on policy: 145.41974810775898
+1516
+avg return on policy: 144.88718757961385
+1517
+avg return on policy: 148.298349078503
+1518
+avg return on policy: 140.657177850809
+1519
+avg return on policy: 140.69701844313062
+1520
+avg return on policy: 146.64704123368122
+1521
+avg return on policy: 141.5036395103639
+1522
+avg return on policy: 142.68795314773504
+1523
+avg return on policy: 145.86840729350143
+1524
+avg return on policy: 158.72310492841544
+1525
+avg return on policy: 145.41917051810648
+1526
+avg return on policy: 150.5011206871865
+1527
+avg return on policy: 153.09487790581832
+1528
+avg return on policy: 143.33166125444833
+1529
+avg return on policy: 144.65334620590684
+1530
+avg return on policy: 150.5048654529403
+1531
+avg return on policy: 147.90590650647042
+1532
+avg return on policy: 149.86460953996516
+1533
+avg return on policy: 140.50138835728805
+1534
+avg return on policy: 150.65342133182645
+1535
+avg return on policy: 141.45914836858557
+1536
+avg return on policy: 155.7095373218929
+1537
+avg return on policy: 154.84754332496382
+1538
+avg return on policy: 148.506307761112
+1539
+avg return on policy: 151.2815972692146
+1540
+avg return on policy: 149.1485014287218
+1541
+avg return on policy: 156.2723404154613
+1542
+avg return on policy: 147.51995636234074
+1543
+avg return on policy: 157.91178293441564
+1544
+avg return on policy: 151.8848416512601
+1545
+avg return on policy: 151.79485219076312
+1546
+avg return on policy: 150.78799593957172
+1547
+avg return on policy: 159.09641149245337
+1548
+avg return on policy: 158.12092957657998
+1549
+avg return on policy: 140.54584432356197
+1550
+avg return on policy: 146.76733757222166
+1551
+avg return on policy: 145.36402342628597
+1552
+avg return on policy: 152.9875027030147
+1553
+avg return on policy: 143.4353102425554
+1554
+avg return on policy: 155.04040335047412
+1555
+avg return on policy: 145.6471138979796
+1556
+avg return on policy: 146.19245315376668
+1557
+avg return on policy: 151.3683214936694
+1558
+avg return on policy: 156.8067899530318
+1559
+avg return on policy: 153.5787288557635
+1560
+avg return on policy: 149.51746832004747
+1561
+avg return on policy: 148.07495965563552
+1562
+avg return on policy: 148.91105132027684
+1563
+avg return on policy: 138.66132911682857
+1564
+avg return on policy: 150.47080127138756
+1565
+avg return on policy: 156.2259332125715
+1566
+avg return on policy: 156.40832896446705
+1567
+avg return on policy: 157.72590777674029
+1568
+avg return on policy: 151.0872860574373
+1569
+avg return on policy: 155.50640787520805
+1570
+avg return on policy: 153.80236872710682
+1571
+avg return on policy: 151.59318483480072
+1572
+avg return on policy: 158.5895182778731
+1573
+avg return on policy: 148.63207654992246
+1574
+avg return on policy: 158.37603893603026
+1575
+avg return on policy: 145.1293838479384
+1576
+avg return on policy: 156.4653717032431
+1577
+avg return on policy: 152.87624572439574
+1578
+avg return on policy: 150.70948925032363
+1579
+avg return on policy: 155.1875879014551
+1580
+avg return on policy: 152.556322724565
+1581
+avg return on policy: 152.85553818158033
+1582
+avg return on policy: 152.56619263751517
+1583
+avg return on policy: 155.51201356721802
+1584
+avg return on policy: 157.39802484052322
+1585
+avg return on policy: 153.18487676122632
+1586
+avg return on policy: 149.1981636197356
+1587
+avg return on policy: 153.42157800673735
+1588
+avg return on policy: 153.8636295085197
+1589
+avg return on policy: 152.10215548645922
+1590
+avg return on policy: 140.75413707029693
+1591
+avg return on policy: 146.84156634648986
+1592
+avg return on policy: 155.79084457886862
+1593
+avg return on policy: 152.97770929461865
+1594
+avg return on policy: 154.45169462532843
+1595
+avg return on policy: 152.43446854106008
+1596
+avg return on policy: 149.10479154133296
+1597
+avg return on policy: 147.43869373749166
+1598
+avg return on policy: 145.75228401385112
+1599
+avg return on policy: 144.221224579
+1600
+avg return on policy: 154.59252698769754
+1601
+avg return on policy: 148.58152415567125
+1602
+avg return on policy: 158.98244041861415
+1603
+avg return on policy: 154.71034839846934
+1604
+avg return on policy: 156.5840617195449
+1605
+avg return on policy: 154.46965465626343
+1606
+avg return on policy: 149.3068882871547
+1607
+avg return on policy: 158.3192702769346
+1608
+avg return on policy: 158.19835871370975
+1609
+avg return on policy: 143.24488540643486
+1610
+avg return on policy: 158.7857868087558
+1611
+avg return on policy: 148.766479569524
+1612
+avg return on policy: 146.09672690011385
+1613
+avg return on policy: 153.0951282776206
+1614
+avg return on policy: 140.55336537127113
+1615
+avg return on policy: 156.20061353009484
+1616
+avg return on policy: 143.41149119033625
+1617
+avg return on policy: 152.9360924324549
+1618
+avg return on policy: 143.86169947327804
+1619
+avg return on policy: 138.1854759262259
+1620
+avg return on policy: 146.54037699253604
+1621
+avg return on policy: 143.10029900006148
+1622
+avg return on policy: 155.76782126667737
+1623
+avg return on policy: 154.37704056017108
+1624
+avg return on policy: 151.09665925264417
+1625
+avg return on policy: 154.6658352590305
+1626
+avg return on policy: 145.68525695348697
+1627
+avg return on policy: 154.59240355664494
+1628
+avg return on policy: 145.17477922958275
+1629
+avg return on policy: 148.09926297931608
+1630
+avg return on policy: 140.5043381917296
+1631
+avg return on policy: 144.21758013409212
+1632
+avg return on policy: 149.07322615788465
+1633
+avg return on policy: 149.32321613461394
+1634
+avg return on policy: 155.06174520208245
+1635
+avg return on policy: 151.5405282939166
+1636
+avg return on policy: 150.62521858902002
+1637
+avg return on policy: 149.72684136886153
+1638
+avg return on policy: 140.14939233670984
+1639
+avg return on policy: 155.38323680137916
+1640
+avg return on policy: 155.40331203467042
+1641
+avg return on policy: 148.28876773006795
+1642
+avg return on policy: 149.8628307912288
+1643
+avg return on policy: 152.42805199526737
+1644
+avg return on policy: 159.55820183051785
+1645
+avg return on policy: 154.79237754667523
+1646
+avg return on policy: 152.72539033352663
+1647
+avg return on policy: 150.5223878680122
+1648
+avg return on policy: 157.71334645213437
+1649
+avg return on policy: 159.08435942336237
+1650
+avg return on policy: 144.83985913287253
+1651
+avg return on policy: 148.43203422566282
+1652
+avg return on policy: 150.76832751929513
+1653
+avg return on policy: 146.61595127248145
+1654
+avg return on policy: 160.21700829685543
+1655
+avg return on policy: 151.07173415606107
+1656
+avg return on policy: 152.415334530566
+1657
+avg return on policy: 156.4182564328967
+1658
+avg return on policy: 158.97526965625968
+1659
+avg return on policy: 143.41632406105612
+1660
+avg return on policy: 149.41992833089878
+1661
+avg return on policy: 158.85577735544422
+1662
+avg return on policy: 157.43054707991305
+1663
+avg return on policy: 141.60325231049433
+1664
+avg return on policy: 147.66681140886539
+1665
+avg return on policy: 154.1832630127706
+1666
+avg return on policy: 154.75724226279377
+1667
+avg return on policy: 147.1393496856464
+1668
+avg return on policy: 150.65188872397124
+1669
+avg return on policy: 139.89434523242588
+1670
+avg return on policy: 149.43134249840628
+1671
+avg return on policy: 154.72003675903696
+1672
+avg return on policy: 145.27134830923205
+1673
+avg return on policy: 150.20459144131473
+1674
+avg return on policy: 145.26943835043969
+1675
+avg return on policy: 140.7287174259994
+1676
+avg return on policy: 142.72091502899949
+1677
+avg return on policy: 146.96252094918492
+1678
+avg return on policy: 151.7336506720794
+1679
+avg return on policy: 150.13817339817265
+1680
+avg return on policy: 141.14999084926913
+1681
+avg return on policy: 157.18507571867164
+1682
+avg return on policy: 159.46240539080304
+1683
+avg return on policy: 146.48011748245824
+1684
+avg return on policy: 147.17649280096313
+1685
+avg return on policy: 147.3033509889797
+1686
+avg return on policy: 158.70985902200007
+1687
+avg return on policy: 159.55123426612417
+1688
+avg return on policy: 155.71591955168276
+1689
+avg return on policy: 153.17203518925479
+1690
+avg return on policy: 154.92532448590075
+1691
+avg return on policy: 154.75631064181562
+1692
+avg return on policy: 150.53382475773336
+1693
+avg return on policy: 157.6860637945327
+1694
+avg return on policy: 149.06307262885113
+1695
+avg return on policy: 153.32982427351283
+1696
+avg return on policy: 149.1295000165411
+1697
+avg return on policy: 147.44992241172417
+1698
+avg return on policy: 147.22162309210344
+1699
+avg return on policy: 158.86249306862226
+1700
+avg return on policy: 148.69585688584868
+1701
+avg return on policy: 151.48223945735967
+1702
+avg return on policy: 142.7762406645223
+1703
+avg return on policy: 159.36807262730204
+1704
+avg return on policy: 148.71273821070824
+1705
+avg return on policy: 156.94053498368964
+1706
+avg return on policy: 158.67609871677973
+1707
+avg return on policy: 156.49007674335368
+1708
+avg return on policy: 149.11709099142738
+1709
+avg return on policy: 154.21983568434544
+1710
+avg return on policy: 159.59359444512378
+1711
+avg return on policy: 150.78011995711367
+1712
+avg return on policy: 155.51005359735728
+1713
+avg return on policy: 149.2524506232785
+1714
+avg return on policy: 153.85703190294473
+1715
+avg return on policy: 144.95322484120078
+1716
+avg return on policy: 152.74185499276882
+1717
+avg return on policy: 151.97022092298462
+1718
+avg return on policy: 149.53707499662997
+1719
+avg return on policy: 155.91717641196382
+1720
+avg return on policy: 145.72427631295065
+1721
+avg return on policy: 151.160554659071
+1722
+avg return on policy: 151.91020040521195
+1723
+avg return on policy: 151.56526242805228
+1724
+avg return on policy: 146.12467020677124
+1725
+avg return on policy: 141.1282480390635
+1726
+avg return on policy: 141.18175766571548
+1727
+avg return on policy: 141.76103851806147
+1728
+avg return on policy: 152.681111019952
+1729
+avg return on policy: 147.1972061966438
+1730
+avg return on policy: 147.9914860491257
+1731
+avg return on policy: 144.80933517706444
+1732
+avg return on policy: 144.49616365295768
+1733
+avg return on policy: 139.43869126840903
+1734
+avg return on policy: 142.52821213621817
+1735
+avg return on policy: 162.03964965433343
+1736
+avg return on policy: 157.35779766910798
+1737
+avg return on policy: 143.58822916748352
+1738
+avg return on policy: 143.97938826941
+1739
+avg return on policy: 161.49091511148183
+1740
+avg return on policy: 153.33939389659812
+1741
+avg return on policy: 147.46326314554676
+1742
+avg return on policy: 145.16670991005955
+1743
+avg return on policy: 155.35420184161674
+1744
+avg return on policy: 160.0127733761817
+1745
+avg return on policy: 157.36053680124323
+1746
+avg return on policy: 157.46775102390774
+1747
+avg return on policy: 155.53440564988398
+1748
+avg return on policy: 159.2515577943303
+1749
+avg return on policy: 161.13974449453178
+1750
+avg return on policy: 150.91562470685997
+1751
+avg return on policy: 143.51990252704505
+1752
+avg return on policy: 141.47967319929595
+1753
+avg return on policy: 144.05436729814835
+1754
+avg return on policy: 157.66414929590385
+1755
+avg return on policy: 142.96229620416003
+1756
+avg return on policy: 148.77946320032666
+1757
+avg return on policy: 156.14660557783375
+1758
+avg return on policy: 153.2595941103376
+1759
+avg return on policy: 143.87821067547887
+1760
+avg return on policy: 140.50979193300273
+1761
+avg return on policy: 149.42754623175475
+1762
+avg return on policy: 158.91930593527306
+1763
+avg return on policy: 151.93933215771065
+1764
+avg return on policy: 154.6658703967478
+1765
+avg return on policy: 161.32814653996562
+1766
+avg return on policy: 145.20023066601456
+1767
+avg return on policy: 140.5342478279627
+1768
+avg return on policy: 142.73812484505416
+1769
+avg return on policy: 137.73401352978027
+1770
+avg return on policy: 147.6806436629516
+1771
+avg return on policy: 148.48105819429955
+1772
+avg return on policy: 140.9616970060579
+1773
+avg return on policy: 159.81186905188898
+1774
+avg return on policy: 152.7357316068278
+1775
+avg return on policy: 160.16338837674007
+1776
+avg return on policy: 158.81490196414128
+1777
+avg return on policy: 161.04818483796248
+1778
+avg return on policy: 158.5048886609053
+1779
+avg return on policy: 160.0449008664868
+1780
+avg return on policy: 144.84470395247297
+1781
+avg return on policy: 149.9787057215732
+1782
+avg return on policy: 156.18400659049715
+1783
+avg return on policy: 150.09408293701898
+1784
+avg return on policy: 139.17618075903576
+1785
+avg return on policy: 147.22866059950238
+1786
+avg return on policy: 160.86275213949736
+1787
+avg return on policy: 160.60348144048683
+1788
+avg return on policy: 146.11293325880192
+1789
+avg return on policy: 159.87321467362668
+1790
+avg return on policy: 160.9323988305722
+1791
+avg return on policy: 156.15874650844628
+1792
+avg return on policy: 140.78352497763234
+1793
+avg return on policy: 159.75944136152677
+1794
+avg return on policy: 161.00560666258795
+1795
+avg return on policy: 150.860195467466
+1796
+avg return on policy: 156.58824056477167
+1797
+avg return on policy: 146.9180629595947
+1798
+avg return on policy: 160.16105415849356
+1799
+avg return on policy: 158.79336641166938
+1800
+avg return on policy: 148.0982736092969
+1801
+avg return on policy: 160.96046483858112
+1802
+avg return on policy: 148.03890983983047
+1803
+avg return on policy: 160.51087375375326
+1804
+avg return on policy: 161.33904096873263
+1805
+avg return on policy: 162.93690544886238
+1806
+avg return on policy: 151.03019527124397
+1807
+avg return on policy: 144.24685215524133
+1808
+avg return on policy: 151.4473553092274
+1809
+avg return on policy: 161.71094045591664
+1810
+avg return on policy: 155.4142201520315
+1811
+avg return on policy: 148.20498600051317
+1812
+avg return on policy: 151.28119338869925
+1813
+avg return on policy: 160.54636536067386
+1814
+avg return on policy: 162.47968223688915
+1815
+avg return on policy: 152.26872126742998
+1816
+avg return on policy: 158.0460638402538
+1817
+avg return on policy: 162.16320712180655
+1818
+avg return on policy: 141.06275424941393
+1819
+avg return on policy: 153.33889668698282
+1820
+avg return on policy: 153.82059730153236
+1821
+avg return on policy: 162.2678705598892
+1822
+avg return on policy: 151.31345005990087
+1823
+avg return on policy: 146.9361875684462
+1824
+avg return on policy: 141.71558521568878
+1825
+avg return on policy: 148.88542847898097
+1826
+avg return on policy: 152.98545555661562
+1827
+avg return on policy: 152.69201506638657
+1828
+avg return on policy: 160.82916049908138
+1829
+avg return on policy: 151.3939902159353
+1830
+avg return on policy: 149.80367092235676
+1831
+avg return on policy: 157.795404257875
+1832
+avg return on policy: 160.20515524314598
+1833
+avg return on policy: 151.71597055978063
+1834
+avg return on policy: 161.0601708300973
+1835
+avg return on policy: 156.84111941833825
+1836
+avg return on policy: 144.3752269516577
+1837
+avg return on policy: 159.81326865565472
+1838
+avg return on policy: 147.6974793013842
+1839
+avg return on policy: 149.25370841846842
+1840
+avg return on policy: 152.07424489427146
+1841
+avg return on policy: 159.7526732468037
+1842
+avg return on policy: 147.85280423604556
+1843
+avg return on policy: 151.29641107171017
+1844
+avg return on policy: 159.2348851278388
+1845
+avg return on policy: 140.823210450563
+1846
+avg return on policy: 139.74488477777606
+1847
+avg return on policy: 153.37944125018808
+1848
+avg return on policy: 151.8353357458739
+1849
+avg return on policy: 145.70410818487105
+1850
+avg return on policy: 143.79509304439372
+1851
+avg return on policy: 149.03075079039183
+1852
+avg return on policy: 142.6844327853137
+1853
+avg return on policy: 144.9003182882716
+1854
+avg return on policy: 154.25762853805392
+1855
+avg return on policy: 157.36667235657083
+1856
+avg return on policy: 145.1822974188324
+1857
+avg return on policy: 160.16223872445914
+1858
+avg return on policy: 160.69885115983232
+1859
+avg return on policy: 156.4532975964735
+1860
+avg return on policy: 153.6988893474169
+1861
+avg return on policy: 145.5420228926356
+1862
+avg return on policy: 152.68629770706886
+1863
+avg return on policy: 141.31280219888063
+1864
+avg return on policy: 160.09442070591095
+1865
+avg return on policy: 147.66220615300645
+1866
+avg return on policy: 152.53694132413014
+1867
+avg return on policy: 143.55356014881534
+1868
+avg return on policy: 162.05771951091052
+1869
+avg return on policy: 146.52455068022482
+1870
+avg return on policy: 151.19533650334503
+1871
+avg return on policy: 145.95764224395683
+1872
+avg return on policy: 154.53738025431213
+1873
+avg return on policy: 149.01726445909932
+1874
+avg return on policy: 148.8140173709112
+1875
+avg return on policy: 148.53795171151089
+1876
+avg return on policy: 150.82921602451015
+1877
+avg return on policy: 140.2335993566791
+1878
+avg return on policy: 153.67513319056846
+1879
+avg return on policy: 155.03849577569414
+1880
+avg return on policy: 149.46925516066028
+1881
+avg return on policy: 155.56708591453838
+1882
+avg return on policy: 157.45649128814125
+1883
+avg return on policy: 147.66098958266647
+1884
+avg return on policy: 159.59701179951955
+1885
+avg return on policy: 152.4104831766684
+1886
+avg return on policy: 153.03382427904202
+1887
+avg return on policy: 159.11163208881518
+1888
+avg return on policy: 150.95760265321735
+1889
+avg return on policy: 160.94835146619732
+1890
+avg return on policy: 159.7905888995582
+1891
+avg return on policy: 149.10346866954666
+1892
+avg return on policy: 153.83374641973052
+1893
+avg return on policy: 159.5692782659671
+1894
+avg return on policy: 140.3755201201761
+1895
+avg return on policy: 142.8446816869648
+1896
+avg return on policy: 142.33851473966487
+1897
+avg return on policy: 156.62442107086977
+1898
+avg return on policy: 138.47770135044019
+1899
+avg return on policy: 158.72226412227215
+1900
+avg return on policy: 140.89565744012054
+1901
+avg return on policy: 149.23986795878713
+1902
+avg return on policy: 151.24470157301118
+1903
+avg return on policy: 155.1268372640086
+1904
+avg return on policy: 145.39496334055102
+1905
+avg return on policy: 160.3449509769973
+1906
+avg return on policy: 150.73781424599812
+1907
+avg return on policy: 159.0667790309951
+1908
+avg return on policy: 148.29356505078184
+1909
+avg return on policy: 160.85891813210034
+1910
+avg return on policy: 143.77969648907137
+1911
+avg return on policy: 145.55971469156896
+1912
+avg return on policy: 147.9481590051566
+1913
+avg return on policy: 159.73812088691204
+1914
+avg return on policy: 151.20733159325064
+1915
+avg return on policy: 157.72776115402434
+1916
+avg return on policy: 143.91844665863294
+1917
+avg return on policy: 150.69836739192093
+1918
+avg return on policy: 142.29224395673097
+1919
+avg return on policy: 141.8731517235491
+1920
+avg return on policy: 159.1244049739047
+1921
+avg return on policy: 152.93375602407284
+1922
+avg return on policy: 158.49277521041998
+1923
+avg return on policy: 157.42985618892487
+1924
+avg return on policy: 152.22026340386245
+1925
+avg return on policy: 140.7777065791988
+1926
+avg return on policy: 155.13901987764913
+1927
+avg return on policy: 157.45983621197888
+1928
+avg return on policy: 147.74425977031424
+1929
+avg return on policy: 155.98431521626114
+1930
+avg return on policy: 137.42881535052913
+1931
+avg return on policy: 160.23154126701218
+1932
+avg return on policy: 159.3134931898951
+1933
+avg return on policy: 148.38349080044142
+1934
+avg return on policy: 145.25519337226248
+1935
+avg return on policy: 158.11630201524804
+1936
+avg return on policy: 145.03972805218703
+1937
+avg return on policy: 155.1636350174422
+1938
+avg return on policy: 158.21004672655206
+1939
+avg return on policy: 142.22262962101374
+1940
+avg return on policy: 158.66741070476476
+1941
+avg return on policy: 151.38741942472976
+1942
+avg return on policy: 150.93819786562526
+1943
+avg return on policy: 148.18693016402185
+1944
+avg return on policy: 136.17878636826825
+1945
+avg return on policy: 150.42823833668808
+1946
+avg return on policy: 157.4268583632769
+1947
+avg return on policy: 154.53954757408167
+1948
+avg return on policy: 153.64479254473665
+1949
+avg return on policy: 141.86650996045003
+1950
+avg return on policy: 143.32598756183188
+1951
+avg return on policy: 157.52935303203154
+1952
+avg return on policy: 148.74319687430568
+1953
+avg return on policy: 162.02589092879464
+1954
+avg return on policy: 155.80668981116122
+1955
+avg return on policy: 139.48645093016881
+1956
+avg return on policy: 146.34474222516468
+1957
+avg return on policy: 155.9128784738567
+1958
+avg return on policy: 159.0056587293358
+1959
+avg return on policy: 149.4435236236299
+1960
+avg return on policy: 153.35089973616738
+1961
+avg return on policy: 142.89160221348394
+1962
+avg return on policy: 146.68516324821917
+1963
+avg return on policy: 157.2608145858848
+1964
+avg return on policy: 143.6430910652077
+1965
+avg return on policy: 146.09950118613202
+1966
+avg return on policy: 156.9562930508256
+1967
+avg return on policy: 146.04677273876462
+1968
+avg return on policy: 159.67450104820452
+1969
+avg return on policy: 157.16886427757143
+1970
+avg return on policy: 160.00197205431758
+1971
+avg return on policy: 160.46135031024588
+1972
+avg return on policy: 138.92814728021654
+1973
+avg return on policy: 138.38523788544595
+1974
+avg return on policy: 160.26510731362433
+1975
+avg return on policy: 139.62807253063252
+1976
+avg return on policy: 158.48042167700942
+1977
+avg return on policy: 159.0933739434478
+1978
+avg return on policy: 160.85935426753184
+1979
+avg return on policy: 148.31863272318358
+1980
+avg return on policy: 154.03094906424576
+1981
+avg return on policy: 159.9256314920369
+1982
+avg return on policy: 160.95026390434307
+1983
+avg return on policy: 138.59251317668665
+1984
+avg return on policy: 162.38558221837124
+1985
+avg return on policy: 148.78427613750685
+1986
+avg return on policy: 148.4165776974362
+1987
+avg return on policy: 150.87765990579706
+1988
+avg return on policy: 138.20491164058882
+1989
+avg return on policy: 155.25639872372048
+1990
+avg return on policy: 154.58772703724745
+1991
+avg return on policy: 161.6735815894033
+1992
+avg return on policy: 161.9426127641078
+1993
+avg return on policy: 158.059342682075
+1994
+avg return on policy: 141.66670569582035
+1995
+avg return on policy: 160.28155009897304
+1996
+avg return on policy: 150.0938734320414
+1997
+avg return on policy: 144.3140095453096
+1998
+avg return on policy: 147.28902051310436
+1999
+avg return on policy: 146.5725732200519
+2000
+avg return on policy: 151.52788465801032
+2001
+avg return on policy: 139.47321895738435
+2002
+avg return on policy: 154.77756131912932
+2003
+avg return on policy: 159.04817104360916
+2004
+avg return on policy: 145.65294349336338
+2005
+avg return on policy: 160.9979856814895
+2006
+avg return on policy: 161.29092515770137
+2007
+avg return on policy: 154.7890905227613
+2008
+avg return on policy: 153.80760650191021
+2009
+avg return on policy: 156.53909384469753
+2010
+avg return on policy: 153.96088411154435
+2011
+avg return on policy: 151.64623439398724
+2012
+avg return on policy: 157.25103368873673
+2013
+avg return on policy: 147.65194718804526
+2014
+avg return on policy: 142.66292269027574
+2015
+avg return on policy: 158.67033556760137
+2016
+avg return on policy: 153.12136293350275
+2017
+avg return on policy: 159.26678275805804
+2018
+avg return on policy: 145.45256007760818
+2019
+avg return on policy: 148.37631196369696
+2020
+avg return on policy: 152.54380401465755
+2021
+avg return on policy: 160.42622969238312
+2022
+avg return on policy: 160.04736458631461
+2023
+avg return on policy: 158.60895368364888
+2024
+avg return on policy: 147.76675169318733
+2025
+avg return on policy: 150.63786804599746
+2026
+avg return on policy: 160.75735915173308
+2027
+avg return on policy: 157.08047404405042
+2028
+avg return on policy: 149.3375659745241
+2029
+avg return on policy: 160.99964366734397
+2030
+avg return on policy: 157.67154712288323
+2031
+avg return on policy: 161.19271525066438
+2032
+avg return on policy: 156.33118275795258
+2033
+avg return on policy: 146.6346954828846
+2034
+avg return on policy: 147.08565806437267
+2035
+avg return on policy: 145.96754354711513
+2036
+avg return on policy: 156.71422604597944
+2037
+avg return on policy: 140.67846137078564
+2038
+avg return on policy: 150.3460977485885
+2039
+avg return on policy: 141.29592301453172
+2040
+avg return on policy: 155.8293094994934
+2041
+avg return on policy: 144.0851339976605
+2042
+avg return on policy: 144.10618954603947
+2043
+avg return on policy: 139.95907953762102
+2044
+avg return on policy: 161.85924225960085
+2045
+avg return on policy: 148.22131933807148
+2046
+avg return on policy: 141.24550796988868
+2047
+avg return on policy: 156.35611378542612
+2048
+avg return on policy: 147.13531266352018
+2049
+avg return on policy: 151.94481466071042
+2050
+avg return on policy: 162.99048583318657
+2051
+avg return on policy: 161.27962515571562
+2052
+avg return on policy: 145.37343996247552
+2053
+avg return on policy: 163.0945500990422
+2054
+avg return on policy: 157.42437839622212
+2055
+avg return on policy: 150.56724012003107
+2056
+avg return on policy: 147.42303989946024
+2057
+avg return on policy: 151.70573693668248
+2058
+avg return on policy: 161.58609589364343
+2059
+avg return on policy: 159.7664844262823
+2060
+avg return on policy: 161.87146403213328
+2061
+avg return on policy: 161.70856024376397
+2062
+avg return on policy: 140.54938962578012
+2063
+avg return on policy: 156.09506917252858
+2064
+avg return on policy: 163.23261813341216
+2065
+avg return on policy: 156.10499804623507
+2066
+avg return on policy: 161.39826236174028
+2067
+avg return on policy: 161.27286144580478
+2068
+avg return on policy: 157.25883027242938
+2069
+avg return on policy: 162.84977338151677
+2070
+avg return on policy: 142.9721468359512
+2071
+avg return on policy: 157.0668686766849
+2072
+avg return on policy: 145.29359199621592
+2073
+avg return on policy: 158.8111570524228
+2074
+avg return on policy: 162.43862749921976
+2075
+avg return on policy: 151.30262532691367
+2076
+avg return on policy: 146.46411518178652
+2077
+avg return on policy: 156.96368571812104
+2078
+avg return on policy: 153.86627668439914
+2079
+avg return on policy: 145.9464488540327
+2080
+avg return on policy: 146.71078419114895
+2081
+avg return on policy: 141.71232905506244
+2082
+avg return on policy: 148.34467851686534
+2083
+avg return on policy: 144.00031756385735
+2084
+avg return on policy: 160.30987494596806
+2085
+avg return on policy: 157.34527055604
+2086
+avg return on policy: 160.44141807329603
+2087
+avg return on policy: 159.3255442281782
+2088
+avg return on policy: 157.0154657152463
+2089
+avg return on policy: 142.32727554472527
+2090
+avg return on policy: 158.12555593279353
+2091
+avg return on policy: 150.52613685209278
+2092
+avg return on policy: 147.52723470509366
+2093
+avg return on policy: 138.06512261907423
+2094
+avg return on policy: 156.52459962029354
+2095
+avg return on policy: 156.04404495777885
+2096
+avg return on policy: 158.84747708507595
+2097
+avg return on policy: 149.971894225867
+2098
+avg return on policy: 158.63700860534794
+2099
+avg return on policy: 160.32317669620969
+2100
+avg return on policy: 151.08865755636648
+2101
+avg return on policy: 158.34188479356519
+2102
+avg return on policy: 146.76745846919047
+2103
+avg return on policy: 139.40070913180293
+2104
+avg return on policy: 150.23676167000085
+2105
+avg return on policy: 144.77813551605576
+2106
+avg return on policy: 159.51086613915473
+2107
+avg return on policy: 159.41073357987707
+2108
+avg return on policy: 150.7394400807574
+2109
+avg return on policy: 139.70151204137645
+2110
+avg return on policy: 152.38022995133227
+2111
+avg return on policy: 156.087929214498
+2112
+avg return on policy: 155.98469564529793
+2113
+avg return on policy: 140.6755153672958
+2114
+avg return on policy: 144.57299189411685
+2115
+avg return on policy: 135.76109490885798
+2116
+avg return on policy: 150.95723549207653
+2117
+avg return on policy: 143.26683599662783
+2118
+avg return on policy: 150.34643967583315
+2119
+avg return on policy: 141.6722002957522
+2120
+avg return on policy: 147.57990350606732
+2121
+avg return on policy: 158.61194558139914
+2122
+avg return on policy: 151.00872644674885
+2123
+avg return on policy: 150.88063015272735
+2124
+avg return on policy: 144.9663687250511
+2125
+avg return on policy: 153.45342505349973
+2126
+avg return on policy: 143.7297982484115
+2127
+avg return on policy: 159.7152934872681
+2128
+avg return on policy: 142.11159920095
+2129
+avg return on policy: 147.4614899164622
+2130
+avg return on policy: 158.39405793736208
+2131
+avg return on policy: 149.73857948269392
+2132
+avg return on policy: 149.10463895698194
+2133
+avg return on policy: 151.34966494484505
+2134
+avg return on policy: 152.70097613242692
+2135
+avg return on policy: 161.42051645463587
+2136
+avg return on policy: 158.05266628121726
+2137
+avg return on policy: 159.21351751545106
+2138
+avg return on policy: 152.55422981104996
+2139
+avg return on policy: 151.9146845332272
+2140
+avg return on policy: 146.70945226956172
+2141
+avg return on policy: 160.76749304548636
+2142
+avg return on policy: 158.77780029861893
+2143
+avg return on policy: 155.17436796008658
+2144
+avg return on policy: 149.251659785828
+2145
+avg return on policy: 151.05435106290682
+2146
+avg return on policy: 150.11884278092123
+2147
+avg return on policy: 152.11773703872635
+2148
+avg return on policy: 143.18609442087313
+2149
+avg return on policy: 159.47042774098279
+2150
+avg return on policy: 146.47791459525274
+2151
+avg return on policy: 151.91236695739312
+2152
+avg return on policy: 146.2052677681493
+2153
+avg return on policy: 150.18291197133684
+2154
+avg return on policy: 139.8722965070285
+2155
+avg return on policy: 142.93570566515223
+2156
+avg return on policy: 144.2897314257961
+2157
+avg return on policy: 151.43872717731986
+2158
+avg return on policy: 148.3317247467324
+2159
+avg return on policy: 143.73929923950723
+2160
+avg return on policy: 158.18093639171073
+2161
+avg return on policy: 150.54965678517078
+2162
+avg return on policy: 156.64878087407183
+2163
+avg return on policy: 143.49692898473867
+2164
+avg return on policy: 156.37455578794948
+2165
+avg return on policy: 144.91754448559914
+2166
+avg return on policy: 161.00886793870689
+2167
+avg return on policy: 150.61294921144133
+2168
+avg return on policy: 145.18045100573218
+2169
+avg return on policy: 150.03618422067032
+2170
+avg return on policy: 149.28396133480916
+2171
+avg return on policy: 151.41256740159588
+2172
+avg return on policy: 138.67973328442727
+2173
+avg return on policy: 154.96877602012464
+2174
+avg return on policy: 155.5582241092617
+2175
+avg return on policy: 150.75189901079648
+2176
+avg return on policy: 148.43317469858218
+2177
+avg return on policy: 158.9164479270281
+2178
+avg return on policy: 147.64686830194853
+2179
+avg return on policy: 154.7808267537005
+2180
+avg return on policy: 148.86159024992574
+2181
+avg return on policy: 153.92129368453277
+2182
+avg return on policy: 144.89620127943815
+2183
+avg return on policy: 158.62340203966596
+2184
+avg return on policy: 141.17316690599955
+2185
+avg return on policy: 156.52479645304948
+2186
+avg return on policy: 155.07987997696148
+2187
+avg return on policy: 155.49965850973982
+2188
+avg return on policy: 152.00890655673174
+2189
+avg return on policy: 139.8119617384533
+2190
+avg return on policy: 138.63421981325928
+2191
+avg return on policy: 159.21676736419977
+2192
+avg return on policy: 143.63670130319503
+2193
+avg return on policy: 146.95309700831007
+2194
+avg return on policy: 139.82827282641173
+2195
+avg return on policy: 153.05831006905115
+2196
+avg return on policy: 139.51353605460307
+2197
+avg return on policy: 159.23566456382338
+2198
+avg return on policy: 150.05030529543978
+2199
+avg return on policy: 158.2346060237218
+2200
+avg return on policy: 151.20492697032333
+2201
+avg return on policy: 158.33331736199793
+2202
+avg return on policy: 147.3550036788341
+2203
+avg return on policy: 142.70989700567176
+2204
+avg return on policy: 154.61901155285605
+2205
+avg return on policy: 150.43356115261443
+2206
+avg return on policy: 141.89148502292247
+2207
+avg return on policy: 138.59072625975625
+2208
+avg return on policy: 150.75804674152536
+2209
+avg return on policy: 157.36021550324617
+2210
+avg return on policy: 148.0776933042797
+2211
+avg return on policy: 154.0637295167718
+2212
+avg return on policy: 146.34646813821382
+2213
+avg return on policy: 148.70460198547266
+2214
+avg return on policy: 151.14539134903723
+2215
+avg return on policy: 141.80738717642882
+2216
+avg return on policy: 152.09889597856673
+2217
+avg return on policy: 160.14717710640775
+2218
+avg return on policy: 156.226963302975
+2219
+avg return on policy: 148.9540655243941
+2220
+avg return on policy: 156.99111735003507
+2221
+avg return on policy: 148.7494196424463
+2222
+avg return on policy: 143.92542895048334
+2223
+avg return on policy: 149.782127393754
+2224
+avg return on policy: 153.7378414945133
+2225
+avg return on policy: 140.0841717905189
+2226
+avg return on policy: 151.25830759941948
+2227
+avg return on policy: 150.5596315933452
+2228
+avg return on policy: 160.18404061310625
+2229
+avg return on policy: 157.90247791576758
+2230
+avg return on policy: 154.97403851988682
+2231
+avg return on policy: 156.82360636790614
+2232
+avg return on policy: 147.8160246017046
+2233
+avg return on policy: 158.2690956540557
+2234
+avg return on policy: 159.363808245662
+2235
+avg return on policy: 149.65468512214366
+2236
+avg return on policy: 142.17292959301005
+2237
+avg return on policy: 153.05021223439806
+2238
+avg return on policy: 155.64634857480573
+2239
+avg return on policy: 139.51355207457732
+2240
+avg return on policy: 148.64995628357042
+2241
+avg return on policy: 141.6667284987219
+2242
+avg return on policy: 152.488114980086
+2243
+avg return on policy: 160.83487718635232
+2244
+avg return on policy: 148.87849130410646
+2245
+avg return on policy: 152.83189977899318
+2246
+avg return on policy: 147.80845483892975
+2247
+avg return on policy: 160.1494076935106
+2248
+avg return on policy: 146.86908678882017
+2249
+avg return on policy: 152.58744739350243
+2250
+avg return on policy: 152.5689446983501
+2251
+avg return on policy: 159.30521761227934
+2252
+avg return on policy: 158.92295145778579
+2253
+avg return on policy: 156.57937396280445
+2254
+avg return on policy: 150.65861142584916
+2255
+avg return on policy: 158.36362645718623
+2256
+avg return on policy: 154.81930737069936
+2257
+avg return on policy: 158.47321032704954
+2258
+avg return on policy: 153.5534316920973
+2259
+avg return on policy: 156.88225558144293
+2260
+avg return on policy: 156.74259829633945
+2261
+avg return on policy: 160.81102824718684
+2262
+avg return on policy: 142.68219151311237
+2263
+avg return on policy: 142.99038054207176
+2264
+avg return on policy: 139.89976390111315
+2265
+avg return on policy: 148.14478411354506
+2266
+avg return on policy: 151.9279319174419
+2267
+avg return on policy: 144.5391757135712
+2268
+avg return on policy: 151.7551005783732
+2269
+avg return on policy: 158.41304035913268
+2270
+avg return on policy: 154.5879183437393
+2271
+avg return on policy: 144.40284134845717
+2272
+avg return on policy: 147.0870112979995
+2273
+avg return on policy: 150.47149526055898
+2274
+avg return on policy: 157.2097330587893
+2275
+avg return on policy: 136.50730294903966
+2276
+avg return on policy: 145.26558237100417
+2277
+avg return on policy: 153.50593110423898
+2278
+avg return on policy: 155.79678999087523
+2279
+avg return on policy: 158.3192317219709
+2280
+avg return on policy: 146.41692126038689
+2281
+avg return on policy: 158.62402459730507
+2282
+avg return on policy: 151.61955181105319
+2283
+avg return on policy: 148.93160779077314
+2284
+avg return on policy: 139.42689791490685
+2285
+avg return on policy: 151.41703479416086
+2286
+avg return on policy: 138.820918310377
+2287
+avg return on policy: 159.1436161721812
+2288
+avg return on policy: 152.78890095102187
+2289
+avg return on policy: 144.5357313379559
+2290
+avg return on policy: 159.40650431089423
+2291
+avg return on policy: 152.67207927725175
+2292
+avg return on policy: 153.70321089554776
+2293
+avg return on policy: 154.32328608988726
+2294
+avg return on policy: 154.25066250119434
+2295
+avg return on policy: 155.56478769318323
+2296
+avg return on policy: 154.28197089888738
+2297
+avg return on policy: 146.4648544881766
+2298
+avg return on policy: 140.76613846309112
+2299
+avg return on policy: 148.7718019472903
+2300
+avg return on policy: 151.13032522069594
+2301
+avg return on policy: 153.6662912358657
+2302
+avg return on policy: 138.0365600849813
+2303
+avg return on policy: 151.37668991782874
+2304
+avg return on policy: 153.65973500388353
+2305
+avg return on policy: 154.02090692914064
+2306
+avg return on policy: 152.55617221455628
+2307
+avg return on policy: 141.83200700381857
+2308
+avg return on policy: 147.62232160554782
+2309
+avg return on policy: 140.98959037318465
+2310
+avg return on policy: 153.6641623528581
+2311
+avg return on policy: 156.82224692114326
+2312
+avg return on policy: 140.37369435320292
+2313
+avg return on policy: 143.07665158250373
+2314
+avg return on policy: 141.4166949123544
+2315
+avg return on policy: 148.9301817130029
+2316
+avg return on policy: 144.576503037528
+2317
+avg return on policy: 143.46763314335652
+2318
+avg return on policy: 159.11001333018797
+2319
+avg return on policy: 149.4903710479817
+2320
+avg return on policy: 155.6577848893841
+2321
+avg return on policy: 147.38182237501022
+2322
+avg return on policy: 146.4530320545538
+2323
+avg return on policy: 146.54428026310646
+2324
+avg return on policy: 151.47188436161846
+2325
+avg return on policy: 151.0333146229435
+2326
+avg return on policy: 154.0340385320702
+2327
+avg return on policy: 153.77662738344202
+2328
+avg return on policy: 155.04252972787535
+2329
+avg return on policy: 148.23167524423462
+2330
+avg return on policy: 149.58335231548958
+2331
+avg return on policy: 155.78250587062408
+2332
+avg return on policy: 141.2328281953468
+2333
+avg return on policy: 151.4721766415454
+2334
+avg return on policy: 147.74774075052318
+2335
+avg return on policy: 149.1039993278786
+2336
+avg return on policy: 144.52450994346216
+2337
+avg return on policy: 143.38979136404592
+2338
+avg return on policy: 150.28815223957034
+2339
+avg return on policy: 152.27250981275975
+2340
+avg return on policy: 147.35452612496124
+2341
+avg return on policy: 151.12121464706652
+2342
+avg return on policy: 148.54805652928204
+2343
+avg return on policy: 147.88058596629983
+2344
+avg return on policy: 148.36117148118993
+2345
+avg return on policy: 147.93134959352903
+2346
+avg return on policy: 149.77674453657363
+2347
+avg return on policy: 141.01788164949934
+2348
+avg return on policy: 150.7272364853453
+2349
+avg return on policy: 153.79139029827738
+2350
+avg return on policy: 149.9453095082921
+2351
+avg return on policy: 150.970966136894
+2352
+avg return on policy: 145.66370510036813
+2353
+avg return on policy: 141.36233383639242
+2354
+avg return on policy: 148.8192718478103
+2355
+avg return on policy: 142.26176527283192
+2356
+avg return on policy: 142.97866435604013
+2357
+avg return on policy: 145.08575311436292
+2358
+avg return on policy: 143.76911717477137
+2359
+avg return on policy: 141.06913404354518
+2360
+avg return on policy: 148.6026793079141
+2361
+avg return on policy: 156.80444153328585
+2362
+avg return on policy: 151.10323773962054
+2363
+avg return on policy: 159.94526196994187
+2364
+avg return on policy: 150.0153617205355
+2365
+avg return on policy: 146.8146316780791
+2366
+avg return on policy: 156.35944799543154
+2367
+avg return on policy: 154.66311225218385
+2368
+avg return on policy: 146.70878060360374
+2369
+avg return on policy: 144.86607795949564
+2370
+avg return on policy: 142.47074470173385
+2371
+avg return on policy: 150.34192198889005
+2372
+avg return on policy: 149.7805146351261
+2373
+avg return on policy: 139.3406959624326
+2374
+avg return on policy: 155.44400994472429
+2375
+avg return on policy: 149.23948398637492
+2376
+avg return on policy: 152.05711315340264
+2377
+avg return on policy: 151.1310159062666
+2378
+avg return on policy: 146.52043134930733
+2379
+avg return on policy: 147.28169259346654
+2380
+avg return on policy: 154.37712675464033
+2381
+avg return on policy: 156.4940163590296
+2382
+avg return on policy: 157.53072631329897
+2383
+avg return on policy: 152.42204368363514
+2384
+avg return on policy: 144.04062071397843
+2385
+avg return on policy: 151.99338612152226
+2386
+avg return on policy: 149.08486553365472
+2387
+avg return on policy: 151.05802607201534
+2388
+avg return on policy: 152.07991118052206
+2389
+avg return on policy: 139.31749119122696
+2390
+avg return on policy: 142.8094282445784
+2391
+avg return on policy: 155.67228137431337
+2392
+avg return on policy: 159.2140564664954
+2393
+avg return on policy: 150.9632194517534
+2394
+avg return on policy: 151.48334192502205
+2395
+avg return on policy: 149.09223247595682
+2396
+avg return on policy: 145.64154761315146
+2397
+avg return on policy: 149.17901241201582
+2398
+avg return on policy: 147.34109476077177
+2399
+avg return on policy: 155.5910890042746
+2400
+avg return on policy: 153.48839993378
+2401
+avg return on policy: 150.61238967399728
+2402
+avg return on policy: 147.9887153821369
+2403
+avg return on policy: 143.58159656542992
+2404
+avg return on policy: 151.32950957783265
+2405
+avg return on policy: 148.97147427273134
+2406
+avg return on policy: 148.05774993388846
+2407
+avg return on policy: 157.07225109254225
+2408
+avg return on policy: 150.00261550011493
+2409
+avg return on policy: 151.18034311086433
+2410
+avg return on policy: 138.61477087699927
+2411
+avg return on policy: 150.67228758493872
+2412
+avg return on policy: 146.24458087354617
+2413
+avg return on policy: 154.66232708152128
+2414
+avg return on policy: 147.97750195532848
+2415
+avg return on policy: 155.3103213159645
+2416
+avg return on policy: 154.90157731623796
+2417
+avg return on policy: 159.343544770726
+2418
+avg return on policy: 152.06551930408483
+2419
+avg return on policy: 151.582912069215
+2420
+avg return on policy: 148.8031406336454
+2421
+avg return on policy: 154.60957780564374
+2422
+avg return on policy: 156.76136878655217
+2423
+avg return on policy: 146.7418535656929
+2424
+avg return on policy: 154.03848515383467
+2425
+avg return on policy: 147.15142476984002
+2426
+avg return on policy: 149.47728801487386
+2427
+avg return on policy: 157.91492426013883
+2428
+avg return on policy: 150.02791480694887
+2429
+avg return on policy: 154.17498047667655
+2430
+avg return on policy: 153.1632076943179
+2431
+avg return on policy: 150.98533166939401
+2432
+avg return on policy: 152.8761515976796
+2433
+avg return on policy: 150.35302524996402
+2434
+avg return on policy: 148.90135546818289
+2435
+avg return on policy: 144.1777426842514
+2436
+avg return on policy: 150.65921546408094
+2437
+avg return on policy: 141.46121482055324
+2438
+avg return on policy: 150.4676109763548
+2439
+avg return on policy: 147.63999039753506
+2440
+avg return on policy: 149.61443436437057
+2441
+avg return on policy: 143.0507257732037
+2442
+avg return on policy: 148.24751117394194
+2443
+avg return on policy: 153.42467640186038
+2444
+avg return on policy: 150.86224102192173
+2445
+avg return on policy: 145.19299144504257
+2446
+avg return on policy: 157.44679395709355
+2447
+avg return on policy: 151.0330365329783
+2448
+avg return on policy: 156.70787907382825
+2449
+avg return on policy: 151.6777739207307
+2450
+avg return on policy: 147.1186992727846
+2451
+avg return on policy: 149.24782490005086
+2452
+avg return on policy: 154.98569933299214
+2453
+avg return on policy: 145.56072688795362
+2454
+avg return on policy: 148.84008075326435
+2455
+avg return on policy: 154.52054716841727
+2456
+avg return on policy: 156.64911069819485
+2457
+avg return on policy: 144.79495015600637
+2458
+avg return on policy: 148.06337538894618
+2459
+avg return on policy: 145.38832150891588
+2460
+avg return on policy: 153.61242545057144
+2461
+avg return on policy: 154.77773777328392
+2462
+avg return on policy: 141.24182912369517
+2463
+avg return on policy: 150.94429692681715
+2464
+avg return on policy: 146.66686024426122
+2465
+avg return on policy: 148.9971420919472
+2466
+avg return on policy: 154.96590977111214
+2467
+avg return on policy: 150.68020089348863
+2468
+avg return on policy: 149.31511718797066
+2469
+avg return on policy: 160.8044401463858
+2470
+avg return on policy: 150.76561586903003
+2471
+avg return on policy: 149.2334846049009
+2472
+avg return on policy: 150.9092746192481
+2473
+avg return on policy: 146.93502407948813
+2474
+avg return on policy: 145.80693430853213
+2475
+avg return on policy: 158.08263396268356
+2476
+avg return on policy: 153.08408878031707
+2477
+avg return on policy: 148.62137254834656
+2478
+avg return on policy: 156.01318709778508
+2479
+avg return on policy: 144.3982574732558
+2480
+avg return on policy: 158.1685936340992
+2481
+avg return on policy: 147.20028200935351
+2482
+avg return on policy: 154.37229275186436
+2483
+avg return on policy: 149.06484596589172
+2484
+avg return on policy: 146.52202538416893
+2485
+avg return on policy: 144.22477802436006
+2486
+avg return on policy: 156.34346836782294
+2487
+avg return on policy: 157.1805628025448
+2488
+avg return on policy: 152.17804353107462
+2489
+avg return on policy: 148.3081450238457
+2490
+avg return on policy: 147.34984275915892
+2491
+avg return on policy: 141.90704256872596
+2492
+avg return on policy: 152.21678757623306
+2493
+avg return on policy: 149.8907713427271
+2494
+avg return on policy: 147.02339826756238
+2495
+avg return on policy: 145.1671105967459
+2496
+avg return on policy: 148.5153624135991
+2497
+avg return on policy: 159.17074940181666
+2498
+avg return on policy: 155.67172350456906
+2499
+avg return on policy: 153.13411021010106
+2500
+avg return on policy: 149.98597483509923
+2501
+avg return on policy: 154.19103756388984
+2502
+avg return on policy: 153.5322945606078
+2503
+avg return on policy: 149.26693838616973
+2504
+avg return on policy: 152.91415823233478
+2505
+avg return on policy: 151.65991596946543
+2506
+avg return on policy: 146.86514666130319
+2507
+avg return on policy: 148.78868486092904
+2508
+avg return on policy: 143.00769310654812
+2509
+avg return on policy: 143.8256446055775
+2510
+avg return on policy: 149.50345007601175
+2511
+avg return on policy: 148.86874605577736
+2512
+avg return on policy: 147.8951970853943
+2513
+avg return on policy: 145.34782247018435
+2514
+avg return on policy: 158.74485906199703
+2515
+avg return on policy: 150.88623005388413
+2516
+avg return on policy: 149.70512237362846
+2517
+avg return on policy: 150.60705846696487
+2518
+avg return on policy: 144.00587437861518
+2519
+avg return on policy: 155.74738624587846
+2520
+avg return on policy: 149.80408042170794
+2521
+avg return on policy: 155.90084062367652
+2522
+avg return on policy: 156.82059046629016
+2523
+avg return on policy: 150.70985479376654
+2524
+avg return on policy: 152.55976790030107
+2525
+avg return on policy: 148.81173236652123
+2526
+avg return on policy: 154.56080985108017
+2527
+avg return on policy: 153.96900428746412
+2528
+avg return on policy: 156.05462837642378
+2529
+avg return on policy: 146.09856501835472
+2530
+avg return on policy: 143.83666151075815
+2531
+avg return on policy: 153.14765183655564
+2532
+avg return on policy: 149.7667678152155
+2533
+avg return on policy: 150.59518430865057
+2534
+avg return on policy: 155.48998681589958
+2535
+avg return on policy: 148.41784375117982
+2536
+avg return on policy: 158.28208378884108
+2537
+avg return on policy: 153.2015056310203
+2538
+avg return on policy: 151.9484038769461
+2539
+avg return on policy: 152.91406967421628
+2540
+avg return on policy: 143.83146227583572
+2541
+avg return on policy: 143.99248468105358
+2542
+avg return on policy: 153.52587859169856
+2543
+avg return on policy: 154.6692265480301
+2544
+avg return on policy: 150.2184563084663
+2545
+avg return on policy: 146.44444770031023
+2546
+avg return on policy: 147.59057469724164
+2547
+avg return on policy: 149.79926513025998
+2548
+avg return on policy: 152.87674830190164
+2549
+avg return on policy: 148.86746401663663
+2550
+avg return on policy: 156.45065384305516
+2551
+avg return on policy: 150.40422064236995
+2552
+avg return on policy: 147.25109441496667
+2553
+avg return on policy: 144.8580355754393
+2554
+avg return on policy: 152.77328272446945
+2555
+avg return on policy: 157.81309785546912
+2556
+avg return on policy: 157.1150931040332
+2557
+avg return on policy: 147.22081303694407
+2558
+avg return on policy: 149.72719112282155
+2559
+avg return on policy: 157.53906326825563
+2560
+avg return on policy: 148.5570075379069
+2561
+avg return on policy: 144.5813071674836
+2562
+avg return on policy: 156.76745410672632
+2563
+avg return on policy: 148.45754411683035
+2564
+avg return on policy: 146.89478976087884
+2565
+avg return on policy: 157.571085241456
+2566
+avg return on policy: 150.47946989089257
+2567
+avg return on policy: 145.62893514512865
+2568
+avg return on policy: 150.58332272834085
+2569
+avg return on policy: 153.65885254990135
+2570
+avg return on policy: 151.36720363367218
+2571
+avg return on policy: 147.19603526227877
+2572
+avg return on policy: 154.64631102415095
+2573
+avg return on policy: 155.04601974748564
+2574
+avg return on policy: 147.5143165659525
+2575
+avg return on policy: 152.867606435989
+2576
+avg return on policy: 156.89703280401156
+2577
+avg return on policy: 155.3251229168254
+2578
+avg return on policy: 146.92108822911834
+2579
+avg return on policy: 154.07715141328626
+2580
+avg return on policy: 150.5549515122325
+2581
+avg return on policy: 153.97077913210921
+2582
+avg return on policy: 149.86164014015412
+2583
+avg return on policy: 148.2594556240149
+2584
+avg return on policy: 149.49910798548433
+2585
+avg return on policy: 141.4312605284224
+2586
+avg return on policy: 147.5437784618927
+2587
+avg return on policy: 151.67295539151633
+2588
+avg return on policy: 147.88418410298587
+2589
+avg return on policy: 157.78035379982722
+2590
+avg return on policy: 143.26157712113366
+2591
+avg return on policy: 149.70255401053535
+2592
+avg return on policy: 157.07650312533997
+2593
+avg return on policy: 152.17381390611726
+2594
+avg return on policy: 153.51422153386798
+2595
+avg return on policy: 150.68518849749705
+2596
+avg return on policy: 157.984369597754
+2597
+avg return on policy: 151.16478261691117
+2598
+avg return on policy: 153.71183714464124
+2599
+avg return on policy: 156.08784167932916
+2600
+avg return on policy: 148.08001015633388
+2601
+avg return on policy: 148.26772757298968
+2602
+avg return on policy: 149.5866968742017
+2603
+avg return on policy: 150.77316708166947
+2604
+avg return on policy: 154.32735408375206
+2605
+avg return on policy: 152.0988551901145
+2606
+avg return on policy: 149.92414070212786
+2607
+avg return on policy: 139.22027558444873
+2608
+avg return on policy: 158.42916203299606
+2609
+avg return on policy: 151.4720673474864
+2610
+avg return on policy: 151.5265790040414
+2611
+avg return on policy: 148.44708372500284
+2612
+avg return on policy: 147.87930954397646
+2613
+avg return on policy: 149.47659611401866
+2614
+avg return on policy: 151.76248018542753
+2615
+avg return on policy: 155.8920372858652
+2616
+avg return on policy: 148.55330012866003
+2617
+avg return on policy: 153.59596905740065
+2618
+avg return on policy: 147.23234007626235
+2619
+avg return on policy: 148.8238970423518
+2620
+avg return on policy: 150.28394131575746
+2621
+avg return on policy: 153.8340198823839
+2622
+avg return on policy: 153.2096973805634
+2623
+avg return on policy: 145.67111308123353
+2624
+avg return on policy: 146.11996451445063
+2625
+avg return on policy: 151.8754907477875
+2626
+avg return on policy: 147.67469635836142
+2627
+avg return on policy: 153.57636399313466
+2628
+avg return on policy: 154.56103388228374
+2629
+avg return on policy: 154.42436921425323
+2630
+avg return on policy: 147.60638283139093
+2631
+avg return on policy: 149.551277231073
+2632
+avg return on policy: 146.25015741929607
+2633
+avg return on policy: 151.57957707975456
+2634
+avg return on policy: 150.82004929207662
+2635
+avg return on policy: 144.2652553993352
+2636
+avg return on policy: 153.00391433173897
+2637
+avg return on policy: 148.80601402354299
+2638
+avg return on policy: 146.62379825085057
+2639
+avg return on policy: 158.19857567297808
+2640
+avg return on policy: 149.27944556741855
+2641
+avg return on policy: 154.30316088795152
+2642
+avg return on policy: 148.14205361163553
+2643
+avg return on policy: 152.1824762452409
+2644
+avg return on policy: 146.51528056971992
+2645
+avg return on policy: 140.18927781341543
+2646
+avg return on policy: 148.84798489990763
+2647
+avg return on policy: 151.93626146627983
+2648
+avg return on policy: 153.36674292527513
+2649
+avg return on policy: 151.17484131849702
+2650
+avg return on policy: 159.5175338164913
+2651
+avg return on policy: 150.94942258276845
+2652
+avg return on policy: 155.6858852717513
+2653
+avg return on policy: 148.6387421364112
+2654
+avg return on policy: 155.23614028731524
+2655
+avg return on policy: 152.05065680287981
+2656
+avg return on policy: 150.69105165980835
+2657
+avg return on policy: 148.12976975159287
+2658
+avg return on policy: 156.37140039179846
+2659
+avg return on policy: 147.81838447109024
+2660
+avg return on policy: 153.9378564201254
+2661
+avg return on policy: 149.82587493150345
+2662
+avg return on policy: 148.22444900765097
+2663
+avg return on policy: 152.3933338523222
+2664
+avg return on policy: 158.2283778508204
+2665
+avg return on policy: 152.68168169917445
+2666
+avg return on policy: 146.5099096387318
+2667
+avg return on policy: 146.08954608772459
+2668
+avg return on policy: 151.96352397221582
+2669
+avg return on policy: 146.9736576824521
+2670
+avg return on policy: 153.45839188023322
+2671
+avg return on policy: 151.6635891254384
+2672
+avg return on policy: 151.0335716917716
+2673
+avg return on policy: 150.1816448253439
+2674
+avg return on policy: 151.24511011719224
+2675
+avg return on policy: 148.5069046762349
+2676
+avg return on policy: 146.71669440608662
+2677
+avg return on policy: 152.59972951414423
+2678
+avg return on policy: 151.7805123821316
+2679
+avg return on policy: 144.82369930312856
+2680
+avg return on policy: 144.08386912279067
+2681
+avg return on policy: 149.37480952997728
+2682
+avg return on policy: 150.65485388798461
+2683
+avg return on policy: 149.88747986122814
+2684
+avg return on policy: 153.73990180623304
+2685
+avg return on policy: 154.7860167892627
+2686
+avg return on policy: 148.90445137611027
+2687
+avg return on policy: 143.1780319897933
+2688
+avg return on policy: 150.01591077194263
+2689
+avg return on policy: 152.53672161684815
+2690
+avg return on policy: 151.06775882858872
+2691
+avg return on policy: 154.77871915764365
+2692
+avg return on policy: 152.62490100576687
+2693
+avg return on policy: 151.4368511105541
+2694
+avg return on policy: 153.80672788604798
+2695
+avg return on policy: 157.9054500862778
+2696
+avg return on policy: 151.3808225710419
+2697
+avg return on policy: 154.46055192369315
+2698
+avg return on policy: 152.45270057071602
+2699
+avg return on policy: 151.78146611570784
+2700
+avg return on policy: 143.66732415383055
+2701
+avg return on policy: 157.25808886105543
+2702
+avg return on policy: 157.21082572248005
+2703
+avg return on policy: 149.5160295138439
+2704
+avg return on policy: 154.85675106506008
+2705
+avg return on policy: 146.88661854902693
+2706
+avg return on policy: 151.96188320331706
+2707
+avg return on policy: 147.66760318498305
+2708
+avg return on policy: 152.56880441472222
+2709
+avg return on policy: 155.03420122476928
+2710
+avg return on policy: 150.93767139822398
+2711
+avg return on policy: 140.59428696200303
+2712
+avg return on policy: 145.21590442425278
+2713
+avg return on policy: 155.47170831452732
+2714
+avg return on policy: 152.19003562225907
+2715
+avg return on policy: 155.3513873294123
+2716
+avg return on policy: 147.7036343624317
+2717
+avg return on policy: 150.33748248439503
+2718
+avg return on policy: 154.44761606639005
+2719
+avg return on policy: 145.2364949542454
+2720
+avg return on policy: 156.18917766945066
+2721
+avg return on policy: 158.8078359179619
+2722
+avg return on policy: 151.1731005888008
+2723
+avg return on policy: 160.0857367987123
+2724
+avg return on policy: 143.82658677656224
+2725
+avg return on policy: 148.5975154287142
+2726
+avg return on policy: 150.31931129631403
+2727
+avg return on policy: 155.6418562854419
+2728
+avg return on policy: 142.34087381503033
+2729
+avg return on policy: 145.83229269610226
+2730
+avg return on policy: 150.0595005853668
+2731
+avg return on policy: 145.4025016434438
+2732
+avg return on policy: 157.43528562662755
+2733
+avg return on policy: 144.14870457531117
+2734
+avg return on policy: 142.98319395174303
+2735
+avg return on policy: 147.42654844107014
+2736
+avg return on policy: 149.97142939966548
+2737
+avg return on policy: 146.6554366456736
+2738
+avg return on policy: 153.0745658032939
+2739
+avg return on policy: 154.05366650309844
+2740
+avg return on policy: 147.69297109800664
+2741
+avg return on policy: 155.65238201241849
+2742
+avg return on policy: 148.01402985329375
+2743
+avg return on policy: 147.99648623432032
+2744
+avg return on policy: 151.10406624589518
+2745
+avg return on policy: 145.5158895093817
+2746
+avg return on policy: 154.6222020720264
+2747
+avg return on policy: 158.01355329773813
+2748
+avg return on policy: 153.3802968203648
+2749
+avg return on policy: 147.94650341805712
+2750
+avg return on policy: 150.12838686005958
+2751
+avg return on policy: 148.73602937395503
+2752
+avg return on policy: 150.3676862148777
+2753
+avg return on policy: 142.7984670778017
+2754
+avg return on policy: 151.90368113999457
+2755
+avg return on policy: 149.98849033729348
+2756
+avg return on policy: 150.321259344291
+2757
+avg return on policy: 155.14154061952846
+2758
+avg return on policy: 148.84386376522494
+2759
+avg return on policy: 151.1317908114695
+2760
+avg return on policy: 151.34702055600772
+2761
+avg return on policy: 147.76398647970237
+2762
+avg return on policy: 155.24365462100738
+2763
+avg return on policy: 144.4384168918326
+2764
+avg return on policy: 146.70102399739645
+2765
+avg return on policy: 152.17922706231326
+2766
+avg return on policy: 148.69290502958174
+2767
+avg return on policy: 153.64746703845046
+2768
+avg return on policy: 154.48011400183853
+2769
+avg return on policy: 152.7936231352546
+2770
+avg return on policy: 146.53841454611504
+2771
+avg return on policy: 156.80328523899047
+2772
+avg return on policy: 154.725848243096
+2773
+avg return on policy: 159.57602080218803
+2774
+avg return on policy: 154.3984618815978
+2775
+avg return on policy: 153.15707614536475
+2776
+avg return on policy: 146.64303158144762
+2777
+avg return on policy: 144.75636121081047
+2778
+avg return on policy: 150.7358773638173
+2779
+avg return on policy: 145.90857163407944
+2780
+avg return on policy: 156.5695040294698
+2781
+avg return on policy: 148.95868004536814
+2782
+avg return on policy: 155.162530385227
+2783
+avg return on policy: 148.99853218797247
+2784
+avg return on policy: 153.21858906163087
+2785
+avg return on policy: 148.24533199282044
+2786
+avg return on policy: 154.03821927951094
+2787
+avg return on policy: 148.3702851924048
+2788
+avg return on policy: 146.81801701605872
+2789
+avg return on policy: 144.75660407938452
+2790
+avg return on policy: 150.49706694765743
+2791
+avg return on policy: 150.51319206087993
+2792
+avg return on policy: 140.2520864998053
+2793
+avg return on policy: 156.3712719224035
+2794
+avg return on policy: 150.1112611976471
+2795
+avg return on policy: 155.43848070409774
+2796
+avg return on policy: 145.9490691020163
+2797
+avg return on policy: 152.57011722268945
+2798
+avg return on policy: 152.53677040544528
+2799
+avg return on policy: 151.9950533348418
+2800
+avg return on policy: 148.77211389234407
+2801
+avg return on policy: 154.38635097489944
+2802
+avg return on policy: 159.76278499238677
+2803
+avg return on policy: 155.7188505748866
+2804
+avg return on policy: 158.0852449535661
+2805
+avg return on policy: 152.59300364867556
+2806
+avg return on policy: 148.1558936489907
+2807
+avg return on policy: 152.39414116916828
+2808
+avg return on policy: 148.19421436071352
+2809
+avg return on policy: 154.10572168639203
+2810
+avg return on policy: 149.42945474438753
+2811
+avg return on policy: 153.46878113576003
+2812
+avg return on policy: 149.8145056953658
+2813
+avg return on policy: 157.61124756380963
+2814
+avg return on policy: 155.74287531344663
+2815
+avg return on policy: 152.9688678220024
+2816
+avg return on policy: 154.27553648054297
+2817
+avg return on policy: 156.56343853952913
+2818
+avg return on policy: 152.98888146761968
+2819
+avg return on policy: 158.7346790554311
+2820
+avg return on policy: 149.9197834455465
+2821
+avg return on policy: 148.90111491526045
+2822
+avg return on policy: 153.36997245244268
+2823
+avg return on policy: 149.72380642603574
+2824
+avg return on policy: 147.17972276818128
+2825
+avg return on policy: 158.6037931157718
+2826
+avg return on policy: 150.34605717745038
+2827
+avg return on policy: 152.67547941136635
+2828
+avg return on policy: 147.30801320720383
+2829
+avg return on policy: 152.00305660536404
+2830
+avg return on policy: 150.0762690074953
+2831
+avg return on policy: 156.44017571096413
+2832
+avg return on policy: 153.73029202571362
+2833
+avg return on policy: 150.0528098673625
+2834
+avg return on policy: 151.1250395376436
+2835
+avg return on policy: 154.84747521015427
+2836
+avg return on policy: 142.11295526391606
+2837
+avg return on policy: 149.86311083074224
+2838
+avg return on policy: 153.19058220454562
+2839
+avg return on policy: 160.17277236449328
+2840
+avg return on policy: 151.42056274203696
+2841
+avg return on policy: 142.76283289382968
+2842
+avg return on policy: 146.9667264902241
+2843
+avg return on policy: 151.24405985556598
+2844
+avg return on policy: 148.20749070962538
+2845
+avg return on policy: 152.53301307002286
+2846
+avg return on policy: 142.72591191204916
+2847
+avg return on policy: 156.67164027326294
+2848
+avg return on policy: 154.42180899251457
+2849
+avg return on policy: 158.40586603937842
+2850
+avg return on policy: 147.2271699696429
+2851
+avg return on policy: 154.1814839881672
+2852
+avg return on policy: 146.2349294628765
+2853
+avg return on policy: 149.43071825231362
+2854
+avg return on policy: 145.7115928182638
+2855
+avg return on policy: 153.2110277011144
+2856
+avg return on policy: 152.69930836225873
+2857
+avg return on policy: 145.29711340036934
+2858
+avg return on policy: 155.1976822524999
+2859
+avg return on policy: 145.65011972463222
+2860
+avg return on policy: 149.144735021625
+2861
+avg return on policy: 142.4288424932353
+2862
+avg return on policy: 151.77006318380495
+2863
+avg return on policy: 148.86461354254888
+2864
+avg return on policy: 151.5250128300121
+2865
+avg return on policy: 150.85767906525942
+2866
+avg return on policy: 150.0938667765415
+2867
+avg return on policy: 151.55752898432814
+2868
+avg return on policy: 150.60832656568525
+2869
+avg return on policy: 152.20514946048817
+2870
+avg return on policy: 158.35838348030367
+2871
+avg return on policy: 150.25385110892972
+2872
+avg return on policy: 156.49306756732403
+2873
+avg return on policy: 155.3127809616639
+2874
+avg return on policy: 148.25578244864354
+2875
+avg return on policy: 157.51690279791
+2876
+avg return on policy: 151.07586446122357
+2877
+avg return on policy: 148.9285319075557
+2878
+avg return on policy: 155.46444218416298
+2879
+avg return on policy: 148.6598830977049
+2880
+avg return on policy: 149.0739245627789
+2881
+avg return on policy: 156.2048385730721
+2882
+avg return on policy: 145.16753727754022
+2883
+avg return on policy: 146.97459095521563
+2884
+avg return on policy: 148.43509421777722
+2885
+avg return on policy: 148.35205593647933
+2886
+avg return on policy: 151.60421386854307
+2887
+avg return on policy: 154.60664590043345
+2888
+avg return on policy: 155.87853584131764
+2889
+avg return on policy: 142.62318394754547
+2890
+avg return on policy: 158.03673985585752
+2891
+avg return on policy: 145.35303961062723
+2892
+avg return on policy: 145.7330357880646
+2893
+avg return on policy: 147.48105196290794
+2894
+avg return on policy: 151.41796292250726
+2895
+avg return on policy: 144.23224651106935
+2896
+avg return on policy: 156.56022485762222
+2897
+avg return on policy: 155.3662315272404
+2898
+avg return on policy: 148.84073374800656
+2899
+avg return on policy: 151.82655118898435
+2900
+avg return on policy: 155.58454507746558
+2901
+avg return on policy: 154.22323107074547
+2902
+avg return on policy: 148.6469120412468
+2903
+avg return on policy: 151.67739870272388
+2904
+avg return on policy: 159.04778691733736
+2905
+avg return on policy: 152.28792472696355
+2906
+avg return on policy: 153.22345863594805
+2907
+avg return on policy: 157.01022175636436
+2908
+avg return on policy: 151.67251300022022
+2909
+avg return on policy: 148.23530290675663
+2910
+avg return on policy: 156.7055201112665
+2911
+avg return on policy: 156.40036980418438
+2912
+avg return on policy: 157.5909713457971
+2913
+avg return on policy: 156.73948574642236
+2914
+avg return on policy: 145.02982911625054
+2915
+avg return on policy: 157.9017135593277
+2916
+avg return on policy: 151.60241528236295
+2917
+avg return on policy: 143.76598432945636
+2918
+avg return on policy: 142.4882659748296
+2919
+avg return on policy: 159.0911001518433
+2920
+avg return on policy: 157.31716001628655
+2921
+avg return on policy: 156.69143182902462
+2922
+avg return on policy: 150.31139921723903
+2923
+avg return on policy: 154.21778171160773
+2924
+avg return on policy: 152.40660868779128
+2925
+avg return on policy: 155.57621095830743
+2926
+avg return on policy: 154.1064880568098
+2927
+avg return on policy: 151.77728563238387
+2928
+avg return on policy: 157.14795388881632
+Time taken for each iteration: [4.933211803436279, 9.81570315361023, 14.686569690704346, 19.568432569503784, 24.45741844177246, 29.414045095443726, 34.361140966415405, 39.25672745704651, 44.14815974235535, 49.0261812210083, 53.8983519077301, 58.777209758758545, 63.65794801712036, 68.51939868927002, 73.40790367126465, 78.27232027053833, 83.1567952632904, 88.02229189872742, 92.90502166748047, 97.77235221862793, 102.64838433265686, 107.52572846412659, 112.38469529151917, 117.2501106262207, 122.12351393699646, 126.99410605430603, 131.86622047424316, 136.74416875839233, 141.6304154396057, 146.49412846565247, 151.36857414245605, 156.23328304290771, 161.10772490501404, 165.98846244812012, 170.87003922462463, 175.74792194366455, 180.61493921279907, 185.49049997329712, 190.37012600898743, 195.240163564682, 200.1233730316162, 204.99376130104065, 209.86005282402039, 214.71862530708313, 219.59713220596313, 224.45987200737, 229.35307121276855, 234.19755387306213, 239.09207129478455, 244.01635313034058, 248.9542465209961, 253.82961869239807, 258.698317527771, 263.5657079219818, 268.42621541023254, 273.30138778686523, 278.1760325431824, 283.0553514957428, 287.9292948246002, 292.82259345054626, 297.7051520347595, 302.5803506374359, 307.47190952301025, 312.3416521549225, 317.22674107551575, 322.10576462745667, 326.97470355033875, 331.8395993709564, 336.7018048763275, 341.5656723976135, 346.4546570777893, 351.32983136177063, 356.20027685165405, 361.0795786380768, 365.96719431877136, 370.8573064804077, 375.73230814933777, 380.6044294834137, 385.4863820075989, 390.353146314621, 395.2197141647339, 400.0889849662781, 404.9582381248474, 409.7989001274109, 414.63867139816284, 419.47620391845703, 424.30097699165344, 429.1495292186737, 433.98494482040405, 438.82680106163025, 443.6752326488495, 448.51843428611755, 453.3948359489441, 458.3246350288391, 463.19822454452515, 468.0729112625122, 472.9425961971283, 477.8069124221802, 482.66434144973755, 487.5245144367218, 492.39119577407837, 497.2686984539032, 502.12776708602905, 507.0054497718811, 511.87634229660034, 516.7534959316254, 521.6280717849731, 526.5096342563629, 531.3801300525665, 536.2399291992188, 541.1083736419678, 545.9831991195679, 550.8555624485016, 555.7245764732361, 560.6051268577576, 565.4883577823639, 570.3664388656616, 575.2359728813171, 580.1053864955902, 584.9614877700806, 589.8423612117767, 594.6996791362762, 599.5597720146179, 604.4175589084625, 609.2779767513275, 614.1475071907043, 619.0174562931061, 623.8846971988678, 628.7523243427277, 633.6185245513916, 638.4819366931915, 643.3571360111237, 648.2371566295624, 653.1036241054535, 657.9736983776093, 662.8832068443298, 667.8342597484589, 672.7130441665649, 677.6040849685669, 682.4959568977356, 687.3858942985535, 692.2650103569031, 697.1492049694061, 702.0270428657532, 706.9405765533447, 711.8139276504517, 716.6968703269958, 721.573807477951, 726.4450664520264, 731.3154420852661, 736.1743659973145, 741.0653629302979, 745.9322011470795, 750.8066613674164, 755.6861476898193, 760.5640690326691, 765.4276127815247, 770.3095111846924, 775.1648528575897, 780.027951002121, 784.8891186714172, 789.7532682418823, 794.6319077014923, 799.5166265964508, 804.389087677002, 809.2577478885651, 814.1053841114044, 818.9669334888458, 823.8207845687866, 828.6927676200867, 833.5418484210968, 838.397397518158, 843.2440547943115, 848.1019432544708, 852.9592797756195, 857.8208951950073, 862.6759467124939, 867.5339665412903, 872.392617225647, 877.3215310573578, 882.176521062851, 887.0306680202484, 891.8795909881592, 896.7434189319611, 901.5966503620148, 906.4652218818665, 911.3239612579346, 916.1762692928314, 921.0333249568939, 925.9067225456238, 930.7580060958862, 935.6177117824554, 940.4585292339325, 945.3254375457764, 950.1870238780975, 955.041580915451, 959.912270784378, 964.7751228809357, 969.6325674057007, 974.5043258666992, 979.361567735672, 984.2202582359314, 989.0870177745819, 993.9589459896088, 998.8331663608551, 1003.7075881958008, 1008.5726206302643, 1013.438440322876, 1018.3095526695251, 1023.1909155845642, 1028.0654504299164, 1032.9434068202972, 1037.782531261444, 1042.6279668807983, 1047.4564962387085, 1052.2890157699585, 1057.1181275844574, 1061.9412534236908, 1066.7970011234283, 1071.6275441646576, 1076.4630715847015, 1081.3477158546448, 1086.218422651291, 1091.086130142212, 1095.953603029251, 1100.8228905200958, 1105.6941061019897, 1110.5470175743103, 1115.411446094513, 1120.2710783481598, 1125.1324734687805, 1129.9997916221619, 1134.8719806671143, 1139.7177698612213, 1144.5946035385132, 1149.4877316951752, 1154.3632290363312, 1159.2279291152954, 1164.1095542907715, 1168.9773631095886, 1173.8544447422028, 1178.7217154502869, 1183.5796880722046, 1188.4742467403412, 1193.3449087142944, 1198.2020299434662, 1203.0714564323425, 1207.937290430069, 1212.8082857131958, 1217.683583498001, 1222.5770382881165, 1227.431578874588, 1232.3054358959198, 1237.1764500141144, 1242.0443677902222, 1246.9206175804138, 1251.7845072746277, 1256.6570990085602, 1261.5260758399963, 1266.392020702362, 1271.260815858841, 1276.1372599601746, 1281.0138936042786, 1285.9232952594757, 1290.8311865329742, 1295.6976721286774, 1300.5693151950836, 1305.4425864219666, 1310.324180841446, 1315.1928482055664, 1320.0584275722504, 1324.9304857254028, 1329.7983086109161, 1334.6684708595276, 1339.537380695343, 1344.4265053272247, 1349.3047122955322, 1354.1794431209564, 1359.0436475276947, 1363.9308993816376, 1368.7944464683533, 1373.668137550354, 1378.5399460792542, 1383.4090020656586, 1388.2909145355225, 1393.1643981933594, 1398.0434920787811, 1402.9459476470947, 1407.8256747722626, 1412.6999826431274, 1417.5826170444489, 1422.4624621868134, 1427.3613295555115, 1432.2495381832123, 1437.128961801529, 1442.0051407814026, 1446.885908126831, 1451.762885093689, 1456.6368248462677, 1461.5100691318512, 1466.3821141719818, 1471.2409615516663, 1476.112265586853, 1480.9808466434479, 1485.8638467788696, 1490.7371397018433, 1495.671126127243, 1500.5291562080383, 1505.4043674468994, 1510.2678048610687, 1515.135576248169, 1520.0036289691925, 1524.871000289917, 1529.7244260311127, 1534.5778930187225, 1539.4457252025604, 1544.303636789322, 1549.1690163612366, 1554.0317056179047, 1558.8612835407257, 1563.7185814380646, 1568.5611748695374, 1573.412231683731, 1578.2704107761383, 1583.136114358902, 1587.985925912857, 1592.8483233451843, 1597.7037057876587, 1602.5552542209625, 1607.4171979427338, 1612.2915828227997, 1617.1492795944214, 1622.0090656280518, 1626.8648762702942, 1631.725937128067, 1636.5942478179932, 1641.4627177715302, 1646.3222637176514, 1651.178120136261, 1656.020503282547, 1660.8587636947632, 1665.6957972049713, 1670.528291940689, 1675.3610289096832, 1680.1921219825745, 1685.0128288269043, 1689.8382291793823, 1694.6701912879944, 1699.505114555359, 1704.420723438263, 1709.313044309616, 1714.165016412735, 1719.0181114673615, 1723.883486032486, 1728.7409617900848, 1733.5755472183228, 1738.433266878128, 1743.2817034721375, 1748.1306726932526, 1752.9825966358185, 1757.8440036773682, 1762.7107799053192, 1767.5776262283325, 1772.4343769550323, 1777.2877621650696, 1782.1345195770264, 1786.995842218399, 1791.860912322998, 1796.7115166187286, 1801.5646982192993, 1806.41774559021, 1811.2643039226532, 1816.108154296875, 1820.9490690231323, 1825.799691915512, 1830.6532661914825, 1835.5051708221436, 1840.3536112308502, 1845.2116565704346, 1850.0694372653961, 1854.927943944931, 1859.786924123764, 1864.647694349289, 1869.508986234665, 1874.3630182743073, 1879.224038362503, 1884.0889101028442, 1888.9517786502838, 1893.804799079895, 1898.6663873195648, 1903.5202946662903, 1908.4008963108063, 1913.287935256958, 1918.2107906341553, 1923.1354122161865, 1928.0142183303833, 1932.8619873523712, 1937.7035388946533, 1942.536467075348, 1947.3880467414856, 1952.2369456291199, 1957.096713066101, 1961.9542005062103, 1966.8164370059967, 1971.6680567264557, 1976.526875257492, 1981.386215209961, 1986.23526263237, 1991.0967297554016, 1995.926831483841, 2000.7833144664764, 2005.640694141388, 2010.5050535202026, 2015.35693693161, 2020.2188777923584, 2025.073647260666, 2029.9581673145294, 2034.8163259029388, 2039.6649997234344, 2044.526219367981, 2049.396994829178, 2054.2530500888824, 2059.107241153717, 2063.9741797447205, 2068.8446662425995, 2073.7057189941406, 2078.5744004249573, 2083.422078371048, 2088.291767835617, 2093.146164417267, 2098.014638185501, 2102.8818345069885, 2107.7667260169983, 2112.6304388046265, 2117.5035717487335, 2122.377635717392, 2127.2843823432922, 2132.1794905662537, 2137.0496764183044, 2141.918306350708, 2146.7950904369354, 2151.651582956314, 2156.5136618614197, 2161.3844385147095, 2166.259971857071, 2171.122025489807, 2175.9976336956024, 2180.8570790290833, 2185.7194409370422, 2190.577348947525, 2195.448265314102, 2200.310630083084, 2205.1728823184967, 2210.03440785408, 2214.8833050727844, 2219.747720479965, 2224.6007013320923, 2229.4420154094696, 2234.3036394119263, 2239.16157245636, 2244.0212121009827, 2248.8580791950226, 2253.720553636551, 2258.567365884781, 2263.4300587177277, 2268.321440219879, 2273.1918597221375, 2278.0558445453644, 2282.9183564186096, 2287.769388437271, 2292.6005806922913, 2297.4334828853607, 2302.2481203079224, 2307.0953900814056, 2311.923891067505, 2316.748256444931, 2321.561792373657, 2326.3912296295166, 2331.242717027664, 2336.122213125229, 2340.989242553711, 2345.845173597336, 2350.705250263214, 2355.5632910728455, 2360.4420931339264, 2365.30473279953, 2370.15931558609, 2375.0200061798096, 2379.885852575302, 2384.755642414093, 2389.6345734596252, 2394.5114798545837, 2399.3679399490356, 2404.2305195331573, 2409.088789701462, 2413.9648144245148, 2418.8172788619995, 2423.686002969742, 2428.5663368701935, 2433.4277131557465, 2438.301773786545, 2443.1629695892334, 2448.02330160141, 2452.9007630348206, 2457.777652978897, 2462.6497087478638, 2467.509107351303, 2472.3816907405853, 2477.251481771469, 2482.1282744407654, 2487.0168199539185, 2491.889717578888, 2496.751329421997, 2501.6181910037994, 2506.4952363967896, 2511.3528089523315, 2516.219619512558, 2521.08100605011, 2525.945224046707, 2530.8054642677307, 2535.663500547409, 2540.5613186359406, 2545.472843170166, 2550.3654177188873, 2555.2399258613586, 2560.113569498062, 2564.9753818511963, 2569.8376626968384, 2574.70236992836, 2579.572347640991, 2584.4304118156433, 2589.294994354248, 2594.1574862003326, 2599.019600391388, 2603.8774919509888, 2608.753434896469, 2613.6185159683228, 2618.468141555786, 2623.3270540237427, 2628.2016248703003, 2633.0684220790863, 2637.9389250278473, 2642.8053209781647, 2647.66410446167, 2652.529412508011, 2657.3898084163666, 2662.2458460330963, 2667.1098053455353, 2671.9779505729675, 2676.831369161606, 2681.6913402080536, 2686.5528428554535, 2691.3980157375336, 2696.2441160678864, 2701.114623785019, 2705.964511156082, 2710.81769323349, 2715.670501232147, 2720.5280413627625, 2725.396963119507, 2730.2562251091003, 2735.130300283432, 2739.9864509105682, 2744.854858636856, 2749.8070771694183, 2754.670145511627, 2759.528182029724, 2764.3980305194855, 2769.2606694698334, 2774.1190750598907, 2778.9849784374237, 2783.8505852222443, 2788.7395462989807, 2793.607740163803, 2798.4697947502136, 2803.334619998932, 2808.2111444473267, 2813.10111618042, 2817.9779748916626, 2822.8618216514587, 2827.7294583320618, 2832.6041610240936, 2837.45933508873, 2842.3261802196503, 2847.189455986023, 2852.051289319992, 2856.913328409195, 2861.774279356003, 2866.650902748108, 2871.5083854198456, 2876.371961593628, 2881.2262036800385, 2886.0914187431335, 2890.952081680298, 2895.800229549408, 2900.6726479530334, 2905.530379295349, 2910.4005324840546, 2915.2364497184753, 2920.082700252533, 2924.918244600296, 2929.755382537842, 2934.587217569351, 2939.431095123291, 2944.276341676712, 2949.1025190353394, 2953.948159456253, 2958.859464406967, 2963.7455196380615, 2968.6076397895813, 2973.491921901703, 2978.3646273612976, 2983.2221014499664, 2988.106159210205, 2992.9629600048065, 2997.828946352005, 3002.7004318237305, 3007.5613136291504, 3012.4269931316376, 3017.2965784072876, 3022.165587902069, 3027.0267882347107, 3031.887644290924, 3036.751289129257, 3041.6167447566986, 3046.4743123054504, 3051.327665090561, 3056.1786847114563, 3061.0468208789825, 3065.897096157074, 3070.757009267807, 3075.6248099803925, 3080.4817883968353, 3085.334652662277, 3090.1941261291504, 3095.0595676898956, 3099.9163801670074, 3104.776175260544, 3109.6817049980164, 3114.544953107834, 3119.4060468673706, 3124.2544984817505, 3129.1011333465576, 3133.9451220035553, 3138.790990829468, 3143.650780439377, 3148.5175552368164, 3153.377051591873, 3158.2344241142273, 3163.0958025455475, 3167.9509892463684, 3172.8829634189606, 3177.797975540161, 3182.6831843852997, 3187.540073633194, 3192.401692390442, 3197.2675800323486, 3202.123216152191, 3206.999038219452, 3211.844593524933, 3216.706562757492, 3221.5646669864655, 3226.447993993759, 3231.324369430542, 3236.1826770305634, 3241.0550701618195, 3245.90912938118, 3250.7860674858093, 3255.6524770259857, 3260.528118610382, 3265.388369321823, 3270.2564651966095, 3275.1231310367584, 3279.9981327056885, 3284.8622035980225, 3289.7260959148407, 3294.603935956955, 3299.4804017543793, 3304.356194972992, 3309.219882965088, 3314.0810029506683, 3318.943633079529, 3323.8113462924957, 3328.6835696697235, 3333.542664051056, 3338.408513069153, 3343.2676227092743, 3348.165025949478, 3353.0321123600006, 3357.90824174881, 3362.7979242801666, 3367.666737794876, 3372.534329175949, 3377.39586186409, 3382.2712042331696, 3387.160267353058, 3392.0260560512543, 3396.904272556305, 3401.778062582016, 3406.656850337982, 3411.5272715091705, 3416.4044077396393, 3421.266543865204, 3426.133456468582, 3430.9926402568817, 3435.851562023163, 3440.718762397766, 3445.584252357483, 3450.4549074172974, 3455.3198251724243, 3460.183496236801, 3465.052541732788, 3469.930311203003, 3474.7850456237793, 3479.6505239009857, 3484.5234365463257, 3489.380541563034, 3494.2429575920105, 3499.0982172489166, 3503.962201833725, 3508.810391664505, 3513.6826174259186, 3518.562216281891, 3523.4333453178406, 3528.309430837631, 3533.153324365616, 3538.003255844116, 3542.8599536418915, 3547.7218883037567, 3552.559761762619, 3557.412785768509, 3562.2559792995453, 3567.090988636017, 3571.9296333789825, 3576.7639553546906, 3581.630590200424, 3586.520456790924, 3591.4159047603607, 3596.3485193252563, 3601.254586458206, 3606.139578104019, 3611.0133702754974, 3615.887485742569, 3620.7525551319122, 3625.6295042037964, 3630.4961059093475, 3635.389151096344, 3640.270305633545, 3645.14884185791, 3650.0196783542633, 3654.88902258873, 3659.7724537849426, 3664.6437799930573, 3669.538463115692, 3674.456959962845, 3679.3319449424744, 3684.202583551407, 3689.0732386112213, 3693.940181016922, 3698.7989757061005, 3703.665530204773, 3708.5547499656677, 3713.4326572418213, 3718.3048810958862, 3723.1768453121185, 3728.0585589408875, 3732.938949108124, 3737.821925640106, 3742.7021753787994, 3747.5842003822327, 3752.4476618766785, 3757.331247329712, 3762.18661236763, 3767.067808151245, 3771.917102098465, 3776.7933065891266, 3781.65794301033, 3786.533327102661, 3791.400068283081, 3796.280104160309, 3801.1423087120056, 3806.0326192379, 3810.9415011405945, 3815.8124873638153, 3820.6811153888702, 3825.5679523944855, 3830.4283027648926, 3835.2952315807343, 3840.138525724411, 3845.0225389003754, 3849.8739981651306, 3854.74298787117, 3859.6013000011444, 3864.47851729393, 3869.3297114372253, 3874.234031200409, 3879.095798969269, 3883.95920586586, 3888.8318400382996, 3893.6960616111755, 3898.5699071884155, 3903.4382874965668, 3908.3123893737793, 3913.173608779907, 3918.034268140793, 3922.8995299339294, 3927.760781764984, 3932.635316133499, 3937.5250322818756, 3942.395118713379, 3947.2776844501495, 3952.1518845558167, 3957.023168563843, 3961.879732131958, 3966.7451729774475, 3971.6175105571747, 3976.4816570281982, 3981.3543272018433, 3986.230451822281, 3991.0969166755676, 3995.976350069046, 4000.8468947410583, 4005.714931488037, 4010.618941307068, 4015.521138191223, 4020.388973236084, 4025.2641367912292, 4030.1376025676727, 4035.0151102542877, 4039.8857560157776, 4044.773533344269, 4049.6553857326508, 4054.52733707428, 4059.3821823596954, 4064.2681741714478, 4069.163336277008, 4074.0367574691772, 4078.90749669075, 4083.778199672699, 4088.6517856121063, 4093.5309569835663, 4098.398671865463, 4103.270223617554, 4108.169146060944, 4113.048424243927, 4117.936975479126, 4122.818836450577, 4127.699903488159, 4132.572082519531, 4137.448987722397, 4142.3372638225555, 4147.234306335449, 4152.096829414368, 4156.943511009216, 4161.792479515076, 4166.650362491608, 4171.510726690292, 4176.3663585186005, 4181.209291219711, 4186.069571256638, 4190.906168460846, 4195.750886440277, 4200.622765779495, 4205.50399518013, 4210.379345655441, 4215.25959444046, 4220.15592956543, 4225.031541347504, 4229.897173166275, 4234.778622627258, 4239.650373458862, 4244.538698911667, 4249.389503479004, 4254.253040313721, 4259.121436595917, 4264.003329753876, 4268.871864318848, 4273.736613988876, 4278.608747720718, 4283.499549627304, 4288.376325368881, 4293.26203083992, 4298.139291524887, 4303.025717496872, 4307.920276403427, 4312.804536342621, 4317.684900522232, 4322.573756933212, 4327.463488817215, 4332.34933924675, 4337.231372833252, 4342.106701850891, 4346.967399597168, 4351.841016769409, 4356.730916976929, 4361.620051622391, 4366.487535238266, 4371.343994379044, 4376.2044506073, 4381.086617708206, 4385.966057777405, 4390.848995685577, 4395.732476949692, 4400.606042146683, 4405.47202205658, 4410.3454303741455, 4415.223730325699, 4420.111417770386, 4425.021411180496, 4429.96484875679, 4434.880177259445, 4439.753446102142, 4444.630187749863, 4449.505177974701, 4454.3865349292755, 4459.2819147109985, 4464.15008854866, 4469.022105932236, 4473.888231515884, 4478.7625522613525, 4483.643409013748, 4488.523438215256, 4493.389752626419, 4498.283175468445, 4503.178451538086, 4508.0632309913635, 4512.966796159744, 4517.848952770233, 4522.737638235092, 4527.6126227378845, 4532.496377706528, 4537.34779381752, 4542.231954097748, 4547.120014190674, 4552.002180814743, 4556.869015932083, 4561.727636814117, 4566.58947634697, 4571.46556687355, 4576.334804773331, 4581.207315921783, 4586.087957143784, 4590.953220129013, 4595.809620141983, 4600.683948755264, 4605.547277212143, 4610.41379237175, 4615.27765250206, 4620.138119459152, 4624.996549844742, 4629.8636021614075, 4634.698905467987, 4639.5604593753815, 4644.457262516022, 4649.3205852508545, 4654.189381837845, 4659.057783126831, 4663.927876472473, 4668.810184240341, 4673.686481952667, 4678.553894996643, 4683.421535491943, 4688.287171840668, 4693.1532962322235, 4698.024237394333, 4702.889327049255, 4707.758770465851, 4712.639358997345, 4717.503630638123, 4722.366980314255, 4727.206844329834, 4732.087375402451, 4736.956062555313, 4741.831923961639, 4746.701442480087, 4751.591565132141, 4756.458295583725, 4761.326587438583, 4766.196246147156, 4771.080419063568, 4775.948974847794, 4780.791281700134, 4785.65008187294, 4790.481340885162, 4795.3280646800995, 4800.168423652649, 4805.005220174789, 4809.857927799225, 4814.71301150322, 4819.561433315277, 4824.419866323471, 4829.311638832092, 4834.188893556595, 4839.072205543518, 4843.95111656189, 4848.84135389328, 4853.7420699596405, 4858.675256490707, 4863.613751411438, 4868.551646709442, 4873.439753770828, 4878.312801122665, 4883.185719251633, 4888.062965631485, 4892.940086364746, 4897.812638998032, 4902.683170557022, 4907.572666883469, 4912.4427700042725, 4917.303071737289, 4922.1774270534515, 4927.052938938141, 4931.940141439438, 4936.805653810501, 4941.683085441589, 4946.562480211258, 4951.445245981216, 4956.317823410034, 4961.203873157501, 4966.078837633133, 4970.957058668137, 4975.837365865707, 4980.724969387054, 4985.620447635651, 4990.49741601944, 4995.372376441956, 5000.24742770195, 5005.1305413246155, 5010.0049839019775, 5014.864324808121, 5019.731881380081, 5024.5837190151215, 5029.482903957367, 5034.352652549744, 5039.218968868256, 5044.096445322037, 5048.951500415802, 5053.829531669617, 5058.69081902504, 5063.568115472794, 5068.425223827362, 5073.325348377228, 5078.2719643116, 5083.194547653198, 5088.065757036209, 5092.9398057460785, 5097.814457893372, 5102.682767391205, 5107.560178518295, 5112.421003103256, 5117.303170442581, 5122.184129238129, 5127.044186115265, 5131.919083118439, 5136.782476902008, 5141.654585599899, 5146.536771774292, 5151.413013935089, 5156.267949342728, 5161.134083986282, 5166.003880739212, 5170.8796236515045, 5175.777544736862, 5180.646831989288, 5185.518943786621, 5190.387423992157, 5195.262001276016, 5200.137543916702, 5205.002234458923, 5209.868700027466, 5214.734723329544, 5219.608684539795, 5224.458478689194, 5229.342075586319, 5234.223688840866, 5239.107328653336, 5243.968948364258, 5248.837098360062, 5253.712860822678, 5258.60062456131, 5263.482032775879, 5268.376218318939, 5273.260445833206, 5278.137161970139, 5283.00940656662, 5287.908133268356, 5292.8515248298645, 5297.778020143509, 5302.676091432571, 5307.55500793457, 5312.412212371826, 5317.280360221863, 5322.141949415207, 5327.022085905075, 5331.887815713882, 5336.768371343613, 5341.636589765549, 5346.490114450455, 5351.366124629974, 5356.235973119736, 5361.114571094513, 5365.985258340836, 5370.848123550415, 5375.707536935806, 5380.576669454575, 5385.467550754547, 5390.34507894516, 5395.215783596039, 5400.071320772171, 5404.90495467186, 5409.7430102825165, 5414.5638954639435, 5419.40492272377, 5424.235238790512, 5429.067409276962, 5433.893601894379, 5438.727685213089, 5443.55917263031, 5448.41320681572, 5453.262209653854, 5458.121635437012, 5462.977127790451, 5467.844752550125, 5472.71057844162, 5477.569905996323, 5482.440995454788, 5487.307232618332, 5492.170295715332, 5497.031085729599, 5501.892460107803, 5506.846947431564, 5511.702262878418, 5516.579498767853, 5521.435669898987, 5526.350254774094, 5531.208646774292, 5536.0797374248505, 5540.931978940964, 5545.8043048381805, 5550.656614303589, 5555.511891841888, 5560.388587713242, 5565.247309207916, 5570.120368480682, 5574.987347364426, 5579.846309900284, 5584.702321529388, 5589.544023990631, 5594.414773225784, 5599.283745288849, 5604.150302648544, 5609.004117488861, 5613.860987186432, 5618.738209247589, 5623.605549097061, 5628.5102417469025, 5633.3654108047485, 5638.254378318787, 5643.118993997574, 5647.997448682785, 5652.859678983688, 5657.733078956604, 5662.595075845718, 5667.466623783112, 5672.332736730576, 5677.193017721176, 5682.054847002029, 5686.924250841141, 5691.797257184982, 5696.666692018509, 5701.53083729744, 5706.407991886139, 5711.2619552612305, 5716.199611186981, 5721.098207950592, 5725.9663808345795, 5730.841238498688, 5735.709741830826, 5740.5679478645325, 5745.442736148834, 5750.3055012226105, 5755.165460109711, 5760.020200014114, 5764.875972986221, 5769.738956212997, 5774.601850271225, 5779.474033355713, 5784.341232538223, 5789.197992324829, 5794.069244146347, 5798.920287370682, 5803.77979683876, 5808.640985965729, 5813.494188308716, 5818.361843585968, 5823.217129707336, 5828.06592130661, 5832.927259922028, 5837.789623260498, 5842.644789218903, 5847.5105447769165, 5852.368702173233, 5857.23687171936, 5862.092547893524, 5866.9666068553925, 5871.822712182999, 5876.685208082199, 5881.555351734161, 5886.415796995163, 5891.2518658638, 5896.106595039368, 5900.974366426468, 5905.84764790535, 5910.6955490112305, 5915.548195362091, 5920.407976150513, 5925.286552429199, 5930.178082227707, 5935.041343450546, 5939.889002323151, 5944.749328374863, 5949.60871052742, 5954.468324661255, 5959.34167265892, 5964.204931020737, 5969.067769050598, 5973.952759027481, 5978.830718040466, 5983.687692403793, 5988.537206888199, 5993.40318441391, 5998.258962869644, 6003.121451854706, 6007.984907388687, 6012.853288412094, 6017.7274396419525, 6022.5877597332, 6027.440088510513, 6032.274288654327, 6037.107774734497, 6041.931066989899, 6046.768186330795, 6051.5996515750885, 6056.432131767273, 6061.254821300507, 6066.079842805862, 6070.903095245361, 6075.767288923264, 6080.637372016907, 6085.4948534965515, 6090.358396053314, 6095.2275722026825, 6100.080951690674, 6104.956312656403, 6109.82407450676, 6114.694799661636, 6119.542912006378, 6124.395556688309, 6129.242771148682, 6134.121626138687, 6139.0074467659, 6143.8613867759705, 6148.724160671234, 6153.586779356003, 6158.424732685089, 6163.2858674526215, 6168.155037879944, 6173.014443874359, 6177.841357707977, 6182.707309484482, 6187.564502716064, 6192.434890508652, 6197.303327322006, 6202.164031744003, 6207.017153501511, 6211.872771263123, 6216.722394227982, 6221.568851709366, 6226.435648918152, 6231.304605960846, 6236.16660118103, 6241.027375459671, 6245.889617919922, 6250.743653059006, 6255.594763040543, 6260.458220243454, 6265.3070912361145, 6270.175208568573, 6275.010889291763, 6279.874839544296, 6284.723345041275, 6289.597666978836, 6294.464604377747, 6299.329229593277, 6304.192505121231, 6309.052223682404, 6313.919226646423, 6318.7866196632385, 6323.669428348541, 6328.546972513199, 6333.419887065887, 6338.277025222778, 6343.204669475555, 6348.1102776527405, 6352.974027633667, 6357.855688333511, 6362.731597900391, 6367.601644277573, 6372.458036184311, 6377.326859235764, 6382.197749614716, 6387.06903219223, 6391.929641008377, 6396.774139642715, 6401.640984535217, 6406.505401611328, 6411.372466087341, 6416.240239858627, 6421.110096216202, 6425.976719856262, 6430.841597080231, 6435.700962781906, 6440.564048528671, 6445.414101362228, 6450.269256591797, 6455.132982492447, 6459.992424488068, 6464.853762388229, 6469.726094961166, 6474.591504335403, 6479.464607715607, 6484.331325054169, 6489.208872556686, 6494.077611684799, 6498.944969654083, 6503.806118965149, 6508.672461032867, 6513.529811859131, 6518.390995979309, 6523.264434099197, 6528.139535903931, 6533.001489639282, 6537.850969076157, 6542.726492404938, 6547.587774515152, 6552.493369579315, 6557.398995637894, 6562.287771224976, 6567.147520780563, 6571.9950358867645, 6576.854429483414, 6581.720674037933, 6586.575426101685, 6591.434212684631, 6596.2877202034, 6601.156128168106, 6606.022183179855, 6610.886833906174, 6615.747356414795, 6620.621520996094, 6625.469483613968, 6630.329956769943, 6635.191596031189, 6640.065551280975, 6644.912180185318, 6649.77293586731, 6654.605830192566, 6659.440604686737, 6664.273610830307, 6669.1083953380585, 6673.935732126236, 6678.767967939377, 6683.595125675201, 6688.417529821396, 6693.230048894882, 6698.0706832408905, 6702.921129465103, 6707.789286851883, 6712.641004323959, 6717.501638174057, 6722.361253738403, 6727.202782869339, 6732.062467336655, 6736.915784597397, 6741.7850642204285, 6746.636996984482, 6751.475023269653, 6756.325403213501, 6761.179811000824, 6766.103638887405, 6771.02681183815, 6775.881437063217, 6780.728636026382, 6785.588955402374, 6790.44348859787, 6795.318849563599, 6800.172629833221, 6805.033186674118, 6809.8942694664, 6814.736526250839, 6819.591566562653, 6824.450414896011, 6829.321434497833, 6834.181754827499, 6839.051060676575, 6843.903899669647, 6848.763594865799, 6853.645511627197, 6858.498351573944, 6863.371467351913, 6868.220349788666, 6873.07769370079, 6877.925055265427, 6882.77636885643, 6887.64199924469, 6892.50909614563, 6897.375249147415, 6902.220320224762, 6907.0891716480255, 6911.944738149643, 6916.808602809906, 6921.667004585266, 6926.527445077896, 6931.373074054718, 6936.21909403801, 6941.0604639053345, 6945.918616294861, 6950.778482675552, 6955.63018488884, 6960.477372407913, 6965.329653978348, 6970.175921678543, 6975.057539701462, 6979.914253950119, 6984.774997711182, 6989.622265577316, 6994.471363544464, 6999.307482004166, 7004.154962062836, 7009.007131099701, 7013.857015132904, 7018.714108467102, 7023.564651489258, 7028.434412717819, 7033.2830584049225, 7038.126040697098, 7043.007939815521, 7047.871021747589, 7052.729129552841, 7057.580308437347, 7062.4428770542145, 7067.3172698020935, 7072.181733608246, 7077.0377287864685, 7081.904888629913, 7086.771610498428, 7091.637491464615, 7096.50737953186, 7101.367911577225, 7106.237837076187, 7111.092000961304, 7115.953510284424, 7120.789242982864, 7125.655389547348, 7130.508999109268, 7135.379766702652, 7140.23829293251, 7145.0983147621155, 7149.950095653534, 7154.801785469055, 7159.670592546463, 7164.536109447479, 7169.395027637482, 7174.254589796066, 7179.13467335701, 7184.070997714996, 7188.983371496201, 7193.843735218048, 7198.68900513649, 7203.55656504631, 7208.404006242752, 7213.266032218933, 7218.117641448975, 7222.988504886627, 7227.8493139743805, 7232.710164308548, 7237.568888187408, 7242.426500558853, 7247.260222911835, 7252.113152980804, 7256.9659287929535, 7261.817986726761, 7266.6744973659515, 7271.532529830933, 7276.36713051796, 7281.192432165146, 7286.005221366882, 7290.831152439117, 7295.65397644043, 7300.486090421677, 7305.327910423279, 7310.165894031525, 7315.003796577454, 7319.822774171829, 7324.6765723228455, 7329.531106710434, 7334.39452624321, 7339.248251676559, 7344.103368997574, 7348.965322732925, 7353.827240228653, 7358.685096740723, 7363.533164739609, 7368.388959407806, 7373.250463724136, 7378.113015174866, 7382.957716464996, 7387.810386180878, 7392.698596000671, 7397.602689504623, 7402.490897893906, 7407.329551696777, 7412.194885730743, 7417.059688091278, 7421.9255475997925, 7426.786654949188, 7431.6422560215, 7436.487464904785, 7441.328750133514, 7446.181605577469, 7451.031469583511, 7455.888375043869, 7460.742020845413, 7465.595915317535, 7470.450533390045, 7475.303708791733, 7480.159804105759, 7485.005170583725, 7489.866785764694, 7494.7221739292145, 7499.575484037399, 7504.428345441818, 7509.2957854270935, 7514.153941392899, 7518.9955060482025, 7523.8522210121155, 7528.714875221252, 7533.557714223862, 7538.4061627388, 7543.275018930435, 7548.149015665054, 7552.9996700286865, 7557.857970714569, 7562.708395957947, 7567.560281991959, 7572.413824796677, 7577.275936603546, 7582.11319065094, 7586.974216461182, 7591.831296205521, 7596.699734210968, 7601.573703289032, 7606.465096235275, 7611.359245538712, 7616.198486566544, 7621.058660507202, 7625.893584012985, 7630.7435755729675, 7635.593105316162, 7640.436234712601, 7645.291880607605, 7650.141797780991, 7655.006165742874, 7659.85323548317, 7664.70732998848, 7669.575789928436, 7674.43151640892, 7679.286573171616, 7684.138615369797, 7689.000571012497, 7693.851996421814, 7698.73029923439, 7703.59001493454, 7708.462570905685, 7713.321366548538, 7718.1838393211365, 7723.028818368912, 7727.908181190491, 7732.787893772125, 7737.644955635071, 7742.494704008102, 7747.367583990097, 7752.226777553558, 7757.082976341248, 7761.94011425972, 7766.810972690582, 7771.659151315689, 7776.5159430503845, 7781.368982791901, 7786.239668130875, 7791.099748373032, 7795.957166433334, 7800.806240081787, 7805.663343191147, 7810.525705575943, 7815.455726861954, 7820.2987377643585, 7825.159190654755, 7830.010845899582, 7834.870322465897, 7839.718992948532, 7844.579243898392, 7849.43435382843, 7854.304116010666, 7859.153972387314, 7864.0258684158325, 7868.866906404495, 7873.724347829819, 7878.58736872673, 7883.447628974915, 7888.310904741287, 7893.159934043884, 7897.9888479709625, 7902.79873418808, 7907.636987924576, 7912.449151754379, 7917.270024061203, 7922.0981459617615, 7926.921822071075, 7931.7492616176605, 7936.573375940323, 7941.398013114929, 7946.238566637039, 7951.0914216041565, 7955.937518119812, 7960.793896913528, 7965.638770103455, 7970.484709024429, 7975.336375713348, 7980.1866228580475, 7985.035147190094, 7989.87558555603, 7994.727120876312, 7999.564727306366, 8004.424903392792, 8009.2728860378265, 8014.127650499344, 8019.002564430237, 8023.895694494247, 8028.75993680954, 8033.617249011993, 8038.486736536026, 8043.347673892975, 8048.202263832092, 8053.054297685623, 8057.9155831336975, 8062.767159461975, 8067.631447315216, 8072.487379312515, 8077.34934926033, 8082.203865289688, 8087.0613925457, 8091.922578334808, 8096.769033908844, 8101.626100063324, 8106.459863901138, 8111.302291631699, 8116.155548334122, 8121.002281188965, 8125.852324485779, 8130.706376791, 8135.549160957336, 8140.388310909271, 8145.255855321884, 8150.108724117279, 8154.962092399597, 8159.800128936768, 8164.665282964706, 8169.50789141655, 8174.358568429947, 8179.200647115707, 8184.040475130081, 8188.888121128082, 8193.74669265747, 8198.595447301865, 8203.44896531105, 8208.300642967224, 8213.153016328812, 8217.991933107376, 8222.845690250397, 8227.737160682678, 8232.618649959564, 8237.467864990234, 8242.32408285141, 8247.179148674011, 8252.045374393463, 8256.91158413887, 8261.764097929, 8266.640056610107, 8271.496726036072, 8276.342803239822, 8281.203214883804, 8286.05526804924, 8290.916991472244, 8295.753454446793, 8300.601660013199, 8305.445850610733, 8310.31021142006, 8315.15366101265, 8320.009505987167, 8324.86409687996, 8329.723156452179, 8334.569530010223, 8339.423074483871, 8344.268656253815, 8349.11669421196, 8353.971977710724, 8358.824824810028, 8363.669816970825, 8368.534120559692, 8373.392691373825, 8378.249712228775, 8383.102951049805, 8387.968137979507, 8392.782933235168, 8397.638752698898, 8402.486470222473, 8407.334456443787, 8412.16921544075, 8417.021260976791, 8421.865718126297, 8426.714306592941, 8431.563425302505, 8436.438976287842, 8441.314562797546, 8446.170065879822, 8451.01017832756, 8455.85984158516, 8460.710458993912, 8465.564528942108, 8470.413770198822, 8475.27917432785, 8480.125415325165, 8484.981981277466, 8489.833673715591, 8494.675419569016, 8499.53068614006, 8504.390705823898, 8509.272245883942, 8514.130435228348, 8518.985533714294, 8523.83078956604, 8528.649396419525, 8533.468020915985, 8538.303898334503, 8543.127002239227, 8547.947379112244, 8552.766843795776, 8557.58934378624, 8562.402260065079, 8567.212312459946, 8572.05639886856, 8576.895396232605, 8581.729886054993, 8586.565948724747, 8591.41815161705, 8596.264787912369, 8601.113111495972, 8605.963180541992, 8610.817040681839, 8615.66904425621, 8620.519611597061, 8625.400123596191, 8630.250406265259, 8635.10947227478, 8639.96978878975, 8644.825685501099, 8649.6993765831, 8654.59909248352, 8659.472666025162, 8664.342787981033, 8669.203350305557, 8674.054187297821, 8678.89561009407, 8683.74194765091, 8688.588309764862, 8693.450653791428, 8698.309844970703, 8703.16641664505, 8708.021464824677, 8712.884731292725, 8717.736234664917, 8722.588316679, 8727.460702180862, 8732.31947350502, 8737.175295114517, 8742.028423070908, 8746.905901432037, 8751.757133722305, 8756.63137292862, 8761.47769331932, 8766.342997074127, 8771.190383911133, 8776.04369711876, 8780.905369758606, 8785.757760047913, 8790.626096010208, 8795.475692987442, 8800.322845220566, 8805.176290512085, 8810.02169919014, 8814.87526679039, 8819.723534584045, 8824.569433689117, 8829.42076253891, 8834.269533157349, 8839.108726978302, 8843.967502355576, 8848.822239875793, 8853.69258737564, 8858.54898071289, 8863.431724071503, 8868.289553403854, 8873.155527114868, 8878.01937365532, 8882.892385482788, 8887.750767946243, 8892.629640579224, 8897.492186307907, 8902.36500453949, 8907.229849100113, 8912.100926876068, 8916.9615483284, 8921.833286762238, 8926.693957328796, 8931.555418491364, 8936.411760091782, 8941.271454811096, 8946.129151582718, 8950.972037553787, 8955.828629255295, 8960.68671822548, 8965.52632689476, 8970.384015798569, 8975.244351148605, 8980.099546670914, 8984.951533555984, 8989.829883813858, 8994.674000740051, 8999.530982017517, 9004.397624015808, 9009.276727437973, 9014.144142627716, 9019.000916481018, 9023.864030361176, 9028.718793153763, 9033.572441339493, 9038.423758983612, 9043.308668613434, 9048.170930624008, 9053.030141830444, 9057.871880292892, 9062.729833126068, 9067.669067144394, 9072.57199549675, 9077.424535989761, 9082.289249420166, 9087.14664888382, 9091.993831157684, 9096.860163450241, 9101.736866950989, 9106.613025665283, 9111.477202177048, 9116.333533525467, 9121.187052488327, 9126.043284416199, 9130.908524274826, 9135.755869150162, 9140.614361286163, 9145.453757047653, 9150.294248819351, 9155.129589557648, 9159.9439265728, 9164.783735752106, 9169.605450630188, 9174.413603067398, 9179.253852128983, 9184.080483675003, 9188.904546499252, 9193.722560167313, 9198.583443880081, 9203.433553934097, 9208.297956943512, 9213.161687374115, 9218.021823644638, 9222.876016139984, 9227.757158041, 9232.611254453659, 9237.469676971436, 9242.367383241653, 9247.22476196289, 9252.086584329605, 9256.938798427582, 9261.791789531708, 9266.632199287415, 9271.499042510986, 9276.418196201324, 9281.263798475266, 9286.118226528168, 9290.980250835419, 9295.827914714813, 9300.683275461197, 9305.536907434464, 9310.39921116829, 9315.260195970535, 9320.126175880432, 9324.967042922974, 9329.828036546707, 9334.668141365051, 9339.517778396606, 9344.36209321022, 9349.222446203232, 9354.076680898666, 9358.933790445328, 9363.769830226898, 9368.618410110474, 9373.477250099182, 9378.342366456985, 9383.201643943787, 9388.055307149887, 9392.890856742859, 9397.741823196411, 9402.576614379883, 9407.432089567184, 9412.282198190689, 9417.141905546188, 9421.989553689957, 9426.840205669403, 9431.699594020844, 9436.551943778992, 9441.404007673264, 9446.251872777939, 9451.104908943176, 9455.961571931839, 9460.804674386978, 9465.678864717484, 9470.531631708145, 9475.397226572037, 9480.287999391556, 9485.149530887604, 9490.008627653122, 9494.869654417038, 9499.715792179108]
