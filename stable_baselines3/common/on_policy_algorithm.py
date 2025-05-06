@@ -371,13 +371,18 @@ class OnPolicyAlgorithm(BaseAlgorithm):
 
             self.train()
 
-            if init_call:
-                # if isinstance(self.env, VariBadWrapper) and self.num_timesteps % 10000 == 0:
-                # eval_interval = self.n_steps * 20
-                # if self.num_timesteps % eval_interval == 0:
-                    # self.evaluate(self.num_timesteps)
-                returns_trains = evaluate_policy(self, self.get_env(), n_eval_episodes=5, deterministic=True)[0]
-                print(f'Reward at iter {self.num_timesteps}: {returns_trains}')
+            # if init_call:
+            #     # if isinstance(self.env, VariBadWrapper) and self.num_timesteps % 10000 == 0:
+            #     # eval_interval = self.n_steps * 20
+            #     # if self.num_timesteps % eval_interval == 0:
+            #         # self.evaluate(self.num_timesteps)
+            #     if self.n_envs > 1:
+            #         self.env_name = self.env.get_attr("spec")[0].id
+            #     else:
+            #         self.env_name = self.env.spec.id
+            #     dummy_env = gymnasium.make(self.env_name)
+            #     returns_trains = evaluate_policy(self, dummy_env, n_eval_episodes=5, deterministic=True)[0]
+            #     print(f'Reward at iter {self.num_timesteps}: {returns_trains}')
 
         callback.on_training_end()
 

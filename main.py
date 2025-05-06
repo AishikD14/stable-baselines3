@@ -557,7 +557,7 @@ class PPOQWrapper(QLearningAlgoBase):
         return {}
 
 # Method for evaluating the FQE using d3rlpy
-def d3rl_evaluation(model):
+def d3rl_evaluation(model, exp_name):
     # terminals = model.replay_buffer.dones
 
     # print("[INFO] Forcing terminal flags every", args.n_steps_per_rollout, "steps.")
@@ -624,6 +624,7 @@ def d3rl_evaluation(model):
             },
             show_progress=True,
             save_interval=N_STEPS//N_STEPS_PER_EPOCH,
+            experiment_name=exp_name
         )
 
         print("\nFQE Fitting completed.")
@@ -742,7 +743,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_neighbor_search_random_walk"
+    exp = "PPO_test"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -903,8 +904,8 @@ if __name__ == "__main__":
                         first_iteration=True if i == START_ITER else False,
                         )
             
-            # agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib)
-            agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+            agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib)
+            # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
             # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
             # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
             # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
@@ -932,7 +933,7 @@ if __name__ == "__main__":
                     # q_losses.append(q_loss)
 
                     # d3rl FQE evaluation code
-                    init_est = d3rl_evaluation(model)
+                    init_est = d3rl_evaluation(model, f"{'-'.join(DIR.split('/'))}")
                     advantage_rew.append(init_est)
 
             if not online_eval:
