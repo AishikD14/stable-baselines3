@@ -129,8 +129,8 @@ PPO_baseline_1, ppo_baseline_1_out, Normal training with 11024 steps per rollout
 
 #####################################################################################################################################################################
 
-
------------------
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
 Ant-v5
 ----------------
 Seed 0
@@ -138,6 +138,11 @@ Seed 0
 PPO_1, ppo_init_1M_out, ppo_ant_1M_0.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, espace1, Ongoing
 ----------------
+Seed 1
+----------------
+PPO_2, ppo_init_1M_1_out, ppo_ant_1M_1.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer, espace6, Ongoing
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
 HalfCheetah-v5
 ----------------
 Seed 0
@@ -145,6 +150,11 @@ Seed 0
 PPO_1, ppo_init_1M_out, ppo_half_cheetah_1M_0.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, espace2, Ongoing
 ----------------
+Seed 1
+----------------
+PPO_2, ppo_init_1M_1_out, ppo_half_cheetah_1M_1.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer, espace7, Ongoing
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
 Walker2d-v5
 ----------------
 Seed 0
@@ -152,16 +162,30 @@ Seed 0
 PPO_1, ppo_init_1M_out, ppo_walker2d_1M_0.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, espace3, Ongoing
 ----------------
+Seed 1
+----------------
+PPO_2, ppo_init_1M_1_out, ppo_walker2d_1M_1.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer, espace8, Ongoing
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
 Humanoid-v5
 ----------------
 Seed 0
 ----------------
 PPO_1, ppo_init_1M_out, ppo_humanoid_1M_0.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
 PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, espace4, Ongoing
------------------
+----------------
+Seed 1
+----------------
+PPO_2, ppo_init_1M_1_out, ppo_humanoid_1M_1.zip; PPO Init for 1M steps with new hyperparameters and replay buffer, espace9, Ongoing
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
 Swimmer-v5
 -----------------
 Seed 0
 ----------------
 PPO_1, ppo_init_1M_out, ppo_swimmer_1M_0.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
 PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, espace5, Ongoing
+----------------
+Seed 1
+----------------
+PPO_2, ppo_init_1M_1_out, ppo_swimmer_1M_1.zip; PPO Init for 1M steps with new hyperparameters and replay buffer, espace10, Ongoing
