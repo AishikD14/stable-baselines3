@@ -648,8 +648,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
-    # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
+    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
@@ -799,6 +799,9 @@ if __name__ == "__main__":
     if hasattr(args, 'cg_damping'):
         trpo_kwargs["cg_damping"] = args.cg_damping  
 
+    if hasattr(args, 'target_kl'):
+        trpo_kwargs["target_kl"] = args.target_kl
+
     if policy_kwargs:
         trpo_kwargs["policy_kwargs"] = policy_kwargs
 
@@ -813,7 +816,7 @@ if __name__ == "__main__":
     os.makedirs(f'full_exp_on_trpo/models/'+env_name, exist_ok=True)
 
     model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp)
-    model.save("full_exp_on_trpo/models/"+env_name+"/trpo_ant_1M"+'_'+str(args.seed))
+    model.save("full_exp_on_trpo/models/"+env_name+"/trpo_half_cheetah_1M"+'_'+str(args.seed))
 
     print("Initial training done") 
 
