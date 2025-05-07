@@ -215,7 +215,7 @@ Seed 0         |
 PPO_1, ppo_init_1M_out, ppo_swimmer_1M_0.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
 PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, espace5, Ongoing
 PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training
-TRPO_1, trpo_init_1M_out, trpo_swimmer_1M_0.zip; TRPO Init for 1M steps with new hyperparameters, espace11, Ongoing
+TRPO_1, trpo_init_1M_out, trpo_swimmer_1M_0.zip; TRPO Init for 1M steps with new hyperparameters
 ----------------
 Seed 1         |
 ----------------
