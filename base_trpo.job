@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=espace8
-#SBATCH --output=/home/aideb/stable-baselines3/base_job_output/Ant/trpo_init_1M_out.txt
-#SBATCH --error=/home/aideb/stable-baselines3/base_job_output/Ant/trpo_init_1M_err.txt
+#SBATCH --job-name=espace18
+#SBATCH --output=/home/aideb/stable-baselines3/base_job_output/Swimmer-v5/trpo_normal_training_3_out.txt
+#SBATCH --error=/home/aideb/stable-baselines3/base_job_output/Swimmer-v5/trpo_normal_training_3_err.txt
 #SBATCH --time=50-00:00
 #SBATCH --mem=50000
 
