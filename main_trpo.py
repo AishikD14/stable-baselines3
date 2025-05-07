@@ -184,9 +184,9 @@ def load_weights(arng, directory, env):
         policy_vec = []
 
         # new_model = PPO("MlpPolicy", env, verbose=0, device='cpu')
-        # new_model.load(f'logs/{directory}/models/agent{i}.zip', device='cpu')
+        # new_model.load(f'trpo_logs/{directory}/models/agent{i}.zip', device='cpu')
 
-        ckp = torch.load(f'logs/{directory}/models/agent{i+1}.zip', map_location=torch.device('cpu'))
+        ckp = torch.load(f'trpo_logs/{directory}/models/agent{i+1}.zip', map_location=torch.device('cpu'))
 
         # ckp = new_model.policy.state_dict()
         ckp_layers = ckp.keys()
@@ -648,8 +648,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
-    env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
+    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
@@ -717,7 +717,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "TRPO"
+    exp = "TRPO_normal_training"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('trpo_logs/'+env_name+"/", exp)+1)
     ckp_dir = f'trpo_logs/{DIR}/models'
 
@@ -812,15 +812,15 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    print("Starting Initial training")
-    os.makedirs(f'full_exp_on_trpo/models/'+env_name, exist_ok=True)
+    # print("Starting Initial training")
+    # os.makedirs(f'full_exp_on_trpo/models/'+env_name, exist_ok=True)
 
-    model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp)
-    model.save("full_exp_on_trpo/models/"+env_name+"/trpo_half_cheetah_1M"+'_'+str(args.seed))
+    # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp)
+    # model.save("full_exp_on_trpo/models/"+env_name+"/trpo_swimmer_1M"+'_'+str(args.seed))
 
-    print("Initial training done") 
+    # print("Initial training done") 
 
-    quit()
+    # quit()
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -893,10 +893,10 @@ if __name__ == "__main__":
                 print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
             print(f'avg cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
 
-            np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
-            np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+            np.save(f'trpo_logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
+            np.save(f'trpo_logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
             if not online_eval:
-                np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
+                np.save(f'trpo_logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
             timeArray.append(time.time() - start_time)
 
             # Correlation calculation
@@ -930,7 +930,7 @@ if __name__ == "__main__":
 
                 # print(f'the best agent: {best_idx}, avg policy: {returns_trains}')
                 # best_agent_index.append(best_idx)
-                # np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+                # np.save(f'trpo_logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
                 # load_state_dict(model, best_agent)
 
                 # -----------------------------------------------------------------------------
@@ -941,7 +941,7 @@ if __name__ == "__main__":
                 best_agent = agents[best_idx]
                 print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}')
                 best_agent_index.append(best_idx)
-                np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+                np.save(f'trpo_logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
                 load_state_dict(model, best_agent)
 
             # Finding the best agent from online evaluation
@@ -950,11 +950,11 @@ if __name__ == "__main__":
                 best_agent = agents[best_idx]
                 print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}')
                 best_agent_index.append(best_idx)
-                np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+                np.save(f'trpo_logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
                 load_state_dict(model, best_agent)
 
-        np.save(f'logs/{DIR}/distance.npy', distanceArray)
-        np.save(f'logs/{DIR}/time.npy', timeArray)
+        np.save(f'trpo_logs/{DIR}/distance.npy', distanceArray)
+        np.save(f'trpo_logs/{DIR}/time.npy', timeArray)
         print("Average distance of random agents to nearest neighbors:", distanceArray)
         print("Time taken for each iteration:", timeArray)
 
@@ -973,10 +973,10 @@ if __name__ == "__main__":
             returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
             print(f'avg return on policy: {returns_trains}')
             cum_rews.append(returns_trains)
-            np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+            np.save(f'trpo_logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
             timeArray.append(time.time() - start_time)
         
-        np.save(f'logs/{DIR}/time.npy', timeArray)
+        np.save(f'trpo_logs/{DIR}/time.npy', timeArray)
         print("Time taken for each iteration:", timeArray)
 
     env.close()
