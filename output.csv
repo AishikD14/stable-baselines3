@@ -144,13 +144,13 @@ Seed 1         |
 PPO_2, ppo_init_1M_1_out, ppo_ant_1M_1.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 PPO_FQE_2, ppo_fqe_2_out, PPO FQE with 60 iterations & every other point; gamma=0.3, espace6, Ongoing
 PPO_normal_training_1, ppo_normal_training_2_out, PPO Normal Training
-TRPO_2, trpo_init_1M_1_out, trpo_ant_1M_1.zip; TRPO Init for 1M steps with Xinyu hyperparameters, espace9, Ongoing
+TRPO_2, trpo_init_1M_1_out, trpo_ant_1M_1.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 ----------------
 Seed 2         |
 ----------------
 PPO_3, ppo_init_1M_2_out, ppo_ant_1M_2.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 PPO_normal_training_2, ppo_normal_training_3_out, PPO Normal Training
-TRPO_3, trpo_init_1M_2_out, trpo_ant_1M_2.zip; TRPO Init for 1M steps with Xinyu hyperparameters, espace11, Ongoing
+TRPO_3, trpo_init_1M_2_out, trpo_ant_1M_2.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 HalfCheetah-v5
