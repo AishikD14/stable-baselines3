@@ -5,49 +5,64 @@ Ant-v5
 ------------------------------------------------------------------------------------------------
 Seed 2         |
 ----------------
-PPO_FQE_1, ppo_fqe_3_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, exp8, Ongoing
+
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 HalfCheetah-v5
 ------------------------------------------------------------------------------------------------
 Seed 0         |
 ----------------
-PPO_Ablation3_1, ppo_ablation3_1_out, PPO FQE with 60 iterations & every other point & search=2; gamma=0.3, exp9, Ongoing
-PPO_Ablation4_1, ppo_ablation4_1_out, PPO FQE with 60 iterations & every other point & search=3; gamma=0.3, exp10, Ongoing
+
 ----------------
 Seed 1         |
 ----------------
-PPO_FQE_1, ppo_fqe_2_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, exp1, Ongoing
+
 ----------------
 Seed 2         |
 ----------------
-PPO_FQE_2, ppo_fqe_3_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, exp2, Ongoing
+
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Walker2d-v5
 ------------------------------------------------------------------------------------------------
+Seed 0         |
+----------------
+PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point; gamma=0.3, exp1, Ongoing
+----------------
 Seed 1         |
 ----------------
-PPO_FQE_1, ppo_fqe_2_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, exp3, Ongoing
+PPO_FQE_2, ppo_fqe_2_out, PPO FQE with 60 iterations & every other point; gamma=0.3, exp2, Ongoing
 ----------------
 Seed 2         |
 ----------------
-PPO_FQE_2, ppo_fqe_3_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, exp4, Ongoing
+PPO_FQE_3, ppo_fqe_3_out, PPO FQE with 60 iterations & every other point; gamma=0.3, exp3, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Humanoid-v5
 ------------------------------------------------------------------------------------------------
+Seed 0         |
+----------------
+PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point; gamma=0.3, exp4, Ongoing
+----------------
 Seed 1         |
 ----------------
-PPO_FQE_1, ppo_fqe_2_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, exp5, Ongoing
+PPO_FQE_2, ppo_fqe_2_out, PPO FQE with 60 iterations & every other point; gamma=0.3, exp5, Ongoing
 ----------------
 Seed 2         |
 ----------------
-PPO_FQE_2, ppo_fqe_3_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, exp6, Ongoing
+PPO_FQE_3, ppo_fqe_3_out, PPO FQE with 60 iterations & every other point; gamma=0.3, exp6, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Swimmer-v5
 ------------------------------------------------------------------------------------------------
+Seed 0         |
+----------------
+PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point; gamma=0.3, exp7, Ongoing
+----------------
+Seed 1         |
+----------------
+PPO_FQE_2, ppo_fqe_2_out, PPO FQE with 60 iterations & every other point; gamma=0.3, exp8, Ongoing
+----------------
 Seed 2         |
 ----------------
-PPO_FQE_1, ppo_fqe_3_out, PPO FQE with 60 iterations & every other point - 60k; gamma=0.3, exp7, Ongoing
+PPO_FQE_3, ppo_fqe_3_out, PPO FQE with 60 iterations & every other point; gamma=0.3, exp9, Ongoing
