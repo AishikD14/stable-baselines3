@@ -139,15 +139,15 @@ for file_name in file_name_list:
         reward_values_np = np.array(reward_values)
 
         # Save the rewards
-        # os.makedirs("../final_results/"+env, exist_ok=True)
-        # if len(file_name) > 1:
-        #     np.save("../final_results/"+env+"/"+file_name[1]+".npy", reward_values_np)
-        # else:
-        #     np.save("../final_results/"+env+"/"+file_name[0]+".npy", reward_values_np)
+        os.makedirs("../final_results/"+env, exist_ok=True)
+        if len(file_name) > 1:
+            np.save("../final_results/"+env+"/"+file_name[1]+".npy", reward_values_np)
+        else:
+            np.save("../final_results/"+env+"/"+file_name[0]+".npy", reward_values_np)
     else:
         print("------------------------------------")
         print("Working on "+file_name[0]+" directory")
-        
+
         if env == "Ant-v5":
             env_proxy = "Ant"
         else:
@@ -170,9 +170,9 @@ for file_name in file_name_list:
         # Convert rewards to numpy array for easier math
         reward_values_np = np.array(reward_values)
 
-    # Save the rewards
-    os.makedirs("../final_results/"+env, exist_ok=True)
-    if len(file_name) > 1:
-        np.save("../final_results/"+env+"/"+file_name[1]+".npy", reward_values_np)
-    else:
-        np.save("../final_results/"+env+"/"+file_name[0]+".npy", reward_values_np)
+        # Save the rewards
+        os.makedirs("../final_results/"+env, exist_ok=True)
+        if len(file_name) > 2:
+            np.save("../final_results/"+env+"/"+file_name[2]+".npy", reward_values_np)
+        else:
+            np.save("../final_results/"+env+"/"+file_name[0]+".npy", reward_values_np)
