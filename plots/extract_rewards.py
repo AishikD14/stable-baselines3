@@ -6,15 +6,16 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
 from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer
+import re
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-# env = "Ant-v5"
+env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
-env = "Swimmer-v5"
+# env = "Swimmer-v5"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -32,15 +33,15 @@ start_iteration = 1000000 // args.n_steps_per_rollout
 
 # Ant-v5
 file_name_list = [
-    ["PPO_normal_training_1", "PPO_normal_training_2"],
-    ["PPO_normal_training_2", "PPO_normal_training_3"],
+    # ["PPO_normal_training_1", "PPO_normal_training_2"],
+    # ["PPO_normal_training_2", "PPO_normal_training_3"],
     # ["PPO_normal_training_3"],
-    ["PPO_FQE_1"],
-    ["PPO_FQE_2"],
+    ["PPO_FQE_1", "ppo_fqe_1_out"],
+    ["PPO_FQE_2", "ppo_fqe_2_out"],
     # ["PPO_FQE_3"],
-    ["TRPO_normal_training_1"],
-    ["TRPO_normal_training_2"],
-    ["TRPO_normal_training_3"],
+    # ["TRPO_normal_training_1"],
+    # ["TRPO_normal_training_2"],
+    # ["TRPO_normal_training_3"],
     ["PPO_upper_bound_1", "PPO_upper_bound_2"],
     # ["PPO_upper_bound_2"],
     # ["PPO_upper_bound_3"],
@@ -138,10 +139,40 @@ for file_name in file_name_list:
         reward_values_np = np.array(reward_values)
 
         # Save the rewards
-        os.makedirs("../final_results/"+env, exist_ok=True)
-        if len(file_name) > 1:
-            np.save("../final_results/"+env+"/"+file_name[1]+".npy", reward_values_np)
-        else:
-            np.save("../final_results/"+env+"/"+file_name[0]+".npy", reward_values_np)
+        # os.makedirs("../final_results/"+env, exist_ok=True)
+        # if len(file_name) > 1:
+        #     np.save("../final_results/"+env+"/"+file_name[1]+".npy", reward_values_np)
+        # else:
+        #     np.save("../final_results/"+env+"/"+file_name[0]+".npy", reward_values_np)
     else:
-        pass
+        print("------------------------------------")
+        print("Working on "+file_name[0]+" directory")
+        
+        if env == "Ant-v5":
+            env_proxy = "Ant"
+        else:
+            env_proxy = env
+        file = "../base_job_output/"+env_proxy+"/"+file_name[1]+".txt"
+
+        reward_values = []
+
+        with open(file, "r") as f:
+            lines = f.readlines()
+
+        # Go through each line and extract the reward if it's a reward line
+        for line in lines:
+            if line.startswith("the best agent"):
+                match = re.findall(r"[-+]?\d*\.\d+|\d+", line)
+                if match:
+                    reward = float(match[-1])  # get the last number in the line
+                    reward_values.append(reward)
+
+        # Convert rewards to numpy array for easier math
+        reward_values_np = np.array(reward_values)
+
+    # Save the rewards
+    os.makedirs("../final_results/"+env, exist_ok=True)
+    if len(file_name) > 1:
+        np.save("../final_results/"+env+"/"+file_name[1]+".npy", reward_values_np)
+    else:
+        np.save("../final_results/"+env+"/"+file_name[0]+".npy", reward_values_np)
