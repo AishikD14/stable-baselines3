@@ -648,8 +648,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
-    env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
+    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
@@ -744,7 +744,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_test"
+    exp = "PPO_FQE"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -865,16 +865,16 @@ if __name__ == "__main__":
 
     # -------------------------------------------------------------------------------------------------------------
 
-    # print("Loading replay buffer")
+    print("Loading replay buffer")
 
-    # # Load the replay buffer
-    # replay_buffer = np.load(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz')
-    # model.replay_buffer.observations = replay_buffer['observations'] if args.n_envs == 1 else replay_buffer['observations'].reshape(-1, args.n_envs, replay_buffer['observations'].shape[-1])
-    # model.replay_buffer.actions = replay_buffer['actions'] if args.n_envs == 1 else replay_buffer['actions'].reshape(-1, args.n_envs, replay_buffer['actions'].shape[-1])
-    # model.replay_buffer.rewards = replay_buffer['rewards'] if args.n_envs == 1 else replay_buffer['rewards'].reshape(-1, args.n_envs)
-    # model.replay_buffer.dones = replay_buffer['terminals'] if args.n_envs == 1 else replay_buffer['terminals'].reshape(-1, args.n_envs)
-    # print("Replay buffer loaded")
-    # print("Replay buffer shape: ", model.replay_buffer.observations.shape, model.replay_buffer.actions.shape, model.replay_buffer.rewards.shape, model.replay_buffer.dones.shape)
+    # Load the replay buffer
+    replay_buffer = np.load(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz')
+    model.replay_buffer.observations = replay_buffer['observations'] if args.n_envs == 1 else replay_buffer['observations'].reshape(-1, args.n_envs, replay_buffer['observations'].shape[-1])
+    model.replay_buffer.actions = replay_buffer['actions'] if args.n_envs == 1 else replay_buffer['actions'].reshape(-1, args.n_envs, replay_buffer['actions'].shape[-1])
+    model.replay_buffer.rewards = replay_buffer['rewards'] if args.n_envs == 1 else replay_buffer['rewards'].reshape(-1, args.n_envs)
+    model.replay_buffer.dones = replay_buffer['terminals'] if args.n_envs == 1 else replay_buffer['terminals'].reshape(-1, args.n_envs)
+    print("Replay buffer loaded")
+    print("Replay buffer shape: ", model.replay_buffer.observations.shape, model.replay_buffer.actions.shape, model.replay_buffer.rewards.shape, model.replay_buffer.dones.shape)
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -883,10 +883,10 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = True
+    normal_train = False
     use_ANN = False
     ANN_lib = "Annoy"
-    online_eval = True
+    online_eval = False
 
     distanceArray = []
     start_time = time.time()
@@ -928,15 +928,13 @@ if __name__ == "__main__":
                 
                 # Online evaluation
                 if hasattr(args, 'n_envs') and args.n_envs > 1:
-                    # print("Creating multiple envs - ", args.n_envs)
                     # Create a list of environment functions
                     dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
                     dummy_env = SubprocVecEnv(dummy_env_fns)
                 else:
                     dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
                     dummy_env.reset(seed=args.seed)
-                # dummy_env = gym.make(env_name)
-                # dummy_env.reset(seed=args.seed)
+                    
                 returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
                 print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
                 cum_rews.append(returns_trains)
