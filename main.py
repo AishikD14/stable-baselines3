@@ -602,6 +602,7 @@ def d3rl_evaluation(model, exp_name):
             config=d3rlpy.ope.FQEConfig(
                 learning_rate=3e-4,         # Learning rate for FQE's internal Q-network
                 target_update_interval=100, # How often to update FQE's target network
+                gamma=ppo_wrapper.ppo.gamma, # Discount factor
             )
         )
 
@@ -648,9 +649,9 @@ if __name__ == "__main__":
     args, rest_args = parser.parse_known_args()
 
     # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
-    # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
+    env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
-    env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
+    # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
     # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
@@ -736,14 +737,14 @@ if __name__ == "__main__":
 
     # N_EPOCHS = 10 # Since set to 10 updates per rollout
 
-    START_ITER = 1000000 // args.n_steps_per_rollout
-    SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
-    NUM_ITERS = 3000000 // args.n_steps_per_rollout
-    N_EPOCHS = args.n_epochs
+    # START_ITER = 1000000 // args.n_steps_per_rollout
+    # SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
+    # NUM_ITERS = 3000000 // args.n_steps_per_rollout
+    # N_EPOCHS = args.n_epochs
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO"
+    exp = "PPO_test"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -824,6 +825,11 @@ if __name__ == "__main__":
 
     model = PPO(**ppo_kwargs)
 
+    START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+    SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
+    NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
+    N_EPOCHS = args.n_epochs
+
     # ---------------------------------------------------------------------------------------------------------------
 
     # print("Starting Initial training")
@@ -859,16 +865,16 @@ if __name__ == "__main__":
 
     # -------------------------------------------------------------------------------------------------------------
 
-    print("Loading replay buffer")
+    # print("Loading replay buffer")
 
-    # Load the replay buffer
-    replay_buffer = np.load(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz')
-    model.replay_buffer.observations = replay_buffer['observations'] if args.n_envs == 1 else replay_buffer['observations'].reshape(-1, args.n_envs, replay_buffer['observations'].shape[-1])
-    model.replay_buffer.actions = replay_buffer['actions'] if args.n_envs == 1 else replay_buffer['actions'].reshape(-1, args.n_envs, replay_buffer['actions'].shape[-1])
-    model.replay_buffer.rewards = replay_buffer['rewards'] if args.n_envs == 1 else replay_buffer['rewards'].reshape(-1, args.n_envs)
-    model.replay_buffer.dones = replay_buffer['terminals'] if args.n_envs == 1 else replay_buffer['terminals'].reshape(-1, args.n_envs)
-    print("Replay buffer loaded")
-    print("Replay buffer shape: ", model.replay_buffer.observations.shape, model.replay_buffer.actions.shape, model.replay_buffer.rewards.shape, model.replay_buffer.dones.shape)
+    # # Load the replay buffer
+    # replay_buffer = np.load(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz')
+    # model.replay_buffer.observations = replay_buffer['observations'] if args.n_envs == 1 else replay_buffer['observations'].reshape(-1, args.n_envs, replay_buffer['observations'].shape[-1])
+    # model.replay_buffer.actions = replay_buffer['actions'] if args.n_envs == 1 else replay_buffer['actions'].reshape(-1, args.n_envs, replay_buffer['actions'].shape[-1])
+    # model.replay_buffer.rewards = replay_buffer['rewards'] if args.n_envs == 1 else replay_buffer['rewards'].reshape(-1, args.n_envs)
+    # model.replay_buffer.dones = replay_buffer['terminals'] if args.n_envs == 1 else replay_buffer['terminals'].reshape(-1, args.n_envs)
+    # print("Replay buffer loaded")
+    # print("Replay buffer shape: ", model.replay_buffer.observations.shape, model.replay_buffer.actions.shape, model.replay_buffer.rewards.shape, model.replay_buffer.dones.shape)
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -877,10 +883,10 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = False
+    normal_train = True
     use_ANN = False
     ANN_lib = "Annoy"
-    online_eval = False
+    online_eval = True
 
     distanceArray = []
     start_time = time.time()
@@ -921,8 +927,18 @@ if __name__ == "__main__":
                 model.policy.to(device)
                 
                 # Online evaluation
-                returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
-                print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
+                if hasattr(args, 'n_envs') and args.n_envs > 1:
+                    # print("Creating multiple envs - ", args.n_envs)
+                    # Create a list of environment functions
+                    dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
+                    dummy_env = SubprocVecEnv(dummy_env_fns)
+                else:
+                    dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+                    dummy_env.reset(seed=args.seed)
+                # dummy_env = gym.make(env_name)
+                # dummy_env.reset(seed=args.seed)
+                returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
                 cum_rews.append(returns_trains)
 
                 # Q-function evaluation
@@ -942,7 +958,8 @@ if __name__ == "__main__":
             print(f'avg cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
 
             np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
-            np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+            if online_eval:
+                np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
             if not online_eval:
                 np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
             timeArray.append(time.time() - start_time)
@@ -990,6 +1007,7 @@ if __name__ == "__main__":
                 print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}')
                 best_agent_index.append(best_idx)
                 np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+                np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews[best_idx])
                 load_state_dict(model, best_agent)
 
             # Finding the best agent from online evaluation
@@ -1018,8 +1036,18 @@ if __name__ == "__main__":
 
             cum_rews = []
 
-            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
-            print(f'avg return on policy: {returns_trains}')
+            if hasattr(args, 'n_envs') and args.n_envs > 1:
+                # print("Creating multiple envs - ", args.n_envs)
+                # Create a list of environment functions
+                dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
+                dummy_env = SubprocVecEnv(dummy_env_fns)
+            else:
+                dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+                dummy_env.reset(seed=args.seed)
+            # dummy_env = gym.make(env_name)
+            # dummy_env.reset(seed=args.seed)
+            returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+            print(f'avg 3 return on policy: {returns_trains}')
             cum_rews.append(returns_trains)
             np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
             timeArray.append(time.time() - start_time)

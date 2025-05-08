@@ -603,6 +603,7 @@ def d3rl_evaluation(model, exp_name):
             config=d3rlpy.ope.FQEConfig(
                 learning_rate=3e-4,         # Learning rate for FQE's internal Q-network
                 target_update_interval=100, # How often to update FQE's target network
+                gamma=ppo_wrapper.ppo.gamma,
             )
         )
 
@@ -648,12 +649,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
-    env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
+    # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
     if env_name == "Ant-v5":
         args = args_ant.get_args(rest_args)
@@ -710,9 +711,9 @@ if __name__ == "__main__":
 
     # --------------------------------------------------------------------------------------------------------------
 
-    START_ITER = 1000000 // args.n_steps_per_rollout
-    SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
-    NUM_ITERS = 3000000 // args.n_steps_per_rollout
+    # START_ITER = 1000000 // args.n_steps_per_rollout
+    # SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
+    # NUM_ITERS = 3000000 // args.n_steps_per_rollout
     # N_EPOCHS = args.n_epochs
 
     # ---------------------------------------------------------------------------------------------------------------
@@ -810,6 +811,10 @@ if __name__ == "__main__":
 
     model = TRPO(**trpo_kwargs)
 
+    START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+    SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
+    NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
+
     # ---------------------------------------------------------------------------------------------------------------
 
     # print("Starting Initial training")
@@ -873,8 +878,18 @@ if __name__ == "__main__":
                 model.policy.to(device)
                 
                 # Online evaluation
-                returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
-                print(f'avg return on 5 trajectories of agent{j}: {returns_trains}')
+                if hasattr(args, 'n_envs') and args.n_envs > 1:
+                    # print("Creating multiple envs - ", args.n_envs)
+                    # Create a list of environment functions
+                    dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
+                    dummy_env = SubprocVecEnv(dummy_env_fns)
+                else:
+                    dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+                    dummy_env.reset(seed=args.seed)
+                # dummy_env = gym.make(env_name)
+                # dummy_env.reset(seed=args.seed)
+                returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
                 cum_rews.append(returns_trains)
 
                 # Q-function evaluation
@@ -894,7 +909,8 @@ if __name__ == "__main__":
             print(f'avg cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
 
             np.save(f'trpo_logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
-            np.save(f'trpo_logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+            if online_eval:
+                np.save(f'trpo_logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
             if not online_eval:
                 np.save(f'trpo_logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
             timeArray.append(time.time() - start_time)
@@ -942,6 +958,7 @@ if __name__ == "__main__":
                 print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}')
                 best_agent_index.append(best_idx)
                 np.save(f'trpo_logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+                np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews[best_idx])
                 load_state_dict(model, best_agent)
 
             # Finding the best agent from online evaluation
@@ -970,8 +987,18 @@ if __name__ == "__main__":
 
             cum_rews = []
 
-            returns_trains = evaluate_policy(model, vec_env, n_eval_episodes=3, deterministic=True)[0]
-            print(f'avg return on policy: {returns_trains}')
+            if hasattr(args, 'n_envs') and args.n_envs > 1:
+                # print("Creating multiple envs - ", args.n_envs)
+                # Create a list of environment functions
+                dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
+                dummy_env = SubprocVecEnv(dummy_env_fns)
+            else:
+                dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+                dummy_env.reset(seed=args.seed)
+            # dummy_env = gym.make(env_name)
+            # dummy_env.reset(seed=args.seed)
+            returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+            print(f'avg 3 return on policy: {returns_trains}')
             cum_rews.append(returns_trains)
             np.save(f'trpo_logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
             timeArray.append(time.time() - start_time)
