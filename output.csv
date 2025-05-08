@@ -221,6 +221,7 @@ Seed 1         |
 ----------------
 PPO_2, ppo_init_1M_1_out, ppo_humanoid_1M_1.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
 PPO_normal_training_1, ppo_normal_training_2_out, PPO Normal Training
+PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace14, Ongoing
 TRPO_2, trpo_init_1M_1_out, trpo_humanoid_1M_1.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training
 ----------------
