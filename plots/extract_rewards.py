@@ -11,9 +11,9 @@ import re
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-env = "Ant-v5"
+# env = "Ant-v5"
 # env = "HalfCheetah-v5"
-# env = "Walker2d-v5"
+env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
 
@@ -33,8 +33,8 @@ start_iteration = 1000000 // args.n_steps_per_rollout
 
 # Ant-v5
 # file_name_list = [
-#     # ["PPO_normal_training_1", "PPO_normal_training_2"],
-#     # ["PPO_normal_training_2", "PPO_normal_training_3"],
+#     # ["PPO_normal_training_1"],
+#     # ["PPO_normal_training_2"],
 #     # ["PPO_normal_training_3"],
 #     ["PPO_FQE_1", "ppo_fqe_1_out"],
 #     ["PPO_FQE_2", "ppo_fqe_2_out"],
@@ -48,6 +48,24 @@ start_iteration = 1000000 // args.n_steps_per_rollout
 # ]
 
 # HalfCheetah-v5
+# file_name_list = [
+#     ["PPO_normal_training_1"],
+#     ["PPO_normal_training_2"],
+#     ["PPO_normal_training_3"],
+#     # ["PPO_FQE_1"],
+#     # ["PPO_FQE_2"],
+#     # ["PPO_FQE_3"],
+#     # ["TRPO_normal_training_1"],
+#     # ["TRPO_normal_training_2"],
+#     # ["TRPO_normal_training_3"],
+#     # ["PPO_upper_bound_1", "PPO_upper_bound_2"],
+#     # ["PPO_upper_bound_2"],
+#     # ["PPO_upper_bound_3"],
+#     # ["PPO_Ablation1_1"],
+#     # ["PPO_Ablation2_1"],
+# ]
+
+# Walker2d-v5
 file_name_list = [
     ["PPO_normal_training_1"],
     ["PPO_normal_training_2"],
@@ -58,42 +76,24 @@ file_name_list = [
     # ["TRPO_normal_training_1"],
     # ["TRPO_normal_training_2"],
     # ["TRPO_normal_training_3"],
-    # ["PPO_upper_bound_1", "PPO_upper_bound_2"],
+    # ["PPO_upper_bound_1"],
     # ["PPO_upper_bound_2"],
     # ["PPO_upper_bound_3"],
-    # ["PPO_Ablation1_1"],
-    # ["PPO_Ablation2_1"],
 ]
-
-# Walker2d-v5
-# file_name_list = [
-#     ["PPO_normal_training_1", "PPO_normal_training_2"],
-#     ["PPO_normal_training_2", "PPO_normal_training_3"],
-#     # ["PPO_normal_training_3"],
-#     ["PPO_FQE_1"],
-#     # ["PPO_FQE_2"],
-#     # ["PPO_FQE_3"],
-#     ["TRPO_normal_training_1"],
-#     ["TRPO_normal_training_2"],
-#     ["TRPO_normal_training_3"],
-#     ["PPO_upper_bound_1"],
-#     ["PPO_upper_bound_2"],
-#     # ["PPO_upper_bound_3"],
-# ]
 
 # Humanoid-v5
 # file_name_list = [
-#     ["PPO_normal_training_1", "PPO_normal_training_2"],
-#     ["PPO_normal_training_2", "PPO_normal_training_3"],
-#     # ["PPO_normal_training_3"],
-#     ["PPO_FQE_1"],
+#     ["PPO_normal_training_1"],
+#     ["PPO_normal_training_2"],
+#     ["PPO_normal_training_3"],
+#     # ["PPO_FQE_1"],
 #     # ["PPO_FQE_2"],
 #     # ["PPO_FQE_3"],
-#     ["TRPO_normal_training_1"],
-#     ["TRPO_normal_training_2"],
-#     ["TRPO_normal_training_3"],
-#     ["PPO_upper_bound_1"],
-#     ["PPO_upper_bound_2"],
+#     # ["TRPO_normal_training_1"],
+#     # ["TRPO_normal_training_2"],
+#     # ["TRPO_normal_training_3"],
+#     # ["PPO_upper_bound_1"],
+#     # ["PPO_upper_bound_2"],
 #     # ["PPO_upper_bound_3"],
 # ]
 
@@ -102,14 +102,14 @@ file_name_list = [
 #     ["PPO_normal_training_1"],
 #     ["PPO_normal_training_2"],
 #     ["PPO_normal_training_3"],
-#     ["PPO_FQE_1"],
-#     ["PPO_FQE_2"],
+#     # ["PPO_FQE_1"],
+#     # ["PPO_FQE_2"],
 #     # ["PPO_FQE_3"],
-#     ["TRPO_normal_training_1"],
-#     ["TRPO_normal_training_2"],
-#     ["TRPO_normal_training_3"],
-#     ["PPO_upper_bound_1"],
-#     ["PPO_upper_bound_2"],
+#     # ["TRPO_normal_training_1"],
+#     # ["TRPO_normal_training_2"],
+#     # ["TRPO_normal_training_3"],
+#     # ["PPO_upper_bound_1"],
+#     # ["PPO_upper_bound_2"],
 #     # ["PPO_upper_bound_3"],
 # ]
 

@@ -13,9 +13,9 @@ args, rest_args = parser.parse_known_args()
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
-# env = "Walker2d-v5"
+env = "Walker2d-v5"
 # env = "Humanoid-v5"
-env = "Swimmer-v5"
+# env = "Swimmer-v5"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -37,7 +37,7 @@ seed_list = [0, 1, 2]
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
     ["PPO_normal_training", "PPO Normal Training"],
-    ["TRPO_normal_training", "TRPO Normal Training"],
+    # ["TRPO_normal_training", "TRPO Normal Training"],
 ]
 
 plot_metrics = []
