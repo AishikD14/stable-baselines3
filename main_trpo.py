@@ -671,6 +671,7 @@ if __name__ == "__main__":
 
     # Set the seed for reproducibility
     if hasattr(args, 'seed'):
+        print("Setting seed - ", args.seed)
         random.seed(args.seed)
         torch.random.manual_seed(args.seed)
         np.random.seed(args.seed)
