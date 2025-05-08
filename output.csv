@@ -194,6 +194,7 @@ Walker2d-v5
 Seed 0         |
 ----------------
 PPO_1, ppo_init_1M_out, ppo_walker2d_1M_0.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
+PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training, espace7, Ongoing
 PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_1, trpo_init_1M_out, trpo_walker2d_1M_0.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training
@@ -201,7 +202,7 @@ TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training
 Seed 1         |
 ----------------
 PPO_2, ppo_init_1M_1_out, ppo_walker2d_1M_1.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
-PPO_normal_training_1, ppo_normal_training_2_out, PPO Normal Training
+PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training, espace8, Ongoing
 PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_2, trpo_init_1M_1_out, trpo_walker2d_1M_1.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training
@@ -209,7 +210,7 @@ TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training
 Seed 2         |
 ----------------
 PPO_3, ppo_init_1M_2_out, ppo_walker2d_1M_2.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
-PPO_normal_training_2, ppo_normal_training_3_out, PPO Normal Training
+PPO_normal_training_3, ppo_normal_training_3_out, PPO Normal Training, espace9, Ongoing
 TRPO_3, trpo_init_1M_2_out, trpo_walker2d_1M_2.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training
 ------------------------------------------------------------------------------------------------
