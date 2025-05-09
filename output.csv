@@ -269,11 +269,14 @@ Pendulum-v1
 Seed 0         |
 ----------------
 PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training with eval=1
+PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3, espace12, Ongoing
 ----------------
 Seed 1         |
 ----------------
 PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training with eval=1
+PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3, espace13, Ongoing
 ----------------
 Seed 2         |
 ----------------
 PPO_normal_training_3, ppo_normal_training_3_out, PPO Normal Training with eval=1
+PPO_upper_bound_3, ppo_upper_bound_3_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3, espace14, Ongoing
