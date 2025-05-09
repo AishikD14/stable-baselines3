@@ -8,9 +8,8 @@ def get_args(rest_args):
     parser.add_argument('--verbose', default=0, type=int, help='Verbosity level')
     parser.add_argument('--seed', default=0, type=int, help='Random seed')
     parser.add_argument('--n-envs', default=4, type=int, help='Number of parallel environments')
-    parser.add_argument('--n-steps-per-rollout', default=1024, type=int, help='Number of steps per rollout')
-    # parser.add_argument('--n-steps-per-rollout', default=11024, type=int, help='Number of steps per rollout')  #For Baseline calculation search=1
-    # parser.add_argument('--batch-size', default=689, type=int, help='Batch size') # For Baseline calculation search=1
+    parser.add_argument('--n-steps-per-rollout', default=256, type=int, help='Number of steps per rollout')
+    parser.add_argument('--batch-size', default=64, type=int, help='Batch size')
     parser.add_argument('--gamma', default=0.9, type=float, help='Discount factor')
     parser.add_argument('--ent-coef', default=0.0, type=float, help='Entropy coefficient')
     parser.add_argument('--learning-rate', default=1e-3, type=float, help='Learning rate')
