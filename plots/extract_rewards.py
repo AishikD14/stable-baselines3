@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum
 import re
 
 parser = argparse.ArgumentParser()
@@ -13,9 +13,10 @@ args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
-env = "Walker2d-v5"
+# env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
+env = "Pendulum-v1"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -27,6 +28,8 @@ elif env == "Humanoid-v5":
     args = args_humanoid.get_args(rest_args)
 elif env == "Swimmer-v5":
     args = args_swimmer.get_args(rest_args)
+elif env == "Pendulum-v1":
+    args = args_pendulum.get_args(rest_args)
 
 # start_iteration = 1
 start_iteration = 1000000 // args.n_steps_per_rollout
@@ -66,20 +69,20 @@ start_iteration = 1000000 // args.n_steps_per_rollout
 # ]
 
 # Walker2d-v5
-file_name_list = [
-    # ["PPO_normal_training_1"],
-    # ["PPO_normal_training_2"],
-    # ["PPO_normal_training_3"],
-    # ["PPO_FQE_1"],
-    # ["PPO_FQE_2"],
-    # ["PPO_FQE_3"],
-    ["TRPO_normal_training_1"],
-    ["TRPO_normal_training_2"],
-    ["TRPO_normal_training_3"],
-    # ["PPO_upper_bound_1"],
-    # ["PPO_upper_bound_2"],
-    # ["PPO_upper_bound_3"],
-]
+# file_name_list = [
+#     # ["PPO_normal_training_1"],
+#     # ["PPO_normal_training_2"],
+#     # ["PPO_normal_training_3"],
+#     # ["PPO_FQE_1"],
+#     # ["PPO_FQE_2"],
+#     # ["PPO_FQE_3"],
+#     ["TRPO_normal_training_1"],
+#     ["TRPO_normal_training_2"],
+#     ["TRPO_normal_training_3"],
+#     # ["PPO_upper_bound_1"],
+#     # ["PPO_upper_bound_2"],
+#     # ["PPO_upper_bound_3"],
+# ]
 
 # Humanoid-v5
 # file_name_list = [
@@ -112,6 +115,13 @@ file_name_list = [
 #     # ["PPO_upper_bound_2"],
 #     # ["PPO_upper_bound_3"],
 # ]
+
+# Pendulum-v1
+file_name_list = [
+    ["PPO_normal_training_1"],
+    ["PPO_normal_training_2"],
+    ["PPO_normal_training_3"],
+]
 
 for file_name in file_name_list:
     # if "FQE" not in file_name[0]:

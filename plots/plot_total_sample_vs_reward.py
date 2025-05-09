@@ -5,12 +5,12 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum
+from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_bipedal_walker
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-env = "Ant-v5"
+# env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
@@ -19,6 +19,7 @@ env = "Ant-v5"
 # env = "CartPole-v1"
 # env = "MountainCar-v0"
 # env = "Pendulum-v1"
+env = "BipedalWalker-v3"
 
 if env == "AntDir-v0":
     args = args_ant_dir.get_args(rest_args)
@@ -38,6 +39,12 @@ elif env == "MountainCar-v0":
     args = args_mountain_car.get_args(rest_args)
 elif env == "Pendulum-v1":
     args = args_pendulum.get_args(rest_args)
+elif env == "BipedalWalker-v3":
+    args = args_bipedal_walker.get_args(rest_args)
+
+if not hasattr(args, 'n_envs'):
+    args.n_envs = 1
+
 
 # start_iteration = 1
 start_iteration = 1000000 // args.n_steps_per_rollout
@@ -131,6 +138,11 @@ plot_list = [
 #     # ["PPO_empty_space_1", "Online eval with 60 iter & 3 eval & every other point-60k; gamma=0.3"], # Upper bound
 # ]
 
+# BipedalWalker-v3 FQE evaluations
+plot_list = [
+    ["PPO_normal_training_1", "PPO normal training"],
+]
+
 plot_metrics = []
 
 # -------------------------------------------------------
@@ -187,7 +199,7 @@ for i, plot_metric in enumerate(plot_metrics):
     plt.plot(x, smoothed, label=plot_list[i][1])
     plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
 
-plt.xlabel('Samples (x' + str(args.n_steps_per_rollout) + ')')
+plt.xlabel('Samples (x' + str(args.n_steps_per_rollout*args.n_envs) + ')')
 plt.ylabel('Max Reward')
 plt.title('Reward Plot')
 plt.grid()
