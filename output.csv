@@ -262,3 +262,18 @@ PPO_3, ppo_init_1M_2_out, ppo_swimmer_1M_2.zip; PPO Init for 1M steps with new h
 PPO_normal_training_3, ppo_normal_training_3_out, PPO Normal Training
 TRPO_3, trpo_init_1M_2_out, trpo_swimmer_1M_2.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+Pendulum-v1
+------------------------------------------------------------------------------------------------
+Seed 0         |
+----------------
+PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training with eval=1, espace12, Ongoing
+----------------
+Seed 1         |
+----------------
+PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training with eval=1, espace13, Ongoing
+----------------
+Seed 2         |
+----------------
+PPO_normal_training_3, ppo_normal_training_3_out, PPO Normal Training with eval=1, espace14, Ongoing

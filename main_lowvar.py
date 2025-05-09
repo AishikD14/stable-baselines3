@@ -657,8 +657,8 @@ if __name__ == "__main__":
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
-    # env_name = "Pendulum-v1" # For pendulum (single goal task)
-    env_name = "BipedalWalker-v3"
+    env_name = "Pendulum-v1" # For pendulum (single goal task)
+    # env_name = "BipedalWalker-v3"
 
     # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
