@@ -651,8 +651,8 @@ if __name__ == "__main__":
     # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
-    env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
-    # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
+    env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
     # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
@@ -827,7 +827,7 @@ if __name__ == "__main__":
     model = PPO(**ppo_kwargs)
 
     START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
-    SEARCH_INTERV = 3 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
+    SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
     NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
     N_EPOCHS = args.n_epochs
 
