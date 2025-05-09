@@ -81,7 +81,7 @@ for file_name in file_name_list:
 
     # Define index space for interpolation
     sparse_indices = np.linspace(0, 1, len(reward_values_np))
-    dense_indices = np.linspace(0, 1, 3906)
+    dense_indices = np.linspace(0, 1, num_saves)
 
     # Perform linear interpolation
     dense_rewards = np.interp(dense_indices, sparse_indices, reward_values_np)
