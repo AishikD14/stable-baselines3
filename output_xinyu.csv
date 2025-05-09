@@ -3,16 +3,22 @@ Log Name, Output Name, Description, JobId, Status
 ------------------------------------------------------------------------------------------------
 Ant-v5
 ------------------------------------------------------------------------------------------------
+----------------
+Seed 1         |
+----------------
+PPO_upper_bound_1, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, exp12, Ongoing
+----------------
 Seed 2         |
 ----------------
-
+PPO_upper_bound_2, ppo_upper_bound_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, exp13, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 HalfCheetah-v5
 ------------------------------------------------------------------------------------------------
 Seed 0         |
 ----------------
-
+PPO_Ablation1_1, ppo_ablation1_1_out, PPO FQE with gamma=0.5 and search=1, exp10, Ongoing
+PPO_Ablation2_1, ppo_ablation2_1_out, PPO FQE with gamma=0 and search=1, exp11, Ongoing
 ----------------
 Seed 1         |
 ----------------
