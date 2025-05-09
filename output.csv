@@ -146,7 +146,6 @@ Seed 1         |
 PPO_2, ppo_init_1M_1_out, ppo_ant_1M_1.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 PPO_FQE_2, ppo_fqe_2_out, PPO FQE with 60 iterations & every other point; gamma=0.3, espace2, Ongoing
 PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training
-PPO_upper_bound_1, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_2, trpo_init_1M_1_out, trpo_ant_1M_1.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training
 ----------------
@@ -176,7 +175,6 @@ Seed 1         |
 PPO_2, ppo_init_1M_1_out, ppo_half_cheetah_1M_1.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training
 PPO_FQE_2, ppo_fqe_2_out, PPO FQE with 60 iterations & every other point; gamma=0.3, espace5, Ongoing
-PPO_upper_bound_1, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_2, trpo_init_1M_1_out, trpo_half_cheetah_1M_1.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training
 ----------------
@@ -195,7 +193,7 @@ Seed 0         |
 ----------------
 PPO_1, ppo_init_1M_out, ppo_walker2d_1M_0.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training
-PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
+PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace7, Ongoing
 TRPO_1, trpo_init_1M_out, trpo_walker2d_1M_0.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training
 ----------------
@@ -203,7 +201,6 @@ Seed 1         |
 ----------------
 PPO_2, ppo_init_1M_1_out, ppo_walker2d_1M_1.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training
-PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_2, trpo_init_1M_1_out, trpo_walker2d_1M_1.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training
 ----------------
@@ -221,7 +218,7 @@ Seed 0         |
 ----------------
 PPO_1, ppo_init_1M_out, ppo_humanoid_1M_0.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
 PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training
-PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
+PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace8, Ongoing
 TRPO_1, trpo_init_1M_out, trpo_humanoid_1M_0.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training
 ----------------
@@ -229,7 +226,6 @@ Seed 1         |
 ----------------
 PPO_2, ppo_init_1M_1_out, ppo_humanoid_1M_1.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
 PPO_normal_training_4, ppo_normal_training_2_out, PPO Normal Training
-PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_2, trpo_init_1M_1_out, trpo_humanoid_1M_1.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training
 ----------------
@@ -247,7 +243,7 @@ Seed 0         |
 ----------------
 PPO_1, ppo_init_1M_out, ppo_swimmer_1M_0.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
 PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training
-PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
+PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace9, Ongoing
 TRPO_1, trpo_init_1M_out, trpo_swimmer_1M_0.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training, espace10, Ongoing
 ----------------
@@ -255,7 +251,6 @@ Seed 1         |
 ----------------
 PPO_2, ppo_init_1M_1_out, ppo_swimmer_1M_1.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
 PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training
-PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_2, trpo_init_1M_1_out, trpo_swimmer_1M_1.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training, espace11, Ongoing
 ----------------
