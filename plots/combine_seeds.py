@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
@@ -16,7 +16,8 @@ args, rest_args = parser.parse_known_args()
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
-env = "Pendulum-v1"
+# env = "Pendulum-v1"
+env = "BipedalWalker-v3"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -30,6 +31,11 @@ elif env == "Swimmer-v5":
     args = args_swimmer.get_args(rest_args)
 elif env == "Pendulum-v1":
     args = args_pendulum.get_args(rest_args)
+elif env == "BipedalWalker-v3":
+    args = args_bipedal_walker.get_args(rest_args)
+
+if not hasattr(args, 'n_envs'):
+    args.n_envs = 1
 
 # start_iteration = 1
 start_iteration = 1000000 // args.n_steps_per_rollout
@@ -40,6 +46,7 @@ seed_list = [0, 1, 2]
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
     ["PPO_normal_training", "PPO Normal Training"],
+    # ["PPO_upper_bound", "PPO Upper Bound"],
     # ["TRPO_normal_training", "TRPO Normal Training"],
 ]
 
@@ -100,7 +107,7 @@ for i, plot_metric in enumerate(plot_metrics):
     plt.plot(x, smoothed, label=plot_list[i][1])
     plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
 
-plt.xlabel('Samples (x' + str(args.n_steps_per_rollout) + ')')
+plt.xlabel('Samples (x' + str(args.n_steps_per_rollout*args.n_envs) + ')')
 plt.ylabel('Episode Return')
 plt.title('Reward Plot')
 plt.grid()
