@@ -269,26 +269,24 @@ Pendulum-v1
 Seed 0         |
 ----------------
 PPO_1, ppo_init_40k_out, ppo_pendulum_40k_0.zip; PPO Init for 40k steps with new hyperparameters and replay buffer
-PPO_4, ppo_init_1M_out, ppo_pendulum_1M_0.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
-PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training with eval=1
-PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
+PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training with eval=1 from scratch
+PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3 from scratch
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training with eval=1
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
-PPO_upper_bound_7, ppo_upper_bound_7_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k with 1M pretrain; gamma=0.3, espace12, Ongoing
 ----------------
 Seed 1         |
 ----------------
 PPO_2, ppo_init_40k_1_out, ppo_pendulum_40k_1.zip; PPO Init for 40k steps with new hyperparameters and replay buffer
-PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training with eval=1
-PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
+PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training with eval=1 from scratch
+PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3 from scratch
 PPO_normal_training_5, ppo_normal_training_5_out, PPO Normal Training with eval=1
 PPO_upper_bound_5, ppo_upper_bound_5_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
 ----------------
 Seed 2         |
 ----------------
 PPO_3, ppo_init_40k_2_out, ppo_pendulum_40k_2.zip; PPO Init for 40k steps with new hyperparameters and replay buffer
-PPO_normal_training_3, ppo_normal_training_3_out, PPO Normal Training with eval=1
-PPO_upper_bound_3, ppo_upper_bound_3_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
+PPO_normal_training_3, ppo_normal_training_3_out, PPO Normal Training with eval=1 from scratch
+PPO_upper_bound_3, ppo_upper_bound_3_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3 from scratch
 PPO_normal_training_6, ppo_normal_training_6_out, PPO Normal Training with eval=1
 PPO_upper_bound_6, ppo_upper_bound_6_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
 ------------------------------------------------------------------------------------------------
@@ -299,3 +297,11 @@ Seed 0         |
 ----------------
 PPO_1, ppo_init_1M_out, ppo_bipedalwalker_1M_0.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
 PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training with eval=1, espace15, Ongoing
+----------------
+Seed 1         |
+----------------
+PPO_2, ppo_init_1M_1_out, ppo_bipedalwalker_1M_1.zip; PPO Init for 1M steps with new hyperparameters and replay buffer, espace16, Ongoing
+----------------
+Seed 2         |
+----------------
+PPO_3, ppo_init_1M_2_out, ppo_bipedalwalker_1M_2.zip; PPO Init for 1M steps with new hyperparameters and replay buffer, espace17, Ongoing
