@@ -301,7 +301,8 @@ PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training with eval=
 Seed 1         |
 ----------------
 PPO_2, ppo_init_1M_1_out, ppo_bipedalwalker_1M_1.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
+PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training with eval=1, espace16, Ongoing
 ----------------
 Seed 2         |
 ----------------
-PPO_3, ppo_init_1M_2_out, ppo_bipedalwalker_1M_2.zip; PPO Init for 1M steps with new hyperparameters and replay buffer, espace17, Ongoing
+PPO_3, ppo_init_1M_2_out, ppo_bipedalwalker_1M_2.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
