@@ -274,6 +274,7 @@ PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training with eval=
 PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training with eval=1
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
+PPO_upper_bound_7, ppo_upper_bound_7_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k with 1M pretrain; gamma=0.3, espace12, Ongoing
 ----------------
 Seed 1         |
 ----------------
