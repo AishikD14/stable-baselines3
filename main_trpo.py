@@ -15,7 +15,7 @@ import pandas as pd
 # from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config_trpo import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer
+from data_collection_config_trpo import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
 from d3rlpy.dataset import MDPDataset
@@ -649,12 +649,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
     # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
+    env_name = "Pendulum-v1" # For pendulum (single goal task)
+    # env_name = "BipedalWalker-v3" # For bipedal walker (single goal task)
 
     if env_name == "Ant-v5":
         args = args_ant.get_args(rest_args)
@@ -666,6 +668,10 @@ if __name__ == "__main__":
         args = args_humanoid.get_args(rest_args)
     elif env_name == "Swimmer-v5":
         args = args_swimmer.get_args(rest_args)
+    elif env_name == "Pendulum-v1":
+        args = args_pendulum.get_args(rest_args)
+    elif env_name == "BipedalWalker-v3":
+        args = args_bipedal_walker.get_args(rest_args)    
 
     # ------------------------------------------------------------------------------------------------------------
 
@@ -757,7 +763,6 @@ if __name__ == "__main__":
         n_steps=args.n_steps_per_rollout,
         gamma=args.gamma,
         n_critic_updates=args.n_critic_updates,
-        gae_lambda=args.gae_lambda,
         device=args.device,
         tensorboard_log=args.tensorboard_log,
         ckp_dir=ckp_dir
@@ -804,6 +809,12 @@ if __name__ == "__main__":
     if hasattr(args, 'target_kl'):
         trpo_kwargs["target_kl"] = args.target_kl
 
+    if hasattr(args, 'use_sde'):
+        trpo_kwargs["use_sde"] = args.use_sde
+
+    if hasattr(args, 'gae_lambda'):
+        trpo_kwargs["gae_lambda"] = args.gae_lambda
+
     if policy_kwargs:
         trpo_kwargs["policy_kwargs"] = policy_kwargs
 
@@ -812,9 +823,21 @@ if __name__ == "__main__":
 
     model = TRPO(**trpo_kwargs)
 
-    START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
-    SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
-    NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
+    if env_name == "Pendulum-v1":
+        START_ITER = 1 // (args.n_steps_per_rollout*args.n_envs)
+        SEARCH_INTERV = 1 
+        NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs)
+        eval_episode_num = 1
+    elif env_name == "BipedalWalker-v3":
+        START_ITER = 1 // (args.n_steps_per_rollout*args.n_envs)
+        SEARCH_INTERV = 1
+        NUM_ITERS = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+        eval_episode_num = 1
+    else:
+        START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+        SEARCH_INTERV = 1 
+        NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
+        eval_episode_num = 3
 
     # ---------------------------------------------------------------------------------------------------------------
 
@@ -830,11 +853,12 @@ if __name__ == "__main__":
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    print("Loading Initial saved model")
+    if env_name not in ["Pendulum-v1", "BipedalWalker-v3"]:
+        print("Loading Initial saved model")
 
-    model.set_parameters(args.init_model_path+'_'+str(args.seed), device=args.device)
+        model.set_parameters(args.init_model_path+'_'+str(args.seed), device=args.device)
 
-    print("Model loaded")
+        print("Model loaded")
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -889,7 +913,7 @@ if __name__ == "__main__":
                     dummy_env.reset(seed=args.seed)
                 # dummy_env = gym.make(env_name)
                 # dummy_env.reset(seed=args.seed)
-                returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=eval_episode_num, deterministic=True)[0]
                 print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
                 cum_rews.append(returns_trains)
 
@@ -998,7 +1022,7 @@ if __name__ == "__main__":
                 dummy_env.reset(seed=args.seed)
             # dummy_env = gym.make(env_name)
             # dummy_env.reset(seed=args.seed)
-            returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+            returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=eval_episode_num, deterministic=True)[0]
             print(f'avg 3 return on policy: {returns_trains}')
             cum_rews.append(returns_trains)
             np.save(f'trpo_logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
