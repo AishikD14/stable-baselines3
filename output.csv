@@ -273,7 +273,7 @@ PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training with eval=
 PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3 from scratch
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training with eval=1
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
-TRPO_normal_training_2, trpo_normal_training_1_out, TRPO Normal Training with eval=1 from scratch
+TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training with eval=1 from scratch
 ----------------
 Seed 1         |
 ----------------
@@ -282,7 +282,7 @@ PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training with eval=
 PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3 from scratch
 PPO_normal_training_5, ppo_normal_training_5_out, PPO Normal Training with eval=1
 PPO_upper_bound_5, ppo_upper_bound_5_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
-TRPO_normal_training_1, trpo_normal_training_2_out, TRPO Normal Training with eval=1 from scratch
+TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training with eval=1 from scratch
 ----------------
 Seed 2         |
 ----------------
