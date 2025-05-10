@@ -34,9 +34,6 @@ elif env == "Pendulum-v1":
 elif env == "BipedalWalker-v3":
     args = args_bipedal_walker.get_args(rest_args)
 
-# start_iteration = 1
-start_iteration = 1000000 // args.n_steps_per_rollout
-
 # Ant-v5
 # file_name_list = [
 #     # ["PPO_normal_training_1"],
@@ -121,12 +118,15 @@ start_iteration = 1000000 // args.n_steps_per_rollout
 
 # Pendulum-v1
 file_name_list = [
-    # ["PPO_normal_training_1"],
-    # ["PPO_normal_training_2"],
-    # ["PPO_normal_training_3"],
-    ["PPO_upper_bound_1"],
-    ["PPO_upper_bound_2"],
-    ["PPO_upper_bound_3"],
+    ["PPO_normal_training_1"],
+    ["PPO_normal_training_2"],
+    ["PPO_normal_training_3"],
+    # ["PPO_upper_bound_1"],
+    # ["PPO_upper_bound_2"],
+    # ["PPO_upper_bound_3"],
+    # ["TRPO_normal_training_1"],
+    # ["TRPO_normal_training_2"],
+    # ["TRPO_normal_training_3"],
 ]
 
 for file_name in file_name_list:
