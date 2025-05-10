@@ -16,8 +16,8 @@ args, rest_args = parser.parse_known_args()
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
-# env = "Pendulum-v1"
-env = "BipedalWalker-v3"
+env = "Pendulum-v1"
+# env = "BipedalWalker-v3"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -37,8 +37,10 @@ elif env == "BipedalWalker-v3":
 if not hasattr(args, 'n_envs'):
     args.n_envs = 1
 
-# start_iteration = 1
-start_iteration = 1000000 // args.n_steps_per_rollout
+if env in ["Pendulum-v1", "BipedalWalker-v3"]:
+    start_iteration = 1 // args.n_steps_per_rollout*args.n_envs
+else:
+    start_iteration = 1000000 // args.n_steps_per_rollout*args.n_envs
 
 seed_list = [0, 1, 2]
 # file_name = "PPO_normal_training"
@@ -46,7 +48,7 @@ seed_list = [0, 1, 2]
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
     ["PPO_normal_training", "PPO Normal Training"],
-    # ["PPO_upper_bound", "PPO Upper Bound"],
+    ["PPO_upper_bound", "PPO Upper Bound"],
     # ["TRPO_normal_training", "TRPO Normal Training"],
 ]
 
