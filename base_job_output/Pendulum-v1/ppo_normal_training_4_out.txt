@@ -1,0 +1,50 @@
+No devices were found
+Setting seed -  0
+Creating multiple envs -  4
+---------------------------------
+Environment created
+Box(-2.0, 2.0, (1,), float32) Box([-1. -1. -8.], [1. 1. 8.], (3,), float32)
+Loading Initial saved model
+Model loaded
+Starting evaluation
+9
+avg 3 return on policy: -124.24985976053682
+10
+avg 3 return on policy: -126.05418109662259
+11
+avg 3 return on policy: -124.40946707032049
+12
+avg 3 return on policy: -124.92176151976858
+13
+avg 3 return on policy: -125.2467179718849
+14
+avg 3 return on policy: -126.58351217437541
+15
+avg 3 return on policy: -127.44832584365402
+16
+avg 3 return on policy: -128.3203540326752
+17
+avg 3 return on policy: -128.20038898322187
+18
+avg 3 return on policy: -127.52251931262691
+19
+avg 3 return on policy: -128.0183383582056
+20
+avg 3 return on policy: -127.58685996512145
+21
+avg 3 return on policy: -128.0968432535337
+22
+avg 3 return on policy: -127.51076712303632
+23
+avg 3 return on policy: -126.98143506314695
+24
+avg 3 return on policy: -126.29859156106308
+25
+avg 3 return on policy: -126.516834323255
+26
+avg 3 return on policy: -126.39929090122479
+27
+avg 3 return on policy: -128.00059030083708
+28
+avg 3 return on policy: -127.94187730439613
+Time taken for each iteration: [9.18097472190857, 18.373035192489624, 27.249677419662476, 36.160096168518066, 45.076541900634766, 54.43921375274658, 63.293198108673096, 72.18242168426514, 81.32078051567078, 90.5152337551117, 99.598219871521, 108.99155259132385, 118.69079780578613, 127.84051084518433, 137.21669960021973, 146.65009188652039, 156.07939386367798, 165.62911868095398, 175.42265844345093, 185.08943247795105]
