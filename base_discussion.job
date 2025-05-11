@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH --job-name=espace16
+#SBATCH --output=/home/aideb/stable-baselines3/base_job_output/Ant/ppo_discussion_1_out.txt
+#SBATCH --error=/home/aideb/stable-baselines3/base_job_output/Ant/ppo_discussion_1_err.txt
+#SBATCH --time=50-00:00
+#SBATCH --mem=50000
+
+# Test CUDA compiler (not needed by deep learning people, we just use the python libraries)
+# /cm/shared/apps/cuda11.1/toolkit/11.1.1/bin/nvcc -o saxpy /home/aideb/cuda_c_code/saxpy.cu && ./saxpy
+
+# Test nvidia-smi
+nvidia-smi
+
+# Test Python conda environment
+source activate openv
+/home/aideb/miniconda3/envs/openv/bin/python3 -u /home/aideb/stable-baselines3/discussion.py
