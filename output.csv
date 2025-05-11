@@ -140,6 +140,7 @@ PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point; gamma=
 PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training
 PPO_Ablation4_1, ppo_ablation4_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3 and search=3, espace4, Ongoing
 PPO_neghrand_1, ppo_neghrand_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, espace1, Ongoing
+PPO_discussion_1, ppo_discussion_1_out, PPO discussion with 60 iterations & every other point; gamma=0.3, espace16, Ongoing
 TRPO_1, trpo_init_1M_out, trpo_ant_1M_0.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training
 ----------------
@@ -226,7 +227,7 @@ Seed 0         |
 ----------------
 PPO_1, ppo_init_1M_out, ppo_humanoid_1M_0.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
 PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training
-PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace8, Ongoing
+PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_1, trpo_init_1M_out, trpo_humanoid_1M_0.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training
 ----------------
