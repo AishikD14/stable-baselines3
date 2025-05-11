@@ -5,21 +5,22 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_bipedal_walker
+from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_bipedal_walker, args_swimmer
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-# env = "HalfCheetah-v5"
+env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
+# env = "Swimmer-v5"
 # env = "AntDir-v0"
 # env = "CartPole-v1"
 # env = "MountainCar-v0"
 # env = "Pendulum-v1"
-env = "BipedalWalker-v3"
+# env = "BipedalWalker-v3"
 
 if env == "AntDir-v0":
     args = args_ant_dir.get_args(rest_args)
@@ -33,6 +34,8 @@ elif env == "Walker2d-v5":
     args = args_walker2d.get_args(rest_args)
 elif env == "Humanoid-v5":
     args = args_humanoid.get_args(rest_args)
+elif env == "Swimmer-v5":
+    args = args_swimmer.get_args(rest_args)
 elif env == "CartPole-v1":
     args = args_cartpole.get_args(rest_args)
 elif env == "MountainCar-v0":
@@ -86,7 +89,7 @@ plot_list = [
     # ["PPO_baseline_2", "Baseline with search=2 -5k"],
     # ["PPO_empty_space_ls_13", "FQE top 5 agent & 2 eval & search=3- 3k; gamma=0.3"],
     # ["PPO_baseline_3", "Baseline with search=3 -3k"],
-    ["PPO_FQE_1", "PPO FQE with 60 iterations & every other point; gamma=0.3"]
+    ["PPO_FQE_2", "PPO FQE with 60 iterations & every other point; gamma=0.3"]
     # ["PPO_empty_space_ls_8", "Online eval with 60 iter & 3 eval & every other point -60k; gamma=0.3"], # Upper bound
 ]
 
@@ -139,9 +142,9 @@ plot_list = [
 # ]
 
 # BipedalWalker-v3 FQE evaluations
-plot_list = [
-    ["PPO_normal_training_1", "PPO normal training"],
-]
+# plot_list = [
+#     ["PPO_normal_training_1", "PPO normal training"],
+# ]
 
 plot_metrics = []
 
