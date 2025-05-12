@@ -167,7 +167,7 @@ TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training
 ----------------
 Seed 3         |
 ----------------
-PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training
+PPO_4, ppo_init_1M_3_out, ppo_ant_1M_3.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 HalfCheetah-v5
@@ -227,7 +227,7 @@ TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training
 ----------------
 Seed 3         |
 ----------------
-PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training
+PPO_4, ppo_init_1M_3_out, ppo_walker2d_1M_3.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Humanoid-v5
@@ -258,7 +258,7 @@ TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training
 ----------------
 Seed 3         |
 ----------------
-PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training
+PPO_4, ppo_init_1M_3_out, ppo_humanoid_1M_3.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Swimmer-v5
@@ -289,7 +289,7 @@ TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training
 ----------------
 Seed 3         |
 ----------------
-PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training
+PPO_4, ppo_init_1M_3_out, ppo_swimmer_1M_3.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Pendulum-v1
