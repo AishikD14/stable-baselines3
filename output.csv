@@ -286,6 +286,10 @@ PPO_normal_training_3, ppo_normal_training_3_out, PPO Normal Training
 PPO_upper_bound_3, ppo_upper_bound_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace9, Ongoing
 TRPO_3, trpo_init_1M_2_out, trpo_swimmer_1M_2.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training
+----------------
+Seed 3         |
+----------------
+PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training, espace15, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Pendulum-v1
