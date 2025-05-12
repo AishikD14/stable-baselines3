@@ -170,6 +170,7 @@ Seed 3         |
 PPO_4, ppo_init_1M_3_out, ppo_ant_1M_3.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training
 TRPO_4, trpo_init_1M_3_out, trpo_ant_1M_3.zip; TRPO Init for 1M steps with Xinyu hyperparameters
+TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training, espace4, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 HalfCheetah-v5
@@ -233,6 +234,7 @@ PPO_4, ppo_init_1M_3_out, ppo_walker2d_1M_3.zip; PPO Init for 1M steps with Xiny
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace8, Ongoing
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training
 TRPO_4, trpo_init_1M_3_out, trpo_walker2d_1M_3.zip; TRPO Init for 1M steps with Xinyu hyperparameters
+TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training, espace6, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Humanoid-v5
@@ -267,6 +269,7 @@ PPO_4, ppo_init_1M_3_out, ppo_humanoid_1M_3.zip; PPO Init for 1M steps with Xiny
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace10, Ongoing
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training
 TRPO_4, trpo_init_1M_3_out, trpo_humanoid_1M_3.zip; TRPO Init for 1M steps with Xinyu hyperparameters
+TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training, espace7, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Swimmer-v5
@@ -301,6 +304,7 @@ PPO_4, ppo_init_1M_3_out, ppo_swimmer_1M_3.zip; PPO Init for 1M steps with Xinyu
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace5, Ongoing
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training
 TRPO_4, trpo_init_1M_3_out, trpo_swimmer_1M_3.zip; TRPO Init for 1M steps with Xinyu hyperparameters
+TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training, espace9, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Pendulum-v1
@@ -337,6 +341,7 @@ Seed 3         |
 ----------------
 PPO_normal_training_7, ppo_normal_training_7_out, PPO Normal Training with eval=1 from scratch
 PPO_upper_bound_7, ppo_upper_bound_7_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3 from scratch
+TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training with eval=1 from scratch, espace11, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 BipedalWalker-v3
@@ -367,3 +372,4 @@ Seed 3         |
 ----------------
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training with eval=1 from scratch
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3 from scratch
+TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training with eval=1 from scratch, espace12, Ongoing
