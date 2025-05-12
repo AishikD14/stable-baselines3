@@ -13,14 +13,14 @@ PPO_Ablation3_1, ppo_ablation3_1_out, PPO_empty_space with 60 iterations & 3 eva
 ----------------
 Seed 1         |
 ----------------
-PPO_upper_bound_1, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, exp12, Ongoing
+PPO_upper_bound_1, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 PPO_Ablation1_2, ppo_ablation1_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, exp2, Ongoing
 PPO_Ablation2_2, ppo_ablation2_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1, exp6, Ongoing
 PPO_Ablation3_2, ppo_ablation3_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3 and search=2, exp10, Ongoing
 ----------------
 Seed 2         |
 ----------------
-PPO_upper_bound_2, ppo_upper_bound_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, exp13, Ongoing
+PPO_upper_bound_2, ppo_upper_bound_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 PPO_Ablation1_3, ppo_ablation1_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, exp3, Ongoing
 PPO_Ablation2_3, ppo_ablation2_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1, exp8, Ongoing
 PPO_Ablation3_3, ppo_ablation3_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3 and search=2, exp11, Ongoing
