@@ -332,6 +332,7 @@ TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training with ev
 Seed 3         |
 ----------------
 PPO_normal_training_7, ppo_normal_training_7_out, PPO Normal Training with eval=1 from scratch
+PPO_upper_bound_7, ppo_upper_bound_7_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3 from scratch, espace18, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 BipedalWalker-v3
