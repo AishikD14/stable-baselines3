@@ -164,6 +164,10 @@ PPO_Ablation4_3, ppo_ablation4_3_out, PPO_empty_space with 60 iterations & 3 eva
 PPO_neghrand_3, ppo_neghrand_3_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, espace14, Ongoing
 TRPO_3, trpo_init_1M_2_out, trpo_ant_1M_2.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training
+----------------
+Seed 3         |
+----------------
+PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training, espace5, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 HalfCheetah-v5
