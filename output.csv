@@ -283,7 +283,7 @@ Seed 0         |
 PPO_1, ppo_init_40k_out, ppo_pendulum_40k_0.zip; PPO Init for 40k steps with new hyperparameters and replay buffer
 PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training with eval=1 from scratch
 PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3 from scratch
-PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point; gamma=0.3 from scratch, espace15, Ongoing 
+PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point; gamma=0.3 from scratch
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training with eval=1
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training with eval=1 from scratch
