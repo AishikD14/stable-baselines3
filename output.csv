@@ -284,7 +284,6 @@ PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training
 PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_1, trpo_init_1M_out, trpo_swimmer_1M_0.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training
-PPO_normal_training_5, ppo_normal_training_1_out, PPO Normal Training, espace15, Ongoing
 ----------------
 Seed 1         |
 ----------------
@@ -293,7 +292,6 @@ PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training
 PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_2, trpo_init_1M_1_out, trpo_swimmer_1M_1.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training
-PPO_normal_training_6, ppo_normal_training_2_out, PPO Normal Training, espace17, Ongoing
 ----------------
 Seed 2         |
 ----------------
@@ -302,7 +300,6 @@ PPO_normal_training_3, ppo_normal_training_3_out, PPO Normal Training
 PPO_upper_bound_3, ppo_upper_bound_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_3, trpo_init_1M_2_out, trpo_swimmer_1M_2.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training
-PPO_normal_training_7, ppo_normal_training_3_out, PPO Normal Training, espace18, Ongoing
 ----------------
 Seed 3         |
 ----------------
