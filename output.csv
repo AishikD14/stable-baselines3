@@ -234,7 +234,7 @@ PPO_4, ppo_init_1M_3_out, ppo_walker2d_1M_3.zip; PPO Init for 1M steps with Xiny
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace8, Ongoing
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training
 TRPO_4, trpo_init_1M_3_out, trpo_walker2d_1M_3.zip; TRPO Init for 1M steps with Xinyu hyperparameters
-TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training, espace6, Ongoing
+TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Humanoid-v5
@@ -269,7 +269,7 @@ PPO_4, ppo_init_1M_3_out, ppo_humanoid_1M_3.zip; PPO Init for 1M steps with Xiny
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace10, Ongoing
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training
 TRPO_4, trpo_init_1M_3_out, trpo_humanoid_1M_3.zip; TRPO Init for 1M steps with Xinyu hyperparameters
-TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training, espace7, Ongoing
+TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Swimmer-v5
@@ -304,7 +304,7 @@ PPO_4, ppo_init_1M_3_out, ppo_swimmer_1M_3.zip; PPO Init for 1M steps with Xinyu
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace5, Ongoing
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training
 TRPO_4, trpo_init_1M_3_out, trpo_swimmer_1M_3.zip; TRPO Init for 1M steps with Xinyu hyperparameters
-TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training, espace9, Ongoing
+TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Pendulum-v1
