@@ -152,7 +152,7 @@ PPO_2, ppo_init_1M_1_out, ppo_ant_1M_1.zip; PPO Init for 1M steps with Xinyu hyp
 PPO_FQE_2, ppo_fqe_2_out, PPO FQE with 60 iterations & every other point; gamma=0.3, , Stopped
 PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training
 PPO_Ablation4_2, ppo_ablation4_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3 and search=3
-PPO_neghrand_2, ppo_neghrand_2_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, espace2, Ongoing
+PPO_neghrand_2, ppo_neghrand_2_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0
 TRPO_2, trpo_init_1M_1_out, trpo_ant_1M_1.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training
 ----------------
