@@ -13,11 +13,11 @@ args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
-# env = "Walker2d-v5"
+env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
-env = "BipedalWalker-v3"
+# env = "BipedalWalker-v3"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -34,99 +34,26 @@ elif env == "Pendulum-v1":
 elif env == "BipedalWalker-v3":
     args = args_bipedal_walker.get_args(rest_args)
 
-# Ant-v5
-# file_name_list = [
-#     # ["PPO_normal_training_1"],
-#     # ["PPO_normal_training_2"],
-#     # ["PPO_normal_training_3"],
-#     ["PPO_FQE_1", "ppo_fqe_1_out"],
-#     ["PPO_FQE_2", "ppo_fqe_2_out"],
-#     # ["PPO_FQE_3"],
-#     # ["TRPO_normal_training_1"],
-#     # ["TRPO_normal_training_2"],
-#     # ["TRPO_normal_training_3"],
-#     ["PPO_upper_bound_1", "PPO_upper_bound_2"],
-#     # ["PPO_upper_bound_2"],
-#     # ["PPO_upper_bound_3"],
-# ]
-
-# HalfCheetah-v5
-# file_name_list = [
-#     # ["PPO_normal_training_1"],
-#     # ["PPO_normal_training_2"],
-#     # ["PPO_normal_training_3"],
-#     # ["PPO_FQE_1"],
-#     # ["PPO_FQE_2"],
-#     # ["PPO_FQE_3"],
-#     # ["TRPO_normal_training_1"],
-#     # ["TRPO_normal_training_2"],
-#     # ["TRPO_normal_training_3"],
-#     # ["PPO_upper_bound_1", "PPO_upper_bound_2"],
-#     # ["PPO_upper_bound_2"],
-#     # ["PPO_upper_bound_3"],
-#     # ["PPO_Ablation1_1"],
-#     # ["PPO_Ablation2_1"],
-# ]
-
-# Walker2d-v5
-# file_name_list = [
-#     # ["PPO_normal_training_1"],
-#     # ["PPO_normal_training_2"],
-#     # ["PPO_normal_training_3"],
-#     # ["PPO_FQE_1"],
-#     # ["PPO_FQE_2"],
-#     # ["PPO_FQE_3"],
-#     ["TRPO_normal_training_1"],
-#     ["TRPO_normal_training_2"],
-#     ["TRPO_normal_training_3"],
-#     # ["PPO_upper_bound_1"],
-#     # ["PPO_upper_bound_2"],
-#     # ["PPO_upper_bound_3"],
-# ]
-
-# Humanoid-v5
-# file_name_list = [
-#     # ["PPO_normal_training_1"],
-#     # ["PPO_normal_training_2"],
-#     # ["PPO_normal_training_3"],
-#     # ["PPO_FQE_1"],
-#     # ["PPO_FQE_2"],
-#     # ["PPO_FQE_3"],
-#     # ["TRPO_normal_training_1"],
-#     # ["TRPO_normal_training_2"],
-#     # ["TRPO_normal_training_3"],
-#     # ["PPO_upper_bound_1"],
-#     # ["PPO_upper_bound_2"],
-#     # ["PPO_upper_bound_3"],
-# ]
-
-# Swimmer-v5
-# file_name_list = [
-#     # ["PPO_normal_training_1"],
-#     # ["PPO_normal_training_2"],
-#     # ["PPO_normal_training_3"],
-#     # ["PPO_FQE_1"],
-#     # ["PPO_FQE_2"],
-#     # ["PPO_FQE_3"],
-#     # ["TRPO_normal_training_1"],
-#     # ["TRPO_normal_training_2"],
-#     # ["TRPO_normal_training_3"],
-#     # ["PPO_upper_bound_1"],
-#     # ["PPO_upper_bound_2"],
-#     # ["PPO_upper_bound_3"],
-# ]
-
 # Pendulum-v1
 file_name_list = [
-    ["PPO_normal_training_1"],
-    ["PPO_normal_training_2"],
-    ["PPO_normal_training_3"],
-    # ["PPO_upper_bound_1"],
-    # ["PPO_upper_bound_2"],
-    # ["PPO_upper_bound_3"],
+    # ["PPO_normal_training_1"],
+    # ["PPO_normal_training_2"],
+    # ["PPO_normal_training_3"],
+    # ["PPO_normal_training_4"],
+    # ["PPO_normal_training_7", "PPO_normal_training_4"],
+    ["PPO_upper_bound_1"],
+    ["PPO_upper_bound_2"],
+    ["PPO_upper_bound_3"],
+    ["PPO_upper_bound_4"],
+    # ["PPO_upper_bound_7", "PPO_upper_bound_4"],
     # ["TRPO_normal_training_1"],
     # ["TRPO_normal_training_2"],
     # ["TRPO_normal_training_3"],
+    # ["TRPO_normal_training_4"]
+    # ["PPO_Ablation4_1"],
+    # ["PPO_Ablation4_2"],
+    # ["PPO_Ablation4_3"],
+
 ]
 
 for file_name in file_name_list:
@@ -153,6 +80,7 @@ for file_name in file_name_list:
 
     # Convert reward_values to numpy array
     reward_values_np = np.array(reward_values)
+    print(reward_values_np.shape)
 
     # Save the rewards
     os.makedirs("../final_results/"+env, exist_ok=True)

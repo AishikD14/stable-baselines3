@@ -13,10 +13,10 @@ args, rest_args = parser.parse_known_args()
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
-# env = "Walker2d-v5"
+env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
-env = "Pendulum-v1"
+# env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 
 if env == "Ant-v5":
@@ -42,14 +42,16 @@ if env in ["Pendulum-v1", "BipedalWalker-v3"]:
 else:
     start_iteration = 1000000 // args.n_steps_per_rollout*args.n_envs
 
-seed_list = [0, 1, 2]
+# seed_list = [0, 1, 2]
+seed_list = [0, 1, 2, 3]
 # file_name = "PPO_normal_training"
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
     ["PPO_normal_training", "PPO Normal Training"],
     ["PPO_upper_bound", "PPO Upper Bound"],
-    # ["TRPO_normal_training", "TRPO Normal Training"],
+    ["TRPO_normal_training", "TRPO Normal Training"],
+    # ["PPO_Ablation4", "PPO Ablation 4"],
 ]
 
 plot_metrics = []
@@ -75,6 +77,18 @@ for plot_item in plot_list:
     # Calculate the mean and standard deviation across seeds
     mean_rewards = np.mean(all_rewards_np, axis=0)
     print(mean_rewards.shape)
+    std_rewards = np.std(all_rewards_np, axis=0)
+
+    max_idx = np.argmax(mean_rewards)
+
+    # Step 3: Get the corresponding mean and std
+    max_avg_reward = mean_rewards[max_idx]
+    std_at_max = std_rewards[max_idx]
+
+    # Output the result
+    print(f"Max average reward: {max_avg_reward:.2f} ± {std_at_max:.2f} at timestep {max_idx}")
+
+    # quit()
 
     # Save the mean rewards
     os.makedirs("../combined_results/"+env, exist_ok=True)
@@ -109,8 +123,9 @@ for i, plot_metric in enumerate(plot_metrics):
     plt.plot(x, smoothed, label=plot_list[i][1])
     plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
 
-plt.xlabel('Samples (x' + str(args.n_steps_per_rollout*args.n_envs) + ')')
-plt.ylabel('Episode Return')
+# plt.xlabel('Samples (x' + str(args.n_steps_per_rollout*args.n_envs) + ')')
+plt.xlabel("Number of Iterations")
+plt.ylabel('Average Return')
 plt.title('Reward Plot')
 plt.grid()
 plt.legend()
