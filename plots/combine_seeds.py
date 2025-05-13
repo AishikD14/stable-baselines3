@@ -10,10 +10,10 @@ from data_collection_config import args_ant, args_half_cheetah, args_walker2d, a
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-# env = "Ant-v5"
+env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
-env = "Walker2d-v5"
+# env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
@@ -42,15 +42,16 @@ if env in ["Pendulum-v1", "BipedalWalker-v3"]:
 else:
     start_iteration = 1000000 // args.n_steps_per_rollout*args.n_envs
 
-# seed_list = [0, 1, 2]
-seed_list = [0, 1, 2, 3]
+seed_list = [0, 1, 2]
+# seed_list = [0, 1, 2, 3]
 # file_name = "PPO_normal_training"
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
-    ["PPO_normal_training", "PPO Normal Training"],
-    ["PPO_upper_bound", "PPO Upper Bound"],
-    ["TRPO_normal_training", "TRPO Normal Training"],
+    # ["PPO_normal_training", "PPO Normal Training"],
+    # ["PPO_upper_bound", "PPO Upper Bound"],
+    # ["TRPO_normal_training", "TRPO Normal Training"],
+    ["PPO_Ablation3", "PPO_Ablation3"]
     # ["PPO_Ablation4", "PPO Ablation 4"],
 ]
 
