@@ -6,15 +6,15 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
 from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker
+import re
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-# env = "HalfCheetah-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
-# env = "Swimmer-v5"
+# env = "Humanoid-v5"
+env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 
@@ -28,12 +28,40 @@ elif env == "Humanoid-v5":
     args = args_humanoid.get_args(rest_args)
 elif env == "Swimmer-v5":
     args = args_swimmer.get_args(rest_args)
+elif env == "Pendulum-v1":
+    args = args_pendulum.get_args(rest_args)
+elif env == "BipedalWalker-v3":
+    args = args_bipedal_walker.get_args(rest_args)
 
-# start_iteration = 1
-start_iteration = 1000000 // args.n_steps_per_rollout
+proxy_env = env
+if env == "Ant-v5":
+    proxy_env = "Ant"
+
+pretrain_file = "../base_job_output/"+proxy_env+"/ppo_plot_out.txt"
+
+pretrain_reward_values = []
+
+with open(pretrain_file, "r") as f:
+    lines = f.readlines()
+
+# Go through each line and extract the reward if it's a reward line
+for line in lines:
+    if line.startswith("avg 3 return on policy"):
+        match = re.findall(r"[-+]?\d*\.\d+|\d+", line)
+        if match:
+            pretrain_reward = float(match[-1])  # get the last number in the line
+            pretrain_reward_values.append(pretrain_reward)
+
+# Convert rewards to numpy array for easier math
+pretrain_rewards = np.array(pretrain_reward_values)
+
+print("Pretrain Rewards shape: ", pretrain_rewards.shape)
+
+start_iteration = 1
+# start_iteration = 1000000 // args.n_steps_per_rollout
 
 plot_list = [
-    ["PPO_upper_bound", "ExploRLer+PPO"],
+    ["PPO_upper_bound", "ExploRLer"],
     ["PPO_normal_training", "PPO"],
     ["TRPO_normal_training", "TRPO"],
 ]
@@ -50,6 +78,10 @@ for plot_item in plot_list:
     # Convert rewards to numpy array for easier math
     rewards = np.load(file_path)
     print("Rewards shape: ", rewards.shape)
+
+    # Add pretrain rewards to the beginning of the rewards
+    rewards = np.concatenate((pretrain_rewards, rewards))
+    print("Rewards shape after concatenation: ", rewards.shape)
 
     # Smoothing window
     window = 100
@@ -86,7 +118,8 @@ for i, plot_metric in enumerate(plot_metrics):
 ax = plt.gca()
 ax.set_facecolor('#f5f5f5')
 
-plt.xlabel('Samples (x' + str(args.n_steps_per_rollout) + ')')
+# plt.xlabel('Samples (x' + str(args.n_steps_per_rollout) + ')')
+plt.xlabel('Iterations')
 plt.ylabel('Average Return')
 plt.title(env)
 plt.grid(True, color='white')
@@ -94,4 +127,7 @@ plt.grid(True, color='white')
 legend = plt.legend()
 legend.get_frame().set_facecolor('#f5f5f5')
 
-plt.savefig('../images/paper2.png')
+for spine in ax.spines.values():
+    spine.set_visible(False)
+
+plt.savefig('../paper_plots/'+env+'.png')

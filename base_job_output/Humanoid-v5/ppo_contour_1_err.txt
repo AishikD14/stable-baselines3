@@ -1,0 +1,5 @@
+/cm/local/apps/slurm/var/spool/job50501/slurm_script: line 15: activate: No such file or directory
+Traceback (most recent call last):
+  File "/home/aideb/stable-baselines3/contour.py", line 897, in <module>
+    np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}_{j}.npy', returns_trains)
+AttributeError: 'list' object has no attribute 'shape'
