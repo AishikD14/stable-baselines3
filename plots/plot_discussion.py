@@ -51,7 +51,7 @@ for plot_item in plot_list:
     count = 0
 
     for filename in os.listdir(directory):
-        if count > 7:
+        if count > 10:
             break
         # Check if the filename starts with "results"
         if filename.startswith("results"):
@@ -71,7 +71,7 @@ for plot_item in plot_list:
     count = 0
 
     for filename in os.listdir(directory):
-        if count > 7:
+        if count > 10:
             break
         # Check if the filename starts with "results"
         if filename.startswith("adv_results"):
@@ -94,25 +94,25 @@ for plot_item in plot_list:
     # -----------------------------------------------------------------------------------
 
     # Scatter plot
-    # plt.figure(figsize=(10,6))
-    # plt.scatter(rewards, adv_rewards, alpha=0.7)
-    # plt.ylabel("FQE Estimated Return")
-    # plt.xlabel("Online Evaluation Reward")
-    # plt.title("FQE Estimates vs True Rewards")
+    plt.figure(figsize=(10,6))
+    plt.scatter(adv_rewards, rewards, alpha=0.7)
+    plt.xlabel("FQE Estimated Policy Value")
+    plt.ylabel("Online Evaluation Return")
+    plt.title("FQE Estimates vs True Returns")
 
-    # # Fit a linear regression line (1st degree polynomial)
+    # Fit a linear regression line (1st degree polynomial)
     # slope, intercept = np.polyfit(rewards, adv_rewards, 1)
     # line_x = np.linspace(min(rewards), max(rewards), 100)
     # line_y = slope * line_x + intercept
     # plt.plot(line_x, line_y, 'r--')
 
-    # # Correlation metrics
-    # pearson_r, _ = pearsonr(rewards, adv_rewards)
-    # spearman_r, _ = spearmanr(rewards, adv_rewards)
-    # plt.legend(title=f"Pearson r = {pearson_r:.2f}\nSpearman ρ = {spearman_r:.2f}")
+    # Correlation metrics
+    pearson_r, _ = pearsonr(rewards, adv_rewards)
+    spearman_r, _ = spearmanr(rewards, adv_rewards)
+    plt.legend(title=f"Spearman ρ = {spearman_r:.2f}", loc='lower right')
     # plt.grid(True)
-    # plt.tight_layout()
-    # plt.savefig('../images/discussion.png')
+    plt.tight_layout()
+    plt.savefig('../paper_plots/discussion.png')
 
     # -------------------------------------------------------------------------------------
 

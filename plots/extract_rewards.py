@@ -11,10 +11,10 @@ import re
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-env = "Ant-v5"
+# env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
+env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -41,21 +41,24 @@ file_name_list = [
     # ["PPO_normal_training_3"],
     # ["PPO_normal_training_4"],
     # ["PPO_normal_training_7", "PPO_normal_training_4"],
-    # ["PPO_upper_bound_1"],
-    # ["PPO_upper_bound_2"],
-    # ["PPO_upper_bound_3"],
-    # ["PPO_upper_bound_4"],
+    ["PPO_upper_bound_1"],
+    ["PPO_upper_bound_2"],
+    ["PPO_upper_bound_3"],
+    ["PPO_upper_bound_4"],
     # ["PPO_upper_bound_7", "PPO_upper_bound_4"],
     # ["TRPO_normal_training_1"],
     # ["TRPO_normal_training_2"],
     # ["TRPO_normal_training_3"],
     # ["TRPO_normal_training_4"]
-    ["PPO_Ablation3_1"],
-    ["PPO_Ablation3_2"],
-    ["PPO_Ablation3_3"]
+    # ["PPO_Ablation3_1"],
+    # ["PPO_Ablation3_2"],
+    # ["PPO_Ablation3_3"]
     # ["PPO_Ablation4_1"],
     # ["PPO_Ablation4_2"],
     # ["PPO_Ablation4_3"],
+    # ["PPO_neghrand_1"],
+    # ["PPO_neghrand_2"],
+    # ["PPO_neghrand_3"]
 
 ]
 
