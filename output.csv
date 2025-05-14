@@ -210,6 +210,8 @@ Seed 0         |
 PPO_1, ppo_init_1M_out, ppo_walker2d_1M_0.zip; PPO Init for 1M steps with Xinyu hyperparameters and replay buffer
 PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training
 PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
+PPO_contour_1, ppo_contour_1_out, PPO contour with 60 iterations & every other point; gamma=0.3, espace1, Ongoing
+PPO_contour_2, ppo_contour_2_out, PPO contour with 60 iterations & every other point; gamma=0.3, espace2, Ongoing
 TRPO_1, trpo_init_1M_out, trpo_walker2d_1M_0.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training
 ----------------
