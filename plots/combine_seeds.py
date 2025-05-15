@@ -14,8 +14,8 @@ args, rest_args = parser.parse_known_args()
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
-env = "Swimmer-v5"
+env = "Humanoid-v5"
+# env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 
@@ -44,20 +44,25 @@ if not hasattr(args, 'n_envs'):
 
 start_iteration = 1
 
+# seed_list = [0]
 # seed_list = [0, 1, 2]
 seed_list = [0, 1, 2, 3]
 # file_name = "PPO_normal_training"
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
-    ["PPO_normal_training", "PPO Normal Training"],
+    # ["PPO_normal_training", "PPO Normal Training"],
     ["PPO_upper_bound", "PPO Upper Bound"],
-    ["TRPO_normal_training", "TRPO Normal Training"],
-    ["TRPO_upper_bound", "TRPO Upper Bound"],
+    # ["TRPO_normal_training", "TRPO Normal Training"],
+    # ["TRPO_upper_bound", "TRPO Upper Bound"],
     # ["PPO_Ablation1", "PPO_Ablation1"],
     # ["PPO_Ablation2", "PPO Ablation 2"],
     # ["PPO_Ablation3", "PPO_Ablation3"]
     # ["PPO_Ablation4", "PPO Ablation 4"],
+    # ["PPO_neghrand", "PPO Random Walk"],
+    # ["PPO_FQE", "PPO FQE"],
+    # ["PPO_empty_space_ls", "PPO FQE"],
+    # ["PPO_baseline", "PPO Baseline"],
 ]
 
 plot_metrics = []
@@ -80,7 +85,7 @@ for plot_item in plot_list:
         elif "TRPO" in plot_item[0]:
             pretrain_rewards = np.load("../final_results/"+env+"/TRPO_pretrain_"+str(i+1)+".npy")
 
-        # # Add pretrain rewards to the beginning of results
+        # Add pretrain rewards to the beginning of results
         results = np.concatenate((pretrain_rewards, results))
         print(results.shape)
 

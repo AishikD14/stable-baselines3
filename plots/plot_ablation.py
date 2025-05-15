@@ -11,10 +11,10 @@ import re
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-env = "Ant-v5"
+# env = "Ant-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
-# env = "Swimmer-v5"
+env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 
@@ -35,9 +35,11 @@ elif env == "BipedalWalker-v3":
 
 start_iteration = 1
 
-# ablation_type = "Ablation1"
-ablation_type = "Ablation2"
-# ablation_type = "Ablation3"
+# ablation_type = "Ablation1" #gamma
+# ablation_type = "Ablation2" #search
+# ablation_type = "Ablation3" #neghrand
+ablation_type = "Ablation4" #fqe humanoid
+# ablation_type = "Ablation5" #fqe swimmer
 
 if ablation_type == "Ablation1":
     plot_list = [
@@ -57,6 +59,12 @@ if ablation_type == "Ablation3":
     plot_list = [
         ["PPO_upper_bound", "Empty Space Search"],
         ["PPO_neghrand", "Random Walk"],
+    ]
+
+if ablation_type in ["Ablation4", "Ablation5"]:
+    plot_list = [
+        ["PPO_upper_bound", "Online Evaluation"],
+        ["PPO_FQE", "FQE Evaluation"],
     ]
 
 plot_metrics = []
@@ -115,7 +123,7 @@ if ablation_type == "Ablation1":
     plt.title(env + " with search = 1", fontsize=20)
 elif ablation_type == "Ablation2":
     plt.title(env + " with gamma = 0.3", fontsize=20)
-elif ablation_type == "Ablation3":
+else:
     plt.title(env, fontsize=20)
 
 plt.grid(True, color='white')
