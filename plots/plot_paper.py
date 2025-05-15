@@ -12,9 +12,9 @@ parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-# env = "Walker2d-v5"
+env = "Walker2d-v5"
 # env = "Humanoid-v5"
-env = "Swimmer-v5"
+# env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 
@@ -33,38 +33,20 @@ elif env == "Pendulum-v1":
 elif env == "BipedalWalker-v3":
     args = args_bipedal_walker.get_args(rest_args)
 
-proxy_env = env
-if env == "Ant-v5":
-    proxy_env = "Ant"
-
-pretrain_file = "../base_job_output/"+proxy_env+"/ppo_plot_out.txt"
-
-pretrain_reward_values = []
-
-with open(pretrain_file, "r") as f:
-    lines = f.readlines()
-
-# Go through each line and extract the reward if it's a reward line
-for line in lines:
-    if line.startswith("avg 3 return on policy"):
-        match = re.findall(r"[-+]?\d*\.\d+|\d+", line)
-        if match:
-            pretrain_reward = float(match[-1])  # get the last number in the line
-            pretrain_reward_values.append(pretrain_reward)
-
-# Convert rewards to numpy array for easier math
-pretrain_rewards = np.array(pretrain_reward_values)
-
-print("Pretrain Rewards shape: ", pretrain_rewards.shape)
-
 start_iteration = 1
-# start_iteration = 1000000 // args.n_steps_per_rollout
 
 plot_list = [
     ["PPO_upper_bound", "ExploRLer"],
     ["PPO_normal_training", "PPO"],
     ["TRPO_normal_training", "TRPO"],
 ]
+
+# plot_list = [
+#     ["TRPO_upper_bound", "ExploRLer (TRPO)"],
+#     ["PPO_normal_training", "PPO"],
+#     ["TRPO_normal_training", "TRPO"],
+#     # ["PPO_upper_bound", "ExploRLer"], 
+# ]
 
 plot_metrics = []
 
@@ -79,12 +61,8 @@ for plot_item in plot_list:
     rewards = np.load(file_path)
     print("Rewards shape: ", rewards.shape)
 
-    # Add pretrain rewards to the beginning of the rewards
-    rewards = np.concatenate((pretrain_rewards, rewards))
-    print("Rewards shape after concatenation: ", rewards.shape)
-
     # Smoothing window
-    window = 100
+    window = 10
     smoothed = np.convolve(rewards, np.ones(window)/window, mode='valid')
 
     # Calculate standard deviation over the same window
@@ -119,15 +97,18 @@ ax = plt.gca()
 ax.set_facecolor('#f5f5f5')
 
 # plt.xlabel('Samples (x' + str(args.n_steps_per_rollout) + ')')
-plt.xlabel('Iterations')
-plt.ylabel('Average Return')
-plt.title(env)
+plt.xlabel('Iterations', fontsize=20)
+plt.ylabel('Average Return', fontsize=20)
+plt.title(env, fontsize=20)
 plt.grid(True, color='white')
+plt.xticks(fontsize=16)
+plt.yticks(fontsize=16)
 
-legend = plt.legend()
+legend = plt.legend(fontsize=16)
 legend.get_frame().set_facecolor('#f5f5f5')
 
 for spine in ax.spines.values():
     spine.set_visible(False)
 
-plt.savefig('../paper_plots/'+env+'.png')
+# plt.savefig('../paper_plots/'+env+'.png')
+plt.savefig('../paper_plots/'+env+'.pdf', format='pdf', bbox_inches='tight', dpi=300)

@@ -10,12 +10,12 @@ from data_collection_config import args_ant, args_half_cheetah, args_walker2d, a
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-env = "Ant-v5"
+# env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
-# env = "Swimmer-v5"
+env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 
@@ -37,21 +37,26 @@ elif env == "BipedalWalker-v3":
 if not hasattr(args, 'n_envs'):
     args.n_envs = 1
 
-if env in ["Pendulum-v1", "BipedalWalker-v3"]:
-    start_iteration = 1 // args.n_steps_per_rollout*args.n_envs
-else:
-    start_iteration = 1000000 // args.n_steps_per_rollout*args.n_envs
+# if env in ["Pendulum-v1", "BipedalWalker-v3"]:
+#     start_iteration = 1 // args.n_steps_per_rollout*args.n_envs
+# else:
+#     start_iteration = 1000000 // args.n_steps_per_rollout*args.n_envs
 
-seed_list = [0, 1, 2]
-# seed_list = [0, 1, 2, 3]
+start_iteration = 1
+
+# seed_list = [0, 1, 2]
+seed_list = [0, 1, 2, 3]
 # file_name = "PPO_normal_training"
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
-    # ["PPO_normal_training", "PPO Normal Training"],
-    # ["PPO_upper_bound", "PPO Upper Bound"],
-    # ["TRPO_normal_training", "TRPO Normal Training"],
-    ["PPO_Ablation3", "PPO_Ablation3"]
+    ["PPO_normal_training", "PPO Normal Training"],
+    ["PPO_upper_bound", "PPO Upper Bound"],
+    ["TRPO_normal_training", "TRPO Normal Training"],
+    ["TRPO_upper_bound", "TRPO Upper Bound"],
+    # ["PPO_Ablation1", "PPO_Ablation1"],
+    # ["PPO_Ablation2", "PPO Ablation 2"],
+    # ["PPO_Ablation3", "PPO_Ablation3"]
     # ["PPO_Ablation4", "PPO Ablation 4"],
 ]
 
@@ -67,6 +72,19 @@ for plot_item in plot_list:
         print("Working on "+plot_item[0]+"_"+str(i+1)+" directory")
         
         results = np.load(directory + ".npy")
+        print(results.shape)
+
+        # Load pretrained rewards
+        if "PPO" in plot_item[0]:
+            pretrain_rewards = np.load("../final_results/"+env+"/PPO_pretrain_"+str(i+1)+".npy")
+        elif "TRPO" in plot_item[0]:
+            pretrain_rewards = np.load("../final_results/"+env+"/TRPO_pretrain_"+str(i+1)+".npy")
+
+        # # Add pretrain rewards to the beginning of results
+        results = np.concatenate((pretrain_rewards, results))
+        print(results.shape)
+
+        # results = pretrain_rewards
 
         # Append the rewards to all_rewards
         all_rewards.append(results)
@@ -88,8 +106,6 @@ for plot_item in plot_list:
 
     # Output the result
     print(f"Max average reward: {max_avg_reward:.2f} ± {std_at_max:.2f} at timestep {max_idx}")
-
-    # quit()
 
     # Save the mean rewards
     os.makedirs("../combined_results/"+env, exist_ok=True)

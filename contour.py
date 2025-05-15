@@ -648,10 +648,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
-    # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
+    env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
     # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
@@ -842,6 +842,11 @@ if __name__ == "__main__":
                         reset_num_timesteps=True if i == START_ITER else False, 
                         first_iteration=True if i == START_ITER else False,
                         )
+            
+            if i < (START_ITER+(200000 // (args.n_steps_per_rollout*args.n_envs))):
+                continue
+
+            print("Completed training for 200000 samples")
             
             # Load the checkppoints
             checkpoints = load_weights(10, DIR, env)

@@ -6,6 +6,7 @@ from typing import Any, Optional, TypeVar, Union
 import numpy as np
 import torch as th
 from gymnasium import spaces
+import gymnasium
 
 from gym import spaces as gymspaces
 from environments.wrappers import VariBadWrapper
@@ -18,6 +19,7 @@ from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedul
 from stable_baselines3.common.utils import obs_as_tensor, safe_mean
 from stable_baselines3.common.vec_env import VecEnv
 from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.vec_env import SubprocVecEnv
 
 SelfOnPolicyAlgorithm = TypeVar("SelfOnPolicyAlgorithm", bound="OnPolicyAlgorithm")
 
@@ -371,18 +373,30 @@ class OnPolicyAlgorithm(BaseAlgorithm):
 
             self.train()
 
-            # if init_call:
-            #     # if isinstance(self.env, VariBadWrapper) and self.num_timesteps % 10000 == 0:
-            #     # eval_interval = self.n_steps * 20
-            #     # if self.num_timesteps % eval_interval == 0:
-            #         # self.evaluate(self.num_timesteps)
-            #     if self.n_envs > 1:
-            #         self.env_name = self.env.get_attr("spec")[0].id
-            #     else:
-            #         self.env_name = self.env.spec.id
-            #     dummy_env = gymnasium.make(self.env_name)
-            #     returns_trains = evaluate_policy(self, dummy_env, n_eval_episodes=5, deterministic=True)[0]
-            #     print(f'Reward at iter {self.num_timesteps}: {returns_trains}')
+            if init_call:
+                def make_envs(env_name, seed):
+                    def _init(seed_offset):
+                        def _thunk():
+                            env = gymnasium.make(env_name)
+                            env.reset(seed=seed + seed_offset)
+                            return env
+                        return _thunk
+                    return _init
+    
+                if self.n_envs > 1:
+                    # Create a list of environment functions
+                    self.env_name = self.env.get_attr("spec")[0].id
+                    print("Creating multiple envs - ", self.n_envs)
+                    dummy_env_fns = [make_envs(self.env_name, seed=self.seed)(seed_offset=i) for i in range(self.n_envs)]
+                    dummy_env = SubprocVecEnv(dummy_env_fns)
+                else:
+                    # self.env_name = self.env.spec.id
+                    self.env_name = self.env.envs[0].spec.id
+                    dummy_env = gymnasium.make(self.env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+                    dummy_env.reset(seed=self.seed)
+
+                returns_trains = evaluate_policy(self, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                print(f'avg 3 return on policy: {returns_trains}')
 
         callback.on_training_end()
 

@@ -90,9 +90,9 @@ for filename in os.listdir(directory):
 print(len(reward_values))
 
 # Take the first 1000 points
-points = points[:len(reward_values)]
-# points = points[:80]
-# reward_values = reward_values[:80]
+# points = points[:len(reward_values)]
+points = points[:80]
+reward_values = reward_values[:80]
 
 print("Sample points shape after slicing: ", points.shape)
 
@@ -135,17 +135,20 @@ zi = griddata((x, y), z, (xi, yi), method='cubic')
 # Step 4: Plot contour map
 plt.figure(figsize=(8, 6))
 contour = plt.contourf(xi, yi, zi, levels=20, cmap='viridis')
-plt.scatter(x, y, c=z, edgecolors='k', cmap='viridis')  # Optional: Show original points
+# plt.scatter(x, y, c=z, edgecolors='k', cmap='viridis')  # Optional: Show original points
 plt.colorbar(contour, label='Reward')
 
 # Add PCA transformed checkpoints
 checkpoints_pca = pca.transform(checkpoints)
 plt.scatter(checkpoints_pca[:, 0], checkpoints_pca[:, 1], c='red', s=50, label='Checkpoints', edgecolors='k')
-plt.legend()
+# plt.legend()
 # plt.grid()
 
-plt.title("Contour Plot of Reward Values in PCA-Reduced Space")
-plt.xlabel("PCA Component 1")
-plt.ylabel("PCA Component 2")
+plt.title("Contour Plot of Polciy Returns")
+# plt.xlabel("PCA Component 1")
+# plt.ylabel("PCA Component 2")
+# Remove axis ticks
+plt.xticks([])
+plt.yticks([])
 plt.tight_layout()
-plt.savefig('../images/contour.png')
+plt.savefig('../paper_plots/contour.pdf', format='pdf', bbox_inches='tight', dpi=300)
