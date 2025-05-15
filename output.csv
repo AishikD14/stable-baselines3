@@ -312,6 +312,7 @@ PPO_plot_1, ppo_plot_out, PPO plot with 60 iterations & every other point; gamma
 TRPO_1, trpo_init_1M_out, trpo_swimmer_1M_0.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training, espace4, Ongoing
 TRPO_plot_1, trpo_plot_out, TRPO plot with 60 iterations & every other point; gamma=0.3
+TRPO_upper_bound_1, trpo_upper_bound_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace8, Ongoing
 ----------------
 Seed 1         |
 ----------------
@@ -322,6 +323,7 @@ PPO_plot_2, ppo_plot_1_out, PPO plot with 60 iterations & every other point; gam
 TRPO_2, trpo_init_1M_1_out, trpo_swimmer_1M_1.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training, espace5, Ongoing
 TRPO_plot_2, trpo_plot_1_out, TRPO plot with 60 iterations & every other point; gamma=0.3
+TRPO_upper_bound_2, trpo_upper_bound_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace9, Ongoing
 ----------------
 Seed 2         |
 ----------------
@@ -332,6 +334,7 @@ PPO_plot_3, ppo_plot_2_out, PPO plot with 60 iterations & every other point; gam
 TRPO_3, trpo_init_1M_2_out, trpo_swimmer_1M_2.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training, espace6, Ongoing
 TRPO_plot_3, trpo_plot_2_out, TRPO plot with 60 iterations & every other point; gamma=0.3
+TRPO_upper_bound_3, trpo_upper_bound_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace10, Ongoing
 ----------------
 Seed 3         |
 ----------------
@@ -342,6 +345,7 @@ PPO_plot_4, ppo_plot_3_out, PPO plot with 60 iterations & every other point; gam
 TRPO_4, trpo_init_1M_3_out, trpo_swimmer_1M_3.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training, espace7, Ongoing
 TRPO_plot_4, trpo_plot_3_out, TRPO plot with 60 iterations & every other point; gamma=0.3
+TRPO_upper_bound_4, trpo_upper_bound_4_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace12, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Pendulum-v1
