@@ -11,8 +11,8 @@ import re
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-# env = "Ant-v5"
-env = "Walker2d-v5"
+env = "Ant-v5"
+# env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
@@ -41,12 +41,13 @@ plot_list = [
     ["TRPO_normal_training", "TRPO"],
 ]
 
-# plot_list = [
-#     ["TRPO_upper_bound", "ExploRLer (TRPO)"],
-#     ["PPO_normal_training", "PPO"],
-#     ["TRPO_normal_training", "TRPO"],
-#     # ["PPO_upper_bound", "ExploRLer"], 
-# ]
+if env == "Swimmer-v5":
+    plot_list = [
+        ["TRPO_upper_bound", "ExploRLer (TRPO)"],
+        ["PPO_normal_training", "PPO"],
+        ["TRPO_normal_training", "TRPO"],
+        # ["PPO_upper_bound", "ExploRLer"], 
+    ]
 
 plot_metrics = []
 
@@ -62,7 +63,11 @@ for plot_item in plot_list:
     print("Rewards shape: ", rewards.shape)
 
     # Smoothing window
-    window = 10
+    window = 100
+
+    if env == "Pendulum-v1" or env == "BipedalWalker-v3" or env == "Swimmer-v5":
+        window = 10
+
     smoothed = np.convolve(rewards, np.ones(window)/window, mode='valid')
 
     # Calculate standard deviation over the same window

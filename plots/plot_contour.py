@@ -136,7 +136,9 @@ zi = griddata((x, y), z, (xi, yi), method='cubic')
 plt.figure(figsize=(8, 6))
 contour = plt.contourf(xi, yi, zi, levels=20, cmap='viridis')
 # plt.scatter(x, y, c=z, edgecolors='k', cmap='viridis')  # Optional: Show original points
-plt.colorbar(contour, label='Reward')
+cb = plt.colorbar(contour, label='Average Return')
+cb.set_label('Average Return', fontsize=20)
+cb.ax.tick_params(labelsize=16)
 
 # Add PCA transformed checkpoints
 checkpoints_pca = pca.transform(checkpoints)
@@ -144,7 +146,11 @@ plt.scatter(checkpoints_pca[:, 0], checkpoints_pca[:, 1], c='red', s=50, label='
 # plt.legend()
 # plt.grid()
 
-plt.title("Contour Plot of Polciy Returns")
+ax = plt.gca()
+for spine in ax.spines.values():
+    spine.set_visible(False)
+
+plt.title("Ant-v5 last 10 checkpoints after 1M steps", fontsize=20)
 # plt.xlabel("PCA Component 1")
 # plt.ylabel("PCA Component 2")
 # Remove axis ticks
