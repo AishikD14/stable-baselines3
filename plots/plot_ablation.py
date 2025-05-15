@@ -36,26 +36,26 @@ elif env == "BipedalWalker-v3":
 start_iteration = 1
 
 # ablation_type = "Ablation1"
-# ablation_type = "Ablation2"
-ablation_type = "Ablation3"
+ablation_type = "Ablation2"
+# ablation_type = "Ablation3"
 
 if ablation_type == "Ablation1":
     plot_list = [
         ["PPO_Ablation1", "gamma=0"],
-        # ["PPO_upper_bound", "gamma=0.3"],
+        ["PPO_upper_bound", "gamma=0.3"],
         ["PPO_Ablation2", "gamma=0.5"],
     ]
 
 if ablation_type == "Ablation2":
     plot_list = [
-        # ["PPO_upper_bound", "search=1"],
-        ["PPO_Ablation3", "search=2"],
-        ["PPO_Ablation4", "search=3"],
+        ["PPO_upper_bound", "search=1"],
+        ["PPO_Ablation3_interpolated", "search=2"],
+        ["PPO_Ablation4_interpolated", "search=3"],
     ]
 
 if ablation_type == "Ablation3":
     plot_list = [
-        # ["PPO_upper_bound", "Empty Space Search"],
+        ["PPO_upper_bound", "Empty Space Search"],
         ["PPO_neghrand", "Random Walk"],
     ]
 
