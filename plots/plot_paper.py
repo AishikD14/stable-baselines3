@@ -11,9 +11,9 @@ import re
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-env = "Ant-v5"
+# env = "Ant-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
+env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -33,12 +33,16 @@ elif env == "Pendulum-v1":
 elif env == "BipedalWalker-v3":
     args = args_bipedal_walker.get_args(rest_args)
 
+# start_iteration = 1000000 // args.n_steps_per_rollout*1
 start_iteration = 1
 
 plot_list = [
     ["PPO_upper_bound", "ExploRLer"],
     ["PPO_normal_training", "PPO"],
     ["TRPO_normal_training", "TRPO"],
+    # ["PPO_empty_space_ls", "FQE Estimation"],
+    # ["PPO_baseline", "Baseline"],
+    # ["PPO_upper_bound", "Online Evaluation"],
 ]
 
 if env == "Swimmer-v5":
