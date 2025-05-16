@@ -51,7 +51,10 @@ for plot_item in plot_list:
     count = 0
 
     for filename in os.listdir(directory):
-        if count > 10:
+        if count < 11:
+            count += 1
+            continue
+        if count > 15:
             break
         # Check if the filename starts with "results"
         if filename.startswith("results"):
@@ -71,9 +74,13 @@ for plot_item in plot_list:
     count = 0
 
     for filename in os.listdir(directory):
-        if count > 10:
+        if count < 11:
+            count += 1
+            continue
+        if count > 15:
             break
         # Check if the filename starts with "results"
+        print(count)
         if filename.startswith("adv_results"):
             # Load the rewards
             adv_results = np.load(directory + "/" + filename)
@@ -95,12 +102,12 @@ for plot_item in plot_list:
 
     # Scatter plot
     plt.figure(figsize=(10,6))
-    plt.scatter(adv_rewards, rewards, alpha=0.7)
+    plt.scatter(adv_rewards, rewards, alpha=0.7, label="_nolegend_")
 
     # ax = plt.gca()
     # ax.set_facecolor('#f5f5f5')
 
-    plt.xlabel("FQE Estimated Policy Value", fontsize=20)
+    plt.xlabel("FQE Estimated Policy Value\n(a)", fontsize=20)
     plt.ylabel("Online Evaluation Return", fontsize=20)
     plt.xticks(fontsize=16)
     plt.yticks(fontsize=16)
@@ -115,11 +122,13 @@ for plot_item in plot_list:
     # Correlation metrics
     pearson_r, _ = pearsonr(rewards, adv_rewards)
     spearman_r, _ = spearmanr(rewards, adv_rewards)
-    plt.legend(title=f"Spearman ρ = {spearman_r:.2f}", fontsize=20)
+    legend = plt.legend(title=f"Spearman ρ = {spearman_r:.2f}", loc='lower right')
+    legend.get_title().set_fontsize(20)
+    # plt.legend(title=f"Spearman", fontsize=20)
     # plt.grid(True)
     plt.tight_layout()
-    # plt.savefig('../paper_plots/discussion.png')
-    plt.savefig('../paper_plots/discussion.pdf', format='pdf', bbox_inches='tight', dpi=300)
+    plt.savefig('../paper_plots/discussion.png')
+    # plt.savefig('../paper_plots/discussion.pdf', format='pdf', bbox_inches='tight', dpi=300, pad_inches=0.0)
 
     # -------------------------------------------------------------------------------------
 

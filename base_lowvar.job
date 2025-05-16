@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=espace14
-#SBATCH --output=/home/aideb/stable-baselines3/base_job_output/Pendulum-v1/ppo_normal_training_3_out.txt
-#SBATCH --error=/home/aideb/stable-baselines3/base_job_output/Pendulum-v1/ppo_normal_training_3_err.txt
+#SBATCH --job-name=espace19
+#SBATCH --output=/home/aideb/stable-baselines3/base_job_output/BipedalWalker-v3/ppo_upper_bound_4_out.txt
+#SBATCH --error=/home/aideb/stable-baselines3/base_job_output/BipedalWalker-v3/ppo_upper_bound_4_err.txt
 #SBATCH --time=50-00:00
 #SBATCH --mem=50000
 

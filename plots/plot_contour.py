@@ -133,12 +133,12 @@ xi, yi = np.meshgrid(xi, yi)
 zi = griddata((x, y), z, (xi, yi), method='cubic')
 
 # Step 4: Plot contour map
-plt.figure(figsize=(8, 6))
+plt.figure(figsize=(6, 4))
 contour = plt.contourf(xi, yi, zi, levels=20, cmap='viridis')
 # plt.scatter(x, y, c=z, edgecolors='k', cmap='viridis')  # Optional: Show original points
-cb = plt.colorbar(contour, label='Average Return')
-cb.set_label('Average Return', fontsize=20)
-cb.ax.tick_params(labelsize=16)
+cb = plt.colorbar(contour)
+# cb.set_label('Average Return', fontsize=12)
+cb.ax.tick_params(labelsize=12)
 
 # Add PCA transformed checkpoints
 checkpoints_pca = pca.transform(checkpoints)
@@ -150,7 +150,7 @@ ax = plt.gca()
 for spine in ax.spines.values():
     spine.set_visible(False)
 
-plt.title("Ant-v5 last 10 checkpoints after 1M steps", fontsize=20)
+# plt.title("Ant-v5 last 10 checkpoints after 1M steps", fontsize=20)
 # plt.xlabel("PCA Component 1")
 # plt.ylabel("PCA Component 2")
 # Remove axis ticks
