@@ -654,8 +654,8 @@ if __name__ == "__main__":
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
-    # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
-    env_name = "Pendulum-v1" # For pendulum (single goal task)
+    env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
+    # env_name = "Pendulum-v1" # For pendulum (single goal task)
     # env_name = "BipedalWalker-v3" # For bipedal walker (single goal task)
 
     if env_name == "Ant-v5":
@@ -725,7 +725,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "TRPO_normal_training"
+    exp = "TRPO_upper_bound"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('trpo_logs/'+env_name+"/", exp)+1)
     ckp_dir = f'trpo_logs/{DIR}/models'
 
@@ -835,7 +835,7 @@ if __name__ == "__main__":
         eval_episode_num = 1
     else:
         START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
-        SEARCH_INTERV = 1 
+        SEARCH_INTERV = 10 
         NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
         eval_episode_num = 3
 
@@ -844,7 +844,7 @@ if __name__ == "__main__":
     # print("Starting Initial training")
     # os.makedirs(f'full_exp_on_trpo/models/'+env_name, exist_ok=True)
 
-    # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp)
+    # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
     # model.save("full_exp_on_trpo/models/"+env_name+"/trpo_swimmer_1M"+'_'+str(args.seed))
 
     # print("Initial training done") 
@@ -867,10 +867,10 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = True
+    normal_train = False
     use_ANN = False
     ANN_lib = "Annoy"
-    online_eval = False
+    online_eval = True
 
     distanceArray = []
     start_time = time.time()

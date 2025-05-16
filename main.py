@@ -378,22 +378,22 @@ def neighbor_search_random_walk(algo, directory, start, end, env, agent_num=10):
     agents = dump_weights(algo.policy.state_dict(), policies)
 
     # Calculate the nearest neighbors of the agents
-    neigh = NearestNeighbors(n_neighbors=6)
-    neigh.fit(policies)
-    _, adjs = neigh.kneighbors(policies)
+    # neigh = NearestNeighbors(n_neighbors=6)
+    # neigh.fit(policies)
+    # _, adjs = neigh.kneighbors(policies)
     
-    points = policies[adjs[:, 1:]]
-    points = points.mean(axis=1)
-    print(points.shape)
+    # points = policies[adjs[:, 1:]]
+    # points = points.mean(axis=1)
+    # print(points.shape)
 
-    # Calculate the distance of each agent to the mean of the nearest neighbors
-    distances = [euclidean(policy, point) for policy, point in zip(policies, points)]
+    # # Calculate the distance of each agent to the mean of the nearest neighbors
+    # distances = [euclidean(policy, point) for policy, point in zip(policies, points)]
 
-    # Average distance
-    average_distance = np.mean(distances)
-    print("Average distance of agents to nearest neighbors:", average_distance)
+    # # Average distance
+    # average_distance = np.mean(distances)
+    # print("Average distance of agents to nearest neighbors:", average_distance)
     
-    return agents, average_distance
+    return agents, 0
 
 # Random Sampling plus empty space search
 def random_search_empty_space_policies(algo, directory, start, end, env, agent_num=10):
@@ -652,8 +652,8 @@ if __name__ == "__main__":
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
-    env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
-    # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
+    # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+    env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
@@ -745,7 +745,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_normal_training"
+    exp = "PPO_plot"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -837,7 +837,7 @@ if __name__ == "__main__":
     # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
 
     # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_walker2d_1M"+'_'+str(args.seed))
+    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_swimmer_1M"+'_'+str(args.seed))
 
     # print("Initial training done") 
 
@@ -887,7 +887,7 @@ if __name__ == "__main__":
     normal_train = True
     use_ANN = False
     ANN_lib = "Annoy"
-    online_eval = False
+    online_eval = True
 
     distanceArray = []
     start_time = time.time()

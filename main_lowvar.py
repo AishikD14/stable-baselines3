@@ -657,8 +657,8 @@ if __name__ == "__main__":
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
-    env_name = "Pendulum-v1" # For pendulum (single goal task)
-    # env_name = "BipedalWalker-v3"
+    # env_name = "Pendulum-v1" # For pendulum (single goal task)
+    env_name = "BipedalWalker-v3" # For bipedal walker (single goal task)
 
     # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -748,7 +748,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_normal_training"
+    exp = "PPO_upper_bound"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -834,7 +834,10 @@ if __name__ == "__main__":
 
     START_ITER = 1 // (args.n_steps_per_rollout*args.n_envs)
     SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
-    NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs)
+    if env_name == "BipedalWalker-v3":
+        NUM_ITERS = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+    elif env_name == "Pendulum-v1":
+        NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs)
     N_EPOCHS = args.n_epochs
 
     # ---------------------------------------------------------------------------------------------------------------
@@ -843,7 +846,7 @@ if __name__ == "__main__":
     # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
 
     # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_walker2d_1M"+'_'+str(args.seed))
+    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_bipedal_walker_1M"+'_'+str(args.seed))
 
     # print("Initial training done") 
 
@@ -890,7 +893,7 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = True
+    normal_train = False
     use_ANN = False
     ANN_lib = "Annoy"
     online_eval = True
