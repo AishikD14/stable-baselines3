@@ -1,0 +1,2029 @@
+No devices were found
+Setting seed -  0
+---------------------------------
+Environment created
+Box(-1.0, 1.0, (6,), float32) Box(-inf, inf, (17,), float64)
+Loading Initial saved model
+Model loaded
+Starting evaluation
+1953
+Checkpoints loaded
+Shape of checkpoints: (10, 5708)
+Mean of the Gaussian model: [-0.49743685 -0.42109507 -0.8655797  ...  0.13397738  0.09346084
+ -0.00957345]
+Covariance of the Gaussian model: [[ 4.21577310e-07  2.74812792e-07  2.05797307e-07 ...  4.80883859e-08
+  -5.88328193e-08 -1.10025558e-07]
+ [ 2.74812792e-07  1.81298693e-07  1.33532925e-07 ...  3.23536594e-08
+  -3.81452201e-08 -7.11752246e-08]
+ [ 2.05797307e-07  1.33532925e-07  1.13399831e-07 ...  1.99912247e-08
+  -2.56409683e-08 -5.33639618e-08]
+ ...
+ [ 4.80883859e-08  3.23536594e-08  1.99912247e-08 ...  1.62959094e-08
+  -8.23027730e-09 -1.56666242e-08]
+ [-5.88328193e-08 -3.81452201e-08 -2.56409683e-08 ... -8.23027730e-09
+   1.20570635e-08  1.51007613e-08]
+ [-1.10025558e-07 -7.11752246e-08 -5.33639618e-08 ... -1.56666242e-08
+   1.51007613e-08  3.12720163e-08]]
+Shape of generated points: (1000, 5708)
+Agents saved
+Starting 1000 evaluations for agent0
+avg return on 3 trajectories of agent0: 961.4196299640537
+Starting 1000 evaluations for agent1
+avg return on 3 trajectories of agent1: 967.5059010215998
+Starting 1000 evaluations for agent2
+avg return on 3 trajectories of agent2: 908.7994257799983
+Starting 1000 evaluations for agent3
+avg return on 3 trajectories of agent3: 991.1757483878732
+Starting 1000 evaluations for agent4
+avg return on 3 trajectories of agent4: 957.9051702646017
+Starting 1000 evaluations for agent5
+avg return on 3 trajectories of agent5: 930.5506463736295
+Starting 1000 evaluations for agent6
+avg return on 3 trajectories of agent6: 914.0371154601573
+Starting 1000 evaluations for agent7
+avg return on 3 trajectories of agent7: 914.5482537882328
+Starting 1000 evaluations for agent8
+avg return on 3 trajectories of agent8: 976.1180763094425
+Starting 1000 evaluations for agent9
+avg return on 3 trajectories of agent9: 996.2990420051217
+Starting 1000 evaluations for agent10
+avg return on 3 trajectories of agent10: 933.7873661085367
+Starting 1000 evaluations for agent11
+avg return on 3 trajectories of agent11: 975.349956511259
+Starting 1000 evaluations for agent12
+avg return on 3 trajectories of agent12: 925.7085863139033
+Starting 1000 evaluations for agent13
+avg return on 3 trajectories of agent13: 930.3118241912126
+Starting 1000 evaluations for agent14
+avg return on 3 trajectories of agent14: 899.6540364367365
+Starting 1000 evaluations for agent15
+avg return on 3 trajectories of agent15: 979.4052042823433
+Starting 1000 evaluations for agent16
+avg return on 3 trajectories of agent16: 941.8526375324726
+Starting 1000 evaluations for agent17
+avg return on 3 trajectories of agent17: 956.4334631654621
+Starting 1000 evaluations for agent18
+avg return on 3 trajectories of agent18: 936.6638218102455
+Starting 1000 evaluations for agent19
+avg return on 3 trajectories of agent19: 943.7405162873268
+Starting 1000 evaluations for agent20
+avg return on 3 trajectories of agent20: 964.923969315648
+Starting 1000 evaluations for agent21
+avg return on 3 trajectories of agent21: 969.0685070750118
+Starting 1000 evaluations for agent22
+avg return on 3 trajectories of agent22: 905.7666770213247
+Starting 1000 evaluations for agent23
+avg return on 3 trajectories of agent23: 937.0276799237132
+Starting 1000 evaluations for agent24
+avg return on 3 trajectories of agent24: 915.8688904046417
+Starting 1000 evaluations for agent25
+avg return on 3 trajectories of agent25: 933.3123428474069
+Starting 1000 evaluations for agent26
+avg return on 3 trajectories of agent26: 957.0792451664805
+Starting 1000 evaluations for agent27
+avg return on 3 trajectories of agent27: 937.3484267721176
+Starting 1000 evaluations for agent28
+avg return on 3 trajectories of agent28: 961.8030150749088
+Starting 1000 evaluations for agent29
+avg return on 3 trajectories of agent29: 960.159103505671
+Starting 1000 evaluations for agent30
+avg return on 3 trajectories of agent30: 912.0467405881286
+Starting 1000 evaluations for agent31
+avg return on 3 trajectories of agent31: 932.4584112336636
+Starting 1000 evaluations for agent32
+avg return on 3 trajectories of agent32: 973.4764093750119
+Starting 1000 evaluations for agent33
+avg return on 3 trajectories of agent33: 969.0094826300144
+Starting 1000 evaluations for agent34
+avg return on 3 trajectories of agent34: 940.3486657012701
+Starting 1000 evaluations for agent35
+avg return on 3 trajectories of agent35: 973.9384626744985
+Starting 1000 evaluations for agent36
+avg return on 3 trajectories of agent36: 915.4188748973608
+Starting 1000 evaluations for agent37
+avg return on 3 trajectories of agent37: 946.5799844043255
+Starting 1000 evaluations for agent38
+avg return on 3 trajectories of agent38: 974.0463678726554
+Starting 1000 evaluations for agent39
+avg return on 3 trajectories of agent39: 916.3098798681498
+Starting 1000 evaluations for agent40
+avg return on 3 trajectories of agent40: 943.2277773272991
+Starting 1000 evaluations for agent41
+avg return on 3 trajectories of agent41: 948.5900067104101
+Starting 1000 evaluations for agent42
+avg return on 3 trajectories of agent42: 996.9200080260039
+Starting 1000 evaluations for agent43
+avg return on 3 trajectories of agent43: 960.3348147963286
+Starting 1000 evaluations for agent44
+avg return on 3 trajectories of agent44: 1006.3894423819185
+Starting 1000 evaluations for agent45
+avg return on 3 trajectories of agent45: 955.7654846389889
+Starting 1000 evaluations for agent46
+avg return on 3 trajectories of agent46: 958.1260289814472
+Starting 1000 evaluations for agent47
+avg return on 3 trajectories of agent47: 945.7955938908458
+Starting 1000 evaluations for agent48
+avg return on 3 trajectories of agent48: 921.0413831891417
+Starting 1000 evaluations for agent49
+avg return on 3 trajectories of agent49: 958.5461560144424
+Starting 1000 evaluations for agent50
+avg return on 3 trajectories of agent50: 977.6280681183935
+Starting 1000 evaluations for agent51
+avg return on 3 trajectories of agent51: 963.7401629796028
+Starting 1000 evaluations for agent52
+avg return on 3 trajectories of agent52: 946.3198691837788
+Starting 1000 evaluations for agent53
+avg return on 3 trajectories of agent53: 917.5987992062569
+Starting 1000 evaluations for agent54
+avg return on 3 trajectories of agent54: 921.4341628029943
+Starting 1000 evaluations for agent55
+avg return on 3 trajectories of agent55: 946.8397920148373
+Starting 1000 evaluations for agent56
+avg return on 3 trajectories of agent56: 956.2433024072051
+Starting 1000 evaluations for agent57
+avg return on 3 trajectories of agent57: 917.7113443385958
+Starting 1000 evaluations for agent58
+avg return on 3 trajectories of agent58: 972.8751266970038
+Starting 1000 evaluations for agent59
+avg return on 3 trajectories of agent59: 966.2237042007446
+Starting 1000 evaluations for agent60
+avg return on 3 trajectories of agent60: 990.9016229430437
+Starting 1000 evaluations for agent61
+avg return on 3 trajectories of agent61: 946.1566286129355
+Starting 1000 evaluations for agent62
+avg return on 3 trajectories of agent62: 902.862620475173
+Starting 1000 evaluations for agent63
+avg return on 3 trajectories of agent63: 925.2641684135795
+Starting 1000 evaluations for agent64
+avg return on 3 trajectories of agent64: 973.444006061852
+Starting 1000 evaluations for agent65
+avg return on 3 trajectories of agent65: 994.8843680808544
+Starting 1000 evaluations for agent66
+avg return on 3 trajectories of agent66: 951.425516719997
+Starting 1000 evaluations for agent67
+avg return on 3 trajectories of agent67: 946.4518311460018
+Starting 1000 evaluations for agent68
+avg return on 3 trajectories of agent68: 966.8144559377432
+Starting 1000 evaluations for agent69
+avg return on 3 trajectories of agent69: 944.7479634069205
+Starting 1000 evaluations for agent70
+avg return on 3 trajectories of agent70: 956.4043068047166
+Starting 1000 evaluations for agent71
+avg return on 3 trajectories of agent71: 915.6935601574182
+Starting 1000 evaluations for agent72
+avg return on 3 trajectories of agent72: 928.1629722806812
+Starting 1000 evaluations for agent73
+avg return on 3 trajectories of agent73: 951.4798725373149
+Starting 1000 evaluations for agent74
+avg return on 3 trajectories of agent74: 973.9438556747436
+Starting 1000 evaluations for agent75
+avg return on 3 trajectories of agent75: 953.0305335820914
+Starting 1000 evaluations for agent76
+avg return on 3 trajectories of agent76: 916.4425126801133
+Starting 1000 evaluations for agent77
+avg return on 3 trajectories of agent77: 980.1607806206346
+Starting 1000 evaluations for agent78
+avg return on 3 trajectories of agent78: 995.6342538335323
+Starting 1000 evaluations for agent79
+avg return on 3 trajectories of agent79: 908.2165421807766
+Starting 1000 evaluations for agent80
+avg return on 3 trajectories of agent80: 968.1638163573742
+Starting 1000 evaluations for agent81
+avg return on 3 trajectories of agent81: 975.822897859931
+Starting 1000 evaluations for agent82
+avg return on 3 trajectories of agent82: 954.5844263644218
+Starting 1000 evaluations for agent83
+avg return on 3 trajectories of agent83: 935.178221184969
+Starting 1000 evaluations for agent84
+avg return on 3 trajectories of agent84: 993.1597776324749
+Starting 1000 evaluations for agent85
+avg return on 3 trajectories of agent85: 948.7956303762197
+Starting 1000 evaluations for agent86
+avg return on 3 trajectories of agent86: 963.8791710774302
+Starting 1000 evaluations for agent87
+avg return on 3 trajectories of agent87: 972.0185817126631
+Starting 1000 evaluations for agent88
+avg return on 3 trajectories of agent88: 965.952071306467
+Starting 1000 evaluations for agent89
+avg return on 3 trajectories of agent89: 927.4189738464355
+Starting 1000 evaluations for agent90
+avg return on 3 trajectories of agent90: 946.2648488218189
+Starting 1000 evaluations for agent91
+avg return on 3 trajectories of agent91: 930.8934498147369
+Starting 1000 evaluations for agent92
+avg return on 3 trajectories of agent92: 921.5910998874307
+Starting 1000 evaluations for agent93
+avg return on 3 trajectories of agent93: 907.3522550333142
+Starting 1000 evaluations for agent94
+avg return on 3 trajectories of agent94: 969.2092611891031
+Starting 1000 evaluations for agent95
+avg return on 3 trajectories of agent95: 950.7368548305631
+Starting 1000 evaluations for agent96
+avg return on 3 trajectories of agent96: 938.1859711402655
+Starting 1000 evaluations for agent97
+avg return on 3 trajectories of agent97: 942.0512038693428
+Starting 1000 evaluations for agent98
+avg return on 3 trajectories of agent98: 955.1098314712643
+Starting 1000 evaluations for agent99
+avg return on 3 trajectories of agent99: 971.8017207064629
+Starting 1000 evaluations for agent100
+avg return on 3 trajectories of agent100: 937.195770596087
+Starting 1000 evaluations for agent101
+avg return on 3 trajectories of agent101: 955.6515534457565
+Starting 1000 evaluations for agent102
+avg return on 3 trajectories of agent102: 949.6000138887763
+Starting 1000 evaluations for agent103
+avg return on 3 trajectories of agent103: 979.0987917254567
+Starting 1000 evaluations for agent104
+avg return on 3 trajectories of agent104: 913.4748579471111
+Starting 1000 evaluations for agent105
+avg return on 3 trajectories of agent105: 888.39863814044
+Starting 1000 evaluations for agent106
+avg return on 3 trajectories of agent106: 952.8092967757583
+Starting 1000 evaluations for agent107
+avg return on 3 trajectories of agent107: 969.2239796626568
+Starting 1000 evaluations for agent108
+avg return on 3 trajectories of agent108: 932.5542728835344
+Starting 1000 evaluations for agent109
+avg return on 3 trajectories of agent109: 944.7014697557688
+Starting 1000 evaluations for agent110
+avg return on 3 trajectories of agent110: 956.9360337774158
+Starting 1000 evaluations for agent111
+avg return on 3 trajectories of agent111: 916.5842512678504
+Starting 1000 evaluations for agent112
+avg return on 3 trajectories of agent112: 992.2499973873496
+Starting 1000 evaluations for agent113
+avg return on 3 trajectories of agent113: 927.6162302993536
+Starting 1000 evaluations for agent114
+avg return on 3 trajectories of agent114: 913.7433192381859
+Starting 1000 evaluations for agent115
+avg return on 3 trajectories of agent115: 956.165580125153
+Starting 1000 evaluations for agent116
+avg return on 3 trajectories of agent116: 955.8907768467069
+Starting 1000 evaluations for agent117
+avg return on 3 trajectories of agent117: 928.424918117702
+Starting 1000 evaluations for agent118
+avg return on 3 trajectories of agent118: 951.8424552600384
+Starting 1000 evaluations for agent119
+avg return on 3 trajectories of agent119: 939.9837078127861
+Starting 1000 evaluations for agent120
+avg return on 3 trajectories of agent120: 956.4055829853415
+Starting 1000 evaluations for agent121
+avg return on 3 trajectories of agent121: 973.4749696003795
+Starting 1000 evaluations for agent122
+avg return on 3 trajectories of agent122: 996.0007754931449
+Starting 1000 evaluations for agent123
+avg return on 3 trajectories of agent123: 966.432036007762
+Starting 1000 evaluations for agent124
+avg return on 3 trajectories of agent124: 915.8177286667824
+Starting 1000 evaluations for agent125
+avg return on 3 trajectories of agent125: 977.2287665842772
+Starting 1000 evaluations for agent126
+avg return on 3 trajectories of agent126: 918.1691392873526
+Starting 1000 evaluations for agent127
+avg return on 3 trajectories of agent127: 931.6267550958395
+Starting 1000 evaluations for agent128
+avg return on 3 trajectories of agent128: 957.8969437110424
+Starting 1000 evaluations for agent129
+avg return on 3 trajectories of agent129: 929.1393626926541
+Starting 1000 evaluations for agent130
+avg return on 3 trajectories of agent130: 946.80324077636
+Starting 1000 evaluations for agent131
+avg return on 3 trajectories of agent131: 979.9171063318848
+Starting 1000 evaluations for agent132
+avg return on 3 trajectories of agent132: 955.6022414038778
+Starting 1000 evaluations for agent133
+avg return on 3 trajectories of agent133: 937.9616353302002
+Starting 1000 evaluations for agent134
+avg return on 3 trajectories of agent134: 972.4763025307059
+Starting 1000 evaluations for agent135
+avg return on 3 trajectories of agent135: 983.947359333396
+Starting 1000 evaluations for agent136
+avg return on 3 trajectories of agent136: 940.0868505877256
+Starting 1000 evaluations for agent137
+avg return on 3 trajectories of agent137: 932.0505136089325
+Starting 1000 evaluations for agent138
+avg return on 3 trajectories of agent138: 933.8624202238321
+Starting 1000 evaluations for agent139
+avg return on 3 trajectories of agent139: 997.7781902826429
+Starting 1000 evaluations for agent140
+avg return on 3 trajectories of agent140: 952.4939362127781
+Starting 1000 evaluations for agent141
+avg return on 3 trajectories of agent141: 945.7727834680677
+Starting 1000 evaluations for agent142
+avg return on 3 trajectories of agent142: 915.4729853100181
+Starting 1000 evaluations for agent143
+avg return on 3 trajectories of agent143: 928.4020223075747
+Starting 1000 evaluations for agent144
+avg return on 3 trajectories of agent144: 977.8076243997813
+Starting 1000 evaluations for agent145
+avg return on 3 trajectories of agent145: 937.872866547525
+Starting 1000 evaluations for agent146
+avg return on 3 trajectories of agent146: 937.2416190038323
+Starting 1000 evaluations for agent147
+avg return on 3 trajectories of agent147: 955.3026447082758
+Starting 1000 evaluations for agent148
+avg return on 3 trajectories of agent148: 969.2924375243783
+Starting 1000 evaluations for agent149
+avg return on 3 trajectories of agent149: 971.6320052485466
+Starting 1000 evaluations for agent150
+avg return on 3 trajectories of agent150: 935.5730084648728
+Starting 1000 evaluations for agent151
+avg return on 3 trajectories of agent151: 979.6905007222294
+Starting 1000 evaluations for agent152
+avg return on 3 trajectories of agent152: 922.0611384072304
+Starting 1000 evaluations for agent153
+avg return on 3 trajectories of agent153: 944.9889433188439
+Starting 1000 evaluations for agent154
+avg return on 3 trajectories of agent154: 971.2079707545042
+Starting 1000 evaluations for agent155
+avg return on 3 trajectories of agent155: 960.7480263020396
+Starting 1000 evaluations for agent156
+avg return on 3 trajectories of agent156: 936.5989372959137
+Starting 1000 evaluations for agent157
+avg return on 3 trajectories of agent157: 946.8116375950575
+Starting 1000 evaluations for agent158
+avg return on 3 trajectories of agent158: 965.8762269309759
+Starting 1000 evaluations for agent159
+avg return on 3 trajectories of agent159: 946.1646039183736
+Starting 1000 evaluations for agent160
+avg return on 3 trajectories of agent160: 971.9859069135786
+Starting 1000 evaluations for agent161
+avg return on 3 trajectories of agent161: 956.0499367190004
+Starting 1000 evaluations for agent162
+avg return on 3 trajectories of agent162: 964.6555395252705
+Starting 1000 evaluations for agent163
+avg return on 3 trajectories of agent163: 940.4473144216538
+Starting 1000 evaluations for agent164
+avg return on 3 trajectories of agent164: 962.1153963382244
+Starting 1000 evaluations for agent165
+avg return on 3 trajectories of agent165: 941.0677336863876
+Starting 1000 evaluations for agent166
+avg return on 3 trajectories of agent166: 975.2345925293565
+Starting 1000 evaluations for agent167
+avg return on 3 trajectories of agent167: 891.9161350800991
+Starting 1000 evaluations for agent168
+avg return on 3 trajectories of agent168: 959.4384138966203
+Starting 1000 evaluations for agent169
+avg return on 3 trajectories of agent169: 959.406458285749
+Starting 1000 evaluations for agent170
+avg return on 3 trajectories of agent170: 940.4875421339274
+Starting 1000 evaluations for agent171
+avg return on 3 trajectories of agent171: 967.748782482922
+Starting 1000 evaluations for agent172
+avg return on 3 trajectories of agent172: 998.2053747399449
+Starting 1000 evaluations for agent173
+avg return on 3 trajectories of agent173: 938.7360103868842
+Starting 1000 evaluations for agent174
+avg return on 3 trajectories of agent174: 971.8830427271723
+Starting 1000 evaluations for agent175
+avg return on 3 trajectories of agent175: 948.964541264534
+Starting 1000 evaluations for agent176
+avg return on 3 trajectories of agent176: 940.1843833361864
+Starting 1000 evaluations for agent177
+avg return on 3 trajectories of agent177: 967.7261490881443
+Starting 1000 evaluations for agent178
+avg return on 3 trajectories of agent178: 933.1241336805224
+Starting 1000 evaluations for agent179
+avg return on 3 trajectories of agent179: 934.4461066768765
+Starting 1000 evaluations for agent180
+avg return on 3 trajectories of agent180: 946.5363577754498
+Starting 1000 evaluations for agent181
+avg return on 3 trajectories of agent181: 970.4419666305184
+Starting 1000 evaluations for agent182
+avg return on 3 trajectories of agent182: 937.2072176762223
+Starting 1000 evaluations for agent183
+avg return on 3 trajectories of agent183: 948.7338397564292
+Starting 1000 evaluations for agent184
+avg return on 3 trajectories of agent184: 932.5651853283048
+Starting 1000 evaluations for agent185
+avg return on 3 trajectories of agent185: 955.5582058638335
+Starting 1000 evaluations for agent186
+avg return on 3 trajectories of agent186: 944.5971916210651
+Starting 1000 evaluations for agent187
+avg return on 3 trajectories of agent187: 965.7160144554376
+Starting 1000 evaluations for agent188
+avg return on 3 trajectories of agent188: 941.5529725009203
+Starting 1000 evaluations for agent189
+avg return on 3 trajectories of agent189: 965.818324390769
+Starting 1000 evaluations for agent190
+avg return on 3 trajectories of agent190: 981.2494805908203
+Starting 1000 evaluations for agent191
+avg return on 3 trajectories of agent191: 946.2725905390978
+Starting 1000 evaluations for agent192
+avg return on 3 trajectories of agent192: 931.5939969385862
+Starting 1000 evaluations for agent193
+avg return on 3 trajectories of agent193: 1008.5283813477158
+Starting 1000 evaluations for agent194
+avg return on 3 trajectories of agent194: 918.2426043399572
+Starting 1000 evaluations for agent195
+avg return on 3 trajectories of agent195: 956.5093696915508
+Starting 1000 evaluations for agent196
+avg return on 3 trajectories of agent196: 964.6648898442388
+Starting 1000 evaluations for agent197
+avg return on 3 trajectories of agent197: 958.4411456879974
+Starting 1000 evaluations for agent198
+avg return on 3 trajectories of agent198: 940.1681681007743
+Starting 1000 evaluations for agent199
+avg return on 3 trajectories of agent199: 928.3219122915864
+Starting 1000 evaluations for agent200
+avg return on 3 trajectories of agent200: 930.1623513621688
+Starting 1000 evaluations for agent201
+avg return on 3 trajectories of agent201: 1005.004015278697
+Starting 1000 evaluations for agent202
+avg return on 3 trajectories of agent202: 970.9115603629351
+Starting 1000 evaluations for agent203
+avg return on 3 trajectories of agent203: 964.9666435489058
+Starting 1000 evaluations for agent204
+avg return on 3 trajectories of agent204: 986.7035091142654
+Starting 1000 evaluations for agent205
+avg return on 3 trajectories of agent205: 1004.616893528521
+Starting 1000 evaluations for agent206
+avg return on 3 trajectories of agent206: 973.5519442467689
+Starting 1000 evaluations for agent207
+avg return on 3 trajectories of agent207: 971.9799759098291
+Starting 1000 evaluations for agent208
+avg return on 3 trajectories of agent208: 970.6706147084236
+Starting 1000 evaluations for agent209
+avg return on 3 trajectories of agent209: 927.7101194354892
+Starting 1000 evaluations for agent210
+avg return on 3 trajectories of agent210: 947.851559684217
+Starting 1000 evaluations for agent211
+avg return on 3 trajectories of agent211: 974.809448370397
+Starting 1000 evaluations for agent212
+avg return on 3 trajectories of agent212: 950.5963129131198
+Starting 1000 evaluations for agent213
+avg return on 3 trajectories of agent213: 936.4623911627531
+Starting 1000 evaluations for agent214
+avg return on 3 trajectories of agent214: 971.7880085980296
+Starting 1000 evaluations for agent215
+avg return on 3 trajectories of agent215: 956.6675123012662
+Starting 1000 evaluations for agent216
+avg return on 3 trajectories of agent216: 914.7700439764857
+Starting 1000 evaluations for agent217
+avg return on 3 trajectories of agent217: 956.2432185751795
+Starting 1000 evaluations for agent218
+avg return on 3 trajectories of agent218: 950.5023622367382
+Starting 1000 evaluations for agent219
+avg return on 3 trajectories of agent219: 955.4042335130572
+Starting 1000 evaluations for agent220
+avg return on 3 trajectories of agent220: 935.164722783804
+Starting 1000 evaluations for agent221
+avg return on 3 trajectories of agent221: 949.3447014202476
+Starting 1000 evaluations for agent222
+avg return on 3 trajectories of agent222: 884.7621413859129
+Starting 1000 evaluations for agent223
+avg return on 3 trajectories of agent223: 983.1217414466739
+Starting 1000 evaluations for agent224
+avg return on 3 trajectories of agent224: 935.2850993589162
+Starting 1000 evaluations for agent225
+avg return on 3 trajectories of agent225: 941.2373863580227
+Starting 1000 evaluations for agent226
+avg return on 3 trajectories of agent226: 932.8193464183212
+Starting 1000 evaluations for agent227
+avg return on 3 trajectories of agent227: 966.1521449614168
+Starting 1000 evaluations for agent228
+avg return on 3 trajectories of agent228: 946.1327895710468
+Starting 1000 evaluations for agent229
+avg return on 3 trajectories of agent229: 946.0019989930391
+Starting 1000 evaluations for agent230
+avg return on 3 trajectories of agent230: 971.1568757677675
+Starting 1000 evaluations for agent231
+avg return on 3 trajectories of agent231: 921.5662512682676
+Starting 1000 evaluations for agent232
+avg return on 3 trajectories of agent232: 968.6648290391564
+Starting 1000 evaluations for agent233
+avg return on 3 trajectories of agent233: 954.6926008762122
+Starting 1000 evaluations for agent234
+avg return on 3 trajectories of agent234: 973.0041401760578
+Starting 1000 evaluations for agent235
+avg return on 3 trajectories of agent235: 975.9959341893792
+Starting 1000 evaluations for agent236
+avg return on 3 trajectories of agent236: 909.7462420123816
+Starting 1000 evaluations for agent237
+avg return on 3 trajectories of agent237: 1002.5916621569395
+Starting 1000 evaluations for agent238
+avg return on 3 trajectories of agent238: 931.7280125796794
+Starting 1000 evaluations for agent239
+avg return on 3 trajectories of agent239: 950.9478854163885
+Starting 1000 evaluations for agent240
+avg return on 3 trajectories of agent240: 971.8748186671734
+Starting 1000 evaluations for agent241
+avg return on 3 trajectories of agent241: 946.4784653868079
+Starting 1000 evaluations for agent242
+avg return on 3 trajectories of agent242: 953.7917899042964
+Starting 1000 evaluations for agent243
+avg return on 3 trajectories of agent243: 980.2343733369709
+Starting 1000 evaluations for agent244
+avg return on 3 trajectories of agent244: 908.8970322695375
+Starting 1000 evaluations for agent245
+avg return on 3 trajectories of agent245: 934.0811294768453
+Starting 1000 evaluations for agent246
+avg return on 3 trajectories of agent246: 958.0364788811803
+Starting 1000 evaluations for agent247
+avg return on 3 trajectories of agent247: 976.578079133153
+Starting 1000 evaluations for agent248
+avg return on 3 trajectories of agent248: 928.9643634611964
+Starting 1000 evaluations for agent249
+avg return on 3 trajectories of agent249: 936.1015864483118
+Starting 1000 evaluations for agent250
+avg return on 3 trajectories of agent250: 959.5744126557112
+Starting 1000 evaluations for agent251
+avg return on 3 trajectories of agent251: 937.4751293160915
+Starting 1000 evaluations for agent252
+avg return on 3 trajectories of agent252: 936.5075686249733
+Starting 1000 evaluations for agent253
+avg return on 3 trajectories of agent253: 896.1912206655145
+Starting 1000 evaluations for agent254
+avg return on 3 trajectories of agent254: 945.2971853758097
+Starting 1000 evaluations for agent255
+avg return on 3 trajectories of agent255: 930.6461046647429
+Starting 1000 evaluations for agent256
+avg return on 3 trajectories of agent256: 926.3378827917576
+Starting 1000 evaluations for agent257
+avg return on 3 trajectories of agent257: 923.5095892642737
+Starting 1000 evaluations for agent258
+avg return on 3 trajectories of agent258: 938.7497539560198
+Starting 1000 evaluations for agent259
+avg return on 3 trajectories of agent259: 987.1299947306513
+Starting 1000 evaluations for agent260
+avg return on 3 trajectories of agent260: 958.4781847570539
+Starting 1000 evaluations for agent261
+avg return on 3 trajectories of agent261: 982.469701613307
+Starting 1000 evaluations for agent262
+avg return on 3 trajectories of agent262: 917.757541269064
+Starting 1000 evaluations for agent263
+avg return on 3 trajectories of agent263: 950.388982486844
+Starting 1000 evaluations for agent264
+avg return on 3 trajectories of agent264: 966.048720008254
+Starting 1000 evaluations for agent265
+avg return on 3 trajectories of agent265: 993.9287059772611
+Starting 1000 evaluations for agent266
+avg return on 3 trajectories of agent266: 985.1710691004396
+Starting 1000 evaluations for agent267
+avg return on 3 trajectories of agent267: 966.3521329344511
+Starting 1000 evaluations for agent268
+avg return on 3 trajectories of agent268: 978.9379284898042
+Starting 1000 evaluations for agent269
+avg return on 3 trajectories of agent269: 945.1470981858373
+Starting 1000 evaluations for agent270
+avg return on 3 trajectories of agent270: 924.576147035122
+Starting 1000 evaluations for agent271
+avg return on 3 trajectories of agent271: 966.7540995124579
+Starting 1000 evaluations for agent272
+avg return on 3 trajectories of agent272: 995.6338791705966
+Starting 1000 evaluations for agent273
+avg return on 3 trajectories of agent273: 969.2785877052546
+Starting 1000 evaluations for agent274
+avg return on 3 trajectories of agent274: 972.5781322247982
+Starting 1000 evaluations for agent275
+avg return on 3 trajectories of agent275: 970.9173206564188
+Starting 1000 evaluations for agent276
+avg return on 3 trajectories of agent276: 946.8448325589895
+Starting 1000 evaluations for agent277
+avg return on 3 trajectories of agent277: 978.7666904644966
+Starting 1000 evaluations for agent278
+avg return on 3 trajectories of agent278: 938.9558758776188
+Starting 1000 evaluations for agent279
+avg return on 3 trajectories of agent279: 977.0748848086596
+Starting 1000 evaluations for agent280
+avg return on 3 trajectories of agent280: 957.7789177927971
+Starting 1000 evaluations for agent281
+avg return on 3 trajectories of agent281: 995.3927233471275
+Starting 1000 evaluations for agent282
+avg return on 3 trajectories of agent282: 951.4778406887054
+Starting 1000 evaluations for agent283
+avg return on 3 trajectories of agent283: 944.1070497543216
+Starting 1000 evaluations for agent284
+avg return on 3 trajectories of agent284: 940.5152701951265
+Starting 1000 evaluations for agent285
+avg return on 3 trajectories of agent285: 923.74437882936
+Starting 1000 evaluations for agent286
+avg return on 3 trajectories of agent286: 1000.4809658312797
+Starting 1000 evaluations for agent287
+avg return on 3 trajectories of agent287: 948.2138499251008
+Starting 1000 evaluations for agent288
+avg return on 3 trajectories of agent288: 962.2815614458918
+Starting 1000 evaluations for agent289
+avg return on 3 trajectories of agent289: 939.1155422728061
+Starting 1000 evaluations for agent290
+avg return on 3 trajectories of agent290: 945.1680476120711
+Starting 1000 evaluations for agent291
+avg return on 3 trajectories of agent291: 953.4762995262743
+Starting 1000 evaluations for agent292
+avg return on 3 trajectories of agent292: 950.7046257961988
+Starting 1000 evaluations for agent293
+avg return on 3 trajectories of agent293: 959.244942558229
+Starting 1000 evaluations for agent294
+avg return on 3 trajectories of agent294: 977.9743892374039
+Starting 1000 evaluations for agent295
+avg return on 3 trajectories of agent295: 954.5279710704089
+Starting 1000 evaluations for agent296
+avg return on 3 trajectories of agent296: 1009.1078406695127
+Starting 1000 evaluations for agent297
+avg return on 3 trajectories of agent297: 987.7454078628421
+Starting 1000 evaluations for agent298
+avg return on 3 trajectories of agent298: 968.1691540968418
+Starting 1000 evaluations for agent299
+avg return on 3 trajectories of agent299: 961.3932196735144
+Starting 1000 evaluations for agent300
+avg return on 3 trajectories of agent300: 982.4545077268481
+Starting 1000 evaluations for agent301
+avg return on 3 trajectories of agent301: 936.2669150335192
+Starting 1000 evaluations for agent302
+avg return on 3 trajectories of agent302: 962.8598975076676
+Starting 1000 evaluations for agent303
+avg return on 3 trajectories of agent303: 941.6025527287126
+Starting 1000 evaluations for agent304
+avg return on 3 trajectories of agent304: 905.012878422916
+Starting 1000 evaluations for agent305
+avg return on 3 trajectories of agent305: 960.6679960522056
+Starting 1000 evaluations for agent306
+avg return on 3 trajectories of agent306: 978.4687253927589
+Starting 1000 evaluations for agent307
+avg return on 3 trajectories of agent307: 981.3137031955719
+Starting 1000 evaluations for agent308
+avg return on 3 trajectories of agent308: 966.6306381974221
+Starting 1000 evaluations for agent309
+avg return on 3 trajectories of agent309: 941.8327219589949
+Starting 1000 evaluations for agent310
+avg return on 3 trajectories of agent310: 964.0740326268673
+Starting 1000 evaluations for agent311
+avg return on 3 trajectories of agent311: 914.6698725106717
+Starting 1000 evaluations for agent312
+avg return on 3 trajectories of agent312: 959.7663259150386
+Starting 1000 evaluations for agent313
+avg return on 3 trajectories of agent313: 954.0818092201353
+Starting 1000 evaluations for agent314
+avg return on 3 trajectories of agent314: 944.1357259042263
+Starting 1000 evaluations for agent315
+avg return on 3 trajectories of agent315: 983.7179168689847
+Starting 1000 evaluations for agent316
+avg return on 3 trajectories of agent316: 975.295041121006
+Starting 1000 evaluations for agent317
+avg return on 3 trajectories of agent317: 934.7644826737046
+Starting 1000 evaluations for agent318
+avg return on 3 trajectories of agent318: 957.3698584483861
+Starting 1000 evaluations for agent319
+avg return on 3 trajectories of agent319: 965.3205407944322
+Starting 1000 evaluations for agent320
+avg return on 3 trajectories of agent320: 949.7635854729414
+Starting 1000 evaluations for agent321
+avg return on 3 trajectories of agent321: 920.5000486490726
+Starting 1000 evaluations for agent322
+avg return on 3 trajectories of agent322: 954.7366686309576
+Starting 1000 evaluations for agent323
+avg return on 3 trajectories of agent323: 944.6786361546516
+Starting 1000 evaluations for agent324
+avg return on 3 trajectories of agent324: 892.0787210240364
+Starting 1000 evaluations for agent325
+avg return on 3 trajectories of agent325: 937.8071355004311
+Starting 1000 evaluations for agent326
+avg return on 3 trajectories of agent326: 910.2701939868927
+Starting 1000 evaluations for agent327
+avg return on 3 trajectories of agent327: 925.1412687005997
+Starting 1000 evaluations for agent328
+avg return on 3 trajectories of agent328: 940.5381299338936
+Starting 1000 evaluations for agent329
+avg return on 3 trajectories of agent329: 961.3025138365626
+Starting 1000 evaluations for agent330
+avg return on 3 trajectories of agent330: 939.4895624147058
+Starting 1000 evaluations for agent331
+avg return on 3 trajectories of agent331: 934.9910630652904
+Starting 1000 evaluations for agent332
+avg return on 3 trajectories of agent332: 966.2731444892287
+Starting 1000 evaluations for agent333
+avg return on 3 trajectories of agent333: 943.8203882398009
+Starting 1000 evaluations for agent334
+avg return on 3 trajectories of agent334: 973.4395844621658
+Starting 1000 evaluations for agent335
+avg return on 3 trajectories of agent335: 934.2713420651555
+Starting 1000 evaluations for agent336
+avg return on 3 trajectories of agent336: 947.8074252240061
+Starting 1000 evaluations for agent337
+avg return on 3 trajectories of agent337: 933.8610084223151
+Starting 1000 evaluations for agent338
+avg return on 3 trajectories of agent338: 999.4939382798076
+Starting 1000 evaluations for agent339
+avg return on 3 trajectories of agent339: 956.1998786008357
+Starting 1000 evaluations for agent340
+avg return on 3 trajectories of agent340: 938.9626580790281
+Starting 1000 evaluations for agent341
+avg return on 3 trajectories of agent341: 932.1164956390262
+Starting 1000 evaluations for agent342
+avg return on 3 trajectories of agent342: 962.2646818680167
+Starting 1000 evaluations for agent343
+avg return on 3 trajectories of agent343: 944.7531332297921
+Starting 1000 evaluations for agent344
+avg return on 3 trajectories of agent344: 937.9106441826821
+Starting 1000 evaluations for agent345
+avg return on 3 trajectories of agent345: 931.7580826037527
+Starting 1000 evaluations for agent346
+avg return on 3 trajectories of agent346: 951.5529244958758
+Starting 1000 evaluations for agent347
+avg return on 3 trajectories of agent347: 941.5562487872243
+Starting 1000 evaluations for agent348
+avg return on 3 trajectories of agent348: 936.7757812532783
+Starting 1000 evaluations for agent349
+avg return on 3 trajectories of agent349: 955.2847131133675
+Starting 1000 evaluations for agent350
+avg return on 3 trajectories of agent350: 973.5302061083913
+Starting 1000 evaluations for agent351
+avg return on 3 trajectories of agent351: 947.892112159729
+Starting 1000 evaluations for agent352
+avg return on 3 trajectories of agent352: 982.4002885408997
+Starting 1000 evaluations for agent353
+avg return on 3 trajectories of agent353: 964.0267430748344
+Starting 1000 evaluations for agent354
+avg return on 3 trajectories of agent354: 951.6040152691006
+Starting 1000 evaluations for agent355
+avg return on 3 trajectories of agent355: 982.3939396483898
+Starting 1000 evaluations for agent356
+avg return on 3 trajectories of agent356: 886.3665186517835
+Starting 1000 evaluations for agent357
+avg return on 3 trajectories of agent357: 999.08329109478
+Starting 1000 evaluations for agent358
+avg return on 3 trajectories of agent358: 963.1817755289078
+Starting 1000 evaluations for agent359
+avg return on 3 trajectories of agent359: 951.7326249103546
+Starting 1000 evaluations for agent360
+avg return on 3 trajectories of agent360: 983.0033772017359
+Starting 1000 evaluations for agent361
+avg return on 3 trajectories of agent361: 938.387307209909
+Starting 1000 evaluations for agent362
+avg return on 3 trajectories of agent362: 966.3702842768431
+Starting 1000 evaluations for agent363
+avg return on 3 trajectories of agent363: 884.2042649402023
+Starting 1000 evaluations for agent364
+avg return on 3 trajectories of agent364: 942.413166716218
+Starting 1000 evaluations for agent365
+avg return on 3 trajectories of agent365: 943.5628689121008
+Starting 1000 evaluations for agent366
+avg return on 3 trajectories of agent366: 955.8539244108796
+Starting 1000 evaluations for agent367
+avg return on 3 trajectories of agent367: 953.53935701859
+Starting 1000 evaluations for agent368
+avg return on 3 trajectories of agent368: 953.7822287505865
+Starting 1000 evaluations for agent369
+avg return on 3 trajectories of agent369: 989.7789400709271
+Starting 1000 evaluations for agent370
+avg return on 3 trajectories of agent370: 996.4650231055617
+Starting 1000 evaluations for agent371
+avg return on 3 trajectories of agent371: 966.3652432821989
+Starting 1000 evaluations for agent372
+avg return on 3 trajectories of agent372: 975.7080869583488
+Starting 1000 evaluations for agent373
+avg return on 3 trajectories of agent373: 969.7956977975964
+Starting 1000 evaluations for agent374
+avg return on 3 trajectories of agent374: 984.150852309525
+Starting 1000 evaluations for agent375
+avg return on 3 trajectories of agent375: 963.0462041765452
+Starting 1000 evaluations for agent376
+avg return on 3 trajectories of agent376: 934.9073966910839
+Starting 1000 evaluations for agent377
+avg return on 3 trajectories of agent377: 971.6366948429346
+Starting 1000 evaluations for agent378
+avg return on 3 trajectories of agent378: 954.1352533468008
+Starting 1000 evaluations for agent379
+avg return on 3 trajectories of agent379: 931.8359436196089
+Starting 1000 evaluations for agent380
+avg return on 3 trajectories of agent380: 923.399184118867
+Starting 1000 evaluations for agent381
+avg return on 3 trajectories of agent381: 960.6888371704816
+Starting 1000 evaluations for agent382
+avg return on 3 trajectories of agent382: 935.3793021665216
+Starting 1000 evaluations for agent383
+avg return on 3 trajectories of agent383: 953.2951843936444
+Starting 1000 evaluations for agent384
+avg return on 3 trajectories of agent384: 953.824663019836
+Starting 1000 evaluations for agent385
+avg return on 3 trajectories of agent385: 985.2389609678984
+Starting 1000 evaluations for agent386
+avg return on 3 trajectories of agent386: 926.1459862402678
+Starting 1000 evaluations for agent387
+avg return on 3 trajectories of agent387: 904.7189194310904
+Starting 1000 evaluations for agent388
+avg return on 3 trajectories of agent388: 929.5097570899129
+Starting 1000 evaluations for agent389
+avg return on 3 trajectories of agent389: 966.1884510418772
+Starting 1000 evaluations for agent390
+avg return on 3 trajectories of agent390: 947.9554611056448
+Starting 1000 evaluations for agent391
+avg return on 3 trajectories of agent391: 961.2163860326409
+Starting 1000 evaluations for agent392
+avg return on 3 trajectories of agent392: 925.362387484014
+Starting 1000 evaluations for agent393
+avg return on 3 trajectories of agent393: 988.6773226470947
+Starting 1000 evaluations for agent394
+avg return on 3 trajectories of agent394: 954.4727922667265
+Starting 1000 evaluations for agent395
+avg return on 3 trajectories of agent395: 981.2844507268071
+Starting 1000 evaluations for agent396
+avg return on 3 trajectories of agent396: 1013.6868770712614
+Starting 1000 evaluations for agent397
+avg return on 3 trajectories of agent397: 954.4778808524013
+Starting 1000 evaluations for agent398
+avg return on 3 trajectories of agent398: 964.5136939392686
+Starting 1000 evaluations for agent399
+avg return on 3 trajectories of agent399: 937.4779346905947
+Starting 1000 evaluations for agent400
+avg return on 3 trajectories of agent400: 935.0473185309768
+Starting 1000 evaluations for agent401
+avg return on 3 trajectories of agent401: 926.4368780321479
+Starting 1000 evaluations for agent402
+avg return on 3 trajectories of agent402: 951.2423437037468
+Starting 1000 evaluations for agent403
+avg return on 3 trajectories of agent403: 974.8612808194756
+Starting 1000 evaluations for agent404
+avg return on 3 trajectories of agent404: 970.272590356052
+Starting 1000 evaluations for agent405
+avg return on 3 trajectories of agent405: 929.9363537415267
+Starting 1000 evaluations for agent406
+avg return on 3 trajectories of agent406: 962.6406962616444
+Starting 1000 evaluations for agent407
+avg return on 3 trajectories of agent407: 982.852593303442
+Starting 1000 evaluations for agent408
+avg return on 3 trajectories of agent408: 956.8790356375575
+Starting 1000 evaluations for agent409
+avg return on 3 trajectories of agent409: 917.7727523263097
+Starting 1000 evaluations for agent410
+avg return on 3 trajectories of agent410: 960.9975306521654
+Starting 1000 evaluations for agent411
+avg return on 3 trajectories of agent411: 930.414842568934
+Starting 1000 evaluations for agent412
+avg return on 3 trajectories of agent412: 954.6201949589848
+Starting 1000 evaluations for agent413
+avg return on 3 trajectories of agent413: 942.4004573745132
+Starting 1000 evaluations for agent414
+avg return on 3 trajectories of agent414: 963.3666210665702
+Starting 1000 evaluations for agent415
+avg return on 3 trajectories of agent415: 933.4965492630005
+Starting 1000 evaluations for agent416
+avg return on 3 trajectories of agent416: 968.7060334751606
+Starting 1000 evaluations for agent417
+avg return on 3 trajectories of agent417: 982.0858635698557
+Starting 1000 evaluations for agent418
+avg return on 3 trajectories of agent418: 949.2450863572955
+Starting 1000 evaluations for agent419
+avg return on 3 trajectories of agent419: 916.4981719456911
+Starting 1000 evaluations for agent420
+avg return on 3 trajectories of agent420: 929.854638604641
+Starting 1000 evaluations for agent421
+avg return on 3 trajectories of agent421: 879.1535936157703
+Starting 1000 evaluations for agent422
+avg return on 3 trajectories of agent422: 976.7376147865057
+Starting 1000 evaluations for agent423
+avg return on 3 trajectories of agent423: 954.980352801323
+Starting 1000 evaluations for agent424
+avg return on 3 trajectories of agent424: 904.397417806983
+Starting 1000 evaluations for agent425
+avg return on 3 trajectories of agent425: 946.4470652506351
+Starting 1000 evaluations for agent426
+avg return on 3 trajectories of agent426: 960.2469406476616
+Starting 1000 evaluations for agent427
+avg return on 3 trajectories of agent427: 924.2358227139115
+Starting 1000 evaluations for agent428
+avg return on 3 trajectories of agent428: 953.8938223580122
+Starting 1000 evaluations for agent429
+avg return on 3 trajectories of agent429: 933.531842065692
+Starting 1000 evaluations for agent430
+avg return on 3 trajectories of agent430: 916.4141040197014
+Starting 1000 evaluations for agent431
+avg return on 3 trajectories of agent431: 944.7950340819955
+Starting 1000 evaluations for agent432
+avg return on 3 trajectories of agent432: 915.679245603323
+Starting 1000 evaluations for agent433
+avg return on 3 trajectories of agent433: 923.7915145901442
+Starting 1000 evaluations for agent434
+avg return on 3 trajectories of agent434: 903.557095004201
+Starting 1000 evaluations for agent435
+avg return on 3 trajectories of agent435: 950.5904933339357
+Starting 1000 evaluations for agent436
+avg return on 3 trajectories of agent436: 955.6249249346256
+Starting 1000 evaluations for agent437
+avg return on 3 trajectories of agent437: 942.7372787191867
+Starting 1000 evaluations for agent438
+avg return on 3 trajectories of agent438: 959.9982324450016
+Starting 1000 evaluations for agent439
+avg return on 3 trajectories of agent439: 943.6726421412229
+Starting 1000 evaluations for agent440
+avg return on 3 trajectories of agent440: 938.8573773791194
+Starting 1000 evaluations for agent441
+avg return on 3 trajectories of agent441: 1015.8554951344132
+Starting 1000 evaluations for agent442
+avg return on 3 trajectories of agent442: 927.044235335946
+Starting 1000 evaluations for agent443
+avg return on 3 trajectories of agent443: 950.9898949585557
+Starting 1000 evaluations for agent444
+avg return on 3 trajectories of agent444: 976.2677726995945
+Starting 1000 evaluations for agent445
+avg return on 3 trajectories of agent445: 909.1671141685844
+Starting 1000 evaluations for agent446
+avg return on 3 trajectories of agent446: 897.5605853753686
+Starting 1000 evaluations for agent447
+avg return on 3 trajectories of agent447: 907.8882023445368
+Starting 1000 evaluations for agent448
+avg return on 3 trajectories of agent448: 946.1302852819562
+Starting 1000 evaluations for agent449
+avg return on 3 trajectories of agent449: 966.7091707648635
+Starting 1000 evaluations for agent450
+avg return on 3 trajectories of agent450: 1000.782408813417
+Starting 1000 evaluations for agent451
+avg return on 3 trajectories of agent451: 954.0100681319237
+Starting 1000 evaluations for agent452
+avg return on 3 trajectories of agent452: 926.786530728817
+Starting 1000 evaluations for agent453
+avg return on 3 trajectories of agent453: 899.4174077646136
+Starting 1000 evaluations for agent454
+avg return on 3 trajectories of agent454: 947.3660946531296
+Starting 1000 evaluations for agent455
+avg return on 3 trajectories of agent455: 972.6230334176421
+Starting 1000 evaluations for agent456
+avg return on 3 trajectories of agent456: 948.4176160422563
+Starting 1000 evaluations for agent457
+avg return on 3 trajectories of agent457: 951.8409133897424
+Starting 1000 evaluations for agent458
+avg return on 3 trajectories of agent458: 975.035761939168
+Starting 1000 evaluations for agent459
+avg return on 3 trajectories of agent459: 943.927145446241
+Starting 1000 evaluations for agent460
+avg return on 3 trajectories of agent460: 942.4988930481672
+Starting 1000 evaluations for agent461
+avg return on 3 trajectories of agent461: 979.4120202313065
+Starting 1000 evaluations for agent462
+avg return on 3 trajectories of agent462: 929.0116945995688
+Starting 1000 evaluations for agent463
+avg return on 3 trajectories of agent463: 967.4932449074388
+Starting 1000 evaluations for agent464
+avg return on 3 trajectories of agent464: 957.7157555772662
+Starting 1000 evaluations for agent465
+avg return on 3 trajectories of agent465: 1006.427383635521
+Starting 1000 evaluations for agent466
+avg return on 3 trajectories of agent466: 967.1869743201732
+Starting 1000 evaluations for agent467
+avg return on 3 trajectories of agent467: 933.1284230166674
+Starting 1000 evaluations for agent468
+avg return on 3 trajectories of agent468: 956.100790350914
+Starting 1000 evaluations for agent469
+avg return on 3 trajectories of agent469: 949.725981477499
+Starting 1000 evaluations for agent470
+avg return on 3 trajectories of agent470: 917.4106343696118
+Starting 1000 evaluations for agent471
+avg return on 3 trajectories of agent471: 931.8486893066167
+Starting 1000 evaluations for agent472
+avg return on 3 trajectories of agent472: 966.5204519034625
+Starting 1000 evaluations for agent473
+avg return on 3 trajectories of agent473: 957.4968424925208
+Starting 1000 evaluations for agent474
+avg return on 3 trajectories of agent474: 972.5993838881254
+Starting 1000 evaluations for agent475
+avg return on 3 trajectories of agent475: 970.5941169930696
+Starting 1000 evaluations for agent476
+avg return on 3 trajectories of agent476: 901.2501373440027
+Starting 1000 evaluations for agent477
+avg return on 3 trajectories of agent477: 918.3902385270595
+Starting 1000 evaluations for agent478
+avg return on 3 trajectories of agent478: 922.9645684341788
+Starting 1000 evaluations for agent479
+avg return on 3 trajectories of agent479: 905.208105914414
+Starting 1000 evaluations for agent480
+avg return on 3 trajectories of agent480: 935.7628039928675
+Starting 1000 evaluations for agent481
+avg return on 3 trajectories of agent481: 974.024419120729
+Starting 1000 evaluations for agent482
+avg return on 3 trajectories of agent482: 978.4132220747471
+Starting 1000 evaluations for agent483
+avg return on 3 trajectories of agent483: 971.7425975391269
+Starting 1000 evaluations for agent484
+avg return on 3 trajectories of agent484: 947.7360248727202
+Starting 1000 evaluations for agent485
+avg return on 3 trajectories of agent485: 916.4483343697191
+Starting 1000 evaluations for agent486
+avg return on 3 trajectories of agent486: 949.8204852722287
+Starting 1000 evaluations for agent487
+avg return on 3 trajectories of agent487: 960.0837907831072
+Starting 1000 evaluations for agent488
+avg return on 3 trajectories of agent488: 986.2598557215929
+Starting 1000 evaluations for agent489
+avg return on 3 trajectories of agent489: 962.4902161818743
+Starting 1000 evaluations for agent490
+avg return on 3 trajectories of agent490: 990.9213480047583
+Starting 1000 evaluations for agent491
+avg return on 3 trajectories of agent491: 915.3879805411697
+Starting 1000 evaluations for agent492
+avg return on 3 trajectories of agent492: 947.9414066724777
+Starting 1000 evaluations for agent493
+avg return on 3 trajectories of agent493: 986.9732629048824
+Starting 1000 evaluations for agent494
+avg return on 3 trajectories of agent494: 965.9444564074278
+Starting 1000 evaluations for agent495
+avg return on 3 trajectories of agent495: 949.9684281526208
+Starting 1000 evaluations for agent496
+avg return on 3 trajectories of agent496: 972.2144451909661
+Starting 1000 evaluations for agent497
+avg return on 3 trajectories of agent497: 947.0479377735257
+Starting 1000 evaluations for agent498
+avg return on 3 trajectories of agent498: 987.0947396173477
+Starting 1000 evaluations for agent499
+avg return on 3 trajectories of agent499: 952.6890702546835
+Starting 1000 evaluations for agent500
+avg return on 3 trajectories of agent500: 934.8107356827259
+Starting 1000 evaluations for agent501
+avg return on 3 trajectories of agent501: 957.186180100441
+Starting 1000 evaluations for agent502
+avg return on 3 trajectories of agent502: 944.1426362519264
+Starting 1000 evaluations for agent503
+avg return on 3 trajectories of agent503: 971.9079110102654
+Starting 1000 evaluations for agent504
+avg return on 3 trajectories of agent504: 945.5333237953782
+Starting 1000 evaluations for agent505
+avg return on 3 trajectories of agent505: 948.9874141501189
+Starting 1000 evaluations for agent506
+avg return on 3 trajectories of agent506: 916.5497502047419
+Starting 1000 evaluations for agent507
+avg return on 3 trajectories of agent507: 913.2610974723697
+Starting 1000 evaluations for agent508
+avg return on 3 trajectories of agent508: 991.7910657476783
+Starting 1000 evaluations for agent509
+avg return on 3 trajectories of agent509: 978.8574126874804
+Starting 1000 evaluations for agent510
+avg return on 3 trajectories of agent510: 977.6148186420203
+Starting 1000 evaluations for agent511
+avg return on 3 trajectories of agent511: 934.27481055516
+Starting 1000 evaluations for agent512
+avg return on 3 trajectories of agent512: 922.5146730799079
+Starting 1000 evaluations for agent513
+avg return on 3 trajectories of agent513: 984.866004130125
+Starting 1000 evaluations for agent514
+avg return on 3 trajectories of agent514: 1011.5680203394294
+Starting 1000 evaluations for agent515
+avg return on 3 trajectories of agent515: 951.6031539651751
+Starting 1000 evaluations for agent516
+avg return on 3 trajectories of agent516: 971.3775718685985
+Starting 1000 evaluations for agent517
+avg return on 3 trajectories of agent517: 957.6451138322353
+Starting 1000 evaluations for agent518
+avg return on 3 trajectories of agent518: 938.2886357656718
+Starting 1000 evaluations for agent519
+avg return on 3 trajectories of agent519: 959.9485208957195
+Starting 1000 evaluations for agent520
+avg return on 3 trajectories of agent520: 947.2368949300646
+Starting 1000 evaluations for agent521
+avg return on 3 trajectories of agent521: 939.3812939069867
+Starting 1000 evaluations for agent522
+avg return on 3 trajectories of agent522: 962.1510053770542
+Starting 1000 evaluations for agent523
+avg return on 3 trajectories of agent523: 947.8393997040987
+Starting 1000 evaluations for agent524
+avg return on 3 trajectories of agent524: 936.8568499696851
+Starting 1000 evaluations for agent525
+avg return on 3 trajectories of agent525: 959.5610161114931
+Starting 1000 evaluations for agent526
+avg return on 3 trajectories of agent526: 998.8115633900761
+Starting 1000 evaluations for agent527
+avg return on 3 trajectories of agent527: 965.9750541682839
+Starting 1000 evaluations for agent528
+avg return on 3 trajectories of agent528: 902.8584056922793
+Starting 1000 evaluations for agent529
+avg return on 3 trajectories of agent529: 951.1704192734361
+Starting 1000 evaluations for agent530
+avg return on 3 trajectories of agent530: 964.717552690804
+Starting 1000 evaluations for agent531
+avg return on 3 trajectories of agent531: 989.8317870947718
+Starting 1000 evaluations for agent532
+avg return on 3 trajectories of agent532: 950.9782838055492
+Starting 1000 evaluations for agent533
+avg return on 3 trajectories of agent533: 922.0061245654225
+Starting 1000 evaluations for agent534
+avg return on 3 trajectories of agent534: 925.0478538274765
+Starting 1000 evaluations for agent535
+avg return on 3 trajectories of agent535: 919.8627313628792
+Starting 1000 evaluations for agent536
+avg return on 3 trajectories of agent536: 945.0894840735793
+Starting 1000 evaluations for agent537
+avg return on 3 trajectories of agent537: 963.7150291684866
+Starting 1000 evaluations for agent538
+avg return on 3 trajectories of agent538: 981.5415452172756
+Starting 1000 evaluations for agent539
+avg return on 3 trajectories of agent539: 968.787795999825
+Starting 1000 evaluations for agent540
+avg return on 3 trajectories of agent540: 949.2568734182715
+Starting 1000 evaluations for agent541
+avg return on 3 trajectories of agent541: 958.0367197266221
+Starting 1000 evaluations for agent542
+avg return on 3 trajectories of agent542: 899.2225916345716
+Starting 1000 evaluations for agent543
+avg return on 3 trajectories of agent543: 958.9872066600918
+Starting 1000 evaluations for agent544
+avg return on 3 trajectories of agent544: 963.6702689099908
+Starting 1000 evaluations for agent545
+avg return on 3 trajectories of agent545: 998.7980757186413
+Starting 1000 evaluations for agent546
+avg return on 3 trajectories of agent546: 945.8006861695648
+Starting 1000 evaluations for agent547
+avg return on 3 trajectories of agent547: 921.6805332653522
+Starting 1000 evaluations for agent548
+avg return on 3 trajectories of agent548: 1000.5256278531551
+Starting 1000 evaluations for agent549
+avg return on 3 trajectories of agent549: 918.0607719548344
+Starting 1000 evaluations for agent550
+avg return on 3 trajectories of agent550: 964.9463457115293
+Starting 1000 evaluations for agent551
+avg return on 3 trajectories of agent551: 893.8187190676332
+Starting 1000 evaluations for agent552
+avg return on 3 trajectories of agent552: 931.4569398934245
+Starting 1000 evaluations for agent553
+avg return on 3 trajectories of agent553: 928.7972200052142
+Starting 1000 evaluations for agent554
+avg return on 3 trajectories of agent554: 956.8874357377291
+Starting 1000 evaluations for agent555
+avg return on 3 trajectories of agent555: 942.9361211150884
+Starting 1000 evaluations for agent556
+avg return on 3 trajectories of agent556: 894.1591941267252
+Starting 1000 evaluations for agent557
+avg return on 3 trajectories of agent557: 957.1870429101587
+Starting 1000 evaluations for agent558
+avg return on 3 trajectories of agent558: 1016.3348573358059
+Starting 1000 evaluations for agent559
+avg return on 3 trajectories of agent559: 981.4053705470562
+Starting 1000 evaluations for agent560
+avg return on 3 trajectories of agent560: 957.8941233267188
+Starting 1000 evaluations for agent561
+avg return on 3 trajectories of agent561: 967.085586371243
+Starting 1000 evaluations for agent562
+avg return on 3 trajectories of agent562: 974.6955442699194
+Starting 1000 evaluations for agent563
+avg return on 3 trajectories of agent563: 946.5587498966455
+Starting 1000 evaluations for agent564
+avg return on 3 trajectories of agent564: 872.9913664959669
+Starting 1000 evaluations for agent565
+avg return on 3 trajectories of agent565: 935.3050655058026
+Starting 1000 evaluations for agent566
+avg return on 3 trajectories of agent566: 888.8820348072052
+Starting 1000 evaluations for agent567
+avg return on 3 trajectories of agent567: 953.6293816697597
+Starting 1000 evaluations for agent568
+avg return on 3 trajectories of agent568: 969.681472345829
+Starting 1000 evaluations for agent569
+avg return on 3 trajectories of agent569: 939.0748195582628
+Starting 1000 evaluations for agent570
+avg return on 3 trajectories of agent570: 1004.81237405622
+Starting 1000 evaluations for agent571
+avg return on 3 trajectories of agent571: 930.0131542086601
+Starting 1000 evaluations for agent572
+avg return on 3 trajectories of agent572: 958.776887471497
+Starting 1000 evaluations for agent573
+avg return on 3 trajectories of agent573: 988.8377392257452
+Starting 1000 evaluations for agent574
+avg return on 3 trajectories of agent574: 985.1228698697686
+Starting 1000 evaluations for agent575
+avg return on 3 trajectories of agent575: 941.771715401888
+Starting 1000 evaluations for agent576
+avg return on 3 trajectories of agent576: 943.9811386178136
+Starting 1000 evaluations for agent577
+avg return on 3 trajectories of agent577: 947.1584849649072
+Starting 1000 evaluations for agent578
+avg return on 3 trajectories of agent578: 959.1475590624214
+Starting 1000 evaluations for agent579
+avg return on 3 trajectories of agent579: 978.3023154318332
+Starting 1000 evaluations for agent580
+avg return on 3 trajectories of agent580: 943.2781962693333
+Starting 1000 evaluations for agent581
+avg return on 3 trajectories of agent581: 954.7139394137263
+Starting 1000 evaluations for agent582
+avg return on 3 trajectories of agent582: 969.5561138061881
+Starting 1000 evaluations for agent583
+avg return on 3 trajectories of agent583: 969.7751055914164
+Starting 1000 evaluations for agent584
+avg return on 3 trajectories of agent584: 945.173174870491
+Starting 1000 evaluations for agent585
+avg return on 3 trajectories of agent585: 1002.2680587859154
+Starting 1000 evaluations for agent586
+avg return on 3 trajectories of agent586: 952.2971184210181
+Starting 1000 evaluations for agent587
+avg return on 3 trajectories of agent587: 939.5122274806499
+Starting 1000 evaluations for agent588
+avg return on 3 trajectories of agent588: 946.4431220231652
+Starting 1000 evaluations for agent589
+avg return on 3 trajectories of agent589: 926.0594391720891
+Starting 1000 evaluations for agent590
+avg return on 3 trajectories of agent590: 948.319989860773
+Starting 1000 evaluations for agent591
+avg return on 3 trajectories of agent591: 956.0459416931271
+Starting 1000 evaluations for agent592
+avg return on 3 trajectories of agent592: 974.1089731919766
+Starting 1000 evaluations for agent593
+avg return on 3 trajectories of agent593: 958.9052495881915
+Starting 1000 evaluations for agent594
+avg return on 3 trajectories of agent594: 990.5869994623065
+Starting 1000 evaluations for agent595
+avg return on 3 trajectories of agent595: 931.0089643611908
+Starting 1000 evaluations for agent596
+avg return on 3 trajectories of agent596: 951.4257443954349
+Starting 1000 evaluations for agent597
+avg return on 3 trajectories of agent597: 932.1754656506181
+Starting 1000 evaluations for agent598
+avg return on 3 trajectories of agent598: 929.3189854226113
+Starting 1000 evaluations for agent599
+avg return on 3 trajectories of agent599: 927.0207176408768
+Starting 1000 evaluations for agent600
+avg return on 3 trajectories of agent600: 1003.0610015534163
+Starting 1000 evaluations for agent601
+avg return on 3 trajectories of agent601: 960.889079960525
+Starting 1000 evaluations for agent602
+avg return on 3 trajectories of agent602: 934.2212785816192
+Starting 1000 evaluations for agent603
+avg return on 3 trajectories of agent603: 955.4586417467594
+Starting 1000 evaluations for agent604
+avg return on 3 trajectories of agent604: 976.7780292221307
+Starting 1000 evaluations for agent605
+avg return on 3 trajectories of agent605: 968.2769358687401
+Starting 1000 evaluations for agent606
+avg return on 3 trajectories of agent606: 943.7588119385839
+Starting 1000 evaluations for agent607
+avg return on 3 trajectories of agent607: 955.14175201267
+Starting 1000 evaluations for agent608
+avg return on 3 trajectories of agent608: 944.3784142102003
+Starting 1000 evaluations for agent609
+avg return on 3 trajectories of agent609: 912.6381354857087
+Starting 1000 evaluations for agent610
+avg return on 3 trajectories of agent610: 943.9512327002883
+Starting 1000 evaluations for agent611
+avg return on 3 trajectories of agent611: 973.8760929467082
+Starting 1000 evaluations for agent612
+avg return on 3 trajectories of agent612: 990.6401425532698
+Starting 1000 evaluations for agent613
+avg return on 3 trajectories of agent613: 951.4153084253669
+Starting 1000 evaluations for agent614
+avg return on 3 trajectories of agent614: 944.6252264779806
+Starting 1000 evaluations for agent615
+avg return on 3 trajectories of agent615: 959.2005364311933
+Starting 1000 evaluations for agent616
+avg return on 3 trajectories of agent616: 941.4485302019119
+Starting 1000 evaluations for agent617
+avg return on 3 trajectories of agent617: 939.5097192001939
+Starting 1000 evaluations for agent618
+avg return on 3 trajectories of agent618: 916.2150628035068
+Starting 1000 evaluations for agent619
+avg return on 3 trajectories of agent619: 929.0529797430635
+Starting 1000 evaluations for agent620
+avg return on 3 trajectories of agent620: 990.4372902573944
+Starting 1000 evaluations for agent621
+avg return on 3 trajectories of agent621: 945.5577905970812
+Starting 1000 evaluations for agent622
+avg return on 3 trajectories of agent622: 968.7992866589427
+Starting 1000 evaluations for agent623
+avg return on 3 trajectories of agent623: 933.3895911157131
+Starting 1000 evaluations for agent624
+avg return on 3 trajectories of agent624: 967.1773704171777
+Starting 1000 evaluations for agent625
+avg return on 3 trajectories of agent625: 951.6640767246485
+Starting 1000 evaluations for agent626
+avg return on 3 trajectories of agent626: 975.3657637497187
+Starting 1000 evaluations for agent627
+avg return on 3 trajectories of agent627: 976.5283245385885
+Starting 1000 evaluations for agent628
+avg return on 3 trajectories of agent628: 899.0661006211639
+Starting 1000 evaluations for agent629
+avg return on 3 trajectories of agent629: 929.0637954802513
+Starting 1000 evaluations for agent630
+avg return on 3 trajectories of agent630: 937.7776940369606
+Starting 1000 evaluations for agent631
+avg return on 3 trajectories of agent631: 928.4960300844908
+Starting 1000 evaluations for agent632
+avg return on 3 trajectories of agent632: 930.4395684885978
+Starting 1000 evaluations for agent633
+avg return on 3 trajectories of agent633: 950.0750516875983
+Starting 1000 evaluations for agent634
+avg return on 3 trajectories of agent634: 954.9069717108011
+Starting 1000 evaluations for agent635
+avg return on 3 trajectories of agent635: 951.5512905178666
+Starting 1000 evaluations for agent636
+avg return on 3 trajectories of agent636: 915.8078557028771
+Starting 1000 evaluations for agent637
+avg return on 3 trajectories of agent637: 904.5849603746533
+Starting 1000 evaluations for agent638
+avg return on 3 trajectories of agent638: 954.8387995314002
+Starting 1000 evaluations for agent639
+avg return on 3 trajectories of agent639: 963.2005260515809
+Starting 1000 evaluations for agent640
+avg return on 3 trajectories of agent640: 944.7152495834231
+Starting 1000 evaluations for agent641
+avg return on 3 trajectories of agent641: 919.2179255290628
+Starting 1000 evaluations for agent642
+avg return on 3 trajectories of agent642: 958.3680948210358
+Starting 1000 evaluations for agent643
+avg return on 3 trajectories of agent643: 961.4127847770452
+Starting 1000 evaluations for agent644
+avg return on 3 trajectories of agent644: 957.2795059977174
+Starting 1000 evaluations for agent645
+avg return on 3 trajectories of agent645: 965.5148160428405
+Starting 1000 evaluations for agent646
+avg return on 3 trajectories of agent646: 944.7814795683622
+Starting 1000 evaluations for agent647
+avg return on 3 trajectories of agent647: 935.2619950902462
+Starting 1000 evaluations for agent648
+avg return on 3 trajectories of agent648: 978.0679844394326
+Starting 1000 evaluations for agent649
+avg return on 3 trajectories of agent649: 924.0249967107773
+Starting 1000 evaluations for agent650
+avg return on 3 trajectories of agent650: 938.9303393546938
+Starting 1000 evaluations for agent651
+avg return on 3 trajectories of agent651: 948.0067532039285
+Starting 1000 evaluations for agent652
+avg return on 3 trajectories of agent652: 960.9070327139497
+Starting 1000 evaluations for agent653
+avg return on 3 trajectories of agent653: 956.7627456374764
+Starting 1000 evaluations for agent654
+avg return on 3 trajectories of agent654: 951.5420441738963
+Starting 1000 evaluations for agent655
+avg return on 3 trajectories of agent655: 939.3924612330198
+Starting 1000 evaluations for agent656
+avg return on 3 trajectories of agent656: 965.7971527640224
+Starting 1000 evaluations for agent657
+avg return on 3 trajectories of agent657: 981.6293941379786
+Starting 1000 evaluations for agent658
+avg return on 3 trajectories of agent658: 934.674070692718
+Starting 1000 evaluations for agent659
+avg return on 3 trajectories of agent659: 928.5127580451369
+Starting 1000 evaluations for agent660
+avg return on 3 trajectories of agent660: 939.0377434836626
+Starting 1000 evaluations for agent661
+avg return on 3 trajectories of agent661: 981.7696918643117
+Starting 1000 evaluations for agent662
+avg return on 3 trajectories of agent662: 949.1282584688663
+Starting 1000 evaluations for agent663
+avg return on 3 trajectories of agent663: 982.0778457930684
+Starting 1000 evaluations for agent664
+avg return on 3 trajectories of agent664: 934.1980120263099
+Starting 1000 evaluations for agent665
+avg return on 3 trajectories of agent665: 932.9665769652128
+Starting 1000 evaluations for agent666
+avg return on 3 trajectories of agent666: 946.1825474273562
+Starting 1000 evaluations for agent667
+avg return on 3 trajectories of agent667: 971.1302102639079
+Starting 1000 evaluations for agent668
+avg return on 3 trajectories of agent668: 934.7105219964981
+Starting 1000 evaluations for agent669
+avg return on 3 trajectories of agent669: 933.7160017616749
+Starting 1000 evaluations for agent670
+avg return on 3 trajectories of agent670: 1008.670735830307
+Starting 1000 evaluations for agent671
+avg return on 3 trajectories of agent671: 925.9574862975478
+Starting 1000 evaluations for agent672
+avg return on 3 trajectories of agent672: 976.4427445245385
+Starting 1000 evaluations for agent673
+avg return on 3 trajectories of agent673: 928.8897887499332
+Starting 1000 evaluations for agent674
+avg return on 3 trajectories of agent674: 955.1096878467202
+Starting 1000 evaluations for agent675
+avg return on 3 trajectories of agent675: 927.6954673679471
+Starting 1000 evaluations for agent676
+avg return on 3 trajectories of agent676: 989.8407321805954
+Starting 1000 evaluations for agent677
+avg return on 3 trajectories of agent677: 965.1764827898741
+Starting 1000 evaluations for agent678
+avg return on 3 trajectories of agent678: 969.2637648647427
+Starting 1000 evaluations for agent679
+avg return on 3 trajectories of agent679: 903.9792586272359
+Starting 1000 evaluations for agent680
+avg return on 3 trajectories of agent680: 921.996463755548
+Starting 1000 evaluations for agent681
+avg return on 3 trajectories of agent681: 965.4752921223045
+Starting 1000 evaluations for agent682
+avg return on 3 trajectories of agent682: 910.2807047582864
+Starting 1000 evaluations for agent683
+avg return on 3 trajectories of agent683: 936.8938433604836
+Starting 1000 evaluations for agent684
+avg return on 3 trajectories of agent684: 972.0891876751781
+Starting 1000 evaluations for agent685
+avg return on 3 trajectories of agent685: 903.9252162746787
+Starting 1000 evaluations for agent686
+avg return on 3 trajectories of agent686: 914.9044094336629
+Starting 1000 evaluations for agent687
+avg return on 3 trajectories of agent687: 924.3368979178667
+Starting 1000 evaluations for agent688
+avg return on 3 trajectories of agent688: 951.699689120531
+Starting 1000 evaluations for agent689
+avg return on 3 trajectories of agent689: 990.9368070018887
+Starting 1000 evaluations for agent690
+avg return on 3 trajectories of agent690: 976.9746447051764
+Starting 1000 evaluations for agent691
+avg return on 3 trajectories of agent691: 927.2807473499179
+Starting 1000 evaluations for agent692
+avg return on 3 trajectories of agent692: 963.9145714486838
+Starting 1000 evaluations for agent693
+avg return on 3 trajectories of agent693: 1012.5672267699242
+Starting 1000 evaluations for agent694
+avg return on 3 trajectories of agent694: 950.4479858397245
+Starting 1000 evaluations for agent695
+avg return on 3 trajectories of agent695: 909.0672018286585
+Starting 1000 evaluations for agent696
+avg return on 3 trajectories of agent696: 983.069604813397
+Starting 1000 evaluations for agent697
+avg return on 3 trajectories of agent697: 912.4757209804058
+Starting 1000 evaluations for agent698
+avg return on 3 trajectories of agent698: 941.0079106866121
+Starting 1000 evaluations for agent699
+avg return on 3 trajectories of agent699: 996.9745810731649
+Starting 1000 evaluations for agent700
+avg return on 3 trajectories of agent700: 941.9745603604913
+Starting 1000 evaluations for agent701
+avg return on 3 trajectories of agent701: 934.3519597514868
+Starting 1000 evaluations for agent702
+avg return on 3 trajectories of agent702: 948.2350564266443
+Starting 1000 evaluations for agent703
+avg return on 3 trajectories of agent703: 944.6017679142952
+Starting 1000 evaluations for agent704
+avg return on 3 trajectories of agent704: 963.0721736810208
+Starting 1000 evaluations for agent705
+avg return on 3 trajectories of agent705: 907.8329976889491
+Starting 1000 evaluations for agent706
+avg return on 3 trajectories of agent706: 957.9399406076074
+Starting 1000 evaluations for agent707
+avg return on 3 trajectories of agent707: 993.6026680160761
+Starting 1000 evaluations for agent708
+avg return on 3 trajectories of agent708: 908.9546854557395
+Starting 1000 evaluations for agent709
+avg return on 3 trajectories of agent709: 938.2530727434158
+Starting 1000 evaluations for agent710
+avg return on 3 trajectories of agent710: 940.0102636309266
+Starting 1000 evaluations for agent711
+avg return on 3 trajectories of agent711: 965.0388697041274
+Starting 1000 evaluations for agent712
+avg return on 3 trajectories of agent712: 945.0773211031557
+Starting 1000 evaluations for agent713
+avg return on 3 trajectories of agent713: 989.0920748232007
+Starting 1000 evaluations for agent714
+avg return on 3 trajectories of agent714: 958.5354792097211
+Starting 1000 evaluations for agent715
+avg return on 3 trajectories of agent715: 950.665008835435
+Starting 1000 evaluations for agent716
+avg return on 3 trajectories of agent716: 954.0007749218345
+Starting 1000 evaluations for agent717
+avg return on 3 trajectories of agent717: 953.6430864408017
+Starting 1000 evaluations for agent718
+avg return on 3 trajectories of agent718: 954.6735366554856
+Starting 1000 evaluations for agent719
+avg return on 3 trajectories of agent719: 939.2264691427946
+Starting 1000 evaluations for agent720
+avg return on 3 trajectories of agent720: 975.0818993988634
+Starting 1000 evaluations for agent721
+avg return on 3 trajectories of agent721: 990.5505031377077
+Starting 1000 evaluations for agent722
+avg return on 3 trajectories of agent722: 919.1124262898564
+Starting 1000 evaluations for agent723
+avg return on 3 trajectories of agent723: 919.9272978355884
+Starting 1000 evaluations for agent724
+avg return on 3 trajectories of agent724: 943.5118614330888
+Starting 1000 evaluations for agent725
+avg return on 3 trajectories of agent725: 931.1528192377091
+Starting 1000 evaluations for agent726
+avg return on 3 trajectories of agent726: 912.0188121996522
+Starting 1000 evaluations for agent727
+avg return on 3 trajectories of agent727: 990.417708948493
+Starting 1000 evaluations for agent728
+avg return on 3 trajectories of agent728: 899.4948123489619
+Starting 1000 evaluations for agent729
+avg return on 3 trajectories of agent729: 892.8759719709158
+Starting 1000 evaluations for agent730
+avg return on 3 trajectories of agent730: 990.2952021213174
+Starting 1000 evaluations for agent731
+avg return on 3 trajectories of agent731: 931.9731198445559
+Starting 1000 evaluations for agent732
+avg return on 3 trajectories of agent732: 956.514289216876
+Starting 1000 evaluations for agent733
+avg return on 3 trajectories of agent733: 958.2982088001967
+Starting 1000 evaluations for agent734
+avg return on 3 trajectories of agent734: 939.6202329987883
+Starting 1000 evaluations for agent735
+avg return on 3 trajectories of agent735: 956.5446725561619
+Starting 1000 evaluations for agent736
+avg return on 3 trajectories of agent736: 983.6187935436964
+Starting 1000 evaluations for agent737
+avg return on 3 trajectories of agent737: 883.6397738953829
+Starting 1000 evaluations for agent738
+avg return on 3 trajectories of agent738: 953.8548354100585
+Starting 1000 evaluations for agent739
+avg return on 3 trajectories of agent739: 946.0466780636907
+Starting 1000 evaluations for agent740
+avg return on 3 trajectories of agent740: 918.3316073650718
+Starting 1000 evaluations for agent741
+avg return on 3 trajectories of agent741: 996.6452179623842
+Starting 1000 evaluations for agent742
+avg return on 3 trajectories of agent742: 942.3672953733205
+Starting 1000 evaluations for agent743
+avg return on 3 trajectories of agent743: 958.3152923944592
+Starting 1000 evaluations for agent744
+avg return on 3 trajectories of agent744: 954.5271017284393
+Starting 1000 evaluations for agent745
+avg return on 3 trajectories of agent745: 970.5738038306832
+Starting 1000 evaluations for agent746
+avg return on 3 trajectories of agent746: 924.675166557908
+Starting 1000 evaluations for agent747
+avg return on 3 trajectories of agent747: 968.5753326352238
+Starting 1000 evaluations for agent748
+avg return on 3 trajectories of agent748: 936.2284041960836
+Starting 1000 evaluations for agent749
+avg return on 3 trajectories of agent749: 946.7940425893069
+Starting 1000 evaluations for agent750
+avg return on 3 trajectories of agent750: 944.5142532216311
+Starting 1000 evaluations for agent751
+avg return on 3 trajectories of agent751: 961.5639042383432
+Starting 1000 evaluations for agent752
+avg return on 3 trajectories of agent752: 954.4932409688234
+Starting 1000 evaluations for agent753
+avg return on 3 trajectories of agent753: 915.6202474724055
+Starting 1000 evaluations for agent754
+avg return on 3 trajectories of agent754: 943.4775584475994
+Starting 1000 evaluations for agent755
+avg return on 3 trajectories of agent755: 923.2578076421022
+Starting 1000 evaluations for agent756
+avg return on 3 trajectories of agent756: 969.0851016510725
+Starting 1000 evaluations for agent757
+avg return on 3 trajectories of agent757: 937.8776829823852
+Starting 1000 evaluations for agent758
+avg return on 3 trajectories of agent758: 931.159739777267
+Starting 1000 evaluations for agent759
+avg return on 3 trajectories of agent759: 970.3557451158762
+Starting 1000 evaluations for agent760
+avg return on 3 trajectories of agent760: 926.1506111863852
+Starting 1000 evaluations for agent761
+avg return on 3 trajectories of agent761: 925.535389124155
+Starting 1000 evaluations for agent762
+avg return on 3 trajectories of agent762: 977.0454354730249
+Starting 1000 evaluations for agent763
+avg return on 3 trajectories of agent763: 950.0916388183832
+Starting 1000 evaluations for agent764
+avg return on 3 trajectories of agent764: 960.7818169528246
+Starting 1000 evaluations for agent765
+avg return on 3 trajectories of agent765: 944.9935122740269
+Starting 1000 evaluations for agent766
+avg return on 3 trajectories of agent766: 965.3202075656652
+Starting 1000 evaluations for agent767
+avg return on 3 trajectories of agent767: 958.5186450484395
+Starting 1000 evaluations for agent768
+avg return on 3 trajectories of agent768: 980.6529249716997
+Starting 1000 evaluations for agent769
+avg return on 3 trajectories of agent769: 966.7757236984372
+Starting 1000 evaluations for agent770
+avg return on 3 trajectories of agent770: 977.5079969556332
+Starting 1000 evaluations for agent771
+avg return on 3 trajectories of agent771: 905.2060017356276
+Starting 1000 evaluations for agent772
+avg return on 3 trajectories of agent772: 965.7160973443389
+Starting 1000 evaluations for agent773
+avg return on 3 trajectories of agent773: 956.1515979402066
+Starting 1000 evaluations for agent774
+avg return on 3 trajectories of agent774: 905.5106582163572
+Starting 1000 evaluations for agent775
+avg return on 3 trajectories of agent775: 969.4668871842623
+Starting 1000 evaluations for agent776
+avg return on 3 trajectories of agent776: 954.5544217438697
+Starting 1000 evaluations for agent777
+avg return on 3 trajectories of agent777: 961.5838240181208
+Starting 1000 evaluations for agent778
+avg return on 3 trajectories of agent778: 913.5587244477869
+Starting 1000 evaluations for agent779
+avg return on 3 trajectories of agent779: 990.6076218779087
+Starting 1000 evaluations for agent780
+avg return on 3 trajectories of agent780: 956.1005803506374
+Starting 1000 evaluations for agent781
+avg return on 3 trajectories of agent781: 937.9910290488601
+Starting 1000 evaluations for agent782
+avg return on 3 trajectories of agent782: 970.4540641136169
+Starting 1000 evaluations for agent783
+avg return on 3 trajectories of agent783: 950.9532983059883
+Starting 1000 evaluations for agent784
+avg return on 3 trajectories of agent784: 982.6220078946352
+Starting 1000 evaluations for agent785
+avg return on 3 trajectories of agent785: 963.9534212456941
+Starting 1000 evaluations for agent786
+avg return on 3 trajectories of agent786: 985.1100634487271
+Starting 1000 evaluations for agent787
+avg return on 3 trajectories of agent787: 962.9346374919414
+Starting 1000 evaluations for agent788
+avg return on 3 trajectories of agent788: 957.6392915328742
+Starting 1000 evaluations for agent789
+avg return on 3 trajectories of agent789: 928.4812789151669
+Starting 1000 evaluations for agent790
+avg return on 3 trajectories of agent790: 973.7563000032305
+Starting 1000 evaluations for agent791
+avg return on 3 trajectories of agent791: 914.5892883055806
+Starting 1000 evaluations for agent792
+avg return on 3 trajectories of agent792: 979.4004361086488
+Starting 1000 evaluations for agent793
+avg return on 3 trajectories of agent793: 971.791788592279
+Starting 1000 evaluations for agent794
+avg return on 3 trajectories of agent794: 956.2859220779538
+Starting 1000 evaluations for agent795
+avg return on 3 trajectories of agent795: 964.045852913022
+Starting 1000 evaluations for agent796
+avg return on 3 trajectories of agent796: 908.4727417835593
+Starting 1000 evaluations for agent797
+avg return on 3 trajectories of agent797: 943.9744068487882
+Starting 1000 evaluations for agent798
+avg return on 3 trajectories of agent798: 976.460273927629
+Starting 1000 evaluations for agent799
+avg return on 3 trajectories of agent799: 959.0176175500154
+Starting 1000 evaluations for agent800
+avg return on 3 trajectories of agent800: 952.8589981477857
+Starting 1000 evaluations for agent801
+avg return on 3 trajectories of agent801: 966.2519356580376
+Starting 1000 evaluations for agent802
+avg return on 3 trajectories of agent802: 918.3729952341914
+Starting 1000 evaluations for agent803
+avg return on 3 trajectories of agent803: 939.714071329236
+Starting 1000 evaluations for agent804
+avg return on 3 trajectories of agent804: 949.0387783738971
+Starting 1000 evaluations for agent805
+avg return on 3 trajectories of agent805: 961.8624684684277
+Starting 1000 evaluations for agent806
+avg return on 3 trajectories of agent806: 985.6315770787596
+Starting 1000 evaluations for agent807
+avg return on 3 trajectories of agent807: 953.8303506715894
+Starting 1000 evaluations for agent808
+avg return on 3 trajectories of agent808: 983.5649066627622
+Starting 1000 evaluations for agent809
+avg return on 3 trajectories of agent809: 938.5957642179131
+Starting 1000 evaluations for agent810
+avg return on 3 trajectories of agent810: 953.4937403157353
+Starting 1000 evaluations for agent811
+avg return on 3 trajectories of agent811: 966.0405589330196
+Starting 1000 evaluations for agent812
+avg return on 3 trajectories of agent812: 941.7886516939998
+Starting 1000 evaluations for agent813
+avg return on 3 trajectories of agent813: 963.5606092403531
+Starting 1000 evaluations for agent814
+avg return on 3 trajectories of agent814: 949.0900049337745
+Starting 1000 evaluations for agent815
+avg return on 3 trajectories of agent815: 958.6724244003892
+Starting 1000 evaluations for agent816
+avg return on 3 trajectories of agent816: 964.7787811937333
+Starting 1000 evaluations for agent817
+avg return on 3 trajectories of agent817: 919.5476491394043
+Starting 1000 evaluations for agent818
+avg return on 3 trajectories of agent818: 952.557688752532
+Starting 1000 evaluations for agent819
+avg return on 3 trajectories of agent819: 953.8566695660949
+Starting 1000 evaluations for agent820
+avg return on 3 trajectories of agent820: 926.24864922297
+Starting 1000 evaluations for agent821
+avg return on 3 trajectories of agent821: 935.9364094817042
+Starting 1000 evaluations for agent822
+avg return on 3 trajectories of agent822: 926.9896096482873
+Starting 1000 evaluations for agent823
+avg return on 3 trajectories of agent823: 994.3157696925998
+Starting 1000 evaluations for agent824
+avg return on 3 trajectories of agent824: 985.8572914376259
+Starting 1000 evaluations for agent825
+avg return on 3 trajectories of agent825: 988.6016954420209
+Starting 1000 evaluations for agent826
+avg return on 3 trajectories of agent826: 959.5391813145876
+Starting 1000 evaluations for agent827
+avg return on 3 trajectories of agent827: 938.0978296098114
+Starting 1000 evaluations for agent828
+avg return on 3 trajectories of agent828: 933.290448261261
+Starting 1000 evaluations for agent829
+avg return on 3 trajectories of agent829: 899.1547287784815
+Starting 1000 evaluations for agent830
+avg return on 3 trajectories of agent830: 902.6681958094239
+Starting 1000 evaluations for agent831
+avg return on 3 trajectories of agent831: 966.5817012340426
+Starting 1000 evaluations for agent832
+avg return on 3 trajectories of agent832: 940.4135505391955
+Starting 1000 evaluations for agent833
+avg return on 3 trajectories of agent833: 985.8414880545736
+Starting 1000 evaluations for agent834
+avg return on 3 trajectories of agent834: 946.5250713640452
+Starting 1000 evaluations for agent835
+avg return on 3 trajectories of agent835: 954.1004881330133
+Starting 1000 evaluations for agent836
+avg return on 3 trajectories of agent836: 957.4308761659264
+Starting 1000 evaluations for agent837
+avg return on 3 trajectories of agent837: 964.7882709721326
+Starting 1000 evaluations for agent838
+avg return on 3 trajectories of agent838: 967.261727723658
+Starting 1000 evaluations for agent839
+avg return on 3 trajectories of agent839: 1005.1745418742299
+Starting 1000 evaluations for agent840
+avg return on 3 trajectories of agent840: 938.2468901095987
+Starting 1000 evaluations for agent841
+avg return on 3 trajectories of agent841: 949.8237050229907
+Starting 1000 evaluations for agent842
+avg return on 3 trajectories of agent842: 888.866800170362
+Starting 1000 evaluations for agent843
+avg return on 3 trajectories of agent843: 931.6235101677776
+Starting 1000 evaluations for agent844
+avg return on 3 trajectories of agent844: 962.8900596076251
+Starting 1000 evaluations for agent845
+avg return on 3 trajectories of agent845: 974.5846276242137
+Starting 1000 evaluations for agent846
+avg return on 3 trajectories of agent846: 956.0340511577725
+Starting 1000 evaluations for agent847
+avg return on 3 trajectories of agent847: 944.2639749533535
+Starting 1000 evaluations for agent848
+avg return on 3 trajectories of agent848: 920.87529374367
+Starting 1000 evaluations for agent849
+avg return on 3 trajectories of agent849: 966.106052282393
+Starting 1000 evaluations for agent850
+avg return on 3 trajectories of agent850: 1006.8776179726719
+Starting 1000 evaluations for agent851
+avg return on 3 trajectories of agent851: 898.5887554158569
+Starting 1000 evaluations for agent852
+avg return on 3 trajectories of agent852: 953.5751066195965
+Starting 1000 evaluations for agent853
+avg return on 3 trajectories of agent853: 921.2901131688357
+Starting 1000 evaluations for agent854
+avg return on 3 trajectories of agent854: 947.8825989456177
+Starting 1000 evaluations for agent855
+avg return on 3 trajectories of agent855: 926.8604314363599
+Starting 1000 evaluations for agent856
+avg return on 3 trajectories of agent856: 930.3327472184301
+Starting 1000 evaluations for agent857
+avg return on 3 trajectories of agent857: 922.9780333308578
+Starting 1000 evaluations for agent858
+avg return on 3 trajectories of agent858: 975.761247821629
+Starting 1000 evaluations for agent859
+avg return on 3 trajectories of agent859: 982.2659362911583
+Starting 1000 evaluations for agent860
+avg return on 3 trajectories of agent860: 957.4763230618238
+Starting 1000 evaluations for agent861
+avg return on 3 trajectories of agent861: 985.6298526619076
+Starting 1000 evaluations for agent862
+avg return on 3 trajectories of agent862: 950.0339748842716
+Starting 1000 evaluations for agent863
+avg return on 3 trajectories of agent863: 953.3519712187052
+Starting 1000 evaluations for agent864
+avg return on 3 trajectories of agent864: 949.7101500748992
+Starting 1000 evaluations for agent865
+avg return on 3 trajectories of agent865: 929.143457957685
+Starting 1000 evaluations for agent866
+avg return on 3 trajectories of agent866: 934.4176736649275
+Starting 1000 evaluations for agent867
+avg return on 3 trajectories of agent867: 934.0663559688926
+Starting 1000 evaluations for agent868
+avg return on 3 trajectories of agent868: 950.6157759487033
+Starting 1000 evaluations for agent869
+avg return on 3 trajectories of agent869: 949.0009791190029
+Starting 1000 evaluations for agent870
+avg return on 3 trajectories of agent870: 975.8620112572909
+Starting 1000 evaluations for agent871
+avg return on 3 trajectories of agent871: 956.8596898739934
+Starting 1000 evaluations for agent872
+avg return on 3 trajectories of agent872: 954.8353387667537
+Starting 1000 evaluations for agent873
+avg return on 3 trajectories of agent873: 972.2470286578535
+Starting 1000 evaluations for agent874
+avg return on 3 trajectories of agent874: 993.2655810198784
+Starting 1000 evaluations for agent875
+avg return on 3 trajectories of agent875: 950.4520186068415
+Starting 1000 evaluations for agent876
+avg return on 3 trajectories of agent876: 971.0061859555841
+Starting 1000 evaluations for agent877
+avg return on 3 trajectories of agent877: 905.3247751772403
+Starting 1000 evaluations for agent878
+avg return on 3 trajectories of agent878: 895.0629694492817
+Starting 1000 evaluations for agent879
+avg return on 3 trajectories of agent879: 941.723830432415
+Starting 1000 evaluations for agent880
+avg return on 3 trajectories of agent880: 933.6805500250458
+Starting 1000 evaluations for agent881
+avg return on 3 trajectories of agent881: 940.8598203011155
+Starting 1000 evaluations for agent882
+avg return on 3 trajectories of agent882: 941.0345991424322
+Starting 1000 evaluations for agent883
+avg return on 3 trajectories of agent883: 927.1947888258695
+Starting 1000 evaluations for agent884
+avg return on 3 trajectories of agent884: 907.3853206983805
+Starting 1000 evaluations for agent885
+avg return on 3 trajectories of agent885: 944.9808593839407
+Starting 1000 evaluations for agent886
+avg return on 3 trajectories of agent886: 954.9682654186487
+Starting 1000 evaluations for agent887
+avg return on 3 trajectories of agent887: 975.120144972682
+Starting 1000 evaluations for agent888
+avg return on 3 trajectories of agent888: 922.1334703431726
+Starting 1000 evaluations for agent889
+avg return on 3 trajectories of agent889: 953.7056495015621
+Starting 1000 evaluations for agent890
+avg return on 3 trajectories of agent890: 936.2780570976735
+Starting 1000 evaluations for agent891
+avg return on 3 trajectories of agent891: 945.9432814152241
+Starting 1000 evaluations for agent892
+avg return on 3 trajectories of agent892: 942.3372879617215
+Starting 1000 evaluations for agent893
+avg return on 3 trajectories of agent893: 919.330092758894
+Starting 1000 evaluations for agent894
+avg return on 3 trajectories of agent894: 947.5483566045165
+Starting 1000 evaluations for agent895
+avg return on 3 trajectories of agent895: 939.0474890404344
+Starting 1000 evaluations for agent896
+avg return on 3 trajectories of agent896: 959.3078518065214
+Starting 1000 evaluations for agent897
+avg return on 3 trajectories of agent897: 962.7589626341462
+Starting 1000 evaluations for agent898
+avg return on 3 trajectories of agent898: 983.4670381861926
+Starting 1000 evaluations for agent899
+avg return on 3 trajectories of agent899: 954.6711150659919
+Starting 1000 evaluations for agent900
+avg return on 3 trajectories of agent900: 924.4431450317502
+Starting 1000 evaluations for agent901
+avg return on 3 trajectories of agent901: 920.5738751699924
+Starting 1000 evaluations for agent902
+avg return on 3 trajectories of agent902: 1002.6227368244529
+Starting 1000 evaluations for agent903
+avg return on 3 trajectories of agent903: 924.9518826979995
+Starting 1000 evaluations for agent904
+avg return on 3 trajectories of agent904: 938.0439821127057
+Starting 1000 evaluations for agent905
+avg return on 3 trajectories of agent905: 973.6706466151476
+Starting 1000 evaluations for agent906
+avg return on 3 trajectories of agent906: 956.0794611878395
+Starting 1000 evaluations for agent907
+avg return on 3 trajectories of agent907: 921.486512450397
+Starting 1000 evaluations for agent908
+avg return on 3 trajectories of agent908: 910.0410557968617
+Starting 1000 evaluations for agent909
+avg return on 3 trajectories of agent909: 924.7107584416866
+Starting 1000 evaluations for agent910
+avg return on 3 trajectories of agent910: 971.6073432650566
+Starting 1000 evaluations for agent911
+avg return on 3 trajectories of agent911: 940.7578195700049
+Starting 1000 evaluations for agent912
+avg return on 3 trajectories of agent912: 950.1508925397992
+Starting 1000 evaluations for agent913
+avg return on 3 trajectories of agent913: 953.3281102731228
+Starting 1000 evaluations for agent914
+avg return on 3 trajectories of agent914: 927.864661374867
+Starting 1000 evaluations for agent915
+avg return on 3 trajectories of agent915: 938.3094068413377
+Starting 1000 evaluations for agent916
+avg return on 3 trajectories of agent916: 960.9266862643957
+Starting 1000 evaluations for agent917
+avg return on 3 trajectories of agent917: 969.3148960485458
+Starting 1000 evaluations for agent918
+avg return on 3 trajectories of agent918: 958.1844978022575
+Starting 1000 evaluations for agent919
+avg return on 3 trajectories of agent919: 978.3638293227554
+Starting 1000 evaluations for agent920
+avg return on 3 trajectories of agent920: 1001.9474063481092
+Starting 1000 evaluations for agent921
+avg return on 3 trajectories of agent921: 941.5499693234563
+Starting 1000 evaluations for agent922
+avg return on 3 trajectories of agent922: 965.9168378234506
+Starting 1000 evaluations for agent923
+avg return on 3 trajectories of agent923: 955.3393979646563
+Starting 1000 evaluations for agent924
+avg return on 3 trajectories of agent924: 914.2718224154711
+Starting 1000 evaluations for agent925
+avg return on 3 trajectories of agent925: 901.5970829413533
+Starting 1000 evaluations for agent926
+avg return on 3 trajectories of agent926: 922.851669198811
+Starting 1000 evaluations for agent927
+avg return on 3 trajectories of agent927: 926.3101323407889
+Starting 1000 evaluations for agent928
+avg return on 3 trajectories of agent928: 991.2779662436843
+Starting 1000 evaluations for agent929
+avg return on 3 trajectories of agent929: 1007.054263205111
+Starting 1000 evaluations for agent930
+avg return on 3 trajectories of agent930: 959.5979627305269
+Starting 1000 evaluations for agent931
+avg return on 3 trajectories of agent931: 973.3186105337143
+Starting 1000 evaluations for agent932
+avg return on 3 trajectories of agent932: 957.4153028130531
+Starting 1000 evaluations for agent933
+avg return on 3 trajectories of agent933: 962.1191395001412
+Starting 1000 evaluations for agent934
+avg return on 3 trajectories of agent934: 931.5215934591889
+Starting 1000 evaluations for agent935
+avg return on 3 trajectories of agent935: 975.7058183146119
+Starting 1000 evaluations for agent936
+avg return on 3 trajectories of agent936: 891.9667044302225
+Starting 1000 evaluations for agent937
+avg return on 3 trajectories of agent937: 948.9051762846708
+Starting 1000 evaluations for agent938
+avg return on 3 trajectories of agent938: 937.2056032720805
+Starting 1000 evaluations for agent939
+avg return on 3 trajectories of agent939: 963.0847158116699
+Starting 1000 evaluations for agent940
+avg return on 3 trajectories of agent940: 942.5288205854297
+Starting 1000 evaluations for agent941
+avg return on 3 trajectories of agent941: 898.2676850738526
+Starting 1000 evaluations for agent942
+avg return on 3 trajectories of agent942: 889.4189352841378
+Starting 1000 evaluations for agent943
+avg return on 3 trajectories of agent943: 932.1352696918846
+Starting 1000 evaluations for agent944
+avg return on 3 trajectories of agent944: 933.5596389339566
+Starting 1000 evaluations for agent945
+avg return on 3 trajectories of agent945: 996.9476872344017
+Starting 1000 evaluations for agent946
+avg return on 3 trajectories of agent946: 1000.7411665734649
+Starting 1000 evaluations for agent947
+avg return on 3 trajectories of agent947: 932.5982404037715
+Starting 1000 evaluations for agent948
+avg return on 3 trajectories of agent948: 922.3242279875875
+Starting 1000 evaluations for agent949
+avg return on 3 trajectories of agent949: 938.9516992056369
+Starting 1000 evaluations for agent950
+avg return on 3 trajectories of agent950: 982.8623522470593
+Starting 1000 evaluations for agent951
+avg return on 3 trajectories of agent951: 922.6724051556587
+Starting 1000 evaluations for agent952
+avg return on 3 trajectories of agent952: 964.3394101122021
+Starting 1000 evaluations for agent953
+avg return on 3 trajectories of agent953: 956.5614427709579
+Starting 1000 evaluations for agent954
+avg return on 3 trajectories of agent954: 895.6344057273865
+Starting 1000 evaluations for agent955
+avg return on 3 trajectories of agent955: 940.5684786260724
+Starting 1000 evaluations for agent956
+avg return on 3 trajectories of agent956: 954.8210691316724
+Starting 1000 evaluations for agent957
+avg return on 3 trajectories of agent957: 960.9591424595118
+Starting 1000 evaluations for agent958
+avg return on 3 trajectories of agent958: 982.078145012796
+Starting 1000 evaluations for agent959
+avg return on 3 trajectories of agent959: 1012.7657433694005
+Starting 1000 evaluations for agent960
+avg return on 3 trajectories of agent960: 936.1241489279867
+Starting 1000 evaluations for agent961
+avg return on 3 trajectories of agent961: 906.7414743341803
+Starting 1000 evaluations for agent962
+avg return on 3 trajectories of agent962: 924.6706481153965
+Starting 1000 evaluations for agent963
+avg return on 3 trajectories of agent963: 954.8600456364751
+Starting 1000 evaluations for agent964
+avg return on 3 trajectories of agent964: 976.0705452142358
+Starting 1000 evaluations for agent965
+avg return on 3 trajectories of agent965: 984.6237499590516
+Starting 1000 evaluations for agent966
+avg return on 3 trajectories of agent966: 943.4080605500936
+Starting 1000 evaluations for agent967
+avg return on 3 trajectories of agent967: 992.9944296183586
+Starting 1000 evaluations for agent968
+avg return on 3 trajectories of agent968: 943.9417484188676
+Starting 1000 evaluations for agent969
+avg return on 3 trajectories of agent969: 960.0413050091863
+Starting 1000 evaluations for agent970
+avg return on 3 trajectories of agent970: 960.1900922117234
+Starting 1000 evaluations for agent971
+avg return on 3 trajectories of agent971: 930.6798380514383
+Starting 1000 evaluations for agent972
+avg return on 3 trajectories of agent972: 932.9291435786486
+Starting 1000 evaluations for agent973
+avg return on 3 trajectories of agent973: 963.0806453633904
+Starting 1000 evaluations for agent974
+avg return on 3 trajectories of agent974: 925.5798173742891
+Starting 1000 evaluations for agent975
+avg return on 3 trajectories of agent975: 974.4427832137942
+Starting 1000 evaluations for agent976
+avg return on 3 trajectories of agent976: 945.1056766853333
+Starting 1000 evaluations for agent977
+avg return on 3 trajectories of agent977: 936.7179231781364
+Starting 1000 evaluations for agent978
+avg return on 3 trajectories of agent978: 934.064843745172
+Starting 1000 evaluations for agent979
+avg return on 3 trajectories of agent979: 950.0158764049411
+Starting 1000 evaluations for agent980
+avg return on 3 trajectories of agent980: 969.0915111554265
+Starting 1000 evaluations for agent981
+avg return on 3 trajectories of agent981: 926.2755934740305
+Starting 1000 evaluations for agent982
+avg return on 3 trajectories of agent982: 933.4993218322992
+Starting 1000 evaluations for agent983
+avg return on 3 trajectories of agent983: 1011.4192424373626
+Starting 1000 evaluations for agent984
+avg return on 3 trajectories of agent984: 934.4517035637498
+Starting 1000 evaluations for agent985
+avg return on 3 trajectories of agent985: 958.8249948971271
+Starting 1000 evaluations for agent986
+avg return on 3 trajectories of agent986: 918.4064347380996
+Starting 1000 evaluations for agent987
+avg return on 3 trajectories of agent987: 928.9620528327226
+Starting 1000 evaluations for agent988
+avg return on 3 trajectories of agent988: 947.6404982101321
+Starting 1000 evaluations for agent989
+avg return on 3 trajectories of agent989: 954.9813410104513
+Starting 1000 evaluations for agent990
+avg return on 3 trajectories of agent990: 957.3553140310049
+Starting 1000 evaluations for agent991
+avg return on 3 trajectories of agent991: 959.5403354277611
+Starting 1000 evaluations for agent992
+avg return on 3 trajectories of agent992: 925.2107795342803
+Starting 1000 evaluations for agent993
+avg return on 3 trajectories of agent993: 992.1973321085572
+Starting 1000 evaluations for agent994
+avg return on 3 trajectories of agent994: 935.7740480693578
+Starting 1000 evaluations for agent995
+avg return on 3 trajectories of agent995: 935.0732274933457
+Starting 1000 evaluations for agent996
+avg return on 3 trajectories of agent996: 961.7091906340122
+Starting 1000 evaluations for agent997
+avg return on 3 trajectories of agent997: 902.2677839763761
+Starting 1000 evaluations for agent998
+avg return on 3 trajectories of agent998: 941.8684992070198
+Starting 1000 evaluations for agent999
+avg return on 3 trajectories of agent999: 949.8782515763045
+Results saved
