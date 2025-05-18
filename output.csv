@@ -276,6 +276,7 @@ PPO_contour_2, ppo_contour_2_out, PPO contour with 60 iterations & every other p
 PPO_plot_1, ppo_plot_out, PPO plot with 60 iterations & every other point; gamma=0.3
 PPO_Ablation1_1, ppo_ablation1_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, espace1, Ongoing
 PPO_Ablation2_1, ppo_ablation2_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1, espace4, Ongoing
+PPO_Ablation5_1, ppo_ablation5_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, espace7, Ongoing
 TRPO_1, trpo_init_1M_out, trpo_humanoid_1M_0.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training
 TRPO_plot_1, trpo_plot_out, TRPO plot with 60 iterations & every other point; gamma=0.3
@@ -289,6 +290,7 @@ PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3
 PPO_plot_2, ppo_plot_1_out, PPO plot with 60 iterations & every other point; gamma=0.3
 PPO_Ablation1_2, ppo_ablation1_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, espace2, Ongoing
 PPO_Ablation2_2, ppo_ablation2_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1, espace5, Ongoing
+PPO_Ablation5_2, ppo_ablation5_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, espace8, Ongoing
 TRPO_2, trpo_init_1M_1_out, trpo_humanoid_1M_1.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training
 TRPO_plot_2, trpo_plot_1_out, TRPO plot with 60 iterations & every other point; gamma=0.3
@@ -302,6 +304,7 @@ PPO_upper_bound_3, ppo_upper_bound_3_out, PPO_empty_space with 60 iterations & 3
 PPO_plot_3, ppo_plot_2_out, PPO plot with 60 iterations & every other point; gamma=0.3
 PPO_Ablation1_3, ppo_ablation1_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, espace3, Ongoing
 PPO_Ablation2_3, ppo_ablation2_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1, espace6, Ongoing
+PPO_Ablation5_3, ppo_ablation5_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, espace9, Ongoing
 TRPO_3, trpo_init_1M_2_out, trpo_humanoid_1M_2.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training
 TRPO_plot_3, trpo_plot_2_out, TRPO plot with 60 iterations & every other point; gamma=0.3
