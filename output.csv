@@ -344,6 +344,7 @@ TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training
 TRPO_plot_1, trpo_plot_out, TRPO plot with 60 iterations & every other point; gamma=0.3
 TRPO_upper_bound_1, trpo_upper_bound_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_Ablation1_1, trpo_ablation1_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, espace9, Ongoing
+TRPO_Ablation2_1, trpo_ablation2_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1, espace12, Ongoing
 ----------------
 Seed 1         |
 ----------------
@@ -356,6 +357,7 @@ TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training
 TRPO_plot_2, trpo_plot_1_out, TRPO plot with 60 iterations & every other point; gamma=0.3
 TRPO_upper_bound_2, trpo_upper_bound_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_Ablation1_2, trpo_ablation1_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, espace10, Ongoing
+TRPO_Ablation2_2, trpo_ablation2_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1, espace19, Ongoing
 ----------------
 Seed 2         |
 ----------------
@@ -368,6 +370,7 @@ TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training
 TRPO_plot_3, trpo_plot_2_out, TRPO plot with 60 iterations & every other point; gamma=0.3
 TRPO_upper_bound_3, trpo_upper_bound_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_Ablation1_3, trpo_ablation1_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, espace11, Ongoing
+TRPO_Ablation2_3, trpo_ablation2_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1, espace20, Ongoing
 ----------------
 Seed 3         |
 ----------------
