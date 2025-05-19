@@ -343,6 +343,7 @@ TRPO_1, trpo_init_1M_out, trpo_swimmer_1M_0.zip; TRPO Init for 1M steps with new
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training
 TRPO_plot_1, trpo_plot_out, TRPO plot with 60 iterations & every other point; gamma=0.3
 TRPO_upper_bound_1, trpo_upper_bound_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
+TRPO_Ablation1_1, trpo_ablation1_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, espace9, Ongoing
 ----------------
 Seed 1         |
 ----------------
@@ -354,6 +355,7 @@ TRPO_2, trpo_init_1M_1_out, trpo_swimmer_1M_1.zip; TRPO Init for 1M steps with n
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training
 TRPO_plot_2, trpo_plot_1_out, TRPO plot with 60 iterations & every other point; gamma=0.3
 TRPO_upper_bound_2, trpo_upper_bound_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
+TRPO_Ablation1_2, trpo_ablation1_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, espace10, Ongoing
 ----------------
 Seed 2         |
 ----------------
@@ -365,6 +367,7 @@ TRPO_3, trpo_init_1M_2_out, trpo_swimmer_1M_2.zip; TRPO Init for 1M steps with n
 TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training
 TRPO_plot_3, trpo_plot_2_out, TRPO plot with 60 iterations & every other point; gamma=0.3
 TRPO_upper_bound_3, trpo_upper_bound_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
+TRPO_Ablation1_3, trpo_ablation1_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, espace11, Ongoing
 ----------------
 Seed 3         |
 ----------------
