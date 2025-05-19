@@ -313,7 +313,7 @@ PPO_upper_bound_3, ppo_upper_bound_3_out, PPO_empty_space with 60 iterations & 3
 PPO_plot_3, ppo_plot_2_out, PPO plot with 60 iterations & every other point; gamma=0.3
 PPO_Ablation1_3, ppo_ablation1_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, espace3, Ongoing
 PPO_Ablation2_3, ppo_ablation2_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1, espace6, Ongoing
-PPO_Ablation5_3, ppo_ablation5_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, espace9, Ongoing
+PPO_Ablation5_3, ppo_ablation5_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1
 TRPO_3, trpo_init_1M_2_out, trpo_humanoid_1M_2.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training
 TRPO_plot_3, trpo_plot_2_out, TRPO plot with 60 iterations & every other point; gamma=0.3
