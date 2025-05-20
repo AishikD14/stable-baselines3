@@ -654,8 +654,8 @@ if __name__ == "__main__":
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
-    env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
-    # env_name = "Pendulum-v1" # For pendulum (single goal task)
+    # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
+    env_name = "Pendulum-v1" # For pendulum (single goal task)
     # env_name = "BipedalWalker-v3" # For bipedal walker (single goal task)
 
     if env_name == "Ant-v5":
@@ -825,12 +825,12 @@ if __name__ == "__main__":
 
     if env_name == "Pendulum-v1":
         START_ITER = 1 // (args.n_steps_per_rollout*args.n_envs)
-        SEARCH_INTERV = 1 
+        SEARCH_INTERV = 10 
         NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs)
         eval_episode_num = 1
     elif env_name == "BipedalWalker-v3":
         START_ITER = 1 // (args.n_steps_per_rollout*args.n_envs)
-        SEARCH_INTERV = 1
+        SEARCH_INTERV = 10
         NUM_ITERS = 1000000 // (args.n_steps_per_rollout*args.n_envs)
         eval_episode_num = 1
     else:
