@@ -284,7 +284,7 @@ PPO_contour_1, ppo_contour_1_out, PPO contour with 60 iterations & every other p
 PPO_contour_2, ppo_contour_2_out, PPO contour with 60 iterations & every other point; gamma=0.3
 PPO_plot_1, ppo_plot_out, PPO plot with 60 iterations & every other point; gamma=0.3
 PPO_Ablation1_1, ppo_ablation1_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1
-PPO_Ablation2_1, ppo_ablation2_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1, espace4, Ongoing
+PPO_Ablation2_1, ppo_ablation2_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1
 PPO_Ablation5_1, ppo_ablation5_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1
 TRPO_1, trpo_init_1M_out, trpo_humanoid_1M_0.zip; TRPO Init for 1M steps with new hyperparameters
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training
