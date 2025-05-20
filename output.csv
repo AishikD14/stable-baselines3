@@ -241,7 +241,7 @@ PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3
 PPO_plot_2, ppo_plot_1_out, PPO plot with 60 iterations & every other point; gamma=0.3
 PPO_Ablation1_2, ppo_ablation1_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1
 PPO_Ablation2_2, ppo_ablation2_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1
-PPO_Ablation5_2, ppo_ablation5_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, espace17, Ongoing
+PPO_Ablation5_2, ppo_ablation5_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, , Stopped
 TRPO_2, trpo_init_1M_1_out, trpo_walker2d_1M_1.zip; TRPO Init for 1M steps with Xinyu hyperparameters
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training
 TRPO_plot_2, trpo_plot_1_out, TRPO plot with 60 iterations & every other point; gamma=0.3
@@ -345,7 +345,7 @@ TRPO_plot_1, trpo_plot_out, TRPO plot with 60 iterations & every other point; ga
 TRPO_upper_bound_1, trpo_upper_bound_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_Ablation1_1, trpo_ablation1_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1
 TRPO_Ablation2_1, trpo_ablation2_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1
-TRPO_Ablation5_1, trpo_ablation5_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, espace9, Ongoing
+TRPO_Ablation5_1, trpo_ablation5_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, , Stopped
 ----------------
 Seed 1         |
 ----------------
@@ -359,7 +359,7 @@ TRPO_plot_2, trpo_plot_1_out, TRPO plot with 60 iterations & every other point; 
 TRPO_upper_bound_2, trpo_upper_bound_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_Ablation1_2, trpo_ablation1_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1
 TRPO_Ablation2_2, trpo_ablation2_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1
-TRPO_Ablation5_2, trpo_ablation5_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, espace10, Ongoing
+TRPO_Ablation5_2, trpo_ablation5_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, , Stopped
 ----------------
 Seed 2         |
 ----------------
@@ -373,7 +373,7 @@ TRPO_plot_3, trpo_plot_2_out, TRPO plot with 60 iterations & every other point; 
 TRPO_upper_bound_3, trpo_upper_bound_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 TRPO_Ablation1_3, trpo_ablation1_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1
 TRPO_Ablation2_3, trpo_ablation2_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1
-TRPO_Ablation5_3, trpo_ablation5_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, espace11, Ongoing
+TRPO_Ablation5_3, trpo_ablation5_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, , Stopped
 ----------------
 Seed 3         |
 ----------------
@@ -398,7 +398,7 @@ PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point; gamma=
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training with eval=1
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training with eval=1 from scratch
-TRPO_upper_bound_1, trpo_upper_bound_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace12, Ongoing
+TRPO_upper_bound_1, trpo_upper_bound_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace1, Ongoing
 ----------------
 Seed 1         |
 ----------------
@@ -408,7 +408,7 @@ PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 1
 PPO_normal_training_5, ppo_normal_training_5_out, PPO Normal Training with eval=1
 PPO_upper_bound_5, ppo_upper_bound_5_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training with eval=1 from scratch
-TRPO_upper_bound_2, trpo_upper_bound_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace13, Ongoing
+TRPO_upper_bound_2, trpo_upper_bound_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace2, Ongoing
 ----------------
 Seed 2         |
 ----------------
@@ -418,14 +418,14 @@ PPO_upper_bound_3, ppo_upper_bound_3_out, PPO_empty_space with 60 iterations & 1
 PPO_normal_training_6, ppo_normal_training_6_out, PPO Normal Training with eval=1
 PPO_upper_bound_6, ppo_upper_bound_6_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
 TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training with eval=1 from scratch
-TRPO_upper_bound_3, trpo_upper_bound_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace14, Ongoing
+TRPO_upper_bound_3, trpo_upper_bound_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace3, Ongoing
 ----------------
 Seed 3         |
 ----------------
 PPO_normal_training_7, ppo_normal_training_7_out, PPO Normal Training with eval=1 from scratch
 PPO_upper_bound_7, ppo_upper_bound_7_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3 from scratch
 TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training with eval=1 from scratch
-TRPO_upper_bound_4, trpo_upper_bound_4_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace15, Ongoing
+TRPO_upper_bound_4, trpo_upper_bound_4_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3, espace4, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 BipedalWalker-v3
