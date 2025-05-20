@@ -1,0 +1,96 @@
+/cm/local/apps/slurm/var/spool/job50720/slurm_script: line 15: activate: No such file or directory
+Traceback (most recent call last):
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 274, in main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 313, in _serve_one
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 125, in _main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 236, in prepare
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 289, in run_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 96, in _run_module_code
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 86, in _run_code
+  File "/home/aideb/stable-baselines3/main_trpo.py", line 5, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/neighbors/__init__.py", line 18, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/neighbors/_nca.py", line 22, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/decomposition/__init__.py", line 11, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/decomposition/_dict_learning.py", line 21, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/linear_model/__init__.py", line 24, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/linear_model/_glm/__init__.py", line 4, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/linear_model/_glm/glm.py", line 24, in <module>
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 879, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1016, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1073, in get_data
+OSError: [Errno 23] Too many open files in system: '/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/utils/optimize.py'
+Traceback (most recent call last):
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 274, in main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 313, in _serve_one
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 125, in _main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 236, in prepare
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 289, in run_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 96, in _run_module_code
+Traceback (most recent call last):
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 86, in _run_code
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 274, in main
+  File "/home/aideb/stable-baselines3/main_trpo.py", line 5, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 313, in _serve_one
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/neighbors/__init__.py", line 18, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 125, in _main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/neighbors/_nca.py", line 22, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 236, in prepare
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/decomposition/__init__.py", line 11, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/decomposition/_dict_learning.py", line 21, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 289, in run_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/linear_model/__init__.py", line 35, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 96, in _run_module_code
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py", line 23, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 86, in _run_code
+  File "/home/aideb/stable-baselines3/main_trpo.py", line 5, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/svm/__init__.py", line 10, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/neighbors/__init__.py", line 18, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/svm/_classes.py", line 13, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/neighbors/_nca.py", line 22, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/svm/_base.py", line 32, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/decomposition/__init__.py", line 11, in <module>
+ImportError: /home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/svm/_libsvm_sparse.cpython-310-x86_64-linux-gnu.so: cannot open shared object file: Too many open files in system
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/decomposition/_dict_learning.py", line 21, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/linear_model/__init__.py", line 45, in <module>
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 879, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1016, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1073, in get_data
+OSError: [Errno 23] Too many open files in system: '/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/linear_model/_ransac.py'
+Traceback (most recent call last):
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 274, in main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 313, in _serve_one
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 125, in _main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 236, in prepare
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 289, in run_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 96, in _run_module_code
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 86, in _run_code
+  File "/home/aideb/stable-baselines3/main_trpo.py", line 5, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/neighbors/__init__.py", line 18, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/neighbors/_nca.py", line 22, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/decomposition/__init__.py", line 11, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/decomposition/_dict_learning.py", line 21, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/linear_model/__init__.py", line 12, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/linear_model/_coordinate_descent.py", line 44, in <module>
+ImportError: /home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/sklearn/linear_model/_cd_fast.cpython-310-x86_64-linux-gnu.so: cannot open shared object file: Too many open files in system
+Traceback (most recent call last):
+  File "/home/aideb/stable-baselines3/main_trpo.py", line 910, in <module>
+    dummy_env = SubprocVecEnv(dummy_env_fns)
+  File "/home/aideb/stable-baselines3/stable_baselines3/common/vec_env/subproc_vec_env.py", line 119, in __init__
+    observation_space, action_space = self.remotes[0].recv()
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/connection.py", line 250, in recv
+    buf = self._recv_bytes()
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/connection.py", line 414, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/connection.py", line 379, in _recv
+    chunk = read(handle, remaining)
+ConnectionResetError: [Errno 104] Connection reset by peer

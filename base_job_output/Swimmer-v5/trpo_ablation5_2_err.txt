@@ -1,0 +1,115 @@
+/cm/local/apps/slurm/var/spool/job50721/slurm_script: line 15: activate: No such file or directory
+Traceback (most recent call last):
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 274, in main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 313, in _serve_one
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 125, in _main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 236, in prepare
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 289, in run_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 96, in _run_module_code
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 86, in _run_code
+  File "/home/aideb/stable-baselines3/main_trpo.py", line 20, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/__init__.py", line 8, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/algos/__init__.py", line 1, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/algos/qlearning/__init__.py", line 1, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/algos/qlearning/awac.py", line 7, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/__init__.py", line 1, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/builders.py", line 9, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/encoders.py", line 7, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/torch/__init__.py", line 2, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/torch/encoders.py", line 8, in <module>
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 879, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1016, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1073, in get_data
+OSError: [Errno 23] Too many open files in system: '/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/itertools.py'
+Traceback (most recent call last):
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 274, in main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 313, in _serve_one
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 125, in _main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 236, in prepare
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 289, in run_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 96, in _run_module_code
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 86, in _run_code
+  File "/home/aideb/stable-baselines3/main_trpo.py", line 20, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/__init__.py", line 8, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/algos/__init__.py", line 1, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/algos/qlearning/__init__.py", line 1, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/algos/qlearning/awac.py", line 7, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/__init__.py", line 1, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/builders.py", line 9, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/encoders.py", line 7, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/torch/__init__.py", line 2, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/torch/encoders.py", line 8, in <module>
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 879, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1016, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1073, in get_data
+OSError: [Errno 23] Too many open files in system: '/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/itertools.py'
+Traceback (most recent call last):
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 274, in main
+Traceback (most recent call last):
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 274, in main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 313, in _serve_one
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 125, in _main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/forkserver.py", line 313, in _serve_one
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 236, in prepare
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 125, in _main
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 236, in prepare
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 289, in run_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 96, in _run_module_code
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 289, in run_path
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 86, in _run_code
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 96, in _run_module_code
+  File "/home/aideb/stable-baselines3/main_trpo.py", line 20, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/runpy.py", line 86, in _run_code
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/__init__.py", line 8, in <module>
+  File "/home/aideb/stable-baselines3/main_trpo.py", line 20, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/algos/__init__.py", line 1, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/__init__.py", line 8, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/algos/qlearning/__init__.py", line 1, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/algos/__init__.py", line 1, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/algos/qlearning/awac.py", line 7, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/algos/qlearning/__init__.py", line 1, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/__init__.py", line 1, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/algos/qlearning/awac.py", line 7, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/builders.py", line 9, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/__init__.py", line 1, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/encoders.py", line 7, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/builders.py", line 9, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/torch/__init__.py", line 3, in <module>
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/encoders.py", line 7, in <module>
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/torch/__init__.py", line 3, in <module>
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 879, in exec_module
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1016, in get_code
+  File "<frozen importlib._bootstrap_external>", line 879, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1073, in get_data
+  File "<frozen importlib._bootstrap_external>", line 1016, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1073, in get_data
+OSError: [Errno 23] Too many open files in system: '/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/torch/imitators.py'
+OSError: [Errno 23] Too many open files in system: '/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/d3rlpy/models/torch/imitators.py'
+Traceback (most recent call last):
+  File "/home/aideb/stable-baselines3/main_trpo.py", line 910, in <module>
+    dummy_env = SubprocVecEnv(dummy_env_fns)
+  File "/home/aideb/stable-baselines3/stable_baselines3/common/vec_env/subproc_vec_env.py", line 119, in __init__
+    observation_space, action_space = self.remotes[0].recv()
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/connection.py", line 250, in recv
+    buf = self._recv_bytes()
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/connection.py", line 414, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/aideb/miniconda3/envs/openv/lib/python3.10/multiprocessing/connection.py", line 379, in _recv
+    chunk = read(handle, remaining)
+ConnectionResetError: [Errno 104] Connection reset by peer
