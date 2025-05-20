@@ -369,7 +369,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
             # Display training infos
             if log_interval is not None and iteration % log_interval == 0:
                 assert self.ep_info_buffer is not None
-                self._dump_logs(iteration)
+                # self._dump_logs(iteration)
 
             self.train()
 
