@@ -92,7 +92,8 @@ Swimmer-v5
 Seed 0         |
 ----------------
 PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point; gamma=0.3, , Stopped
-TRPO_neghrand_1, trpo_neghrand_1_out, TRPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , Stopped
+TRPO_neghrand_1, trpo_neghrand_1_out, TRPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , First Half
+TRPO_neghrand_1_1, trpo_neghrand_1_1_out, TRPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, exp6, Ongoing
 ----------------
 Seed 1         |
 ----------------
