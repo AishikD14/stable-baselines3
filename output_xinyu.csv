@@ -52,11 +52,12 @@ Seed 0         |
 ----------------
 PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point; gamma=0.3, , Stopped
 PPO_neghrand_1, ppo_neghrand_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , Stopped
+PPO_neghrand_1_1, ppo_neghrand_1_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, exp4, Ongoing
 ----------------
 Seed 1         |
 ----------------
 PPO_FQE_2, ppo_fqe_2_out, PPO FQE with 60 iterations & every other point; gamma=0.3, , Stopped
-PPO_neghrand_2, ppo_neghrand_2_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , Stopped
+PPO_neghrand_2, ppo_neghrand_2_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0
 ----------------
 Seed 2         |
 ----------------
