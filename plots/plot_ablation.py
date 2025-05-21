@@ -11,9 +11,9 @@ import re
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-env = "Ant-v5"
+# env = "Ant-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
+env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -46,6 +46,7 @@ if ablation_type == "Ablation1":
         ["PPO_Ablation1", "gamma=0"],
         ["PPO_upper_bound", "gamma=0.3"],
         ["PPO_Ablation2", "gamma=0.5"],
+        ["PPO_Ablation5", "gamma=0.9"],
     ]
 
 if ablation_type == "Ablation2":
@@ -136,4 +137,4 @@ legend.get_frame().set_facecolor('#f5f5f5')
 for spine in ax.spines.values():
     spine.set_visible(False)
 
-plt.savefig('../paper_plots/'+ablation_type+'.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_'+ablation_type+'.pdf', format='pdf', bbox_inches='tight', dpi=300)

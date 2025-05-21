@@ -59,6 +59,8 @@ plot_list = [
     # ["PPO_Ablation2", "PPO Ablation 2"],
     # ["PPO_Ablation3", "PPO_Ablation3"]
     # ["PPO_Ablation4", "PPO Ablation 4"],
+    # ["PPO_Ablation5", "PPO Ablation 5"],
+    # ["TRPO_Ablation1", "TRPO_Ablation1"],
     # ["PPO_neghrand", "PPO Random Walk"],
     # ["PPO_FQE", "PPO FQE"],
     # ["PPO_empty_space_ls", "PPO FQE"],
@@ -79,15 +81,16 @@ for plot_item in plot_list:
         results = np.load(directory + ".npy")
         print(results.shape)
 
-        # Load pretrained rewards
-        if "PPO" in plot_item[0]:
-            pretrain_rewards = np.load("../final_results/"+env+"/PPO_pretrain_"+str(i+1)+".npy")
-        elif "TRPO" in plot_item[0]:
-            pretrain_rewards = np.load("../final_results/"+env+"/TRPO_pretrain_"+str(i+1)+".npy")
+        if env not in ["Pendulum-v1", "BipedalWalker-v3"]:
+            # Load pretrained rewards
+            if "PPO" in plot_item[0]:
+                pretrain_rewards = np.load("../final_results/"+env+"/PPO_pretrain_"+str(i+1)+".npy")
+            elif "TRPO" in plot_item[0]:
+                pretrain_rewards = np.load("../final_results/"+env+"/TRPO_pretrain_"+str(i+1)+".npy")
 
-        # Add pretrain rewards to the beginning of results
-        results = np.concatenate((pretrain_rewards, results))
-        print(results.shape)
+            # Add pretrain rewards to the beginning of results
+            results = np.concatenate((pretrain_rewards, results))
+            print(results.shape)
 
         # results = pretrain_rewards
 

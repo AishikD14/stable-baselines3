@@ -65,20 +65,26 @@ file_name_list = [
     # ["PPO_Ablation1_1"],
     # ["PPO_Ablation1_2"],
     # ["PPO_Ablation1_3"],
-    # ["PPO_Ablation2_1"],
-    # ["PPO_Ablation2_2"],
-    # ["PPO_Ablation2_3"]
+    ["PPO_Ablation2_1"],
+    ["PPO_Ablation2_2"],
+    ["PPO_Ablation2_3"]
     # ["PPO_Ablation3_1"],
     # ["PPO_Ablation3_2"],
     # ["PPO_Ablation3_3"]
     # ["PPO_Ablation4_1"],
     # ["PPO_Ablation4_2"],
     # ["PPO_Ablation4_3"],
+    # ["PPO_Ablation5_1"],
+    # ["PPO_Ablation5_2"],
+    # ["PPO_Ablation5_3"],
+    # ["TRPO_Ablation1_1"],
+    # ["TRPO_Ablation1_2"],
+    # ["TRPO_Ablation1_3"],
     # ["PPO_neghrand_1"],
     # ["PPO_neghrand_2"],
     # ["PPO_neghrand_3"]
-    ["PPO_empty_space_ls_1"],
-    ["PPO_baseline_1"]
+    # ["PPO_empty_space_ls_1"],
+    # ["PPO_baseline_1"]
 ]
 
 for file_name in file_name_list:
