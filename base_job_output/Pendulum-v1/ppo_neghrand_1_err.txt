@@ -1,0 +1,98 @@
+Traceback (most recent call last):
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/forkserver.py", line 274, in main
+Traceback (most recent call last):
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/forkserver.py", line 274, in main
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/forkserver.py", line 313, in _serve_one
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/forkserver.py", line 313, in _serve_one
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/spawn.py", line 125, in _main
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/spawn.py", line 125, in _main
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/spawn.py", line 236, in prepare
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/spawn.py", line 236, in prepare
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/runpy.py", line 289, in run_path
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/runpy.py", line 289, in run_path
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/runpy.py", line 96, in _run_module_code
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/runpy.py", line 96, in _run_module_code
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/runpy.py", line 86, in _run_code
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/runpy.py", line 86, in _run_code
+  File "/home/zhang146/stable-baselines3/main_lowvar.py", line 19, in <module>
+  File "/home/zhang146/stable-baselines3/main_lowvar.py", line 19, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/__init__.py", line 8, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/__init__.py", line 8, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/algos/__init__.py", line 1, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/algos/__init__.py", line 1, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/algos/qlearning/__init__.py", line 1, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/algos/qlearning/__init__.py", line 1, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/algos/qlearning/awac.py", line 5, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/algos/qlearning/awac.py", line 5, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/base.py", line 13, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/base.py", line 13, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/__init__.py", line 2, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/__init__.py", line 2, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/compat.py", line 7, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/compat.py", line 7, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/replay_buffer.py", line 19, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/replay_buffer.py", line 19, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/io.py", line 3, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/io.py", line 3, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/h5py/__init__.py", line 56, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/h5py/__init__.py", line 56, in <module>
+  File "h5py/h5f.pyx", line 1, in init h5py.h5f
+  File "h5py/h5f.pyx", line 1, in init h5py.h5f
+ImportError: /home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/h5py/h5g.cpython-310-x86_64-linux-gnu.so: cannot open shared object file: Too many open files in system
+ImportError: /home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/h5py/h5g.cpython-310-x86_64-linux-gnu.so: cannot open shared object file: Too many open files in system
+Traceback (most recent call last):
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/forkserver.py", line 274, in main
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/forkserver.py", line 313, in _serve_one
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/spawn.py", line 125, in _main
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/spawn.py", line 236, in prepare
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/runpy.py", line 289, in run_path
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/runpy.py", line 96, in _run_module_code
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/runpy.py", line 86, in _run_code
+  File "/home/zhang146/stable-baselines3/main_lowvar.py", line 19, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/__init__.py", line 8, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/algos/__init__.py", line 1, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/algos/qlearning/__init__.py", line 1, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/algos/qlearning/awac.py", line 5, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/base.py", line 13, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/__init__.py", line 2, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/compat.py", line 7, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/replay_buffer.py", line 19, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/io.py", line 3, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/h5py/__init__.py", line 56, in <module>
+ImportError: /home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/h5py/h5ds.cpython-310-x86_64-linux-gnu.so: cannot open shared object file: Too many open files in system
+Traceback (most recent call last):
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/forkserver.py", line 274, in main
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/forkserver.py", line 313, in _serve_one
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/spawn.py", line 125, in _main
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/spawn.py", line 236, in prepare
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/spawn.py", line 287, in _fixup_main_from_path
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/runpy.py", line 289, in run_path
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/runpy.py", line 96, in _run_module_code
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/runpy.py", line 86, in _run_code
+  File "/home/zhang146/stable-baselines3/main_lowvar.py", line 19, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/__init__.py", line 8, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/algos/__init__.py", line 1, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/algos/qlearning/__init__.py", line 1, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/algos/qlearning/awac.py", line 5, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/base.py", line 13, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/__init__.py", line 2, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/compat.py", line 7, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/replay_buffer.py", line 19, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/d3rlpy/dataset/io.py", line 3, in <module>
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/h5py/__init__.py", line 56, in <module>
+ImportError: /home/zhang146/anaconda3/envs/continualrl/lib/python3.10/site-packages/h5py/h5ds.cpython-310-x86_64-linux-gnu.so: cannot open shared object file: Too many open files in system
+Traceback (most recent call last):
+  File "/home/zhang146/stable-baselines3/main_lowvar.py", line 943, in <module>
+    dummy_env = SubprocVecEnv(dummy_env_fns)
+  File "/home/zhang146/stable-baselines3/stable_baselines3/common/vec_env/subproc_vec_env.py", line 119, in __init__
+    observation_space, action_space = self.remotes[0].recv()
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/connection.py", line 250, in recv
+    buf = self._recv_bytes()
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/connection.py", line 414, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/zhang146/anaconda3/envs/continualrl/lib/python3.10/multiprocessing/connection.py", line 379, in _recv
+    chunk = read(handle, remaining)
+ConnectionResetError: [Errno 104] Connection reset by peer
