@@ -362,7 +362,7 @@ TRPO_upper_bound_2, trpo_upper_bound_2_out, TRPO_empty_space with 60 iterations 
 TRPO_Ablation1_2, trpo_ablation1_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1
 TRPO_Ablation2_2, trpo_ablation2_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1
 TRPO_Ablation5_2, trpo_ablation5_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, , First Half
-TRPO_Ablation5_2_1, trpo_ablation5_2_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, espace2, Ongoing
+TRPO_Ablation5_2_1, trpo_ablation5_2_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, , Second Half
 ----------------
 Seed 2         |
 ----------------
