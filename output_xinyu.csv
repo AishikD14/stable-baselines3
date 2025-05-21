@@ -104,7 +104,8 @@ TRPO_neghrand_2_1, trpo_neghrand_2_1_out, TRPO_neghrand with 60 iterations & 3 e
 Seed 2         |
 ----------------
 PPO_FQE_3, ppo_fqe_3_out, PPO FQE with 60 iterations & every other point; gamma=0.3, , Stopped
-TRPO_neghrand_3, trpo_neghrand_3_out, TRPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , Stopped
+TRPO_neghrand_3, trpo_neghrand_3_out, TRPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , First Half
+TRPO_neghrand_3_1, trpo_neghrand_3_1_out, TRPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, exp8, Ongoing
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Pendulum-v1
