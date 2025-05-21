@@ -177,16 +177,16 @@ def random_walk(data, coor, neighbor, use_momentum, movestep, numiter):
     # else:
     return np.linalg.norm(coor - orig_coor), np.array(rw_configs)
 
-def load_weights(arng, directory, env):
+def load_weights(arng, directory, env, saved_agents):
     policies = []
 
     for i in range(10):
         policy_vec = []
 
-        # new_model = PPO("MlpPolicy", env, verbose=0, device='cpu')
-        # new_model.load(f'trpo_logs/{directory}/models/agent{i}.zip', device='cpu')
-
-        ckp = torch.load(f'trpo_logs/{directory}/models/agent{i+1}.zip', map_location=torch.device('cpu'))
+        if saved_agents:
+            ckp = torch.load(f'trpo_logs/{directory[:-2]}/models/agent{i+1}.zip', map_location=torch.device('cpu'))
+        else:
+            ckp = torch.load(f'trpo_logs/{directory}/models/agent{i+1}.zip', map_location=torch.device('cpu'))
 
         # ckp = new_model.policy.state_dict()
         ckp_layers = ckp.keys()
@@ -218,11 +218,11 @@ def dump_weights(agent_net, es_models):
     return policies
 
 # Nearest neighbor search plus empty space search
-def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_lib, agent_num=10):
+def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_lib, saved_agents, agent_num=10):
     print("---------------------------------")
     print("Searching empty space policies")
 
-    dt = load_weights(range(start, end), directory, env)
+    dt = load_weights(range(start, end), directory, env, saved_agents)
     print(dt.shape)
 
     if not use_ANN:
@@ -654,8 +654,8 @@ if __name__ == "__main__":
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
-    # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
-    env_name = "Pendulum-v1" # For pendulum (single goal task)
+    env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
+    # env_name = "Pendulum-v1" # For pendulum (single goal task)
     # env_name = "BipedalWalker-v3" # For bipedal walker (single goal task)
 
     if env_name == "Ant-v5":
@@ -716,16 +716,9 @@ if __name__ == "__main__":
 
     n_steps_per_rollout = args.n_steps_per_rollout
 
-    # --------------------------------------------------------------------------------------------------------------
-
-    # START_ITER = 1000000 // args.n_steps_per_rollout
-    # SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
-    # NUM_ITERS = 3000000 // args.n_steps_per_rollout
-    # N_EPOCHS = args.n_epochs
-
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "TRPO_upper_bound"
+    exp = "TRPO_Ablation5_3"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('trpo_logs/'+env_name+"/", exp)+1)
     ckp_dir = f'trpo_logs/{DIR}/models'
 
@@ -872,26 +865,57 @@ if __name__ == "__main__":
     ANN_lib = "Annoy"
     online_eval = True
 
+    saved_agents = True
+    saved_iter = 514
+    model_already_learned = True
+
     distanceArray = []
     start_time = time.time()
     timeArray = []
 
+    if saved_agents:
+        # Find best agent index
+        best_agent_index = np.load(f'trpo_logs/{env_name}/{exp}/best_agent_{str(saved_iter-SEARCH_INTERV)}_{str(saved_iter)}.npy')
+        print("Last Best agent index: ", best_agent_index[0])
+
+        ckp = torch.load(f'trpo_logs/{env_name}/{exp}/models/agent{str(best_agent_index[0])}.zip', map_location=torch.device('cpu'))
+        print("Checkpoint loaded")
+
+        load_state_dict(model, ckp)
+        print("Model loaded")
+
+        START_ITER = saved_iter
+
     if not normal_train:
         for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
             print(i)
-            model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
-                        log_interval=1, 
-                        tb_log_name=exp, 
-                        reset_num_timesteps=True if i == START_ITER else False, 
-                        first_iteration=True if i == START_ITER else False,
-                        )
             
-            agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib)
+            if saved_agents:
+                if not model_already_learned:
+                    model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
+                                log_interval=1, 
+                                tb_log_name=exp, 
+                                reset_num_timesteps=True if i == START_ITER else False, 
+                                first_iteration=True if i == START_ITER else False,
+                                )
+
+            else:
+                model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
+                            log_interval=1, 
+                            tb_log_name=exp, 
+                            reset_num_timesteps=True if i == START_ITER else False, 
+                            first_iteration=True if i == START_ITER else False,
+                            )
+            
+            agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned)
             # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
             # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
             # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
             # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
             distanceArray.append(distance)
+
+            if saved_agents:
+                saved_agents = False
             
             cum_rews = []
             best_agent_index = []
@@ -931,7 +955,9 @@ if __name__ == "__main__":
             if not online_eval:
                 # print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
                 print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
-            print(f'avg cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
+            print(f'avg cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')  
+
+            os.makedirs(f'trpo_logs/{DIR}', exist_ok=True)  
 
             np.save(f'trpo_logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
             if online_eval:
@@ -983,7 +1009,7 @@ if __name__ == "__main__":
                 print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}')
                 best_agent_index.append(best_idx)
                 np.save(f'trpo_logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
-                np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews[best_idx])
+                np.save(f'trpo_logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews[best_idx])
                 load_state_dict(model, best_agent)
 
             # Finding the best agent from online evaluation
