@@ -78,13 +78,13 @@ Seed 1         |
 ----------------
 PPO_FQE_2, ppo_fqe_2_out, PPO FQE with 60 iterations & every other point; gamma=0.3, , Stopped
 PPO_neghrand_2, ppo_neghrand_2_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , First Half
-PPO_neghrand_2_1, ppo_neghrand_2_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, exp2, Ongoing
+PPO_neghrand_2_1, ppo_neghrand_2_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , Second Half
 ----------------
 Seed 2         |
 ----------------
 PPO_FQE_3, ppo_fqe_3_out, PPO FQE with 60 iterations & every other point; gamma=0.3, , Stopped
 PPO_neghrand_3, ppo_neghrand_3_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , First Half
-PPO_neghrand_3_1, ppo_neghrand_3_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, exp3, Ongoing
+PPO_neghrand_3_1, ppo_neghrand_3_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , Second Half
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Swimmer-v5
@@ -98,7 +98,8 @@ TRPO_neghrand_1_1, trpo_neghrand_1_1_out, TRPO_neghrand with 60 iterations & 3 e
 Seed 1         |
 ----------------
 PPO_FQE_2, ppo_fqe_2_out, PPO FQE with 60 iterations & every other point; gamma=0.3, , Stopped
-TRPO_neghrand_2, trpo_neghrand_2_out, TRPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , Stopped
+TRPO_neghrand_2, trpo_neghrand_2_out, TRPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , First Half
+TRPO_neghrand_2_1, trpo_neghrand_2_1_out, TRPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, exp7, Ongoing
 ----------------
 Seed 2         |
 ----------------
