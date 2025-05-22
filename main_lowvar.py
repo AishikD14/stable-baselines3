@@ -14,7 +14,7 @@ import pandas as pd
 # from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_bipedal_walker
+from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_bipedal_walker, args_lunarlander
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
 from d3rlpy.dataset import MDPDataset
@@ -658,7 +658,8 @@ if __name__ == "__main__":
     # env_name = "CartPole-v1" # For cartpole (single goal task)
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
     # env_name = "Pendulum-v1" # For pendulum (single goal task)
-    env_name = "BipedalWalker-v3" # For bipedal walker (single goal task)
+    # env_name = "BipedalWalker-v3" # For bipedal walker (single goal task)
+    env_name  = "LunarLander-v3" # For lunar lander (single goal task)
 
     # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -684,6 +685,8 @@ if __name__ == "__main__":
         args = args_pendulum.get_args(rest_args)
     elif env_name == "BipedalWalker-v3":
         args = args_bipedal_walker.get_args(rest_args)
+    elif env_name == "LunarLander-v3":
+        args = args_lunarlander.get_args(rest_args)
 
     # ------------------------------------------------------------------------------------------------------------
 
