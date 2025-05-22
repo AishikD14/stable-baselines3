@@ -1,0 +1,3553 @@
+No devices were found
+Setting seed -  2
+Creating multiple envs -  4
+---------------------------------
+Environment created
+Box(-1.0, 1.0, (4,), float32) Box([-3.1415927 -5.        -5.        -5.        -3.1415927 -5.
+ -3.1415927 -5.        -0.        -3.1415927 -5.        -3.1415927
+ -5.        -0.        -1.        -1.        -1.        -1.
+ -1.        -1.        -1.        -1.        -1.        -1.       ], [3.1415927 5.        5.        5.        3.1415927 5.        3.1415927
+ 5.        5.        3.1415927 5.        3.1415927 5.        5.
+ 1.        1.        1.        1.        1.        1.        1.
+ 1.        1.        1.       ], (24,), float32)
+Starting evaluation
+0
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03317834078771617
+avg return on 3 trajectories of agent0: -116.70818585293306
+avg return on 3 trajectories of agent1: -117.96678146342933
+avg return on 3 trajectories of agent2: 2.4085736361840286
+avg return on 3 trajectories of agent3: 2.3970286542124444
+avg return on 3 trajectories of agent4: 2.1389362665332436
+avg return on 3 trajectories of agent5: -118.21116862473046
+avg return on 3 trajectories of agent6: -117.66620214715539
+avg return on 3 trajectories of agent7: -115.35571209393986
+avg return on 3 trajectories of agent8: -115.54991005098432
+avg return on 3 trajectories of agent9: -111.60631910109241
+avg return on 3 trajectories of agent10: -111.66251068886463
+avg return on 3 trajectories of agent11: -111.40817547365992
+avg return on 3 trajectories of agent12: -112.01878798733433
+avg return on 3 trajectories of agent13: -112.73460990078033
+avg return on 3 trajectories of agent14: -112.35100308688978
+avg return on 3 trajectories of agent15: -112.33761241537829
+avg return on 3 trajectories of agent16: -100.27367276259092
+avg return on 3 trajectories of agent17: -112.23890906419605
+avg return on 3 trajectories of agent18: -112.4713886117845
+avg return on 3 trajectories of agent19: -100.03925123085237
+avg cum rews: -95.18278309998331, std: 41.22006882093668
+the best agent: 2, best agent cum rewards: 2.4085736361840286
+1
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.036322563289489046
+avg return on 3 trajectories of agent0: -93.12564446895274
+avg return on 3 trajectories of agent1: -116.91838191623907
+avg return on 3 trajectories of agent2: -112.06188231956679
+avg return on 3 trajectories of agent3: -111.89911048346043
+avg return on 3 trajectories of agent4: -99.2359456293853
+avg return on 3 trajectories of agent5: -99.71719555689504
+avg return on 3 trajectories of agent6: -113.95901341155312
+avg return on 3 trajectories of agent7: -113.3622134171302
+avg return on 3 trajectories of agent8: -117.24279086906913
+avg return on 3 trajectories of agent9: -111.55476968069593
+avg return on 3 trajectories of agent10: -112.2792325323373
+avg return on 3 trajectories of agent11: -111.51319570812055
+avg return on 3 trajectories of agent12: -112.20515500457041
+avg return on 3 trajectories of agent13: -93.45732901101684
+avg return on 3 trajectories of agent14: -117.41798654846227
+avg return on 3 trajectories of agent15: -119.10541446755127
+avg return on 3 trajectories of agent16: -118.54865624485242
+avg return on 3 trajectories of agent17: -116.09922441201051
+avg return on 3 trajectories of agent18: -93.74468125276144
+avg return on 3 trajectories of agent19: -116.84543948860093
+avg cum rews: -110.01466312116159, std: 8.629119344079795
+the best agent: 0, best agent cum rewards: -93.12564446895274
+2
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.0385078582201186
+avg return on 3 trajectories of agent0: -5.9344496330078655
+avg return on 3 trajectories of agent1: -5.452640686155007
+avg return on 3 trajectories of agent2: -5.3895178160350214
+avg return on 3 trajectories of agent3: -5.515403007722794
+avg return on 3 trajectories of agent4: -4.740169261408318
+avg return on 3 trajectories of agent5: -5.105639801900227
+avg return on 3 trajectories of agent6: -5.0938059865208425
+avg return on 3 trajectories of agent7: -5.8864784187640335
+avg return on 3 trajectories of agent8: -117.29275067546342
+avg return on 3 trajectories of agent9: -112.72184393885918
+avg return on 3 trajectories of agent10: -6.458857989570088
+avg return on 3 trajectories of agent11: -7.582499793108211
+avg return on 3 trajectories of agent12: -7.3855721377884
+avg return on 3 trajectories of agent13: -6.474943644254826
+avg return on 3 trajectories of agent14: -6.497153635169441
+avg return on 3 trajectories of agent15: -8.315945623172304
+avg return on 3 trajectories of agent16: -6.860894467033314
+avg return on 3 trajectories of agent17: -9.010178406465187
+avg return on 3 trajectories of agent18: -7.346411378850969
+avg return on 3 trajectories of agent19: -9.049515981339177
+avg cum rews: -17.40573361412943, std: 32.56480568011255
+the best agent: 4, best agent cum rewards: -4.740169261408318
+3
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.033593653860902926
+avg return on 3 trajectories of agent0: -6.585269926840647
+avg return on 3 trajectories of agent1: -7.8981791004438735
+avg return on 3 trajectories of agent2: -7.718870647336026
+avg return on 3 trajectories of agent3: -7.8499998303627
+avg return on 3 trajectories of agent4: -7.975728503201539
+avg return on 3 trajectories of agent5: -7.217236985986074
+avg return on 3 trajectories of agent6: -7.032052870285695
+avg return on 3 trajectories of agent7: -7.531993440848203
+avg return on 3 trajectories of agent8: -6.6324378857635935
+avg return on 3 trajectories of agent9: -7.901938719340716
+avg return on 3 trajectories of agent10: -8.069375478046314
+avg return on 3 trajectories of agent11: -8.122836439696139
+avg return on 3 trajectories of agent12: -6.13707723576095
+avg return on 3 trajectories of agent13: -5.9327494767629405
+avg return on 3 trajectories of agent14: -6.049993113855584
+avg return on 3 trajectories of agent15: -6.27571266577403
+avg return on 3 trajectories of agent16: -7.526304160660391
+avg return on 3 trajectories of agent17: -7.158586529051835
+avg return on 3 trajectories of agent18: -6.883704387365079
+avg return on 3 trajectories of agent19: -6.798652398551571
+avg cum rews: -7.164934989796696, std: 0.7062970228536878
+the best agent: 13, best agent cum rewards: -5.9327494767629405
+4
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03569090895948977
+avg return on 3 trajectories of agent0: -9.78608906318278
+avg return on 3 trajectories of agent1: -10.07962246987624
+avg return on 3 trajectories of agent2: -9.593294859364303
+avg return on 3 trajectories of agent3: -10.112995787556267
+avg return on 3 trajectories of agent4: -10.067979340311078
+avg return on 3 trajectories of agent5: -10.5557773325505
+avg return on 3 trajectories of agent6: -10.754537520389343
+avg return on 3 trajectories of agent7: -10.975878119396342
+avg return on 3 trajectories of agent8: -10.444201975072835
+avg return on 3 trajectories of agent9: -9.722400922554838
+avg return on 3 trajectories of agent10: -9.85953621689631
+avg return on 3 trajectories of agent11: -9.980968307276854
+avg return on 3 trajectories of agent12: -10.607225762573274
+avg return on 3 trajectories of agent13: -10.591657873580552
+avg return on 3 trajectories of agent14: -9.684682318029628
+avg return on 3 trajectories of agent15: -10.056297170341292
+avg return on 3 trajectories of agent16: -11.297308752460705
+avg return on 3 trajectories of agent17: -11.956657141420816
+avg return on 3 trajectories of agent18: -10.103570751382742
+avg return on 3 trajectories of agent19: -12.516094743197174
+avg cum rews: -10.437338821370693, std: 0.7486309833929362
+the best agent: 2, best agent cum rewards: -9.593294859364303
+5
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.029352959304320848
+avg return on 3 trajectories of agent0: -14.02093641057861
+avg return on 3 trajectories of agent1: -15.924098786758831
+avg return on 3 trajectories of agent2: -15.673585223646572
+avg return on 3 trajectories of agent3: -13.082899736026391
+avg return on 3 trajectories of agent4: -16.364664461179466
+avg return on 3 trajectories of agent5: -15.14706022607789
+avg return on 3 trajectories of agent6: -13.177375712381695
+avg return on 3 trajectories of agent7: -14.66630463403834
+avg return on 3 trajectories of agent8: -15.805445066719033
+avg return on 3 trajectories of agent9: -16.51039081950789
+avg return on 3 trajectories of agent10: -16.858339711164437
+avg return on 3 trajectories of agent11: -15.740409583549908
+avg return on 3 trajectories of agent12: -15.554611752792132
+avg return on 3 trajectories of agent13: -17.45168027087109
+avg return on 3 trajectories of agent14: -18.018566292429355
+avg return on 3 trajectories of agent15: -18.431593469470812
+avg return on 3 trajectories of agent16: -16.27461073893191
+avg return on 3 trajectories of agent17: -17.359653990806454
+avg return on 3 trajectories of agent18: -19.357140403046944
+avg return on 3 trajectories of agent19: -20.278896644616264
+avg cum rews: -16.284913196729708, std: 1.822365319018842
+the best agent: 3, best agent cum rewards: -13.082899736026391
+6
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03407798764445203
+avg return on 3 trajectories of agent0: -17.181986732790055
+avg return on 3 trajectories of agent1: -20.428581400780537
+avg return on 3 trajectories of agent2: -20.823378755906226
+avg return on 3 trajectories of agent3: -19.93216932002473
+avg return on 3 trajectories of agent4: -15.967399688810875
+avg return on 3 trajectories of agent5: -19.729386040506032
+avg return on 3 trajectories of agent6: -18.947192577550503
+avg return on 3 trajectories of agent7: -15.714247750836652
+avg return on 3 trajectories of agent8: -19.80970136459431
+avg return on 3 trajectories of agent9: -18.961652726778336
+avg return on 3 trajectories of agent10: -15.916768872397304
+avg return on 3 trajectories of agent11: -18.787786723282643
+avg return on 3 trajectories of agent12: -19.83822008332918
+avg return on 3 trajectories of agent13: -19.24222507912383
+avg return on 3 trajectories of agent14: -18.831308585977098
+avg return on 3 trajectories of agent15: -18.345782240816607
+avg return on 3 trajectories of agent16: -19.436726926508406
+avg return on 3 trajectories of agent17: -19.555136569486308
+avg return on 3 trajectories of agent18: -19.618481097884203
+avg return on 3 trajectories of agent19: -18.83327823460764
+avg cum rews: -18.795070538599578, std: 1.4415750290886449
+the best agent: 7, best agent cum rewards: -15.714247750836652
+7
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03393321137689069
+avg return on 3 trajectories of agent0: -26.185043701158968
+avg return on 3 trajectories of agent1: -24.727455115668743
+avg return on 3 trajectories of agent2: -22.515417472980417
+avg return on 3 trajectories of agent3: -24.85853953658759
+avg return on 3 trajectories of agent4: -23.292020348351993
+avg return on 3 trajectories of agent5: -115.6934343924007
+avg return on 3 trajectories of agent6: -117.02734316326988
+avg return on 3 trajectories of agent7: -24.015609054927932
+avg return on 3 trajectories of agent8: -28.74431143331399
+avg return on 3 trajectories of agent9: -22.284205505839637
+avg return on 3 trajectories of agent10: -28.57030927909664
+avg return on 3 trajectories of agent11: -28.768470666907795
+avg return on 3 trajectories of agent12: -27.952753733098636
+avg return on 3 trajectories of agent13: -27.84591410566593
+avg return on 3 trajectories of agent14: -28.310620946682793
+avg return on 3 trajectories of agent15: -28.909308596674666
+avg return on 3 trajectories of agent16: -28.49194581403018
+avg return on 3 trajectories of agent17: -26.428083004322456
+avg return on 3 trajectories of agent18: -28.263302562231683
+avg return on 3 trajectories of agent19: -28.35249586357927
+avg cum rews: -35.5618292148395, std: 27.0207054382397
+the best agent: 9, best agent cum rewards: -22.284205505839637
+8
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03678155916348991
+avg return on 3 trajectories of agent0: -38.2162242446703
+avg return on 3 trajectories of agent1: -35.8494152146343
+avg return on 3 trajectories of agent2: -32.1024147011206
+avg return on 3 trajectories of agent3: -30.157955465203614
+avg return on 3 trajectories of agent4: -117.39360337743163
+avg return on 3 trajectories of agent5: -118.75753666922698
+avg return on 3 trajectories of agent6: -37.32506579031105
+avg return on 3 trajectories of agent7: -37.37502638709328
+avg return on 3 trajectories of agent8: -45.21036893857177
+avg return on 3 trajectories of agent9: -35.61098961248628
+avg return on 3 trajectories of agent10: -35.85396364365641
+avg return on 3 trajectories of agent11: -28.568181175417177
+avg return on 3 trajectories of agent12: -34.931101580248296
+avg return on 3 trajectories of agent13: -29.504672776794937
+avg return on 3 trajectories of agent14: -30.00200760441144
+avg return on 3 trajectories of agent15: -30.704478131086358
+avg return on 3 trajectories of agent16: -37.75525410981604
+avg return on 3 trajectories of agent17: -35.22771721750138
+avg return on 3 trajectories of agent18: -35.62628786176112
+avg return on 3 trajectories of agent19: -116.18396126607185
+avg cum rews: -47.11781128837574, std: 29.782869134157792
+the best agent: 11, best agent cum rewards: -28.568181175417177
+9
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03402112990049188
+avg return on 3 trajectories of agent0: -37.170691368352955
+avg return on 3 trajectories of agent1: -52.31906381427054
+avg return on 3 trajectories of agent2: -35.33109227927136
+avg return on 3 trajectories of agent3: -41.07252904914894
+avg return on 3 trajectories of agent4: -37.09157811177415
+avg return on 3 trajectories of agent5: -40.85355497959909
+avg return on 3 trajectories of agent6: -41.47686892885568
+avg return on 3 trajectories of agent7: -41.25766266043106
+avg return on 3 trajectories of agent8: -43.42593419503293
+avg return on 3 trajectories of agent9: -43.818340556498306
+avg return on 3 trajectories of agent10: -53.47849980974814
+avg return on 3 trajectories of agent11: -54.338849399900155
+avg return on 3 trajectories of agent12: -48.50801552834586
+avg return on 3 trajectories of agent13: -53.600799666164846
+avg return on 3 trajectories of agent14: -39.83513480820782
+avg return on 3 trajectories of agent15: -39.36641140553945
+avg return on 3 trajectories of agent16: -34.62291309789429
+avg return on 3 trajectories of agent17: -41.885120605007984
+avg return on 3 trajectories of agent18: -57.85815815449367
+avg return on 3 trajectories of agent19: -55.17556894868645
+avg cum rews: -44.624339368361184, std: 7.145060637879078
+the best agent: 16, best agent cum rewards: -34.62291309789429
+10
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03511664661481253
+avg return on 3 trajectories of agent0: -112.11461120440687
+avg return on 3 trajectories of agent1: -113.86469029284082
+avg return on 3 trajectories of agent2: -115.80121764771516
+avg return on 3 trajectories of agent3: -116.16230237308268
+avg return on 3 trajectories of agent4: -38.8386948915038
+avg return on 3 trajectories of agent5: -38.75364834277448
+avg return on 3 trajectories of agent6: -38.662792719646006
+avg return on 3 trajectories of agent7: -45.79884438417997
+avg return on 3 trajectories of agent8: -35.887654811093036
+avg return on 3 trajectories of agent9: -39.99573449397103
+avg return on 3 trajectories of agent10: -39.79299106844892
+avg return on 3 trajectories of agent11: -45.20376587172932
+avg return on 3 trajectories of agent12: -115.65615962279465
+avg return on 3 trajectories of agent13: -115.42916528542713
+avg return on 3 trajectories of agent14: -114.95307983107617
+avg return on 3 trajectories of agent15: -113.88345286178341
+avg return on 3 trajectories of agent16: -39.062818057186824
+avg return on 3 trajectories of agent17: -38.59904939863979
+avg return on 3 trajectories of agent18: -115.56311261200781
+avg return on 3 trajectories of agent19: -112.44757532705988
+avg cum rews: -77.32356805486839, std: 37.33351338072585
+the best agent: 8, best agent cum rewards: -35.887654811093036
+11
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03196247187756916
+avg return on 3 trajectories of agent0: -44.735325088223206
+avg return on 3 trajectories of agent1: -44.3558609096657
+avg return on 3 trajectories of agent2: -41.66069246352882
+avg return on 3 trajectories of agent3: -43.46996687471518
+avg return on 3 trajectories of agent4: -42.38600509709737
+avg return on 3 trajectories of agent5: -115.32632449298849
+avg return on 3 trajectories of agent6: -115.71871986051711
+avg return on 3 trajectories of agent7: -115.89969214787334
+avg return on 3 trajectories of agent8: -45.05781621669364
+avg return on 3 trajectories of agent9: -44.52724180765577
+avg return on 3 trajectories of agent10: -116.12187428386137
+avg return on 3 trajectories of agent11: -29.375373370447463
+avg return on 3 trajectories of agent12: -116.14219234712732
+avg return on 3 trajectories of agent13: -116.80355593104598
+avg return on 3 trajectories of agent14: -116.14548765886575
+avg return on 3 trajectories of agent15: -115.45421856484313
+avg return on 3 trajectories of agent16: -115.91175233625061
+avg return on 3 trajectories of agent17: -115.58217354388783
+avg return on 3 trajectories of agent18: -115.39592293113843
+avg return on 3 trajectories of agent19: -115.63122002111623
+avg cum rews: -86.28507079737713, std: 36.33535155695787
+the best agent: 11, best agent cum rewards: -29.375373370447463
+12
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03422035623236126
+avg return on 3 trajectories of agent0: -46.0452716498235
+avg return on 3 trajectories of agent1: -45.7531625299471
+avg return on 3 trajectories of agent2: -41.95767618209569
+avg return on 3 trajectories of agent3: -49.656434722514206
+avg return on 3 trajectories of agent4: -47.84208823926913
+avg return on 3 trajectories of agent5: -52.431135189112254
+avg return on 3 trajectories of agent6: -51.317226068805404
+avg return on 3 trajectories of agent7: -50.206488582699635
+avg return on 3 trajectories of agent8: -50.97320638173472
+avg return on 3 trajectories of agent9: -52.19362347381603
+avg return on 3 trajectories of agent10: -52.02470294678788
+avg return on 3 trajectories of agent11: -51.86273470575286
+avg return on 3 trajectories of agent12: -50.75945947315921
+avg return on 3 trajectories of agent13: -51.39783733915976
+avg return on 3 trajectories of agent14: -46.61203632647935
+avg return on 3 trajectories of agent15: -45.43890305045847
+avg return on 3 trajectories of agent16: -44.541867315005064
+avg return on 3 trajectories of agent17: -45.05786480671851
+avg return on 3 trajectories of agent18: -46.37359444287679
+avg return on 3 trajectories of agent19: -45.126531818484175
+avg cum rews: -48.37859226223499, std: 3.1424222124104406
+the best agent: 2, best agent cum rewards: -41.95767618209569
+13
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03302705367555956
+avg return on 3 trajectories of agent0: -119.97897283951318
+avg return on 3 trajectories of agent1: -109.9641678526178
+avg return on 3 trajectories of agent2: -109.55332147877787
+avg return on 3 trajectories of agent3: -118.69561887077491
+avg return on 3 trajectories of agent4: -118.89701365375271
+avg return on 3 trajectories of agent5: -119.85690640873834
+avg return on 3 trajectories of agent6: -119.45707768174634
+avg return on 3 trajectories of agent7: -120.30872805826739
+avg return on 3 trajectories of agent8: -117.45839365398572
+avg return on 3 trajectories of agent9: -120.88728182867541
+avg return on 3 trajectories of agent10: -118.2203586122493
+avg return on 3 trajectories of agent11: -37.17060822304368
+avg return on 3 trajectories of agent12: -116.23092950318505
+avg return on 3 trajectories of agent13: -117.62282631053279
+avg return on 3 trajectories of agent14: -118.90637166055043
+avg return on 3 trajectories of agent15: -112.21839353360608
+avg return on 3 trajectories of agent16: -115.60402255725116
+avg return on 3 trajectories of agent17: -111.34672836464892
+avg return on 3 trajectories of agent18: -117.91426511763285
+avg return on 3 trajectories of agent19: -109.92955795373271
+avg cum rews: -112.51107720816415, std: 17.66946108319745
+the best agent: 11, best agent cum rewards: -37.17060822304368
+14
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03366493114255666
+avg return on 3 trajectories of agent0: -46.7286722693638
+avg return on 3 trajectories of agent1: -47.19393257563698
+avg return on 3 trajectories of agent2: -43.49251549135257
+avg return on 3 trajectories of agent3: -49.09539628350379
+avg return on 3 trajectories of agent4: -45.65927823235925
+avg return on 3 trajectories of agent5: -47.12753966368609
+avg return on 3 trajectories of agent6: -47.01011724574018
+avg return on 3 trajectories of agent7: -48.79721567928056
+avg return on 3 trajectories of agent8: -46.80158737926582
+avg return on 3 trajectories of agent9: -46.95873268277823
+avg return on 3 trajectories of agent10: -48.28043920919977
+avg return on 3 trajectories of agent11: -48.806327353337814
+avg return on 3 trajectories of agent12: -124.24141129351098
+avg return on 3 trajectories of agent13: -118.33643589511017
+avg return on 3 trajectories of agent14: -47.01283107743795
+avg return on 3 trajectories of agent15: -37.338999273719814
+avg return on 3 trajectories of agent16: -42.94351979034776
+avg return on 3 trajectories of agent17: -43.385883905784475
+avg return on 3 trajectories of agent18: -124.28051982018786
+avg return on 3 trajectories of agent19: -40.95730659167645
+avg cum rews: -57.22243308566401, std: 27.4987240231092
+the best agent: 15, best agent cum rewards: -37.338999273719814
+15
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.027238971470439473
+avg return on 3 trajectories of agent0: -124.25836630759451
+avg return on 3 trajectories of agent1: -117.28946248504023
+avg return on 3 trajectories of agent2: -43.26087786647081
+avg return on 3 trajectories of agent3: -43.88764247808657
+avg return on 3 trajectories of agent4: -41.38276954687067
+avg return on 3 trajectories of agent5: -44.480436962598205
+avg return on 3 trajectories of agent6: -42.768281539766896
+avg return on 3 trajectories of agent7: -42.69650933641322
+avg return on 3 trajectories of agent8: -122.79716089046809
+avg return on 3 trajectories of agent9: -42.62564575924965
+avg return on 3 trajectories of agent10: -120.49181774321818
+avg return on 3 trajectories of agent11: -122.81190450525345
+avg return on 3 trajectories of agent12: -41.605888007411444
+avg return on 3 trajectories of agent13: -41.66530883592992
+avg return on 3 trajectories of agent14: -41.72956285486988
+avg return on 3 trajectories of agent15: -38.15312646445507
+avg return on 3 trajectories of agent16: -40.55014400605704
+avg return on 3 trajectories of agent17: -39.854341963355154
+avg return on 3 trajectories of agent18: -41.74178379482384
+avg return on 3 trajectories of agent19: -41.24144878207458
+avg cum rews: -61.764624006500355, std: 34.55248587323802
+the best agent: 15, best agent cum rewards: -38.15312646445507
+16
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.030720214796336055
+avg return on 3 trajectories of agent0: -37.51357701561469
+avg return on 3 trajectories of agent1: -38.393481662398884
+avg return on 3 trajectories of agent2: -38.72007949099189
+avg return on 3 trajectories of agent3: -40.89293923726483
+avg return on 3 trajectories of agent4: -33.89976300516764
+avg return on 3 trajectories of agent5: -38.39301926935161
+avg return on 3 trajectories of agent6: -41.06726745575059
+avg return on 3 trajectories of agent7: -40.47602920858388
+avg return on 3 trajectories of agent8: -37.875605171129024
+avg return on 3 trajectories of agent9: -38.28068275203423
+avg return on 3 trajectories of agent10: -38.571499977856845
+avg return on 3 trajectories of agent11: -38.59611548900094
+avg return on 3 trajectories of agent12: -38.85570686916322
+avg return on 3 trajectories of agent13: -39.132905218167146
+avg return on 3 trajectories of agent14: -37.2363104569171
+avg return on 3 trajectories of agent15: -37.14308641780695
+avg return on 3 trajectories of agent16: -40.51354820548985
+avg return on 3 trajectories of agent17: -38.363763181521335
+avg return on 3 trajectories of agent18: -37.961109311679444
+avg return on 3 trajectories of agent19: -36.483869837485315
+avg cum rews: -38.41851796166877, std: 1.5990782416687257
+the best agent: 4, best agent cum rewards: -33.89976300516764
+17
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.033497968457316535
+avg return on 3 trajectories of agent0: -41.28648518433863
+avg return on 3 trajectories of agent1: -39.64977137413624
+avg return on 3 trajectories of agent2: -41.777119781664545
+avg return on 3 trajectories of agent3: -42.41482673972195
+avg return on 3 trajectories of agent4: -39.129960299230405
+avg return on 3 trajectories of agent5: -40.58880614988308
+avg return on 3 trajectories of agent6: -40.871291280963725
+avg return on 3 trajectories of agent7: -41.17713008364409
+avg return on 3 trajectories of agent8: -42.329188744373724
+avg return on 3 trajectories of agent9: -41.99884461991277
+avg return on 3 trajectories of agent10: -41.55009230645031
+avg return on 3 trajectories of agent11: -41.66272546949019
+avg return on 3 trajectories of agent12: -43.20770471478151
+avg return on 3 trajectories of agent13: -42.56321807710824
+avg return on 3 trajectories of agent14: -42.186412578909916
+avg return on 3 trajectories of agent15: -40.775001811284525
+avg return on 3 trajectories of agent16: -42.62396437989485
+avg return on 3 trajectories of agent17: -42.3995959438036
+avg return on 3 trajectories of agent18: -41.72343131401158
+avg return on 3 trajectories of agent19: -39.90671198159518
+avg cum rews: -41.49111414175995, std: 1.0487578184640485
+the best agent: 4, best agent cum rewards: -39.129960299230405
+18
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.028933133341244827
+avg return on 3 trajectories of agent0: -121.60750835312034
+avg return on 3 trajectories of agent1: -110.96849431298052
+avg return on 3 trajectories of agent2: -117.06542726624757
+avg return on 3 trajectories of agent3: -119.78438323725388
+avg return on 3 trajectories of agent4: -124.52073107374956
+avg return on 3 trajectories of agent5: -116.8597610569348
+avg return on 3 trajectories of agent6: -118.1137992435048
+avg return on 3 trajectories of agent7: -120.77521915252507
+avg return on 3 trajectories of agent8: -118.76849677451327
+avg return on 3 trajectories of agent9: -119.50918139034883
+avg return on 3 trajectories of agent10: -117.99531871019863
+avg return on 3 trajectories of agent11: -119.47420756959605
+avg return on 3 trajectories of agent12: -118.03247380482033
+avg return on 3 trajectories of agent13: -120.15097875043502
+avg return on 3 trajectories of agent14: -110.56439934277658
+avg return on 3 trajectories of agent15: -110.1643891374593
+avg return on 3 trajectories of agent16: -121.01843205965187
+avg return on 3 trajectories of agent17: -125.7175227392651
+avg return on 3 trajectories of agent18: -110.77802355723331
+avg return on 3 trajectories of agent19: -110.64861735225469
+avg cum rews: -117.62586824424345, std: 4.563299911533723
+the best agent: 15, best agent cum rewards: -110.1643891374593
+19
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03168886619987796
+avg return on 3 trajectories of agent0: -117.59049109866221
+avg return on 3 trajectories of agent1: -111.12653505971033
+avg return on 3 trajectories of agent2: -111.13606168480466
+avg return on 3 trajectories of agent3: -120.81684443078562
+avg return on 3 trajectories of agent4: -111.02945744975284
+avg return on 3 trajectories of agent5: -118.49921874501867
+avg return on 3 trajectories of agent6: -110.9418437089473
+avg return on 3 trajectories of agent7: -121.48718640417854
+avg return on 3 trajectories of agent8: -118.05605287781792
+avg return on 3 trajectories of agent9: -118.87437292992757
+avg return on 3 trajectories of agent10: -122.658060349131
+avg return on 3 trajectories of agent11: -121.16139375094511
+avg return on 3 trajectories of agent12: -121.8592926377921
+avg return on 3 trajectories of agent13: -110.66097035149609
+avg return on 3 trajectories of agent14: -110.65501091130761
+avg return on 3 trajectories of agent15: -110.77355756254742
+avg return on 3 trajectories of agent16: -121.7167222332613
+avg return on 3 trajectories of agent17: -118.05906015621375
+avg return on 3 trajectories of agent18: -111.15134873626009
+avg return on 3 trajectories of agent19: -111.15181045006464
+avg cum rews: -115.97026457643123, std: 4.7216753266022415
+the best agent: 14, best agent cum rewards: -110.65501091130761
+20
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.034184568969603646
+avg return on 3 trajectories of agent0: -32.76656182234298
+avg return on 3 trajectories of agent1: -31.383646411302205
+avg return on 3 trajectories of agent2: -32.825353376717544
+avg return on 3 trajectories of agent3: -37.58736132964431
+avg return on 3 trajectories of agent4: -36.590771289872784
+avg return on 3 trajectories of agent5: -41.393408049888365
+avg return on 3 trajectories of agent6: -41.83417444970597
+avg return on 3 trajectories of agent7: -41.085277833473604
+avg return on 3 trajectories of agent8: -40.44833595129223
+avg return on 3 trajectories of agent9: -38.51680611798863
+avg return on 3 trajectories of agent10: -30.714211702308994
+avg return on 3 trajectories of agent11: -29.597959051855995
+avg return on 3 trajectories of agent12: -30.23013187916192
+avg return on 3 trajectories of agent13: -39.258108672764706
+avg return on 3 trajectories of agent14: -30.47964833696057
+avg return on 3 trajectories of agent15: -29.807308866672265
+avg return on 3 trajectories of agent16: -117.74665947166831
+avg return on 3 trajectories of agent17: -38.994771196807406
+avg return on 3 trajectories of agent18: -39.607730485587695
+avg return on 3 trajectories of agent19: -39.67324419921195
+avg cum rews: -40.02707352476142, std: 18.350918913747496
+the best agent: 11, best agent cum rewards: -29.597959051855995
+21
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02940112717307138
+avg return on 3 trajectories of agent0: -25.424044697713068
+avg return on 3 trajectories of agent1: -26.90752901842321
+avg return on 3 trajectories of agent2: -28.940834532609777
+avg return on 3 trajectories of agent3: -28.119205019724923
+avg return on 3 trajectories of agent4: -25.69885955095965
+avg return on 3 trajectories of agent5: -31.35342674811923
+avg return on 3 trajectories of agent6: -29.952672244834282
+avg return on 3 trajectories of agent7: -27.624311800943364
+avg return on 3 trajectories of agent8: -34.65518814769701
+avg return on 3 trajectories of agent9: -18.036072768487628
+avg return on 3 trajectories of agent10: -36.181531319994654
+avg return on 3 trajectories of agent11: -38.345809030988775
+avg return on 3 trajectories of agent12: -34.56722044983728
+avg return on 3 trajectories of agent13: -25.39916917409622
+avg return on 3 trajectories of agent14: -33.115669733611945
+avg return on 3 trajectories of agent15: -33.838391277875836
+avg return on 3 trajectories of agent16: -28.894934494744163
+avg return on 3 trajectories of agent17: -34.54333668127748
+avg return on 3 trajectories of agent18: -36.67972039059982
+avg return on 3 trajectories of agent19: -34.88219164763761
+avg cum rews: -30.6580059365088, std: 4.908847907899575
+the best agent: 9, best agent cum rewards: -18.036072768487628
+22
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.026009308935545993
+avg return on 3 trajectories of agent0: -30.887879255356616
+avg return on 3 trajectories of agent1: -32.18984038351021
+avg return on 3 trajectories of agent2: -22.92592461936111
+avg return on 3 trajectories of agent3: -20.344407641699235
+avg return on 3 trajectories of agent4: -21.494374649012567
+avg return on 3 trajectories of agent5: -22.216859995118586
+avg return on 3 trajectories of agent6: -91.48138415681571
+avg return on 3 trajectories of agent7: -30.117231750751905
+avg return on 3 trajectories of agent8: -24.75354208704145
+avg return on 3 trajectories of agent9: -35.04307379864471
+avg return on 3 trajectories of agent10: -40.52022980919932
+avg return on 3 trajectories of agent11: -13.080732158296412
+avg return on 3 trajectories of agent12: -33.20418643622851
+avg return on 3 trajectories of agent13: -30.270012655934146
+avg return on 3 trajectories of agent14: -31.919910457931326
+avg return on 3 trajectories of agent15: -27.73755394557603
+avg return on 3 trajectories of agent16: -19.34402702791304
+avg return on 3 trajectories of agent17: -34.78509405009695
+avg return on 3 trajectories of agent18: -26.136313169649462
+avg return on 3 trajectories of agent19: -30.984496230006272
+avg cum rews: -30.971853713907183, std: 15.271292380113776
+the best agent: 11, best agent cum rewards: -13.080732158296412
+23
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02632795183215763
+avg return on 3 trajectories of agent0: -88.52747976874312
+avg return on 3 trajectories of agent1: -87.89717340403438
+avg return on 3 trajectories of agent2: -31.9613380834298
+avg return on 3 trajectories of agent3: -92.6171682550935
+avg return on 3 trajectories of agent4: -32.01357091137993
+avg return on 3 trajectories of agent5: -29.41325885781887
+avg return on 3 trajectories of agent6: -17.95495001719613
+avg return on 3 trajectories of agent7: -24.352908117076062
+avg return on 3 trajectories of agent8: -30.701276188730873
+avg return on 3 trajectories of agent9: -25.792445305508977
+avg return on 3 trajectories of agent10: -13.604299787588738
+avg return on 3 trajectories of agent11: -31.086884111923332
+avg return on 3 trajectories of agent12: -15.1725360971118
+avg return on 3 trajectories of agent13: -32.17987900563282
+avg return on 3 trajectories of agent14: -30.664181381542296
+avg return on 3 trajectories of agent15: -28.99450424077735
+avg return on 3 trajectories of agent16: -14.643909675997321
+avg return on 3 trajectories of agent17: -22.468614828415806
+avg return on 3 trajectories of agent18: -20.674645951345248
+avg return on 3 trajectories of agent19: -36.96849407952187
+avg cum rews: -35.38447590344341, std: 23.71300477804403
+the best agent: 10, best agent cum rewards: -13.604299787588738
+24
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03167016281774953
+avg return on 3 trajectories of agent0: -8.63683983602497
+avg return on 3 trajectories of agent1: 14.780545176903589
+avg return on 3 trajectories of agent2: 60.04840875258362
+avg return on 3 trajectories of agent3: 48.54888305161069
+avg return on 3 trajectories of agent4: -17.088763883178434
+avg return on 3 trajectories of agent5: 54.44851580855479
+avg return on 3 trajectories of agent6: 55.59619498195571
+avg return on 3 trajectories of agent7: 56.91148519276112
+avg return on 3 trajectories of agent8: -11.566465730355143
+avg return on 3 trajectories of agent9: -9.756095667686488
+avg return on 3 trajectories of agent10: -0.4479454682025266
+avg return on 3 trajectories of agent11: -90.2009592426885
+avg return on 3 trajectories of agent12: 15.865374670575104
+avg return on 3 trajectories of agent13: -91.93072080563955
+avg return on 3 trajectories of agent14: -91.04167767670083
+avg return on 3 trajectories of agent15: -91.80185591474859
+avg return on 3 trajectories of agent16: 59.984593154658455
+avg return on 3 trajectories of agent17: -6.5624122500908575
+avg return on 3 trajectories of agent18: 3.585466370692783
+avg return on 3 trajectories of agent19: 21.23418267173974
+avg cum rews: -1.4015043321640144, std: 51.81340453560187
+the best agent: 2, best agent cum rewards: 60.04840875258362
+25
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.030084956106322995
+avg return on 3 trajectories of agent0: -93.75407903782589
+avg return on 3 trajectories of agent1: -99.91018967184176
+avg return on 3 trajectories of agent2: -91.46558232456594
+avg return on 3 trajectories of agent3: -96.3965716043037
+avg return on 3 trajectories of agent4: -99.8602965243999
+avg return on 3 trajectories of agent5: -100.2704204552599
+avg return on 3 trajectories of agent6: -92.59425786716413
+avg return on 3 trajectories of agent7: -88.65469609108163
+avg return on 3 trajectories of agent8: -100.61493141065974
+avg return on 3 trajectories of agent9: -97.1746074688627
+avg return on 3 trajectories of agent10: -99.82131670425832
+avg return on 3 trajectories of agent11: -100.62555169025933
+avg return on 3 trajectories of agent12: -100.0941643984324
+avg return on 3 trajectories of agent13: -99.30544168427711
+avg return on 3 trajectories of agent14: -98.71647207285913
+avg return on 3 trajectories of agent15: 57.35411323032042
+avg return on 3 trajectories of agent16: -92.54305866651548
+avg return on 3 trajectories of agent17: -91.95711272981887
+avg return on 3 trajectories of agent18: -91.89881875922717
+avg return on 3 trajectories of agent19: 58.685048450312586
+avg cum rews: -80.98092037404902, std: 46.48230524016141
+the best agent: 19, best agent cum rewards: 58.685048450312586
+26
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.029984352596486206
+avg return on 3 trajectories of agent0: -100.84465885464444
+avg return on 3 trajectories of agent1: -100.55215849749123
+avg return on 3 trajectories of agent2: -97.70002318678486
+avg return on 3 trajectories of agent3: 62.94517247938479
+avg return on 3 trajectories of agent4: -101.19942210025775
+avg return on 3 trajectories of agent5: -100.73870829557006
+avg return on 3 trajectories of agent6: -97.5505060058604
+avg return on 3 trajectories of agent7: 69.43758105349993
+avg return on 3 trajectories of agent8: -99.22474100480477
+avg return on 3 trajectories of agent9: -91.88503929117275
+avg return on 3 trajectories of agent10: -101.84231145579139
+avg return on 3 trajectories of agent11: -100.33546053404145
+avg return on 3 trajectories of agent12: -99.86998857789068
+avg return on 3 trajectories of agent13: -100.32871556321594
+avg return on 3 trajectories of agent14: -101.24777983401809
+avg return on 3 trajectories of agent15: -92.6473354098207
+avg return on 3 trajectories of agent16: -98.6869002490087
+avg return on 3 trajectories of agent17: -101.27396930761107
+avg return on 3 trajectories of agent18: -101.76139616446446
+avg return on 3 trajectories of agent19: -100.51153557007697
+avg cum rews: -82.79089481848204, std: 49.74126299693761
+the best agent: 7, best agent cum rewards: 69.43758105349993
+27
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.030443288219303012
+avg return on 3 trajectories of agent0: 86.68403748004376
+avg return on 3 trajectories of agent1: -122.2560270225325
+avg return on 3 trajectories of agent2: 78.61044884700651
+avg return on 3 trajectories of agent3: 83.19743944528243
+avg return on 3 trajectories of agent4: 74.34535641375732
+avg return on 3 trajectories of agent5: -105.72779695114463
+avg return on 3 trajectories of agent6: -99.16648745749022
+avg return on 3 trajectories of agent7: 99.14339879728854
+avg return on 3 trajectories of agent8: 65.27561787083584
+avg return on 3 trajectories of agent9: -99.23791949363364
+avg return on 3 trajectories of agent10: -101.65012572642632
+avg return on 3 trajectories of agent11: -94.67062062642724
+avg return on 3 trajectories of agent12: 89.62981934400678
+avg return on 3 trajectories of agent13: 91.96952343363324
+avg return on 3 trajectories of agent14: 60.92983726896568
+avg return on 3 trajectories of agent15: -99.93613054970062
+avg return on 3 trajectories of agent16: -110.16705058347341
+avg return on 3 trajectories of agent17: -105.73015913607165
+avg return on 3 trajectories of agent18: 62.87042012493202
+avg return on 3 trajectories of agent19: 71.45952810830995
+avg cum rews: -3.721344520641909, std: 91.54912062139017
+the best agent: 7, best agent cum rewards: 99.14339879728854
+28
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.0333936253567488
+avg return on 3 trajectories of agent0: -121.20838752576337
+avg return on 3 trajectories of agent1: -124.09148469979004
+avg return on 3 trajectories of agent2: -123.5770518517581
+avg return on 3 trajectories of agent3: 85.04152720054745
+avg return on 3 trajectories of agent4: -120.0783859886701
+avg return on 3 trajectories of agent5: -120.90940786801652
+avg return on 3 trajectories of agent6: -124.25514434932234
+avg return on 3 trajectories of agent7: 78.15692685520904
+avg return on 3 trajectories of agent8: -123.39134479855295
+avg return on 3 trajectories of agent9: -124.18044224181803
+avg return on 3 trajectories of agent10: -124.328403727976
+avg return on 3 trajectories of agent11: -120.82493669244771
+avg return on 3 trajectories of agent12: 89.90535818777397
+avg return on 3 trajectories of agent13: 116.49684691006053
+avg return on 3 trajectories of agent14: -101.22382079810028
+avg return on 3 trajectories of agent15: -104.07082633079
+avg return on 3 trajectories of agent16: -101.35087391348029
+avg return on 3 trajectories of agent17: -99.63606323216452
+avg return on 3 trajectories of agent18: -101.73500555910698
+avg return on 3 trajectories of agent19: 108.04232622146526
+avg cum rews: -62.86092971013504, std: 92.14275620422109
+the best agent: 13, best agent cum rewards: 116.49684691006053
+29
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03153673270593045
+avg return on 3 trajectories of agent0: -104.03447393750027
+avg return on 3 trajectories of agent1: 157.8147077887556
+avg return on 3 trajectories of agent2: -122.71079031009353
+avg return on 3 trajectories of agent3: -118.872214728379
+avg return on 3 trajectories of agent4: 144.1113896299832
+avg return on 3 trajectories of agent5: 152.52631520747263
+avg return on 3 trajectories of agent6: -124.68574345064536
+avg return on 3 trajectories of agent7: -121.93100531441098
+avg return on 3 trajectories of agent8: -116.45513737420987
+avg return on 3 trajectories of agent9: -101.73749466658073
+avg return on 3 trajectories of agent10: -95.63519536051791
+avg return on 3 trajectories of agent11: -100.98228984593973
+avg return on 3 trajectories of agent12: -125.13048281666792
+avg return on 3 trajectories of agent13: -107.19873079790423
+avg return on 3 trajectories of agent14: -106.26621180470474
+avg return on 3 trajectories of agent15: -106.1919637092861
+avg return on 3 trajectories of agent16: -103.8132428586216
+avg return on 3 trajectories of agent17: -100.8503620517437
+avg return on 3 trajectories of agent18: 167.70259573561768
+avg return on 3 trajectories of agent19: 159.42771211533278
+avg cum rews: -43.74563092750219, std: 115.87779827098898
+the best agent: 18, best agent cum rewards: 167.70259573561768
+30
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02991564089945862
+avg return on 3 trajectories of agent0: 187.3221570963136
+avg return on 3 trajectories of agent1: 203.30649729240116
+avg return on 3 trajectories of agent2: -21.699077983676162
+avg return on 3 trajectories of agent3: 207.77242535982396
+avg return on 3 trajectories of agent4: -99.48362649026141
+avg return on 3 trajectories of agent5: -103.22438024528138
+avg return on 3 trajectories of agent6: -97.64206197774814
+avg return on 3 trajectories of agent7: -100.84186795877976
+avg return on 3 trajectories of agent8: -98.69601378952339
+avg return on 3 trajectories of agent9: -101.63693495496021
+avg return on 3 trajectories of agent10: 187.90283385035247
+avg return on 3 trajectories of agent11: 187.05632143530303
+avg return on 3 trajectories of agent12: 196.5419825889569
+avg return on 3 trajectories of agent13: -95.25649644419597
+avg return on 3 trajectories of agent14: -94.296869872096
+avg return on 3 trajectories of agent15: -102.92193648419234
+avg return on 3 trajectories of agent16: -101.85204183124239
+avg return on 3 trajectories of agent17: 188.04830368909617
+avg return on 3 trajectories of agent18: 78.25078027757257
+avg return on 3 trajectories of agent19: -101.24535204163287
+avg cum rews: 15.870232075811492, std: 136.9209778713581
+the best agent: 3, best agent cum rewards: 207.77242535982396
+31
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02836667472042755
+avg return on 3 trajectories of agent0: 128.6482203432894
+avg return on 3 trajectories of agent1: 129.16017022443424
+avg return on 3 trajectories of agent2: 127.32139760519794
+avg return on 3 trajectories of agent3: -105.78575495072205
+avg return on 3 trajectories of agent4: 132.12542794762797
+avg return on 3 trajectories of agent5: 151.937378337807
+avg return on 3 trajectories of agent6: 137.00062945856212
+avg return on 3 trajectories of agent7: 150.37572830532127
+avg return on 3 trajectories of agent8: -125.70238013268386
+avg return on 3 trajectories of agent9: -125.95437827088558
+avg return on 3 trajectories of agent10: -127.00520254581049
+avg return on 3 trajectories of agent11: -106.0311853183005
+avg return on 3 trajectories of agent12: -113.33603522707895
+avg return on 3 trajectories of agent13: -104.13491855038515
+avg return on 3 trajectories of agent14: -104.48078708233561
+avg return on 3 trajectories of agent15: -103.40172819783166
+avg return on 3 trajectories of agent16: -124.54700335807229
+avg return on 3 trajectories of agent17: 150.0778161947605
+avg return on 3 trajectories of agent18: 135.2508316977769
+avg return on 3 trajectories of agent19: 135.398427609196
+avg cum rews: 11.845832704493358, std: 126.24349046404299
+the best agent: 5, best agent cum rewards: 151.937378337807
+32
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02954761636416319
+avg return on 3 trajectories of agent0: 128.59764930963908
+avg return on 3 trajectories of agent1: 130.33271602056882
+avg return on 3 trajectories of agent2: -108.51766036657989
+avg return on 3 trajectories of agent3: -114.78121875658071
+avg return on 3 trajectories of agent4: -108.40763720039263
+avg return on 3 trajectories of agent5: -112.61424132694367
+avg return on 3 trajectories of agent6: 136.61455502574225
+avg return on 3 trajectories of agent7: -122.1978837288258
+avg return on 3 trajectories of agent8: -107.88388109684735
+avg return on 3 trajectories of agent9: 157.49767845629327
+avg return on 3 trajectories of agent10: 170.18162949933833
+avg return on 3 trajectories of agent11: 142.8121849419425
+avg return on 3 trajectories of agent12: -104.70311682270561
+avg return on 3 trajectories of agent13: 132.81108428887322
+avg return on 3 trajectories of agent14: -61.986674704405935
+avg return on 3 trajectories of agent15: 155.7403978314703
+avg return on 3 trajectories of agent16: -106.14193123729729
+avg return on 3 trajectories of agent17: -105.74967438729976
+avg return on 3 trajectories of agent18: 157.57024203674027
+avg return on 3 trajectories of agent19: -109.95112629739816
+avg cum rews: 7.461154574266558, std: 125.94814160875546
+the best agent: 10, best agent cum rewards: 170.18162949933833
+33
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.030429920346448668
+avg return on 3 trajectories of agent0: 161.58867272894224
+avg return on 3 trajectories of agent1: 124.4959005470329
+avg return on 3 trajectories of agent2: 166.97455092181158
+avg return on 3 trajectories of agent3: -94.07810559094511
+avg return on 3 trajectories of agent4: -119.96483469709631
+avg return on 3 trajectories of agent5: -112.81794974108661
+avg return on 3 trajectories of agent6: -121.06728057203068
+avg return on 3 trajectories of agent7: -122.36918216892052
+avg return on 3 trajectories of agent8: -116.91625528763235
+avg return on 3 trajectories of agent9: -117.49233703970785
+avg return on 3 trajectories of agent10: -124.01880955025429
+avg return on 3 trajectories of agent11: -126.09953349447996
+avg return on 3 trajectories of agent12: -117.22981959426279
+avg return on 3 trajectories of agent13: -117.38064163301203
+avg return on 3 trajectories of agent14: -112.38496731712793
+avg return on 3 trajectories of agent15: -119.31251221066032
+avg return on 3 trajectories of agent16: -126.3364165127476
+avg return on 3 trajectories of agent17: -119.96749695020542
+avg return on 3 trajectories of agent18: -117.50187025664746
+avg return on 3 trajectories of agent19: -112.3125128674445
+avg cum rews: -77.20957006432374, std: 96.38006003013565
+the best agent: 2, best agent cum rewards: 166.97455092181158
+34
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.025031917815467115
+avg return on 3 trajectories of agent0: -98.28005975847101
+avg return on 3 trajectories of agent1: -97.32614005563936
+avg return on 3 trajectories of agent2: -46.97952992675669
+avg return on 3 trajectories of agent3: 212.3236746319315
+avg return on 3 trajectories of agent4: 196.24233248108152
+avg return on 3 trajectories of agent5: 215.93942004150657
+avg return on 3 trajectories of agent6: 202.9200640796363
+avg return on 3 trajectories of agent7: -96.98885482744313
+avg return on 3 trajectories of agent8: -97.52872166304788
+avg return on 3 trajectories of agent9: -97.41219443049157
+avg return on 3 trajectories of agent10: 12.485166050438139
+avg return on 3 trajectories of agent11: 206.08233561462163
+avg return on 3 trajectories of agent12: 216.3392308378214
+avg return on 3 trajectories of agent13: 206.6420004058008
+avg return on 3 trajectories of agent14: 206.4272728454312
+avg return on 3 trajectories of agent15: 198.29715085435248
+avg return on 3 trajectories of agent16: 211.9234014519306
+avg return on 3 trajectories of agent17: 204.534489240768
+avg return on 3 trajectories of agent18: 191.24421053837378
+avg return on 3 trajectories of agent19: -98.10547112274388
+avg cum rews: 92.43898886445501, std: 140.9350880143214
+the best agent: 12, best agent cum rewards: 216.3392308378214
+35
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02930419559696611
+avg return on 3 trajectories of agent0: -98.95404031188166
+avg return on 3 trajectories of agent1: -46.633151304084166
+avg return on 3 trajectories of agent2: 231.273766717935
+avg return on 3 trajectories of agent3: 230.28345752629784
+avg return on 3 trajectories of agent4: 63.703309054505525
+avg return on 3 trajectories of agent5: 221.78905483257554
+avg return on 3 trajectories of agent6: 211.1455646572248
+avg return on 3 trajectories of agent7: -26.451912927832524
+avg return on 3 trajectories of agent8: 211.91286718267446
+avg return on 3 trajectories of agent9: 215.1810031758057
+avg return on 3 trajectories of agent10: 19.479176958546944
+avg return on 3 trajectories of agent11: 218.93361542232594
+avg return on 3 trajectories of agent12: 220.61132016973826
+avg return on 3 trajectories of agent13: 228.92631397174029
+avg return on 3 trajectories of agent14: -61.052077603306934
+avg return on 3 trajectories of agent15: 214.88561603095934
+avg return on 3 trajectories of agent16: -97.77752419056122
+avg return on 3 trajectories of agent17: 215.99769341948542
+avg return on 3 trajectories of agent18: 207.5272877040076
+avg return on 3 trajectories of agent19: -52.016019210086824
+avg cum rews: 116.43826606380348, std: 130.0668311423153
+the best agent: 2, best agent cum rewards: 231.273766717935
+36
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.027506100846284944
+avg return on 3 trajectories of agent0: -25.596549116398222
+avg return on 3 trajectories of agent1: -10.176027132978362
+avg return on 3 trajectories of agent2: 47.76613272480543
+avg return on 3 trajectories of agent3: -8.226303020697088
+avg return on 3 trajectories of agent4: 243.5168137993786
+avg return on 3 trajectories of agent5: 237.77449392285547
+avg return on 3 trajectories of agent6: 230.8523600224304
+avg return on 3 trajectories of agent7: 102.28046281846045
+avg return on 3 trajectories of agent8: 232.93274732712976
+avg return on 3 trajectories of agent9: -4.985868437945825
+avg return on 3 trajectories of agent10: 30.401565066735714
+avg return on 3 trajectories of agent11: 244.47653355252012
+avg return on 3 trajectories of agent12: 244.04450945429983
+avg return on 3 trajectories of agent13: -97.06270810843259
+avg return on 3 trajectories of agent14: -17.880433117720244
+avg return on 3 trajectories of agent15: -96.71223413050423
+avg return on 3 trajectories of agent16: 237.879298026711
+avg return on 3 trajectories of agent17: 232.3253624214283
+avg return on 3 trajectories of agent18: -98.40255054255451
+avg return on 3 trajectories of agent19: 228.85425890672667
+avg cum rews: 97.70309322181254, std: 133.7960679801523
+the best agent: 11, best agent cum rewards: 244.47653355252012
+37
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.030916874069095306
+avg return on 3 trajectories of agent0: 75.67845140030443
+avg return on 3 trajectories of agent1: -50.078782977337625
+avg return on 3 trajectories of agent2: 128.6711667371021
+avg return on 3 trajectories of agent3: 244.35979819822896
+avg return on 3 trajectories of agent4: 74.29318930180068
+avg return on 3 trajectories of agent5: -101.49295805789158
+avg return on 3 trajectories of agent6: 239.70734552290014
+avg return on 3 trajectories of agent7: -98.01849756461755
+avg return on 3 trajectories of agent8: 264.0270984064662
+avg return on 3 trajectories of agent9: 57.750395858259736
+avg return on 3 trajectories of agent10: 255.91111426942356
+avg return on 3 trajectories of agent11: -100.61576029108589
+avg return on 3 trajectories of agent12: -48.61133133190438
+avg return on 3 trajectories of agent13: -100.22961211486906
+avg return on 3 trajectories of agent14: -107.75824429074054
+avg return on 3 trajectories of agent15: -98.4161910939912
+avg return on 3 trajectories of agent16: 26.583084301812647
+avg return on 3 trajectories of agent17: 250.4053218465694
+avg return on 3 trajectories of agent18: -41.56395158832891
+avg return on 3 trajectories of agent19: -47.4570440076851
+avg cum rews: 41.157229626220804, std: 138.43185422414888
+the best agent: 8, best agent cum rewards: 264.0270984064662
+38
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.028968458087174864
+avg return on 3 trajectories of agent0: 249.88238390931568
+avg return on 3 trajectories of agent1: 250.21170078054269
+avg return on 3 trajectories of agent2: 247.91720175599843
+avg return on 3 trajectories of agent3: 239.28466893962238
+avg return on 3 trajectories of agent4: 242.5899222873497
+avg return on 3 trajectories of agent5: 242.7676481021831
+avg return on 3 trajectories of agent6: 237.87360902812105
+avg return on 3 trajectories of agent7: 240.27405703638996
+avg return on 3 trajectories of agent8: 254.934378452281
+avg return on 3 trajectories of agent9: 244.9921642093917
+avg return on 3 trajectories of agent10: -97.4886994366534
+avg return on 3 trajectories of agent11: -98.01296463677784
+avg return on 3 trajectories of agent12: 242.38049805131965
+avg return on 3 trajectories of agent13: -96.62820233957842
+avg return on 3 trajectories of agent14: 109.01001049382796
+avg return on 3 trajectories of agent15: 244.2830532077038
+avg return on 3 trajectories of agent16: 236.90100627650438
+avg return on 3 trajectories of agent17: -98.06281400113801
+avg return on 3 trajectories of agent18: 212.65434973212285
+avg return on 3 trajectories of agent19: 20.251822621802347
+avg cum rews: 156.3007897235164, std: 138.27623394860044
+the best agent: 8, best agent cum rewards: 254.934378452281
+39
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03013526301558328
+avg return on 3 trajectories of agent0: 249.70669729766522
+avg return on 3 trajectories of agent1: 230.14739055385937
+avg return on 3 trajectories of agent2: -96.38347802413442
+avg return on 3 trajectories of agent3: 241.659115441177
+avg return on 3 trajectories of agent4: 239.7155478107196
+avg return on 3 trajectories of agent5: 244.59137937146525
+avg return on 3 trajectories of agent6: -18.756945541828216
+avg return on 3 trajectories of agent7: 248.11310457429784
+avg return on 3 trajectories of agent8: 243.50362528784672
+avg return on 3 trajectories of agent9: 242.33511150037262
+avg return on 3 trajectories of agent10: 242.65628287830165
+avg return on 3 trajectories of agent11: 244.8376856103179
+avg return on 3 trajectories of agent12: 244.1310824987279
+avg return on 3 trajectories of agent13: 228.63797235690322
+avg return on 3 trajectories of agent14: 239.04997006863178
+avg return on 3 trajectories of agent15: 1.9633343151403153
+avg return on 3 trajectories of agent16: 240.08874575757125
+avg return on 3 trajectories of agent17: 245.16123299426795
+avg return on 3 trajectories of agent18: 241.37356417800353
+avg return on 3 trajectories of agent19: 14.849240667901995
+avg cum rews: 188.3690329798604, std: 108.31735768211986
+the best agent: 0, best agent cum rewards: 249.70669729766522
+40
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.024090219326768948
+avg return on 3 trajectories of agent0: 254.77627832928962
+avg return on 3 trajectories of agent1: -19.69441491516622
+avg return on 3 trajectories of agent2: -37.16404808568768
+avg return on 3 trajectories of agent3: -38.995878377147044
+avg return on 3 trajectories of agent4: -69.03753382827496
+avg return on 3 trajectories of agent5: 264.8763566959719
+avg return on 3 trajectories of agent6: 247.16971204369267
+avg return on 3 trajectories of agent7: -23.63841251715087
+avg return on 3 trajectories of agent8: 253.91066598590496
+avg return on 3 trajectories of agent9: 256.71129722454947
+avg return on 3 trajectories of agent10: -33.49607617808469
+avg return on 3 trajectories of agent11: -12.869525681087097
+avg return on 3 trajectories of agent12: 88.90896092358494
+avg return on 3 trajectories of agent13: 16.01854261926809
+avg return on 3 trajectories of agent14: 32.2025211760658
+avg return on 3 trajectories of agent15: 67.1675807451548
+avg return on 3 trajectories of agent16: 114.33976007162428
+avg return on 3 trajectories of agent17: -41.15378503498188
+avg return on 3 trajectories of agent18: 74.89349332910285
+avg return on 3 trajectories of agent19: -48.977309268971574
+avg cum rews: 67.29740926288287, std: 118.81561052547082
+the best agent: 5, best agent cum rewards: 264.8763566959719
+41
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.027456486131614777
+avg return on 3 trajectories of agent0: 62.01846063264102
+avg return on 3 trajectories of agent1: -8.969752940528409
+avg return on 3 trajectories of agent2: 226.95522561400168
+avg return on 3 trajectories of agent3: -29.21810355395172
+avg return on 3 trajectories of agent4: 269.98751743958115
+avg return on 3 trajectories of agent5: -0.31435714302836004
+avg return on 3 trajectories of agent6: -50.074676958383094
+avg return on 3 trajectories of agent7: -63.3329817153864
+avg return on 3 trajectories of agent8: 86.29118384262594
+avg return on 3 trajectories of agent9: -6.997666834040743
+avg return on 3 trajectories of agent10: 36.10135392650045
+avg return on 3 trajectories of agent11: -41.675019008331645
+avg return on 3 trajectories of agent12: 27.641548493502242
+avg return on 3 trajectories of agent13: 15.701296924492183
+avg return on 3 trajectories of agent14: -11.526473540007444
+avg return on 3 trajectories of agent15: 271.77445088932865
+avg return on 3 trajectories of agent16: -70.3121941165775
+avg return on 3 trajectories of agent17: 264.2274935001416
+avg return on 3 trajectories of agent18: -59.51245579057467
+avg return on 3 trajectories of agent19: -14.683972803574633
+avg cum rews: 45.20404384292151, std: 113.77395953944512
+the best agent: 15, best agent cum rewards: 271.77445088932865
+42
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02966375719047292
+avg return on 3 trajectories of agent0: -98.9055249823605
+avg return on 3 trajectories of agent1: -77.88111985087147
+avg return on 3 trajectories of agent2: 27.07591799281846
+avg return on 3 trajectories of agent3: -61.28934014601743
+avg return on 3 trajectories of agent4: -63.445744007052866
+avg return on 3 trajectories of agent5: -0.034254760765165315
+avg return on 3 trajectories of agent6: -12.721377807205542
+avg return on 3 trajectories of agent7: -56.228911501420676
+avg return on 3 trajectories of agent8: -9.657550118844881
+avg return on 3 trajectories of agent9: 12.342100428107827
+avg return on 3 trajectories of agent10: -86.16930617387376
+avg return on 3 trajectories of agent11: -12.406574755645948
+avg return on 3 trajectories of agent12: -3.8235530645223434
+avg return on 3 trajectories of agent13: 4.138342625895206
+avg return on 3 trajectories of agent14: -25.9813143461554
+avg return on 3 trajectories of agent15: -73.43318077541825
+avg return on 3 trajectories of agent16: -5.264207391299976
+avg return on 3 trajectories of agent17: 269.83101007980747
+avg return on 3 trajectories of agent18: -49.45222508145914
+avg return on 3 trajectories of agent19: -14.574498181166945
+avg cum rews: -16.894065590872565, std: 74.63117897756094
+the best agent: 17, best agent cum rewards: 269.83101007980747
+43
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.028469377231676835
+avg return on 3 trajectories of agent0: 262.1829074656005
+avg return on 3 trajectories of agent1: 53.89031694958251
+avg return on 3 trajectories of agent2: -81.44740711181612
+avg return on 3 trajectories of agent3: 13.775555529775843
+avg return on 3 trajectories of agent4: 18.090656378461475
+avg return on 3 trajectories of agent5: 2.8715295940427694
+avg return on 3 trajectories of agent6: 2.3428672164238833
+avg return on 3 trajectories of agent7: 2.9702688207316186
+avg return on 3 trajectories of agent8: 270.29995473552697
+avg return on 3 trajectories of agent9: -71.35533926588512
+avg return on 3 trajectories of agent10: -69.36721175617507
+avg return on 3 trajectories of agent11: -3.0032846879272626
+avg return on 3 trajectories of agent12: -88.11309751498327
+avg return on 3 trajectories of agent13: -86.6059331333451
+avg return on 3 trajectories of agent14: 136.89540215014915
+avg return on 3 trajectories of agent15: -86.37890668178723
+avg return on 3 trajectories of agent16: -11.750452601039697
+avg return on 3 trajectories of agent17: -19.406307547057025
+avg return on 3 trajectories of agent18: 74.02889798764616
+avg return on 3 trajectories of agent19: -19.394959014777754
+avg cum rews: 15.026272875657373, std: 101.27026041803164
+the best agent: 8, best agent cum rewards: 270.29995473552697
+44
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.032324709732381315
+avg return on 3 trajectories of agent0: 70.04359682412198
+avg return on 3 trajectories of agent1: 244.9836189279927
+avg return on 3 trajectories of agent2: 261.11301791524915
+avg return on 3 trajectories of agent3: 254.19633909644213
+avg return on 3 trajectories of agent4: 250.79314492720906
+avg return on 3 trajectories of agent5: -12.716995226303496
+avg return on 3 trajectories of agent6: 255.13479773452352
+avg return on 3 trajectories of agent7: -76.94409368001607
+avg return on 3 trajectories of agent8: 252.69501265868004
+avg return on 3 trajectories of agent9: 73.29911238931217
+avg return on 3 trajectories of agent10: 260.1044407425608
+avg return on 3 trajectories of agent11: 251.51506399567674
+avg return on 3 trajectories of agent12: 2.889871922887494
+avg return on 3 trajectories of agent13: -20.96127711234152
+avg return on 3 trajectories of agent14: 42.63189566673475
+avg return on 3 trajectories of agent15: -50.49345667886767
+avg return on 3 trajectories of agent16: 253.830230595071
+avg return on 3 trajectories of agent17: 261.2060395688675
+avg return on 3 trajectories of agent18: 254.67374585895024
+avg return on 3 trajectories of agent19: -3.4730090609257616
+avg cum rews: 141.22605485329123, std: 129.49548395978562
+the best agent: 17, best agent cum rewards: 261.2060395688675
+45
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03288142126585902
+avg return on 3 trajectories of agent0: -35.57499404291748
+avg return on 3 trajectories of agent1: -15.582066036755805
+avg return on 3 trajectories of agent2: -14.792820512853496
+avg return on 3 trajectories of agent3: 249.75874352818383
+avg return on 3 trajectories of agent4: 57.821263083722044
+avg return on 3 trajectories of agent5: 245.8712179261227
+avg return on 3 trajectories of agent6: 238.65295468329887
+avg return on 3 trajectories of agent7: 246.30256399569265
+avg return on 3 trajectories of agent8: 255.83332439847257
+avg return on 3 trajectories of agent9: 256.7053445950068
+avg return on 3 trajectories of agent10: 249.40003224106323
+avg return on 3 trajectories of agent11: 247.39546650274036
+avg return on 3 trajectories of agent12: 252.74709033546551
+avg return on 3 trajectories of agent13: 254.23401497062
+avg return on 3 trajectories of agent14: 254.19799636319772
+avg return on 3 trajectories of agent15: 120.067268486963
+avg return on 3 trajectories of agent16: 247.70368069445223
+avg return on 3 trajectories of agent17: 257.55292852784856
+avg return on 3 trajectories of agent18: 243.56757469636605
+avg return on 3 trajectories of agent19: 239.4469942131248
+avg cum rews: 192.56542893249073, std: 102.6027665750388
+the best agent: 17, best agent cum rewards: 257.55292852784856
+46
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03036652379335958
+avg return on 3 trajectories of agent0: 244.6754638835099
+avg return on 3 trajectories of agent1: 241.59255925680975
+avg return on 3 trajectories of agent2: 236.3265633117426
+avg return on 3 trajectories of agent3: 242.48674819352354
+avg return on 3 trajectories of agent4: 239.49284691817985
+avg return on 3 trajectories of agent5: 253.70006502637526
+avg return on 3 trajectories of agent6: 22.192746128023785
+avg return on 3 trajectories of agent7: -10.343460429116362
+avg return on 3 trajectories of agent8: 241.61275904334966
+avg return on 3 trajectories of agent9: 250.7070544118124
+avg return on 3 trajectories of agent10: 255.1744247557205
+avg return on 3 trajectories of agent11: 240.76328557911935
+avg return on 3 trajectories of agent12: 248.13236085442443
+avg return on 3 trajectories of agent13: 251.46091566373337
+avg return on 3 trajectories of agent14: 247.51096288173443
+avg return on 3 trajectories of agent15: 256.03712242945784
+avg return on 3 trajectories of agent16: 250.46497468138304
+avg return on 3 trajectories of agent17: 253.80045610409724
+avg return on 3 trajectories of agent18: 231.1792182536648
+avg return on 3 trajectories of agent19: 261.04474831522174
+avg cum rews: 222.90059076313838, std: 72.86148185587479
+the best agent: 19, best agent cum rewards: 261.04474831522174
+47
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.026479290670873866
+avg return on 3 trajectories of agent0: -64.81341279314705
+avg return on 3 trajectories of agent1: 265.89622050473884
+avg return on 3 trajectories of agent2: 245.5116269468136
+avg return on 3 trajectories of agent3: 245.25075534347232
+avg return on 3 trajectories of agent4: 245.1651596501399
+avg return on 3 trajectories of agent5: 245.61080110555432
+avg return on 3 trajectories of agent6: 238.8974994118068
+avg return on 3 trajectories of agent7: 237.14966433824492
+avg return on 3 trajectories of agent8: -24.059357411660187
+avg return on 3 trajectories of agent9: 255.65016901136858
+avg return on 3 trajectories of agent10: 244.76550995622014
+avg return on 3 trajectories of agent11: 253.92239633922358
+avg return on 3 trajectories of agent12: 252.54931799884432
+avg return on 3 trajectories of agent13: 237.93671061670625
+avg return on 3 trajectories of agent14: 247.78390624716437
+avg return on 3 trajectories of agent15: 254.8460260655762
+avg return on 3 trajectories of agent16: 242.48664390378627
+avg return on 3 trajectories of agent17: 251.56929611026098
+avg return on 3 trajectories of agent18: 243.8058024341619
+avg return on 3 trajectories of agent19: 247.00294407641064
+avg cum rews: 218.34638399278438, std: 88.08087372139092
+the best agent: 1, best agent cum rewards: 265.89622050473884
+48
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02959818424783419
+avg return on 3 trajectories of agent0: 237.7526853947857
+avg return on 3 trajectories of agent1: 237.55239395689765
+avg return on 3 trajectories of agent2: 232.64689060582148
+avg return on 3 trajectories of agent3: -87.81194664199651
+avg return on 3 trajectories of agent4: -16.891399014389762
+avg return on 3 trajectories of agent5: 232.47029147574747
+avg return on 3 trajectories of agent6: 231.87748544663327
+avg return on 3 trajectories of agent7: 226.37120505580094
+avg return on 3 trajectories of agent8: 233.7691530177431
+avg return on 3 trajectories of agent9: 239.16163014280926
+avg return on 3 trajectories of agent10: 239.82557918536554
+avg return on 3 trajectories of agent11: 241.73027334039352
+avg return on 3 trajectories of agent12: 233.40608019363555
+avg return on 3 trajectories of agent13: 239.47805113141897
+avg return on 3 trajectories of agent14: 235.06503427566295
+avg return on 3 trajectories of agent15: 232.66975155092632
+avg return on 3 trajectories of agent16: 241.58158774311195
+avg return on 3 trajectories of agent17: 240.48460405000057
+avg return on 3 trajectories of agent18: 241.20555010317983
+avg return on 3 trajectories of agent19: 234.72114208774238
+avg cum rews: 207.3533021550645, std: 87.38068895455277
+the best agent: 11, best agent cum rewards: 241.73027334039352
+49
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.030575802806366414
+avg return on 3 trajectories of agent0: 231.0640447842233
+avg return on 3 trajectories of agent1: 234.2034082350054
+avg return on 3 trajectories of agent2: 54.12203804091297
+avg return on 3 trajectories of agent3: 234.54816546275023
+avg return on 3 trajectories of agent4: 242.5002344099926
+avg return on 3 trajectories of agent5: 231.68805490978275
+avg return on 3 trajectories of agent6: 243.6110921606323
+avg return on 3 trajectories of agent7: 226.0156068296525
+avg return on 3 trajectories of agent8: 233.75318472550427
+avg return on 3 trajectories of agent9: -36.370308844195115
+avg return on 3 trajectories of agent10: 234.6194639592315
+avg return on 3 trajectories of agent11: 231.61115381887507
+avg return on 3 trajectories of agent12: 233.72186922500833
+avg return on 3 trajectories of agent13: 236.3161090496841
+avg return on 3 trajectories of agent14: 16.098068016096818
+avg return on 3 trajectories of agent15: 234.21653136535068
+avg return on 3 trajectories of agent16: 232.91067360504286
+avg return on 3 trajectories of agent17: 233.58998761579323
+avg return on 3 trajectories of agent18: 230.64680393391353
+avg return on 3 trajectories of agent19: 231.7792399652919
+avg cum rews: 200.53227106342746, std: 80.87258934320099
+the best agent: 6, best agent cum rewards: 243.6110921606323
+50
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02943491780313117
+avg return on 3 trajectories of agent0: 228.61845621512282
+avg return on 3 trajectories of agent1: 221.7913977427865
+avg return on 3 trajectories of agent2: 223.9430188462216
+avg return on 3 trajectories of agent3: 225.4253461813448
+avg return on 3 trajectories of agent4: 227.5349498153396
+avg return on 3 trajectories of agent5: 227.7839336230301
+avg return on 3 trajectories of agent6: 228.67452852069664
+avg return on 3 trajectories of agent7: 230.11568933504583
+avg return on 3 trajectories of agent8: 227.66716533921218
+avg return on 3 trajectories of agent9: 226.78133613700578
+avg return on 3 trajectories of agent10: 230.39979746704503
+avg return on 3 trajectories of agent11: 231.07529476222257
+avg return on 3 trajectories of agent12: 229.2692726291599
+avg return on 3 trajectories of agent13: 235.19859584330788
+avg return on 3 trajectories of agent14: 232.8082161278607
+avg return on 3 trajectories of agent15: 235.35284047037416
+avg return on 3 trajectories of agent16: 229.18713199044288
+avg return on 3 trajectories of agent17: 227.81233080325848
+avg return on 3 trajectories of agent18: 229.5112386699149
+avg return on 3 trajectories of agent19: 226.08036953949284
+avg cum rews: 228.75154550294423, std: 3.2461869497709985
+the best agent: 15, best agent cum rewards: 235.35284047037416
+51
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03118215401333102
+avg return on 3 trajectories of agent0: 228.81961764496296
+avg return on 3 trajectories of agent1: 231.60375010860787
+avg return on 3 trajectories of agent2: 233.434365931609
+avg return on 3 trajectories of agent3: 234.00451907536035
+avg return on 3 trajectories of agent4: 233.73659673150044
+avg return on 3 trajectories of agent5: 232.97351802391188
+avg return on 3 trajectories of agent6: 234.7319722351777
+avg return on 3 trajectories of agent7: 233.77826521677335
+avg return on 3 trajectories of agent8: 228.5507117761927
+avg return on 3 trajectories of agent9: 237.14535682513824
+avg return on 3 trajectories of agent10: 236.3309595992971
+avg return on 3 trajectories of agent11: 235.5583219711341
+avg return on 3 trajectories of agent12: 230.7426351504699
+avg return on 3 trajectories of agent13: 228.0033598796216
+avg return on 3 trajectories of agent14: 228.5537176760398
+avg return on 3 trajectories of agent15: 233.80522748418124
+avg return on 3 trajectories of agent16: 228.28918237337336
+avg return on 3 trajectories of agent17: 225.78306875830322
+avg return on 3 trajectories of agent18: 227.86521857177942
+avg return on 3 trajectories of agent19: 228.85267361928598
+avg cum rews: 231.62815193263606, std: 3.2409471999105124
+the best agent: 9, best agent cum rewards: 237.14535682513824
+52
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.026735683477521914
+avg return on 3 trajectories of agent0: 235.7737321467581
+avg return on 3 trajectories of agent1: 234.3148996738112
+avg return on 3 trajectories of agent2: 232.83649375249522
+avg return on 3 trajectories of agent3: 233.76970647248578
+avg return on 3 trajectories of agent4: 240.22316112160584
+avg return on 3 trajectories of agent5: 233.43683282111735
+avg return on 3 trajectories of agent6: 232.12359048888914
+avg return on 3 trajectories of agent7: 239.75863086250635
+avg return on 3 trajectories of agent8: 235.48122473356673
+avg return on 3 trajectories of agent9: 234.83703832173708
+avg return on 3 trajectories of agent10: 233.40472038873318
+avg return on 3 trajectories of agent11: 242.78475661380494
+avg return on 3 trajectories of agent12: 240.85874547729819
+avg return on 3 trajectories of agent13: 70.46859570870802
+avg return on 3 trajectories of agent14: 238.08908982970368
+avg return on 3 trajectories of agent15: 237.99684721582207
+avg return on 3 trajectories of agent16: 232.29787226124074
+avg return on 3 trajectories of agent17: 236.8315324135684
+avg return on 3 trajectories of agent18: 239.9520772184623
+avg return on 3 trajectories of agent19: 242.0384807946331
+avg cum rews: 228.36390141584735, std: 36.372177387532346
+the best agent: 11, best agent cum rewards: 242.78475661380494
+53
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.026580490894459952
+avg return on 3 trajectories of agent0: -96.52936154829338
+avg return on 3 trajectories of agent1: -98.43403574836627
+avg return on 3 trajectories of agent2: 250.54276114420333
+avg return on 3 trajectories of agent3: 259.90381632245203
+avg return on 3 trajectories of agent4: -96.9926443371574
+avg return on 3 trajectories of agent5: 256.60908668697675
+avg return on 3 trajectories of agent6: 258.22058692937435
+avg return on 3 trajectories of agent7: 252.76465253009948
+avg return on 3 trajectories of agent8: -96.0659826752171
+avg return on 3 trajectories of agent9: -32.44941633479675
+avg return on 3 trajectories of agent10: -97.58269002663033
+avg return on 3 trajectories of agent11: -96.81727829304026
+avg return on 3 trajectories of agent12: 252.0613709926847
+avg return on 3 trajectories of agent13: 249.2461534420993
+avg return on 3 trajectories of agent14: -96.10668809962894
+avg return on 3 trajectories of agent15: -94.43015609691913
+avg return on 3 trajectories of agent16: -97.68611627337243
+avg return on 3 trajectories of agent17: 244.9156488180241
+avg return on 3 trajectories of agent18: 252.37187402237095
+avg return on 3 trajectories of agent19: 253.1225738970439
+avg cum rews: 81.33320776759533, std: 172.21051889157798
+the best agent: 3, best agent cum rewards: 259.90381632245203
+54
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03224493287150937
+avg return on 3 trajectories of agent0: 240.94846929171217
+avg return on 3 trajectories of agent1: 251.71814134393875
+avg return on 3 trajectories of agent2: 50.09085174213607
+avg return on 3 trajectories of agent3: 247.24707672412353
+avg return on 3 trajectories of agent4: 252.18748227945107
+avg return on 3 trajectories of agent5: 250.85471418177798
+avg return on 3 trajectories of agent6: -46.491329436166865
+avg return on 3 trajectories of agent7: -104.57078118226305
+avg return on 3 trajectories of agent8: 246.30913825669876
+avg return on 3 trajectories of agent9: 244.8044187301915
+avg return on 3 trajectories of agent10: 243.25602488221386
+avg return on 3 trajectories of agent11: 250.7661096922495
+avg return on 3 trajectories of agent12: 258.84453187355115
+avg return on 3 trajectories of agent13: 248.2156633447041
+avg return on 3 trajectories of agent14: 250.03642493407452
+avg return on 3 trajectories of agent15: 260.9744081235648
+avg return on 3 trajectories of agent16: 249.0024750722628
+avg return on 3 trajectories of agent17: 249.08880989829217
+avg return on 3 trajectories of agent18: 252.00580061789637
+avg return on 3 trajectories of agent19: 247.25164475923492
+avg cum rews: 207.12700375648222, std: 104.21834060403097
+the best agent: 15, best agent cum rewards: 260.9744081235648
+55
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03163590222779041
+avg return on 3 trajectories of agent0: 247.70537354989457
+avg return on 3 trajectories of agent1: 243.33950347426548
+avg return on 3 trajectories of agent2: 246.95388732642368
+avg return on 3 trajectories of agent3: 248.77037937933588
+avg return on 3 trajectories of agent4: 253.8393989978501
+avg return on 3 trajectories of agent5: 94.78666726299417
+avg return on 3 trajectories of agent6: 248.89341857262937
+avg return on 3 trajectories of agent7: 246.3968203915754
+avg return on 3 trajectories of agent8: 252.35898003077824
+avg return on 3 trajectories of agent9: -2.978844718332752
+avg return on 3 trajectories of agent10: -104.78248972633249
+avg return on 3 trajectories of agent11: -94.63573795090988
+avg return on 3 trajectories of agent12: 241.926735117709
+avg return on 3 trajectories of agent13: 250.66806034674832
+avg return on 3 trajectories of agent14: 253.37090837275224
+avg return on 3 trajectories of agent15: 132.04949053433413
+avg return on 3 trajectories of agent16: 255.04607939079608
+avg return on 3 trajectories of agent17: 244.9713516463731
+avg return on 3 trajectories of agent18: -95.78391407038566
+avg return on 3 trajectories of agent19: -96.08633220777625
+avg cum rews: 153.34048678603614, std: 141.30638828956586
+the best agent: 16, best agent cum rewards: 255.04607939079608
+56
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02734362165645481
+avg return on 3 trajectories of agent0: 267.2028706576603
+avg return on 3 trajectories of agent1: 248.53836899469235
+avg return on 3 trajectories of agent2: 239.61977435831238
+avg return on 3 trajectories of agent3: -42.009734534876124
+avg return on 3 trajectories of agent4: 252.27381101328143
+avg return on 3 trajectories of agent5: -50.98881164582789
+avg return on 3 trajectories of agent6: 257.1788488075639
+avg return on 3 trajectories of agent7: 267.75322954884945
+avg return on 3 trajectories of agent8: -97.02750257130836
+avg return on 3 trajectories of agent9: -98.43344597757918
+avg return on 3 trajectories of agent10: 247.58919203050408
+avg return on 3 trajectories of agent11: 250.0241942957944
+avg return on 3 trajectories of agent12: 248.59419231565778
+avg return on 3 trajectories of agent13: 66.04058198673502
+avg return on 3 trajectories of agent14: 255.20259210363363
+avg return on 3 trajectories of agent15: 61.17234060152336
+avg return on 3 trajectories of agent16: 234.82445748071441
+avg return on 3 trajectories of agent17: 251.85630620079343
+avg return on 3 trajectories of agent18: 29.977589539660357
+avg return on 3 trajectories of agent19: 259.2971148781713
+avg cum rews: 157.43429850419778, std: 135.16088152372706
+the best agent: 7, best agent cum rewards: 267.75322954884945
+57
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.031783012561145865
+avg return on 3 trajectories of agent0: 269.12926315944276
+avg return on 3 trajectories of agent1: 261.5863414832856
+avg return on 3 trajectories of agent2: -51.90852521592378
+avg return on 3 trajectories of agent3: 19.958008498114808
+avg return on 3 trajectories of agent4: 270.6298474748404
+avg return on 3 trajectories of agent5: 91.13441959016666
+avg return on 3 trajectories of agent6: -1.470351776218294
+avg return on 3 trajectories of agent7: 53.23201982046652
+avg return on 3 trajectories of agent8: 269.93507919619765
+avg return on 3 trajectories of agent9: 13.994667322819694
+avg return on 3 trajectories of agent10: 267.00226327144674
+avg return on 3 trajectories of agent11: 63.98365824469073
+avg return on 3 trajectories of agent12: 67.99860612630056
+avg return on 3 trajectories of agent13: 269.83568433909835
+avg return on 3 trajectories of agent14: -75.99800984948408
+avg return on 3 trajectories of agent15: 75.92454390131587
+avg return on 3 trajectories of agent16: -28.476834184109435
+avg return on 3 trajectories of agent17: -13.656337640590905
+avg return on 3 trajectories of agent18: -64.80342029867012
+avg return on 3 trajectories of agent19: 51.04761100172419
+avg cum rews: 90.4539267232457, std: 124.48240117679791
+the best agent: 4, best agent cum rewards: 270.6298474748404
+58
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.027901270217304708
+avg return on 3 trajectories of agent0: -87.53426729169954
+avg return on 3 trajectories of agent1: -87.63945965768063
+avg return on 3 trajectories of agent2: 267.14481210821776
+avg return on 3 trajectories of agent3: -5.045744678405171
+avg return on 3 trajectories of agent4: 268.10750878113726
+avg return on 3 trajectories of agent5: 267.49131676782054
+avg return on 3 trajectories of agent6: -87.62512312229072
+avg return on 3 trajectories of agent7: 25.691151596093675
+avg return on 3 trajectories of agent8: -87.27762961113825
+avg return on 3 trajectories of agent9: -64.14005166015154
+avg return on 3 trajectories of agent10: -1.188217606911408
+avg return on 3 trajectories of agent11: 264.35954807577264
+avg return on 3 trajectories of agent12: 264.70639635378643
+avg return on 3 trajectories of agent13: 9.389306002048555
+avg return on 3 trajectories of agent14: 262.90083591567355
+avg return on 3 trajectories of agent15: -55.79044800365837
+avg return on 3 trajectories of agent16: -74.37083154149107
+avg return on 3 trajectories of agent17: 86.8353916221148
+avg return on 3 trajectories of agent18: -18.355818523139988
+avg return on 3 trajectories of agent19: 270.671790930689
+avg cum rews: 70.91652332283938, std: 149.76655807040066
+the best agent: 19, best agent cum rewards: 270.671790930689
+59
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.030554032739442565
+avg return on 3 trajectories of agent0: 265.98661989224956
+avg return on 3 trajectories of agent1: -12.808204134708177
+avg return on 3 trajectories of agent2: -69.54929868197596
+avg return on 3 trajectories of agent3: -8.845276827780367
+avg return on 3 trajectories of agent4: -11.749474983935585
+avg return on 3 trajectories of agent5: -41.70756346740838
+avg return on 3 trajectories of agent6: -12.822089698839847
+avg return on 3 trajectories of agent7: 236.7904820133682
+avg return on 3 trajectories of agent8: 237.87853350063497
+avg return on 3 trajectories of agent9: -9.400347891936107
+avg return on 3 trajectories of agent10: -31.064105396026108
+avg return on 3 trajectories of agent11: 51.97253381231721
+avg return on 3 trajectories of agent12: -8.356645849103785
+avg return on 3 trajectories of agent13: 257.7423039386371
+avg return on 3 trajectories of agent14: 34.122343776329586
+avg return on 3 trajectories of agent15: 271.35859307069757
+avg return on 3 trajectories of agent16: -15.586424516679742
+avg return on 3 trajectories of agent17: 239.4233395838747
+avg return on 3 trajectories of agent18: -5.983371502901122
+avg return on 3 trajectories of agent19: 262.2627579121609
+avg cum rews: 81.48323522744873, std: 128.29167845636195
+the best agent: 15, best agent cum rewards: 271.35859307069757
+60
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03164065629254097
+avg return on 3 trajectories of agent0: -15.409437275936185
+avg return on 3 trajectories of agent1: 261.95994707284694
+avg return on 3 trajectories of agent2: 252.54000651375705
+avg return on 3 trajectories of agent3: 258.1232601551377
+avg return on 3 trajectories of agent4: -48.40550922830939
+avg return on 3 trajectories of agent5: 264.49875213336264
+avg return on 3 trajectories of agent6: 69.91668158477705
+avg return on 3 trajectories of agent7: 260.04784386799963
+avg return on 3 trajectories of agent8: 54.0657391148072
+avg return on 3 trajectories of agent9: 258.91857792180093
+avg return on 3 trajectories of agent10: 256.78602085150163
+avg return on 3 trajectories of agent11: 78.65649765571987
+avg return on 3 trajectories of agent12: -59.86163930723971
+avg return on 3 trajectories of agent13: 262.32443188816796
+avg return on 3 trajectories of agent14: 45.587372794123695
+avg return on 3 trajectories of agent15: 22.95302524512833
+avg return on 3 trajectories of agent16: 267.5145825999089
+avg return on 3 trajectories of agent17: -85.94866948944019
+avg return on 3 trajectories of agent18: 78.16045579538397
+avg return on 3 trajectories of agent19: 267.45945421005473
+avg cum rews: 137.49436970517763, std: 130.32107742278484
+the best agent: 16, best agent cum rewards: 267.5145825999089
+61
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02708811172134659
+avg return on 3 trajectories of agent0: 258.3469111329083
+avg return on 3 trajectories of agent1: 258.53803591529197
+avg return on 3 trajectories of agent2: 14.665903406530518
+avg return on 3 trajectories of agent3: 259.3368746653968
+avg return on 3 trajectories of agent4: 262.0866913994873
+avg return on 3 trajectories of agent5: 25.93088849384688
+avg return on 3 trajectories of agent6: 230.0170144243466
+avg return on 3 trajectories of agent7: 260.5675520204563
+avg return on 3 trajectories of agent8: 58.504291193199066
+avg return on 3 trajectories of agent9: 265.0022896639024
+avg return on 3 trajectories of agent10: 246.88025185847567
+avg return on 3 trajectories of agent11: -32.74879941078292
+avg return on 3 trajectories of agent12: -94.55754021007071
+avg return on 3 trajectories of agent13: 255.78277125707814
+avg return on 3 trajectories of agent14: -89.93751422829104
+avg return on 3 trajectories of agent15: 240.08312146086539
+avg return on 3 trajectories of agent16: 264.5709975148177
+avg return on 3 trajectories of agent17: -48.24146406513019
+avg return on 3 trajectories of agent18: 141.8741768214783
+avg return on 3 trajectories of agent19: 257.86474643620136
+avg cum rews: 151.72835998750037, std: 135.18588085613453
+the best agent: 9, best agent cum rewards: 265.0022896639024
+62
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02959885078295496
+avg return on 3 trajectories of agent0: -96.44237992983683
+avg return on 3 trajectories of agent1: -102.64065041514735
+avg return on 3 trajectories of agent2: -94.52325645311674
+avg return on 3 trajectories of agent3: -97.30414637807012
+avg return on 3 trajectories of agent4: -93.42908408409419
+avg return on 3 trajectories of agent5: -95.17759316623459
+avg return on 3 trajectories of agent6: -96.91967770015972
+avg return on 3 trajectories of agent7: 249.6040022741509
+avg return on 3 trajectories of agent8: -95.19098098337496
+avg return on 3 trajectories of agent9: 269.1509343798055
+avg return on 3 trajectories of agent10: 257.21718231072646
+avg return on 3 trajectories of agent11: 237.68689348469582
+avg return on 3 trajectories of agent12: 261.6988793035017
+avg return on 3 trajectories of agent13: 260.23371093706163
+avg return on 3 trajectories of agent14: 243.71331260004325
+avg return on 3 trajectories of agent15: 250.18881676208053
+avg return on 3 trajectories of agent16: -102.30441279382569
+avg return on 3 trajectories of agent17: -94.80657164294148
+avg return on 3 trajectories of agent18: 264.8676342712531
+avg return on 3 trajectories of agent19: -13.952893066913745
+avg cum rews: 65.58348598548018, std: 172.3166095791398
+the best agent: 9, best agent cum rewards: 269.1509343798055
+63
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02872536564462958
+avg return on 3 trajectories of agent0: -104.12212904370048
+avg return on 3 trajectories of agent1: -103.98292070066199
+avg return on 3 trajectories of agent2: -103.95814347741924
+avg return on 3 trajectories of agent3: -103.65448318378752
+avg return on 3 trajectories of agent4: 16.304322927862515
+avg return on 3 trajectories of agent5: -10.316726434435566
+avg return on 3 trajectories of agent6: 235.29583404545915
+avg return on 3 trajectories of agent7: 264.2696839832563
+avg return on 3 trajectories of agent8: -102.86354354360203
+avg return on 3 trajectories of agent9: 261.64228582290525
+avg return on 3 trajectories of agent10: 257.440158394209
+avg return on 3 trajectories of agent11: -96.92109652843202
+avg return on 3 trajectories of agent12: 28.68492692955553
+avg return on 3 trajectories of agent13: 229.93569161238673
+avg return on 3 trajectories of agent14: 265.164457218969
+avg return on 3 trajectories of agent15: -22.654715458447683
+avg return on 3 trajectories of agent16: -102.724346635025
+avg return on 3 trajectories of agent17: -100.98197716815676
+avg return on 3 trajectories of agent18: -104.06967667128269
+avg return on 3 trajectories of agent19: -104.15598498432679
+avg cum rews: 24.916580855266282, std: 154.59909012384713
+the best agent: 14, best agent cum rewards: 265.164457218969
+64
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03046551314172315
+avg return on 3 trajectories of agent0: -96.64273500958954
+avg return on 3 trajectories of agent1: -96.86695477077333
+avg return on 3 trajectories of agent2: -103.85803436220934
+avg return on 3 trajectories of agent3: -104.06267805628323
+avg return on 3 trajectories of agent4: 268.5355861224252
+avg return on 3 trajectories of agent5: -102.54073221989472
+avg return on 3 trajectories of agent6: 268.20048641598015
+avg return on 3 trajectories of agent7: -12.937313591582623
+avg return on 3 trajectories of agent8: -101.57029922468107
+avg return on 3 trajectories of agent9: -95.96406665031239
+avg return on 3 trajectories of agent10: -97.75959258244187
+avg return on 3 trajectories of agent11: 267.9573966842278
+avg return on 3 trajectories of agent12: 268.13263825997717
+avg return on 3 trajectories of agent13: 267.4142093381004
+avg return on 3 trajectories of agent14: 262.96674514827373
+avg return on 3 trajectories of agent15: 265.30726967878866
+avg return on 3 trajectories of agent16: -102.74238536343972
+avg return on 3 trajectories of agent17: -102.42747646600132
+avg return on 3 trajectories of agent18: -102.51833447785985
+avg return on 3 trajectories of agent19: -96.61735483109547
+avg cum rews: 32.60031870208043, std: 172.99259334706431
+the best agent: 4, best agent cum rewards: 268.5355861224252
+65
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02837405597510769
+avg return on 3 trajectories of agent0: -29.895077275079387
+avg return on 3 trajectories of agent1: 20.174005520956058
+avg return on 3 trajectories of agent2: 268.22990162397065
+avg return on 3 trajectories of agent3: 268.66737334035906
+avg return on 3 trajectories of agent4: 116.30610198047967
+avg return on 3 trajectories of agent5: 267.17212891599695
+avg return on 3 trajectories of agent6: -13.219490739819875
+avg return on 3 trajectories of agent7: 265.937467385484
+avg return on 3 trajectories of agent8: 268.2806595157812
+avg return on 3 trajectories of agent9: 269.9540408663944
+avg return on 3 trajectories of agent10: 68.30665529785549
+avg return on 3 trajectories of agent11: -9.641438061600468
+avg return on 3 trajectories of agent12: -102.05606506888569
+avg return on 3 trajectories of agent13: 75.3479883232834
+avg return on 3 trajectories of agent14: 269.5733356458339
+avg return on 3 trajectories of agent15: 269.4047688166692
+avg return on 3 trajectories of agent16: 270.57299293126846
+avg return on 3 trajectories of agent17: -95.7222908919851
+avg return on 3 trajectories of agent18: 267.5397649254676
+avg return on 3 trajectories of agent19: -94.38051531137401
+avg cum rews: 131.02761538705278, std: 146.9147041012623
+the best agent: 16, best agent cum rewards: 270.57299293126846
+66
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.031735487329836845
+avg return on 3 trajectories of agent0: 269.10683375517533
+avg return on 3 trajectories of agent1: -55.56184608061985
+avg return on 3 trajectories of agent2: 272.2931398254555
+avg return on 3 trajectories of agent3: 271.21779833105643
+avg return on 3 trajectories of agent4: 270.0103940522629
+avg return on 3 trajectories of agent5: 267.1094600724024
+avg return on 3 trajectories of agent6: 254.47797493466626
+avg return on 3 trajectories of agent7: 74.50849133307764
+avg return on 3 trajectories of agent8: 271.3775680249387
+avg return on 3 trajectories of agent9: 101.95979489943369
+avg return on 3 trajectories of agent10: 272.2519280806722
+avg return on 3 trajectories of agent11: -48.349100808630325
+avg return on 3 trajectories of agent12: -5.176009189430943
+avg return on 3 trajectories of agent13: 153.17450287705464
+avg return on 3 trajectories of agent14: 74.19617853750341
+avg return on 3 trajectories of agent15: 272.86815639247664
+avg return on 3 trajectories of agent16: 260.22015130700646
+avg return on 3 trajectories of agent17: 271.2232731877396
+avg return on 3 trajectories of agent18: 6.1211295601402185
+avg return on 3 trajectories of agent19: 255.29829810150878
+avg cum rews: 175.4164058596945, std: 120.99514721614315
+the best agent: 15, best agent cum rewards: 272.86815639247664
+67
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02451207119636972
+avg return on 3 trajectories of agent0: -7.063884946742817
+avg return on 3 trajectories of agent1: 270.2686080344646
+avg return on 3 trajectories of agent2: 269.4306448516733
+avg return on 3 trajectories of agent3: 272.38409418756993
+avg return on 3 trajectories of agent4: 262.8036145413882
+avg return on 3 trajectories of agent5: 9.398531660277271
+avg return on 3 trajectories of agent6: -7.2642805059704125
+avg return on 3 trajectories of agent7: 272.6489015923783
+avg return on 3 trajectories of agent8: 26.363625439196994
+avg return on 3 trajectories of agent9: 7.331244770260582
+avg return on 3 trajectories of agent10: 70.56834813312682
+avg return on 3 trajectories of agent11: 158.00991829504522
+avg return on 3 trajectories of agent12: 269.4901079124093
+avg return on 3 trajectories of agent13: -3.5212808906184137
+avg return on 3 trajectories of agent14: 266.1537493606103
+avg return on 3 trajectories of agent15: -96.00275020045414
+avg return on 3 trajectories of agent16: -101.9459501251243
+avg return on 3 trajectories of agent17: 271.5622516886044
+avg return on 3 trajectories of agent18: -66.10100721891627
+avg return on 3 trajectories of agent19: 269.877084626794
+avg cum rews: 120.71957856029864, std: 144.34168037876577
+the best agent: 7, best agent cum rewards: 272.6489015923783
+68
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.028478404557750508
+avg return on 3 trajectories of agent0: -101.72766806751925
+avg return on 3 trajectories of agent1: -68.41866729218667
+avg return on 3 trajectories of agent2: 270.37440509485896
+avg return on 3 trajectories of agent3: -58.720806666176124
+avg return on 3 trajectories of agent4: -1.8207557356140711
+avg return on 3 trajectories of agent5: 271.05767483275656
+avg return on 3 trajectories of agent6: -27.983047462540455
+avg return on 3 trajectories of agent7: 52.84216253609097
+avg return on 3 trajectories of agent8: 252.08917314234012
+avg return on 3 trajectories of agent9: 135.74811934968122
+avg return on 3 trajectories of agent10: -10.456160591531258
+avg return on 3 trajectories of agent11: 272.8025434490775
+avg return on 3 trajectories of agent12: -6.692298371244931
+avg return on 3 trajectories of agent13: 61.57667075995482
+avg return on 3 trajectories of agent14: -94.94681267345076
+avg return on 3 trajectories of agent15: -97.11171800375776
+avg return on 3 trajectories of agent16: 275.9765461073185
+avg return on 3 trajectories of agent17: -95.74512065613503
+avg return on 3 trajectories of agent18: -96.08881007287279
+avg return on 3 trajectories of agent19: -95.59234704273163
+avg cum rews: 41.858154131815894, std: 144.23577282909025
+the best agent: 16, best agent cum rewards: 275.9765461073185
+69
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02828945973144268
+avg return on 3 trajectories of agent0: 71.64993885791006
+avg return on 3 trajectories of agent1: -94.56111108383288
+avg return on 3 trajectories of agent2: 66.29190059077538
+avg return on 3 trajectories of agent3: 267.2134629414057
+avg return on 3 trajectories of agent4: 275.7812790683597
+avg return on 3 trajectories of agent5: 40.949578700541224
+avg return on 3 trajectories of agent6: 159.43719565457735
+avg return on 3 trajectories of agent7: -34.69282492900386
+avg return on 3 trajectories of agent8: -101.55748541824178
+avg return on 3 trajectories of agent9: 62.63114220393484
+avg return on 3 trajectories of agent10: 165.60232193630077
+avg return on 3 trajectories of agent11: 273.4680591335789
+avg return on 3 trajectories of agent12: -94.84516150899371
+avg return on 3 trajectories of agent13: -94.42290023848942
+avg return on 3 trajectories of agent14: -93.35854833066463
+avg return on 3 trajectories of agent15: 269.2858297729279
+avg return on 3 trajectories of agent16: 255.63614415113994
+avg return on 3 trajectories of agent17: 145.32434754607507
+avg return on 3 trajectories of agent18: -101.52377098658744
+avg return on 3 trajectories of agent19: -102.22321668882917
+avg cum rews: 66.8043090686442, std: 146.25080690154817
+the best agent: 4, best agent cum rewards: 275.7812790683597
+70
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02323480514010761
+avg return on 3 trajectories of agent0: -95.46584862396183
+avg return on 3 trajectories of agent1: -101.9030700737623
+avg return on 3 trajectories of agent2: 25.205499190143385
+avg return on 3 trajectories of agent3: -77.2416231220964
+avg return on 3 trajectories of agent4: 271.2608423968167
+avg return on 3 trajectories of agent5: -92.3900806659249
+avg return on 3 trajectories of agent6: -92.66409207551554
+avg return on 3 trajectories of agent7: 1.9276832769505603
+avg return on 3 trajectories of agent8: -102.01511501557349
+avg return on 3 trajectories of agent9: 275.5743211352447
+avg return on 3 trajectories of agent10: 271.291715369643
+avg return on 3 trajectories of agent11: 272.18148606694695
+avg return on 3 trajectories of agent12: 2.387561233011951
+avg return on 3 trajectories of agent13: -33.20647131148695
+avg return on 3 trajectories of agent14: 276.12222525921914
+avg return on 3 trajectories of agent15: 21.455492014215125
+avg return on 3 trajectories of agent16: -91.87399523879589
+avg return on 3 trajectories of agent17: 263.78432083259537
+avg return on 3 trajectories of agent18: 267.96421105820303
+avg return on 3 trajectories of agent19: 274.2433043718969
+avg cum rews: 76.83191830388846, std: 163.64978504234034
+the best agent: 14, best agent cum rewards: 276.12222525921914
+71
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03216029095828622
+avg return on 3 trajectories of agent0: 259.3275371418464
+avg return on 3 trajectories of agent1: 147.0333839385917
+avg return on 3 trajectories of agent2: 73.67567656193137
+avg return on 3 trajectories of agent3: -101.5067261621679
+avg return on 3 trajectories of agent4: 4.83080241673477
+avg return on 3 trajectories of agent5: -63.22521771710367
+avg return on 3 trajectories of agent6: -92.0597513993668
+avg return on 3 trajectories of agent7: 276.5960911474268
+avg return on 3 trajectories of agent8: -9.326238066063013
+avg return on 3 trajectories of agent9: 270.19101138346605
+avg return on 3 trajectories of agent10: 270.29511101290245
+avg return on 3 trajectories of agent11: 78.13713763342008
+avg return on 3 trajectories of agent12: -57.82422986383985
+avg return on 3 trajectories of agent13: 257.8485739511791
+avg return on 3 trajectories of agent14: 70.19894484431268
+avg return on 3 trajectories of agent15: -91.76641815371532
+avg return on 3 trajectories of agent16: -16.85519687095966
+avg return on 3 trajectories of agent17: -93.75764204242081
+avg return on 3 trajectories of agent18: 275.70582317787375
+avg return on 3 trajectories of agent19: 264.56627890520457
+avg cum rews: 86.10424759196263, std: 147.62126644420815
+the best agent: 7, best agent cum rewards: 276.5960911474268
+72
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02893915247228379
+avg return on 3 trajectories of agent0: -54.82870869701418
+avg return on 3 trajectories of agent1: -59.79511007437049
+avg return on 3 trajectories of agent2: 268.65807818310196
+avg return on 3 trajectories of agent3: 81.29045767555138
+avg return on 3 trajectories of agent4: 77.32835337844344
+avg return on 3 trajectories of agent5: -92.18595264791698
+avg return on 3 trajectories of agent6: -56.725452333409606
+avg return on 3 trajectories of agent7: -55.31436845972141
+avg return on 3 trajectories of agent8: -92.18856362028855
+avg return on 3 trajectories of agent9: -8.898016626390529
+avg return on 3 trajectories of agent10: -92.39376784777828
+avg return on 3 trajectories of agent11: 242.22872822460803
+avg return on 3 trajectories of agent12: 151.17476899925
+avg return on 3 trajectories of agent13: -25.41314185847432
+avg return on 3 trajectories of agent14: 274.09819033497183
+avg return on 3 trajectories of agent15: -25.830161966841956
+avg return on 3 trajectories of agent16: -59.26001540347809
+avg return on 3 trajectories of agent17: -5.822441496352397
+avg return on 3 trajectories of agent18: -2.7376221080192806
+avg return on 3 trajectories of agent19: 272.60010863042726
+avg cum rews: 36.7992681143149, std: 128.838753990469
+the best agent: 14, best agent cum rewards: 274.09819033497183
+73
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03012658871575743
+avg return on 3 trajectories of agent0: -6.72377136237661
+avg return on 3 trajectories of agent1: 274.21433098737344
+avg return on 3 trajectories of agent2: -17.44092123006162
+avg return on 3 trajectories of agent3: 156.0970301058361
+avg return on 3 trajectories of agent4: -43.1775378020636
+avg return on 3 trajectories of agent5: -29.388468043224236
+avg return on 3 trajectories of agent6: 4.098857329986487
+avg return on 3 trajectories of agent7: -53.236233099887166
+avg return on 3 trajectories of agent8: -72.13178637141112
+avg return on 3 trajectories of agent9: -11.850932737954551
+avg return on 3 trajectories of agent10: -67.50033184716854
+avg return on 3 trajectories of agent11: 274.323417492546
+avg return on 3 trajectories of agent12: -20.613663211871668
+avg return on 3 trajectories of agent13: 272.45267057607344
+avg return on 3 trajectories of agent14: -25.062680147540377
+avg return on 3 trajectories of agent15: -6.7584736605179785
+avg return on 3 trajectories of agent16: 71.51403414367925
+avg return on 3 trajectories of agent17: 67.9537436004797
+avg return on 3 trajectories of agent18: 272.8854206515748
+avg return on 3 trajectories of agent19: 274.0376558222483
+avg cum rews: 65.684618059786, std: 130.18755701180154
+the best agent: 11, best agent cum rewards: 274.323417492546
+74
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.025388116985926395
+avg return on 3 trajectories of agent0: -54.75289986101353
+avg return on 3 trajectories of agent1: 265.4004611061981
+avg return on 3 trajectories of agent2: -1.5240719074550384
+avg return on 3 trajectories of agent3: 4.086515415175484
+avg return on 3 trajectories of agent4: 278.2393685464955
+avg return on 3 trajectories of agent5: 269.3811209082919
+avg return on 3 trajectories of agent6: 276.2940565869056
+avg return on 3 trajectories of agent7: -10.472843319852558
+avg return on 3 trajectories of agent8: 268.32904480514867
+avg return on 3 trajectories of agent9: 274.83555473977043
+avg return on 3 trajectories of agent10: 276.66448982813677
+avg return on 3 trajectories of agent11: 279.28463768507925
+avg return on 3 trajectories of agent12: 277.1247915273627
+avg return on 3 trajectories of agent13: 279.3700650705829
+avg return on 3 trajectories of agent14: 272.67973723706075
+avg return on 3 trajectories of agent15: 279.2018211961654
+avg return on 3 trajectories of agent16: 277.1089099092038
+avg return on 3 trajectories of agent17: -17.40935919208701
+avg return on 3 trajectories of agent18: 276.1135341648582
+avg return on 3 trajectories of agent19: 27.880292577683832
+avg cum rews: 189.89176135118558, std: 130.77622530405225
+the best agent: 13, best agent cum rewards: 279.3700650705829
+75
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03021054815735407
+avg return on 3 trajectories of agent0: 277.6490328421559
+avg return on 3 trajectories of agent1: 230.77171591447575
+avg return on 3 trajectories of agent2: -29.457564165784603
+avg return on 3 trajectories of agent3: -81.8896630710742
+avg return on 3 trajectories of agent4: 274.50219209663504
+avg return on 3 trajectories of agent5: -52.72376284639039
+avg return on 3 trajectories of agent6: 8.152343670547637
+avg return on 3 trajectories of agent7: 16.63322308303465
+avg return on 3 trajectories of agent8: 276.4272980464394
+avg return on 3 trajectories of agent9: 278.2381187119915
+avg return on 3 trajectories of agent10: 272.33130890319626
+avg return on 3 trajectories of agent11: -19.22120496651293
+avg return on 3 trajectories of agent12: -9.126526674734407
+avg return on 3 trajectories of agent13: 253.54768273306743
+avg return on 3 trajectories of agent14: -60.00053694917632
+avg return on 3 trajectories of agent15: 79.75051405853108
+avg return on 3 trajectories of agent16: 30.430423633590976
+avg return on 3 trajectories of agent17: 280.104736156294
+avg return on 3 trajectories of agent18: -51.52364525092953
+avg return on 3 trajectories of agent19: 273.20234736036264
+avg cum rews: 112.38990166428599, std: 145.4534151430705
+the best agent: 17, best agent cum rewards: 280.104736156294
+76
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02353301831236109
+avg return on 3 trajectories of agent0: -1.8682832453121847
+avg return on 3 trajectories of agent1: 269.36338089086576
+avg return on 3 trajectories of agent2: 275.8939155534486
+avg return on 3 trajectories of agent3: -2.1763704512504205
+avg return on 3 trajectories of agent4: 274.10942362496183
+avg return on 3 trajectories of agent5: -6.346453915395003
+avg return on 3 trajectories of agent6: -12.084985215987317
+avg return on 3 trajectories of agent7: 274.51753170679973
+avg return on 3 trajectories of agent8: 278.2881519992329
+avg return on 3 trajectories of agent9: 279.92980304921764
+avg return on 3 trajectories of agent10: -60.69121917405418
+avg return on 3 trajectories of agent11: 265.86375890796984
+avg return on 3 trajectories of agent12: 275.9062066693699
+avg return on 3 trajectories of agent13: 30.03496409469028
+avg return on 3 trajectories of agent14: 4.14921009138466
+avg return on 3 trajectories of agent15: 276.59112246738897
+avg return on 3 trajectories of agent16: 255.7309891683564
+avg return on 3 trajectories of agent17: 36.412382356468754
+avg return on 3 trajectories of agent18: 275.00552641556936
+avg return on 3 trajectories of agent19: 13.957156213251167
+avg cum rews: 150.1293105603488, std: 136.9038864001412
+the best agent: 9, best agent cum rewards: 279.92980304921764
+77
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.027816278794233446
+avg return on 3 trajectories of agent0: 273.7996091971922
+avg return on 3 trajectories of agent1: 274.97880982411755
+avg return on 3 trajectories of agent2: 260.0957810974353
+avg return on 3 trajectories of agent3: 272.8305691184039
+avg return on 3 trajectories of agent4: 9.267615584123888
+avg return on 3 trajectories of agent5: -8.817033997778367
+avg return on 3 trajectories of agent6: 275.2227869641999
+avg return on 3 trajectories of agent7: 277.94352284683976
+avg return on 3 trajectories of agent8: 36.70306270864617
+avg return on 3 trajectories of agent9: 154.34868420235182
+avg return on 3 trajectories of agent10: -6.109257460306722
+avg return on 3 trajectories of agent11: 122.32929154396962
+avg return on 3 trajectories of agent12: -55.21767683464535
+avg return on 3 trajectories of agent13: 2.0943828242204034
+avg return on 3 trajectories of agent14: 278.0503387470174
+avg return on 3 trajectories of agent15: -92.8761132055608
+avg return on 3 trajectories of agent16: 83.36571207873405
+avg return on 3 trajectories of agent17: -29.39542754343212
+avg return on 3 trajectories of agent18: 151.59342887552413
+avg return on 3 trajectories of agent19: -92.87302204239741
+avg cum rews: 109.36675322643278, std: 136.96562266660393
+the best agent: 14, best agent cum rewards: 278.0503387470174
+78
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.0311874828376847
+avg return on 3 trajectories of agent0: -55.58621624102814
+avg return on 3 trajectories of agent1: 53.440130332342505
+avg return on 3 trajectories of agent2: 1.4064182929744788
+avg return on 3 trajectories of agent3: 90.91922713131385
+avg return on 3 trajectories of agent4: -24.70494314091171
+avg return on 3 trajectories of agent5: -50.530104108973724
+avg return on 3 trajectories of agent6: -55.94962588653217
+avg return on 3 trajectories of agent7: -60.08270667573809
+avg return on 3 trajectories of agent8: 276.25913267797233
+avg return on 3 trajectories of agent9: -12.165591937789657
+avg return on 3 trajectories of agent10: 0.30046636373417357
+avg return on 3 trajectories of agent11: -9.138073905869078
+avg return on 3 trajectories of agent12: 82.98838571580757
+avg return on 3 trajectories of agent13: -76.7401909340384
+avg return on 3 trajectories of agent14: -102.3914756541575
+avg return on 3 trajectories of agent15: -92.67664887456844
+avg return on 3 trajectories of agent16: 277.56881668154057
+avg return on 3 trajectories of agent17: 146.62104512931643
+avg return on 3 trajectories of agent18: 272.9368735742104
+avg return on 3 trajectories of agent19: -62.31319934029874
+avg cum rews: 30.00808595996533, std: 120.71197791123663
+the best agent: 16, best agent cum rewards: 277.56881668154057
+79
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02709138528409693
+avg return on 3 trajectories of agent0: 276.23633671199684
+avg return on 3 trajectories of agent1: 271.26969598850644
+avg return on 3 trajectories of agent2: -8.761729172003086
+avg return on 3 trajectories of agent3: -94.68948038254305
+avg return on 3 trajectories of agent4: 275.64246959302994
+avg return on 3 trajectories of agent5: -14.911194401141842
+avg return on 3 trajectories of agent6: -94.45732808626443
+avg return on 3 trajectories of agent7: -3.3516478510555885
+avg return on 3 trajectories of agent8: -93.7983841789464
+avg return on 3 trajectories of agent9: -37.63343099349992
+avg return on 3 trajectories of agent10: 125.21862211935266
+avg return on 3 trajectories of agent11: -43.333641900815074
+avg return on 3 trajectories of agent12: -17.67875325845303
+avg return on 3 trajectories of agent13: 89.35649127934684
+avg return on 3 trajectories of agent14: 278.0690162365669
+avg return on 3 trajectories of agent15: 278.6879559175025
+avg return on 3 trajectories of agent16: -92.59841418568915
+avg return on 3 trajectories of agent17: -93.61645752266546
+avg return on 3 trajectories of agent18: -101.51382770507348
+avg return on 3 trajectories of agent19: -102.15320314017808
+avg cum rews: 39.79915475339868, std: 148.58144985950915
+the best agent: 15, best agent cum rewards: 278.6879559175025
+80
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.027601225795931682
+avg return on 3 trajectories of agent0: -93.24523581942543
+avg return on 3 trajectories of agent1: 272.2824500989524
+avg return on 3 trajectories of agent2: 278.0595854480131
+avg return on 3 trajectories of agent3: -76.62531261759499
+avg return on 3 trajectories of agent4: -92.37170487259452
+avg return on 3 trajectories of agent5: -92.03152938472107
+avg return on 3 trajectories of agent6: -92.04948570010315
+avg return on 3 trajectories of agent7: -91.34383845032876
+avg return on 3 trajectories of agent8: -94.6191815413547
+avg return on 3 trajectories of agent9: -94.617207494881
+avg return on 3 trajectories of agent10: -99.91721206496904
+avg return on 3 trajectories of agent11: -100.13695772424713
+avg return on 3 trajectories of agent12: 176.81523725417452
+avg return on 3 trajectories of agent13: -99.94441991494223
+avg return on 3 trajectories of agent14: 279.57882268002874
+avg return on 3 trajectories of agent15: 278.99444501714794
+avg return on 3 trajectories of agent16: -90.38977403868114
+avg return on 3 trajectories of agent17: 277.81289917679726
+avg return on 3 trajectories of agent18: 280.29080288418453
+avg return on 3 trajectories of agent19: -91.36403520045306
+avg cum rews: 31.75891738675012, std: 171.332860019052
+the best agent: 18, best agent cum rewards: 280.29080288418453
+81
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.027385879986251895
+avg return on 3 trajectories of agent0: -94.43278120691204
+avg return on 3 trajectories of agent1: 4.998565065469677
+avg return on 3 trajectories of agent2: -30.297262257297845
+avg return on 3 trajectories of agent3: -91.70066912868744
+avg return on 3 trajectories of agent4: -90.59632457398686
+avg return on 3 trajectories of agent5: 70.17684185288473
+avg return on 3 trajectories of agent6: 280.61023926421564
+avg return on 3 trajectories of agent7: -22.965938283352827
+avg return on 3 trajectories of agent8: 283.93520613947476
+avg return on 3 trajectories of agent9: -91.66514794585916
+avg return on 3 trajectories of agent10: -93.34817480255415
+avg return on 3 trajectories of agent11: -93.70655021022758
+avg return on 3 trajectories of agent12: -91.32185231552398
+avg return on 3 trajectories of agent13: -94.66069506905725
+avg return on 3 trajectories of agent14: -57.10875567750137
+avg return on 3 trajectories of agent15: 279.41419404023935
+avg return on 3 trajectories of agent16: -95.59154320751628
+avg return on 3 trajectories of agent17: 248.0286861406211
+avg return on 3 trajectories of agent18: 6.555260652687508
+avg return on 3 trajectories of agent19: 277.9817916657081
+avg cum rews: 25.215254507141204, std: 150.17966992145367
+the best agent: 8, best agent cum rewards: 283.93520613947476
+82
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.025223565069147913
+avg return on 3 trajectories of agent0: -10.618493152718884
+avg return on 3 trajectories of agent1: 134.8017339600181
+avg return on 3 trajectories of agent2: 275.94810371363866
+avg return on 3 trajectories of agent3: 11.785340982293121
+avg return on 3 trajectories of agent4: 93.11264204248914
+avg return on 3 trajectories of agent5: -94.32123874773458
+avg return on 3 trajectories of agent6: 275.8724121544208
+avg return on 3 trajectories of agent7: 134.67395505992582
+avg return on 3 trajectories of agent8: 79.27981735956908
+avg return on 3 trajectories of agent9: 285.1311755744989
+avg return on 3 trajectories of agent10: -74.44493526817985
+avg return on 3 trajectories of agent11: 281.133652569422
+avg return on 3 trajectories of agent12: 5.399161370449988
+avg return on 3 trajectories of agent13: -31.1636912288306
+avg return on 3 trajectories of agent14: 5.437086969146563
+avg return on 3 trajectories of agent15: 145.1842241205384
+avg return on 3 trajectories of agent16: 280.8370250714676
+avg return on 3 trajectories of agent17: 101.8047068604356
+avg return on 3 trajectories of agent18: 13.487017139405623
+avg return on 3 trajectories of agent19: 279.0859325804648
+avg cum rews: 109.62128145653602, std: 127.98812812348541
+the best agent: 9, best agent cum rewards: 285.1311755744989
+83
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02790048716678331
+avg return on 3 trajectories of agent0: 285.13753400038166
+avg return on 3 trajectories of agent1: 104.69799804857234
+avg return on 3 trajectories of agent2: 283.01143377879487
+avg return on 3 trajectories of agent3: -29.23772800246995
+avg return on 3 trajectories of agent4: 282.4331347901921
+avg return on 3 trajectories of agent5: -8.1681707378862
+avg return on 3 trajectories of agent6: 40.56140894772969
+avg return on 3 trajectories of agent7: 285.15156959619753
+avg return on 3 trajectories of agent8: 282.2829551770739
+avg return on 3 trajectories of agent9: 69.07500305068487
+avg return on 3 trajectories of agent10: 285.6010394566718
+avg return on 3 trajectories of agent11: 124.64291174401723
+avg return on 3 trajectories of agent12: -49.65737096741671
+avg return on 3 trajectories of agent13: 278.907084505847
+avg return on 3 trajectories of agent14: 68.21753331431012
+avg return on 3 trajectories of agent15: -23.600648228860152
+avg return on 3 trajectories of agent16: 154.28677220712478
+avg return on 3 trajectories of agent17: 284.05601574889687
+avg return on 3 trajectories of agent18: 71.98072132342162
+avg return on 3 trajectories of agent19: -9.324686038268126
+avg cum rews: 139.00272558575074, std: 127.74133222471396
+the best agent: 10, best agent cum rewards: 285.6010394566718
+84
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.0298549095544971
+avg return on 3 trajectories of agent0: 284.69469889017313
+avg return on 3 trajectories of agent1: 284.5574723784463
+avg return on 3 trajectories of agent2: 281.2397524286948
+avg return on 3 trajectories of agent3: 282.0018248418122
+avg return on 3 trajectories of agent4: 282.98741420324643
+avg return on 3 trajectories of agent5: 17.09844363474045
+avg return on 3 trajectories of agent6: 15.925724877394785
+avg return on 3 trajectories of agent7: 16.145624455223412
+avg return on 3 trajectories of agent8: 88.54243934890513
+avg return on 3 trajectories of agent9: 96.97417586802811
+avg return on 3 trajectories of agent10: 283.6794287554999
+avg return on 3 trajectories of agent11: -4.594968495475769
+avg return on 3 trajectories of agent12: 284.7381502424014
+avg return on 3 trajectories of agent13: 7.357705455356623
+avg return on 3 trajectories of agent14: 287.4438677222219
+avg return on 3 trajectories of agent15: 285.098494275513
+avg return on 3 trajectories of agent16: 57.22566190666379
+avg return on 3 trajectories of agent17: 284.48282090270595
+avg return on 3 trajectories of agent18: -22.72679854763051
+avg return on 3 trajectories of agent19: 286.635417185391
+avg cum rews: 169.9753675164656, std: 129.10392571963712
+the best agent: 14, best agent cum rewards: 287.4438677222219
+85
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.031394472382106686
+avg return on 3 trajectories of agent0: -91.65604787393039
+avg return on 3 trajectories of agent1: 278.40245020886283
+avg return on 3 trajectories of agent2: 284.4241449632676
+avg return on 3 trajectories of agent3: 281.2822240385974
+avg return on 3 trajectories of agent4: 285.7349769506296
+avg return on 3 trajectories of agent5: -20.861180807569326
+avg return on 3 trajectories of agent6: -5.692365877199279
+avg return on 3 trajectories of agent7: 282.9356889544591
+avg return on 3 trajectories of agent8: 285.8993975678984
+avg return on 3 trajectories of agent9: 284.2356436826213
+avg return on 3 trajectories of agent10: 286.7840243540112
+avg return on 3 trajectories of agent11: 278.7700284041638
+avg return on 3 trajectories of agent12: 16.830054822682
+avg return on 3 trajectories of agent13: 3.874153975337123
+avg return on 3 trajectories of agent14: 11.882376102285448
+avg return on 3 trajectories of agent15: 276.6876220712047
+avg return on 3 trajectories of agent16: 283.28627596235526
+avg return on 3 trajectories of agent17: -92.04194988359014
+avg return on 3 trajectories of agent18: -91.66073042833432
+avg return on 3 trajectories of agent19: -91.29184066588805
+avg cum rews: 137.39124732609324, std: 163.6312168663065
+the best agent: 10, best agent cum rewards: 286.7840243540112
+86
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.029712167984190962
+avg return on 3 trajectories of agent0: 91.3184903250795
+avg return on 3 trajectories of agent1: -23.29698524628455
+avg return on 3 trajectories of agent2: 281.62321112048016
+avg return on 3 trajectories of agent3: -93.72911981674409
+avg return on 3 trajectories of agent4: 9.196165487416152
+avg return on 3 trajectories of agent5: 287.2043533602689
+avg return on 3 trajectories of agent6: 75.83610504233945
+avg return on 3 trajectories of agent7: 280.9157278801841
+avg return on 3 trajectories of agent8: 286.59212122211125
+avg return on 3 trajectories of agent9: 6.413436237998354
+avg return on 3 trajectories of agent10: 285.05062263926095
+avg return on 3 trajectories of agent11: 285.5455350657471
+avg return on 3 trajectories of agent12: 22.388838441589215
+avg return on 3 trajectories of agent13: 286.03376359055017
+avg return on 3 trajectories of agent14: 282.40012023273374
+avg return on 3 trajectories of agent15: -31.230979960837743
+avg return on 3 trajectories of agent16: 288.67917516995817
+avg return on 3 trajectories of agent17: 185.628011811315
+avg return on 3 trajectories of agent18: 289.15973005946483
+avg return on 3 trajectories of agent19: 12.076855608819642
+avg cum rews: 155.39025891357252, std: 139.79490404687525
+the best agent: 18, best agent cum rewards: 289.15973005946483
+87
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.0286584002217048
+avg return on 3 trajectories of agent0: 290.9588873367735
+avg return on 3 trajectories of agent1: -15.058191897415824
+avg return on 3 trajectories of agent2: -87.06263910981143
+avg return on 3 trajectories of agent3: -60.91990721602738
+avg return on 3 trajectories of agent4: -28.013846623449297
+avg return on 3 trajectories of agent5: 287.54974231939065
+avg return on 3 trajectories of agent6: 88.46061787262826
+avg return on 3 trajectories of agent7: 28.499674792807753
+avg return on 3 trajectories of agent8: -28.646329574906545
+avg return on 3 trajectories of agent9: 52.11764696112036
+avg return on 3 trajectories of agent10: 288.4149357248895
+avg return on 3 trajectories of agent11: -20.74507919551425
+avg return on 3 trajectories of agent12: -90.42077786181495
+avg return on 3 trajectories of agent13: -28.114520819654103
+avg return on 3 trajectories of agent14: 287.5728105806087
+avg return on 3 trajectories of agent15: -55.93461768704653
+avg return on 3 trajectories of agent16: 17.85471604048334
+avg return on 3 trajectories of agent17: -90.37112594904254
+avg return on 3 trajectories of agent18: 159.77078147568568
+avg return on 3 trajectories of agent19: -20.05368764668954
+avg cum rews: 48.792954476150776, std: 133.60860393538505
+the best agent: 0, best agent cum rewards: 290.9588873367735
+88
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.025645447768742818
+avg return on 3 trajectories of agent0: -88.68322340254983
+avg return on 3 trajectories of agent1: -88.46404586530849
+avg return on 3 trajectories of agent2: -86.4881539921475
+avg return on 3 trajectories of agent3: 289.3207118693288
+avg return on 3 trajectories of agent4: 286.4503319718145
+avg return on 3 trajectories of agent5: 285.1982832217157
+avg return on 3 trajectories of agent6: 281.0838958741686
+avg return on 3 trajectories of agent7: -85.91063182895257
+avg return on 3 trajectories of agent8: -88.17600925717005
+avg return on 3 trajectories of agent9: -87.60349697514003
+avg return on 3 trajectories of agent10: -89.58361761126048
+avg return on 3 trajectories of agent11: -31.75455310306323
+avg return on 3 trajectories of agent12: -92.27483220291013
+avg return on 3 trajectories of agent13: -92.92174018631503
+avg return on 3 trajectories of agent14: -92.29055085560431
+avg return on 3 trajectories of agent15: 169.03798431762823
+avg return on 3 trajectories of agent16: -93.56845037864274
+avg return on 3 trajectories of agent17: 176.4217336313999
+avg return on 3 trajectories of agent18: 291.9553859865465
+avg return on 3 trajectories of agent19: -90.9100817622828
+avg cum rews: 33.54194697256274, std: 165.26681311422695
+the best agent: 18, best agent cum rewards: 291.9553859865465
+89
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.0338730082727018
+avg return on 3 trajectories of agent0: -86.06197158801555
+avg return on 3 trajectories of agent1: -95.38009894909462
+avg return on 3 trajectories of agent2: 18.503856516814437
+avg return on 3 trajectories of agent3: -88.50459312027817
+avg return on 3 trajectories of agent4: 289.66547689983975
+avg return on 3 trajectories of agent5: -85.88801062092433
+avg return on 3 trajectories of agent6: 289.13335235713424
+avg return on 3 trajectories of agent7: 18.48868604119866
+avg return on 3 trajectories of agent8: 292.02402544356386
+avg return on 3 trajectories of agent9: -1.0480983258833447
+avg return on 3 trajectories of agent10: 290.0111717473447
+avg return on 3 trajectories of agent11: -65.10007367934038
+avg return on 3 trajectories of agent12: 291.0223290040766
+avg return on 3 trajectories of agent13: 13.041084924260758
+avg return on 3 trajectories of agent14: -33.02641071540867
+avg return on 3 trajectories of agent15: -53.123343835844345
+avg return on 3 trajectories of agent16: 52.94786254201941
+avg return on 3 trajectories of agent17: -87.81908388076226
+avg return on 3 trajectories of agent18: 281.9761312197636
+avg return on 3 trajectories of agent19: 290.0947129195802
+avg cum rews: 76.54785024500222, std: 161.1354178213811
+the best agent: 8, best agent cum rewards: 292.02402544356386
+90
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.023821116089079993
+avg return on 3 trajectories of agent0: 92.04040225907556
+avg return on 3 trajectories of agent1: 9.910841796319886
+avg return on 3 trajectories of agent2: 100.0167074505651
+avg return on 3 trajectories of agent3: -27.200674258937468
+avg return on 3 trajectories of agent4: 49.54350675559289
+avg return on 3 trajectories of agent5: 9.337926198906004
+avg return on 3 trajectories of agent6: 18.65201266246912
+avg return on 3 trajectories of agent7: 19.22718234364062
+avg return on 3 trajectories of agent8: -33.670523743378695
+avg return on 3 trajectories of agent9: 292.58635662991674
+avg return on 3 trajectories of agent10: 10.067043386630672
+avg return on 3 trajectories of agent11: 10.675365363139647
+avg return on 3 trajectories of agent12: -92.30074090884378
+avg return on 3 trajectories of agent13: 104.0635114256383
+avg return on 3 trajectories of agent14: 22.57943972300616
+avg return on 3 trajectories of agent15: 290.20650138569374
+avg return on 3 trajectories of agent16: 143.2849844669139
+avg return on 3 trajectories of agent17: 15.245541940951199
+avg return on 3 trajectories of agent18: 54.66183542298651
+avg return on 3 trajectories of agent19: 60.01230104146012
+avg cum rews: 57.44697606708733, std: 93.52956654542204
+the best agent: 9, best agent cum rewards: 292.58635662991674
+91
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02685176775513718
+avg return on 3 trajectories of agent0: 8.007339150724377
+avg return on 3 trajectories of agent1: 11.930545941726692
+avg return on 3 trajectories of agent2: 290.0453394548196
+avg return on 3 trajectories of agent3: -84.14248865966746
+avg return on 3 trajectories of agent4: 284.2635041924639
+avg return on 3 trajectories of agent5: 9.402072413825792
+avg return on 3 trajectories of agent6: 50.781210652820704
+avg return on 3 trajectories of agent7: -17.153852279947458
+avg return on 3 trajectories of agent8: -88.46578909632066
+avg return on 3 trajectories of agent9: -87.86802948821709
+avg return on 3 trajectories of agent10: -86.97050028571859
+avg return on 3 trajectories of agent11: -81.58944366042192
+avg return on 3 trajectories of agent12: 93.53788972925389
+avg return on 3 trajectories of agent13: -22.265224616784536
+avg return on 3 trajectories of agent14: 13.016041888037051
+avg return on 3 trajectories of agent15: 290.53683187942573
+avg return on 3 trajectories of agent16: -27.60489404062922
+avg return on 3 trajectories of agent17: 45.41743752174949
+avg return on 3 trajectories of agent18: 12.775156287474033
+avg return on 3 trajectories of agent19: 26.60317413351187
+avg cum rews: 32.01281605590631, std: 118.73773068006884
+the best agent: 15, best agent cum rewards: 290.53683187942573
+92
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.025727484574984118
+avg return on 3 trajectories of agent0: 32.810037834238386
+avg return on 3 trajectories of agent1: 283.83801769171663
+avg return on 3 trajectories of agent2: 289.4016225094205
+avg return on 3 trajectories of agent3: 151.3789656698951
+avg return on 3 trajectories of agent4: 19.20824450740463
+avg return on 3 trajectories of agent5: -41.322351584999545
+avg return on 3 trajectories of agent6: 23.381005496544134
+avg return on 3 trajectories of agent7: 13.093418958915947
+avg return on 3 trajectories of agent8: 291.2199681405073
+avg return on 3 trajectories of agent9: 53.77535923247413
+avg return on 3 trajectories of agent10: 283.6391428957983
+avg return on 3 trajectories of agent11: 47.85128093666722
+avg return on 3 trajectories of agent12: 20.55662234467026
+avg return on 3 trajectories of agent13: 16.30152087339262
+avg return on 3 trajectories of agent14: -30.52431300430254
+avg return on 3 trajectories of agent15: 27.109438070117122
+avg return on 3 trajectories of agent16: 12.435534898329507
+avg return on 3 trajectories of agent17: 10.584442469030648
+avg return on 3 trajectories of agent18: -53.78693982290848
+avg return on 3 trajectories of agent19: -25.972846026586993
+avg cum rews: 71.24890860451623, std: 115.37046976807648
+the best agent: 8, best agent cum rewards: 291.2199681405073
+93
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02649263094528755
+avg return on 3 trajectories of agent0: 27.43637969655181
+avg return on 3 trajectories of agent1: 11.176087068888123
+avg return on 3 trajectories of agent2: -20.892977944295907
+avg return on 3 trajectories of agent3: 75.57311628517363
+avg return on 3 trajectories of agent4: 38.12021973291397
+avg return on 3 trajectories of agent5: 5.074707885814249
+avg return on 3 trajectories of agent6: 290.8019415741182
+avg return on 3 trajectories of agent7: 289.9161364558615
+avg return on 3 trajectories of agent8: -90.72097433872769
+avg return on 3 trajectories of agent9: -91.34117032596221
+avg return on 3 trajectories of agent10: 48.36256768990302
+avg return on 3 trajectories of agent11: 11.06889822449908
+avg return on 3 trajectories of agent12: 30.893910660890242
+avg return on 3 trajectories of agent13: 8.730334928634278
+avg return on 3 trajectories of agent14: -86.02171895127246
+avg return on 3 trajectories of agent15: 3.3538323463251345
+avg return on 3 trajectories of agent16: -92.33480893994869
+avg return on 3 trajectories of agent17: -93.07375947418684
+avg return on 3 trajectories of agent18: 187.59318605751895
+avg return on 3 trajectories of agent19: 292.0042602162557
+avg cum rews: 42.2860084424477, std: 123.79057197800083
+the best agent: 19, best agent cum rewards: 292.0042602162557
+94
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.032124308838883134
+avg return on 3 trajectories of agent0: 103.96618374610316
+avg return on 3 trajectories of agent1: 5.807870016409623
+avg return on 3 trajectories of agent2: 43.1938268999244
+avg return on 3 trajectories of agent3: 16.61136610735197
+avg return on 3 trajectories of agent4: 10.400888111715489
+avg return on 3 trajectories of agent5: 292.0799715089435
+avg return on 3 trajectories of agent6: 59.72177827817089
+avg return on 3 trajectories of agent7: 187.5094585426911
+avg return on 3 trajectories of agent8: 25.88329622342316
+avg return on 3 trajectories of agent9: -86.83419672297687
+avg return on 3 trajectories of agent10: 10.05171040629979
+avg return on 3 trajectories of agent11: -20.134955923299003
+avg return on 3 trajectories of agent12: 23.021860562397876
+avg return on 3 trajectories of agent13: -30.164521295521354
+avg return on 3 trajectories of agent14: 7.890735237050706
+avg return on 3 trajectories of agent15: -22.235445850926126
+avg return on 3 trajectories of agent16: -54.74884051455433
+avg return on 3 trajectories of agent17: -47.983307235911504
+avg return on 3 trajectories of agent18: -68.31583041338125
+avg return on 3 trajectories of agent19: -27.646811462453243
+avg cum rews: 21.4037518110729, std: 86.43254553256364
+the best agent: 5, best agent cum rewards: 292.0799715089435
+95
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.0277423687112604
+avg return on 3 trajectories of agent0: -43.92864364453156
+avg return on 3 trajectories of agent1: 59.0554576640092
+avg return on 3 trajectories of agent2: 294.3341734687817
+avg return on 3 trajectories of agent3: -32.33442999242378
+avg return on 3 trajectories of agent4: 7.316893549017749
+avg return on 3 trajectories of agent5: 185.38293587597337
+avg return on 3 trajectories of agent6: 33.62416803796836
+avg return on 3 trajectories of agent7: -65.68014084915075
+avg return on 3 trajectories of agent8: -62.360245869651436
+avg return on 3 trajectories of agent9: 57.77211401370917
+avg return on 3 trajectories of agent10: -51.792460286652066
+avg return on 3 trajectories of agent11: 32.454248842251815
+avg return on 3 trajectories of agent12: 295.0394640472571
+avg return on 3 trajectories of agent13: -34.162619491266724
+avg return on 3 trajectories of agent14: 2.543933172978342
+avg return on 3 trajectories of agent15: -27.52337258693322
+avg return on 3 trajectories of agent16: -25.25561595544589
+avg return on 3 trajectories of agent17: 293.9580700493915
+avg return on 3 trajectories of agent18: 5.013265587393207
+avg return on 3 trajectories of agent19: 291.89427478575976
+avg cum rews: 60.76757352092179, std: 128.70982775029015
+the best agent: 12, best agent cum rewards: 295.0394640472571
+96
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.031836164475382026
+avg return on 3 trajectories of agent0: -86.07461164943501
+avg return on 3 trajectories of agent1: -86.02929311160992
+avg return on 3 trajectories of agent2: -0.12407658740505667
+avg return on 3 trajectories of agent3: 78.81146877719976
+avg return on 3 trajectories of agent4: -88.70005518484489
+avg return on 3 trajectories of agent5: 97.00572099417587
+avg return on 3 trajectories of agent6: -29.314180958985062
+avg return on 3 trajectories of agent7: 23.08538530210535
+avg return on 3 trajectories of agent8: -52.236984246138526
+avg return on 3 trajectories of agent9: 293.32770424148686
+avg return on 3 trajectories of agent10: -84.86826607555896
+avg return on 3 trajectories of agent11: -33.33135393636047
+avg return on 3 trajectories of agent12: -29.31382163080447
+avg return on 3 trajectories of agent13: -21.240866304996075
+avg return on 3 trajectories of agent14: -30.24478923132031
+avg return on 3 trajectories of agent15: 75.1106452691528
+avg return on 3 trajectories of agent16: 293.5240763836962
+avg return on 3 trajectories of agent17: -21.001738368403153
+avg return on 3 trajectories of agent18: 288.5380666989521
+avg return on 3 trajectories of agent19: 19.701743261333647
+avg cum rews: 30.33123868211203, std: 121.75418563799295
+the best agent: 16, best agent cum rewards: 293.5240763836962
+97
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.025685902915600172
+avg return on 3 trajectories of agent0: 290.8715738808063
+avg return on 3 trajectories of agent1: 1.9964692739234948
+avg return on 3 trajectories of agent2: -30.37428027816364
+avg return on 3 trajectories of agent3: -26.40852797194691
+avg return on 3 trajectories of agent4: 291.7041641147623
+avg return on 3 trajectories of agent5: 19.27617059541744
+avg return on 3 trajectories of agent6: 291.6792233519291
+avg return on 3 trajectories of agent7: -37.23496838153652
+avg return on 3 trajectories of agent8: 23.132092729778407
+avg return on 3 trajectories of agent9: 291.7012622936219
+avg return on 3 trajectories of agent10: 133.8072103589231
+avg return on 3 trajectories of agent11: 282.14830972523185
+avg return on 3 trajectories of agent12: 292.6330957962597
+avg return on 3 trajectories of agent13: -77.47678032112495
+avg return on 3 trajectories of agent14: -30.360480918519258
+avg return on 3 trajectories of agent15: 1.0344303163377617
+avg return on 3 trajectories of agent16: -27.37352681437507
+avg return on 3 trajectories of agent17: 52.92774171698838
+avg return on 3 trajectories of agent18: 289.98641837099944
+avg return on 3 trajectories of agent19: -77.25585669290771
+avg cum rews: 97.82068705732026, std: 147.66283302298723
+the best agent: 12, best agent cum rewards: 292.6330957962597
+98
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.03136584582696217
+avg return on 3 trajectories of agent0: 286.2692943610369
+avg return on 3 trajectories of agent1: 287.2188769306504
+avg return on 3 trajectories of agent2: 80.53014766203111
+avg return on 3 trajectories of agent3: 88.50046332103256
+avg return on 3 trajectories of agent4: 288.54254044725144
+avg return on 3 trajectories of agent5: 286.3497124987455
+avg return on 3 trajectories of agent6: 287.1438898847251
+avg return on 3 trajectories of agent7: 56.6929970119445
+avg return on 3 trajectories of agent8: 30.722793963772574
+avg return on 3 trajectories of agent9: 288.3312375564026
+avg return on 3 trajectories of agent10: -21.325751040088647
+avg return on 3 trajectories of agent11: -26.403892845953536
+avg return on 3 trajectories of agent12: 56.29406984459209
+avg return on 3 trajectories of agent13: 90.16668193115154
+avg return on 3 trajectories of agent14: 15.766722627824763
+avg return on 3 trajectories of agent15: -58.15011416168635
+avg return on 3 trajectories of agent16: 289.05858408107594
+avg return on 3 trajectories of agent17: 94.49453304792453
+avg return on 3 trajectories of agent18: 20.855442449440602
+avg return on 3 trajectories of agent19: 0.3268329825675096
+avg cum rews: 122.06925312772202, std: 127.4248415069465
+the best agent: 16, best agent cum rewards: 289.05858408107594
+99
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02352804921203373
+avg return on 3 trajectories of agent0: 6.97432410066196
+avg return on 3 trajectories of agent1: 289.64180161185044
+avg return on 3 trajectories of agent2: -29.253086610776663
+avg return on 3 trajectories of agent3: 286.1923208009636
+avg return on 3 trajectories of agent4: 8.599049044609018
+avg return on 3 trajectories of agent5: -24.770372799802672
+avg return on 3 trajectories of agent6: 288.36253003367136
+avg return on 3 trajectories of agent7: 35.13770196638896
+avg return on 3 trajectories of agent8: 290.57984220534195
+avg return on 3 trajectories of agent9: -26.435209129021786
+avg return on 3 trajectories of agent10: 289.9377854999709
+avg return on 3 trajectories of agent11: 63.45699344925208
+avg return on 3 trajectories of agent12: -59.9469070332125
+avg return on 3 trajectories of agent13: 28.442136388141705
+avg return on 3 trajectories of agent14: 289.3157334205875
+avg return on 3 trajectories of agent15: 15.997334194160914
+avg return on 3 trajectories of agent16: 285.3934065600705
+avg return on 3 trajectories of agent17: 11.565532860610631
+avg return on 3 trajectories of agent18: -56.30569757594292
+avg return on 3 trajectories of agent19: 293.65691300308066
+avg cum rews: 114.3271065995303, std: 145.42013607311262
+the best agent: 19, best agent cum rewards: 293.65691300308066
+100
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.030762828363819616
+avg return on 3 trajectories of agent0: 109.22360046014293
+avg return on 3 trajectories of agent1: -85.04567141882205
+avg return on 3 trajectories of agent2: -89.40246951834237
+avg return on 3 trajectories of agent3: 22.074271391161915
+avg return on 3 trajectories of agent4: -88.45940077442303
+avg return on 3 trajectories of agent5: 288.946279685952
+avg return on 3 trajectories of agent6: 10.821061125658389
+avg return on 3 trajectories of agent7: 6.023776186743149
+avg return on 3 trajectories of agent8: 53.894485060949876
+avg return on 3 trajectories of agent9: 285.0364138784271
+avg return on 3 trajectories of agent10: -56.59639861574395
+avg return on 3 trajectories of agent11: 289.362604437529
+avg return on 3 trajectories of agent12: 12.471346711266762
+avg return on 3 trajectories of agent13: 27.568524285594606
+avg return on 3 trajectories of agent14: 286.79098922798124
+avg return on 3 trajectories of agent15: 291.3172348947205
+avg return on 3 trajectories of agent16: 284.40797264340125
+avg return on 3 trajectories of agent17: 289.8701912720799
+avg return on 3 trajectories of agent18: 2.916827544024855
+avg return on 3 trajectories of agent19: 288.3063227692718
+avg cum rews: 111.4763980623787, std: 151.2824441473222
+the best agent: 15, best agent cum rewards: 291.3172348947205
+101
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.027843292361189646
+avg return on 3 trajectories of agent0: 18.98194838356484
+avg return on 3 trajectories of agent1: -29.498469438823577
+avg return on 3 trajectories of agent2: -58.10258507668723
+avg return on 3 trajectories of agent3: -85.53203808021173
+avg return on 3 trajectories of agent4: 27.647421803808527
+avg return on 3 trajectories of agent5: -31.454044716052707
+avg return on 3 trajectories of agent6: 99.65302938633766
+avg return on 3 trajectories of agent7: -85.79864248311893
+avg return on 3 trajectories of agent8: 185.03451333478102
+avg return on 3 trajectories of agent9: 291.1005411694471
+avg return on 3 trajectories of agent10: -0.08773761256536261
+avg return on 3 trajectories of agent11: 293.213093085417
+avg return on 3 trajectories of agent12: 24.618046721411375
+avg return on 3 trajectories of agent13: 288.8329498698427
+avg return on 3 trajectories of agent14: 28.419627508732134
+avg return on 3 trajectories of agent15: 286.89185959884855
+avg return on 3 trajectories of agent16: 292.35089697950195
+avg return on 3 trajectories of agent17: 156.61108298222229
+avg return on 3 trajectories of agent18: 50.90047219115502
+avg return on 3 trajectories of agent19: 290.70118711650485
+avg cum rews: 102.22415763620577, std: 139.85043617349098
+the best agent: 11, best agent cum rewards: 293.213093085417
+102
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.023539069084502574
+avg return on 3 trajectories of agent0: -27.4311960960912
+avg return on 3 trajectories of agent1: 290.2854569113309
+avg return on 3 trajectories of agent2: 21.40111169153326
+avg return on 3 trajectories of agent3: 2.0504512752455923
+avg return on 3 trajectories of agent4: 291.20517782931273
+avg return on 3 trajectories of agent5: 49.72720274624618
+avg return on 3 trajectories of agent6: 47.50321373255309
+avg return on 3 trajectories of agent7: 294.5930181467966
+avg return on 3 trajectories of agent8: 19.360929031019538
+avg return on 3 trajectories of agent9: 2.0527184932703193
+avg return on 3 trajectories of agent10: 292.0063340765264
+avg return on 3 trajectories of agent11: 292.0719748029471
+avg return on 3 trajectories of agent12: 293.523954897965
+avg return on 3 trajectories of agent13: 288.3030169681125
+avg return on 3 trajectories of agent14: 289.1717530206579
+avg return on 3 trajectories of agent15: 94.53553608849538
+avg return on 3 trajectories of agent16: 33.08195994289596
+avg return on 3 trajectories of agent17: 291.18131104367
+avg return on 3 trajectories of agent18: -32.943219512524706
+avg return on 3 trajectories of agent19: 92.27510605613173
+avg cum rews: 146.19779055730473, std: 134.64494668369835
+the best agent: 7, best agent cum rewards: 294.5930181467966
+103
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.027590867288735454
+avg return on 3 trajectories of agent0: -2.155479340946826
+avg return on 3 trajectories of agent1: -24.97948226804283
+avg return on 3 trajectories of agent2: -61.6943164708838
+avg return on 3 trajectories of agent3: 12.961752736650439
+avg return on 3 trajectories of agent4: 289.48270783717095
+avg return on 3 trajectories of agent5: 292.90640727645535
+avg return on 3 trajectories of agent6: 293.4251859203365
+avg return on 3 trajectories of agent7: 23.688788586810205
+avg return on 3 trajectories of agent8: 10.612980254337174
+avg return on 3 trajectories of agent9: -37.94598180549096
+avg return on 3 trajectories of agent10: 290.5451291270947
+avg return on 3 trajectories of agent11: 290.91479293318815
+avg return on 3 trajectories of agent12: 32.48390596135829
+avg return on 3 trajectories of agent13: 290.8177423804958
+avg return on 3 trajectories of agent14: 292.01705684378845
+avg return on 3 trajectories of agent15: 290.9182372639552
+avg return on 3 trajectories of agent16: 288.720675403057
+avg return on 3 trajectories of agent17: 292.3484821909776
+avg return on 3 trajectories of agent18: -42.2037063514218
+avg return on 3 trajectories of agent19: 290.0296802973286
+avg cum rews: 155.64472793881095, std: 151.1976667724731
+the best agent: 6, best agent cum rewards: 293.4251859203365
+104
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.026791617786886178
+avg return on 3 trajectories of agent0: 11.868895719293434
+avg return on 3 trajectories of agent1: 29.251992589056556
+avg return on 3 trajectories of agent2: -88.88952022199953
+avg return on 3 trajectories of agent3: -88.89613822760558
+avg return on 3 trajectories of agent4: 293.1239941130584
+avg return on 3 trajectories of agent5: -65.01730544955655
+avg return on 3 trajectories of agent6: -87.39979985945052
+avg return on 3 trajectories of agent7: 13.225734139212747
+avg return on 3 trajectories of agent8: -90.27573592632636
+avg return on 3 trajectories of agent9: 112.46626210904873
+avg return on 3 trajectories of agent10: -89.54993970150376
+avg return on 3 trajectories of agent11: -89.95284334817529
+avg return on 3 trajectories of agent12: 96.6864721135174
+avg return on 3 trajectories of agent13: 49.310715109542315
+avg return on 3 trajectories of agent14: 293.5911701644287
+avg return on 3 trajectories of agent15: -65.83232293213283
+avg return on 3 trajectories of agent16: -88.0702479810603
+avg return on 3 trajectories of agent17: -93.20033270684878
+avg return on 3 trajectories of agent18: 288.62061307833335
+avg return on 3 trajectories of agent19: 12.269442007963875
+avg cum rews: 17.666555239439795, std: 131.83976645033488
+the best agent: 14, best agent cum rewards: 293.5911701644287
+105
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.027670476682879624
+avg return on 3 trajectories of agent0: 52.62766881799584
+avg return on 3 trajectories of agent1: 101.28070552494123
+avg return on 3 trajectories of agent2: 21.298362614662636
+avg return on 3 trajectories of agent3: 16.33327122121551
+avg return on 3 trajectories of agent4: 288.97628345762075
+avg return on 3 trajectories of agent5: 293.30176626906416
+avg return on 3 trajectories of agent6: 290.70462345075583
+avg return on 3 trajectories of agent7: -89.16094591005768
+avg return on 3 trajectories of agent8: -88.5640269661434
+avg return on 3 trajectories of agent9: 17.867781036612826
+avg return on 3 trajectories of agent10: 27.285086898824844
+avg return on 3 trajectories of agent11: 290.19337523508415
+avg return on 3 trajectories of agent12: 286.08623379231284
+avg return on 3 trajectories of agent13: -75.0359079557409
+avg return on 3 trajectories of agent14: 289.8569146456916
+avg return on 3 trajectories of agent15: 106.3752178232186
+avg return on 3 trajectories of agent16: 54.41142834415277
+avg return on 3 trajectories of agent17: -30.726070074206817
+avg return on 3 trajectories of agent18: 287.81409948938614
+avg return on 3 trajectories of agent19: 287.5777846134937
+avg cum rews: 121.42518261644423, std: 145.9844182220436
+the best agent: 5, best agent cum rewards: 293.30176626906416
+106
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.025986543301452815
+avg return on 3 trajectories of agent0: 295.30805421091713
+avg return on 3 trajectories of agent1: 26.76462300540632
+avg return on 3 trajectories of agent2: 289.52142181792203
+avg return on 3 trajectories of agent3: 290.07043700138934
+avg return on 3 trajectories of agent4: -87.60448298985386
+avg return on 3 trajectories of agent5: -87.353620209643
+avg return on 3 trajectories of agent6: 289.74014536796483
+avg return on 3 trajectories of agent7: 290.12458724034946
+avg return on 3 trajectories of agent8: 293.97723024347084
+avg return on 3 trajectories of agent9: 295.7768515963692
+avg return on 3 trajectories of agent10: 93.9587860474773
+avg return on 3 trajectories of agent11: 48.30461683956912
+avg return on 3 trajectories of agent12: 294.33401188273984
+avg return on 3 trajectories of agent13: 10.854989868737704
+avg return on 3 trajectories of agent14: 160.6049727366243
+avg return on 3 trajectories of agent15: 289.5031864137273
+avg return on 3 trajectories of agent16: 293.5394946594187
+avg return on 3 trajectories of agent17: 95.80408789599335
+avg return on 3 trajectories of agent18: 108.73269134134918
+avg return on 3 trajectories of agent19: 43.58521771842007
+avg cum rews: 166.77736513441747, std: 136.65844474906928
+the best agent: 9, best agent cum rewards: 295.7768515963692
+107
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.030307332873090516
+avg return on 3 trajectories of agent0: 290.33840906805244
+avg return on 3 trajectories of agent1: 88.44826515237716
+avg return on 3 trajectories of agent2: 291.4490588118704
+avg return on 3 trajectories of agent3: -90.4403453444379
+avg return on 3 trajectories of agent4: 297.0254045869975
+avg return on 3 trajectories of agent5: 293.9274103130564
+avg return on 3 trajectories of agent6: 4.416870284040655
+avg return on 3 trajectories of agent7: 286.98619637794434
+avg return on 3 trajectories of agent8: 296.04787342465403
+avg return on 3 trajectories of agent9: -94.35450386213014
+avg return on 3 trajectories of agent10: 289.62040682430813
+avg return on 3 trajectories of agent11: 292.1838161408867
+avg return on 3 trajectories of agent12: 47.44464339453623
+avg return on 3 trajectories of agent13: 291.26768848146776
+avg return on 3 trajectories of agent14: -60.987998759559055
+avg return on 3 trajectories of agent15: 3.6973971558324905
+avg return on 3 trajectories of agent16: 53.46460493610425
+avg return on 3 trajectories of agent17: 290.84821981000175
+avg return on 3 trajectories of agent18: 49.85447977397837
+avg return on 3 trajectories of agent19: 291.1244745858864
+avg cum rews: 160.61811855779337, std: 151.25897024950032
+the best agent: 4, best agent cum rewards: 297.0254045869975
+108
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.028718270720928647
+avg return on 3 trajectories of agent0: -89.42635037102923
+avg return on 3 trajectories of agent1: -90.99851261589924
+avg return on 3 trajectories of agent2: -92.46819961387168
+avg return on 3 trajectories of agent3: 290.13710829456795
+avg return on 3 trajectories of agent4: -88.8376158314608
+avg return on 3 trajectories of agent5: -89.45179781021551
+avg return on 3 trajectories of agent6: 30.225141248108173
+avg return on 3 trajectories of agent7: 292.55549031133734
+avg return on 3 trajectories of agent8: 291.690721327295
+avg return on 3 trajectories of agent9: 294.6582594572144
+avg return on 3 trajectories of agent10: 4.80359600013135
+avg return on 3 trajectories of agent11: 299.16867380934826
+avg return on 3 trajectories of agent12: -89.33322830684483
+avg return on 3 trajectories of agent13: -3.415422826401823
+avg return on 3 trajectories of agent14: 294.8465569269035
+avg return on 3 trajectories of agent15: -87.47256981269393
+avg return on 3 trajectories of agent16: 294.7522680849009
+avg return on 3 trajectories of agent17: 92.55793380265075
+avg return on 3 trajectories of agent18: -94.29670071967816
+avg return on 3 trajectories of agent19: 293.5510436942355
+avg cum rews: 87.66231975242988, std: 174.96142558540484
+the best agent: 11, best agent cum rewards: 299.16867380934826
+109
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02155753381214593
+avg return on 3 trajectories of agent0: -91.10198159664249
+avg return on 3 trajectories of agent1: -90.6651572427638
+avg return on 3 trajectories of agent2: 293.8560881449977
+avg return on 3 trajectories of agent3: -33.94344242102652
+avg return on 3 trajectories of agent4: -43.38083411767459
+avg return on 3 trajectories of agent5: 292.0027394572645
+avg return on 3 trajectories of agent6: 298.75643905976733
+avg return on 3 trajectories of agent7: 293.49991544083025
+avg return on 3 trajectories of agent8: 298.5715344706652
+avg return on 3 trajectories of agent9: 296.78980305325484
+avg return on 3 trajectories of agent10: 293.6027796914849
+avg return on 3 trajectories of agent11: 292.9856365261264
+avg return on 3 trajectories of agent12: 289.7759787548433
+avg return on 3 trajectories of agent13: 292.10160050394774
+avg return on 3 trajectories of agent14: 288.652556924411
+avg return on 3 trajectories of agent15: 49.35910710717124
+avg return on 3 trajectories of agent16: -87.88832560261586
+avg return on 3 trajectories of agent17: 287.8001021999008
+avg return on 3 trajectories of agent18: 16.719122884529398
+avg return on 3 trajectories of agent19: 25.25532435156029
+avg cum rews: 163.13744937950156, std: 162.8012411738317
+the best agent: 6, best agent cum rewards: 298.75643905976733
+110
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.030130636000448425
+avg return on 3 trajectories of agent0: 294.0828211284069
+avg return on 3 trajectories of agent1: 44.67445952765274
+avg return on 3 trajectories of agent2: -90.66207227409134
+avg return on 3 trajectories of agent3: -36.41176735393826
+avg return on 3 trajectories of agent4: 49.61244632620853
+avg return on 3 trajectories of agent5: 289.5413691548658
+avg return on 3 trajectories of agent6: 97.4613200714843
+avg return on 3 trajectories of agent7: 294.87833914981013
+avg return on 3 trajectories of agent8: -90.97709581883252
+avg return on 3 trajectories of agent9: 290.91708839934927
+avg return on 3 trajectories of agent10: -79.24521459882459
+avg return on 3 trajectories of agent11: -89.3628846289441
+avg return on 3 trajectories of agent12: 290.79875840395977
+avg return on 3 trajectories of agent13: 289.91558483986626
+avg return on 3 trajectories of agent14: 288.11692112383065
+avg return on 3 trajectories of agent15: 98.62944206483164
+avg return on 3 trajectories of agent16: 291.5906441493919
+avg return on 3 trajectories of agent17: -90.00874682211752
+avg return on 3 trajectories of agent18: 291.08018839409857
+avg return on 3 trajectories of agent19: -88.7044583707042
+avg cum rews: 117.29635714331516, std: 167.31061178587626
+the best agent: 7, best agent cum rewards: 294.87833914981013
+111
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.027936460637032885
+avg return on 3 trajectories of agent0: 293.04588670091465
+avg return on 3 trajectories of agent1: 90.44046539117267
+avg return on 3 trajectories of agent2: 292.24496743280906
+avg return on 3 trajectories of agent3: -88.10671270738666
+avg return on 3 trajectories of agent4: -24.892715812570103
+avg return on 3 trajectories of agent5: 293.819622263143
+avg return on 3 trajectories of agent6: -60.26362628259629
+avg return on 3 trajectories of agent7: 100.54104227964083
+avg return on 3 trajectories of agent8: 13.807970658592865
+avg return on 3 trajectories of agent9: 296.3756521669675
+avg return on 3 trajectories of agent10: 298.3008244843184
+avg return on 3 trajectories of agent11: -58.132345009634925
+avg return on 3 trajectories of agent12: 295.7714389281065
+avg return on 3 trajectories of agent13: 292.37187444108844
+avg return on 3 trajectories of agent14: 286.3327861935556
+avg return on 3 trajectories of agent15: 49.146793702652275
+avg return on 3 trajectories of agent16: 111.01499773455652
+avg return on 3 trajectories of agent17: 294.1139015826647
+avg return on 3 trajectories of agent18: 292.8620686230256
+avg return on 3 trajectories of agent19: 290.26931594367807
+avg cum rews: 167.95321043573492, std: 146.68966226431814
+the best agent: 10, best agent cum rewards: 298.3008244843184
+112
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02906341227236244
+avg return on 3 trajectories of agent0: 294.5421862325306
+avg return on 3 trajectories of agent1: -89.82275541035085
+avg return on 3 trajectories of agent2: -88.14075852100676
+avg return on 3 trajectories of agent3: -108.73059818602478
+avg return on 3 trajectories of agent4: -89.67289888619135
+avg return on 3 trajectories of agent5: 295.62960253206523
+avg return on 3 trajectories of agent6: 7.317337137315306
+avg return on 3 trajectories of agent7: -88.11662644449001
+avg return on 3 trajectories of agent8: 291.8861151609439
+avg return on 3 trajectories of agent9: 293.80669733683925
+avg return on 3 trajectories of agent10: 152.84672849208977
+avg return on 3 trajectories of agent11: 285.35835722336066
+avg return on 3 trajectories of agent12: 42.40357593260077
+avg return on 3 trajectories of agent13: 291.98414094261807
+avg return on 3 trajectories of agent14: -90.28977373079086
+avg return on 3 trajectories of agent15: 294.3007122339288
+avg return on 3 trajectories of agent16: 292.46016372338437
+avg return on 3 trajectories of agent17: 285.0760907764438
+avg return on 3 trajectories of agent18: 292.21058007277406
+avg return on 3 trajectories of agent19: 288.82409798134495
+avg cum rews: 142.69364872996925, std: 173.80708347042625
+the best agent: 5, best agent cum rewards: 295.62960253206523
+113
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.029325486532200545
+avg return on 3 trajectories of agent0: 291.9994169841458
+avg return on 3 trajectories of agent1: 293.36609640843926
+avg return on 3 trajectories of agent2: -0.8645383003863287
+avg return on 3 trajectories of agent3: 62.357105884550776
+avg return on 3 trajectories of agent4: 73.29614753366249
+avg return on 3 trajectories of agent5: 7.945085227642295
+avg return on 3 trajectories of agent6: 51.064505288273324
+avg return on 3 trajectories of agent7: 35.807392027486
+avg return on 3 trajectories of agent8: 298.87421298799205
+avg return on 3 trajectories of agent9: -91.56308715162551
+avg return on 3 trajectories of agent10: 294.0234368756597
+avg return on 3 trajectories of agent11: -62.576080860187616
+avg return on 3 trajectories of agent12: -90.57082465911533
+avg return on 3 trajectories of agent13: -88.69233911957095
+avg return on 3 trajectories of agent14: 47.15243957280623
+avg return on 3 trajectories of agent15: 292.0855428546504
+avg return on 3 trajectories of agent16: 289.9338048123917
+avg return on 3 trajectories of agent17: -88.7314179095241
+avg return on 3 trajectories of agent18: -92.47055862002074
+avg return on 3 trajectories of agent19: 23.47510072106624
+avg cum rews: 77.2955720279168, std: 151.2891601495004
+the best agent: 8, best agent cum rewards: 298.87421298799205
+114
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.028495018946777646
+avg return on 3 trajectories of agent0: 293.48022063855126
+avg return on 3 trajectories of agent1: 13.874863819420298
+avg return on 3 trajectories of agent2: 10.139453015783204
+avg return on 3 trajectories of agent3: -21.916753467682653
+avg return on 3 trajectories of agent4: 23.713989922796657
+avg return on 3 trajectories of agent5: 290.29823346482607
+avg return on 3 trajectories of agent6: -68.19810078049453
+avg return on 3 trajectories of agent7: -32.52911554867899
+avg return on 3 trajectories of agent8: -5.597612497622734
+avg return on 3 trajectories of agent9: 293.80780124513666
+avg return on 3 trajectories of agent10: 2.2423427887037803
+avg return on 3 trajectories of agent11: -25.790719743462972
+avg return on 3 trajectories of agent12: 17.13223157927159
+avg return on 3 trajectories of agent13: 19.815316362821704
+avg return on 3 trajectories of agent14: 20.651149834124837
+avg return on 3 trajectories of agent15: -28.62093323027713
+avg return on 3 trajectories of agent16: 157.2844767300969
+avg return on 3 trajectories of agent17: 293.04315800773276
+avg return on 3 trajectories of agent18: 290.28492739712806
+avg return on 3 trajectories of agent19: 291.7263623793563
+avg cum rews: 91.74206459587654, std: 137.48770149465912
+the best agent: 9, best agent cum rewards: 293.80780124513666
+115
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.026505481501645906
+avg return on 3 trajectories of agent0: -90.01413098946462
+avg return on 3 trajectories of agent1: -34.364950001540265
+avg return on 3 trajectories of agent2: 96.52895076592901
+avg return on 3 trajectories of agent3: 292.02107454019335
+avg return on 3 trajectories of agent4: 290.733210724673
+avg return on 3 trajectories of agent5: 292.03705476698553
+avg return on 3 trajectories of agent6: 83.96660790801917
+avg return on 3 trajectories of agent7: 87.52950048640244
+avg return on 3 trajectories of agent8: 293.40980980062477
+avg return on 3 trajectories of agent9: 292.8779541830504
+avg return on 3 trajectories of agent10: -28.27642476502804
+avg return on 3 trajectories of agent11: 49.0479272442721
+avg return on 3 trajectories of agent12: 295.4166869609372
+avg return on 3 trajectories of agent13: -3.4333593014988537
+avg return on 3 trajectories of agent14: 289.40280247644205
+avg return on 3 trajectories of agent15: -35.443061050413775
+avg return on 3 trajectories of agent16: 178.84832977320895
+avg return on 3 trajectories of agent17: 284.7075061438791
+avg return on 3 trajectories of agent18: 294.7419903228249
+avg return on 3 trajectories of agent19: 292.40231105759887
+avg cum rews: 161.10698955235475, std: 141.78747353617425
+the best agent: 12, best agent cum rewards: 295.4166869609372
+116
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.026112153253763242
+avg return on 3 trajectories of agent0: 291.59425130137544
+avg return on 3 trajectories of agent1: 5.924575234581951
+avg return on 3 trajectories of agent2: 42.1735631960444
+avg return on 3 trajectories of agent3: 293.36416313774225
+avg return on 3 trajectories of agent4: 27.417083675056844
+avg return on 3 trajectories of agent5: -64.10013600853705
+avg return on 3 trajectories of agent6: 37.441281769706535
+avg return on 3 trajectories of agent7: 288.28807901585134
+avg return on 3 trajectories of agent8: 43.474900906025084
+avg return on 3 trajectories of agent9: 291.444890955457
+avg return on 3 trajectories of agent10: 292.2168941881549
+avg return on 3 trajectories of agent11: 287.5166382183247
+avg return on 3 trajectories of agent12: 292.5607302413271
+avg return on 3 trajectories of agent13: 87.03027778041499
+avg return on 3 trajectories of agent14: -34.45088949320841
+avg return on 3 trajectories of agent15: 48.56464858620225
+avg return on 3 trajectories of agent16: -69.926417182335
+avg return on 3 trajectories of agent17: 290.65835654080894
+avg return on 3 trajectories of agent18: 296.5575746886789
+avg return on 3 trajectories of agent19: 158.00134671200203
+avg cum rews: 145.28759067318373, std: 140.35439523799877
+the best agent: 18, best agent cum rewards: 296.5575746886789
+117
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.030723231132724994
+avg return on 3 trajectories of agent0: 49.03425122659405
+avg return on 3 trajectories of agent1: 48.81611959075545
+avg return on 3 trajectories of agent2: -0.34839642773061996
+avg return on 3 trajectories of agent3: 18.65885148632762
+avg return on 3 trajectories of agent4: -29.361622467483087
+avg return on 3 trajectories of agent5: -89.03986041268831
+avg return on 3 trajectories of agent6: -91.42527409695214
+avg return on 3 trajectories of agent7: 297.397577376818
+avg return on 3 trajectories of agent8: 292.3709981473259
+avg return on 3 trajectories of agent9: -38.86902953585493
+avg return on 3 trajectories of agent10: 293.45134408302863
+avg return on 3 trajectories of agent11: -92.32680184195563
+avg return on 3 trajectories of agent12: 47.44909548651685
+avg return on 3 trajectories of agent13: 92.44342773960636
+avg return on 3 trajectories of agent14: -37.25513659421229
+avg return on 3 trajectories of agent15: 296.49664603528396
+avg return on 3 trajectories of agent16: 94.58157164641707
+avg return on 3 trajectories of agent17: 289.72826719088584
+avg return on 3 trajectories of agent18: 30.480845429335886
+avg return on 3 trajectories of agent19: 47.32618236597747
+avg cum rews: 75.98045282139981, std: 136.57435641428057
+the best agent: 7, best agent cum rewards: 297.397577376818
+118
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.023660799561427293
+avg return on 3 trajectories of agent0: -88.8450236941638
+avg return on 3 trajectories of agent1: 293.00369046484184
+avg return on 3 trajectories of agent2: 11.657578561643888
+avg return on 3 trajectories of agent3: -89.23868808916086
+avg return on 3 trajectories of agent4: -95.22959993280098
+avg return on 3 trajectories of agent5: -39.000925676111144
+avg return on 3 trajectories of agent6: 291.83688005163094
+avg return on 3 trajectories of agent7: -89.57147342255216
+avg return on 3 trajectories of agent8: 295.4441282912523
+avg return on 3 trajectories of agent9: 47.56510774077972
+avg return on 3 trajectories of agent10: 297.7694360750576
+avg return on 3 trajectories of agent11: 13.515042617119775
+avg return on 3 trajectories of agent12: 28.80059847635519
+avg return on 3 trajectories of agent13: -27.88475535650302
+avg return on 3 trajectories of agent14: -93.18735671697804
+avg return on 3 trajectories of agent15: 25.910854405199444
+avg return on 3 trajectories of agent16: -62.56576954942446
+avg return on 3 trajectories of agent17: -92.06478506754712
+avg return on 3 trajectories of agent18: -91.95435440330827
+avg return on 3 trajectories of agent19: -91.8924000067152
+avg cum rews: 22.203409238430783, std: 143.94742972837133
+the best agent: 10, best agent cum rewards: 297.7694360750576
+119
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02483113795673143
+avg return on 3 trajectories of agent0: -32.64514002478245
+avg return on 3 trajectories of agent1: 79.75704288183658
+avg return on 3 trajectories of agent2: 73.56062337015337
+avg return on 3 trajectories of agent3: 7.777350593527075
+avg return on 3 trajectories of agent4: -25.645178038876537
+avg return on 3 trajectories of agent5: 296.2491829988459
+avg return on 3 trajectories of agent6: 43.933251102569244
+avg return on 3 trajectories of agent7: 30.281708081084247
+avg return on 3 trajectories of agent8: 294.16592571162215
+avg return on 3 trajectories of agent9: 108.31268102487641
+avg return on 3 trajectories of agent10: 297.60216717922646
+avg return on 3 trajectories of agent11: 55.353467236685105
+avg return on 3 trajectories of agent12: 296.79832497250004
+avg return on 3 trajectories of agent13: 123.31304141800243
+avg return on 3 trajectories of agent14: 298.2092948668025
+avg return on 3 trajectories of agent15: 12.78591150324543
+avg return on 3 trajectories of agent16: 295.33862403188135
+avg return on 3 trajectories of agent17: 42.70983935815593
+avg return on 3 trajectories of agent18: 296.5940567439594
+avg return on 3 trajectories of agent19: -87.23439902180806
+avg cum rews: 125.36088879947533, std: 133.56097273222335
+the best agent: 14, best agent cum rewards: 298.2092948668025
+120
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.025850180534065383
+avg return on 3 trajectories of agent0: 54.64485788313931
+avg return on 3 trajectories of agent1: 83.43769910628717
+avg return on 3 trajectories of agent2: -36.83163977632668
+avg return on 3 trajectories of agent3: 25.606132697294157
+avg return on 3 trajectories of agent4: 292.7801741421348
+avg return on 3 trajectories of agent5: 295.0781854043794
+avg return on 3 trajectories of agent6: 297.4213502676795
+avg return on 3 trajectories of agent7: 297.2595928273696
+avg return on 3 trajectories of agent8: 47.264763618421796
+avg return on 3 trajectories of agent9: 295.7459316070193
+avg return on 3 trajectories of agent10: 298.49557464788353
+avg return on 3 trajectories of agent11: 288.28034597481894
+avg return on 3 trajectories of agent12: 290.2931197495466
+avg return on 3 trajectories of agent13: 7.958753236025586
+avg return on 3 trajectories of agent14: -117.69728889533133
+avg return on 3 trajectories of agent15: 294.34389871240506
+avg return on 3 trajectories of agent16: 293.49544769338155
+avg return on 3 trajectories of agent17: 295.2351909801209
+avg return on 3 trajectories of agent18: 281.6454787246149
+avg return on 3 trajectories of agent19: -38.73265710136046
+avg cum rews: 177.28624557497517, std: 147.27915283782394
+the best agent: 10, best agent cum rewards: 298.49557464788353
+121
+---------------------------------
+Searching empty space policies
+(10, 6024)
+(20, 6024)
+(20, 6024)
+Average distance of agents to nearest neighbors: 0.02603606223947121
+avg return on 3 trajectories of agent0: 298.9166749887366
+avg return on 3 trajectories of agent1: 295.9976204373367
+avg return on 3 trajectories of agent2: 292.11922707714535
+avg return on 3 trajectories of agent3: 78.14298593684777
+avg return on 3 trajectories of agent4: 299.5061803585154
+avg return on 3 trajectories of agent5: -33.974657677871534
+avg return on 3 trajectories of agent6: 296.35862328832377
+avg return on 3 trajectories of agent7: 302.95873688957795
+avg return on 3 trajectories of agent8: 294.32546871154483
+avg return on 3 trajectories of agent9: 293.0410351473822
+avg return on 3 trajectories of agent10: 158.26846372837463
+avg return on 3 trajectories of agent11: 56.33368528819216
+avg return on 3 trajectories of agent12: 295.62490867079174
+avg return on 3 trajectories of agent13: 293.59541811871475
+avg return on 3 trajectories of agent14: 294.1069999524431
+avg return on 3 trajectories of agent15: 292.94162144114944
+avg return on 3 trajectories of agent16: 300.3879230465961
+avg return on 3 trajectories of agent17: 298.9681857875845
+avg return on 3 trajectories of agent18: 297.5748274394487
+avg return on 3 trajectories of agent19: 299.51554781187957
+avg cum rews: 250.23547382213573, std: 97.73043806739538
+the best agent: 7, best agent cum rewards: 302.95873688957795
+Average distance of random agents to nearest neighbors: [0.03317834078771617, 0.036322563289489046, 0.0385078582201186, 0.033593653860902926, 0.03569090895948977, 0.029352959304320848, 0.03407798764445203, 0.03393321137689069, 0.03678155916348991, 0.03402112990049188, 0.03511664661481253, 0.03196247187756916, 0.03422035623236126, 0.03302705367555956, 0.03366493114255666, 0.027238971470439473, 0.030720214796336055, 0.033497968457316535, 0.028933133341244827, 0.03168886619987796, 0.034184568969603646, 0.02940112717307138, 0.026009308935545993, 0.02632795183215763, 0.03167016281774953, 0.030084956106322995, 0.029984352596486206, 0.030443288219303012, 0.0333936253567488, 0.03153673270593045, 0.02991564089945862, 0.02836667472042755, 0.02954761636416319, 0.030429920346448668, 0.025031917815467115, 0.02930419559696611, 0.027506100846284944, 0.030916874069095306, 0.028968458087174864, 0.03013526301558328, 0.024090219326768948, 0.027456486131614777, 0.02966375719047292, 0.028469377231676835, 0.032324709732381315, 0.03288142126585902, 0.03036652379335958, 0.026479290670873866, 0.02959818424783419, 0.030575802806366414, 0.02943491780313117, 0.03118215401333102, 0.026735683477521914, 0.026580490894459952, 0.03224493287150937, 0.03163590222779041, 0.02734362165645481, 0.031783012561145865, 0.027901270217304708, 0.030554032739442565, 0.03164065629254097, 0.02708811172134659, 0.02959885078295496, 0.02872536564462958, 0.03046551314172315, 0.02837405597510769, 0.031735487329836845, 0.02451207119636972, 0.028478404557750508, 0.02828945973144268, 0.02323480514010761, 0.03216029095828622, 0.02893915247228379, 0.03012658871575743, 0.025388116985926395, 0.03021054815735407, 0.02353301831236109, 0.027816278794233446, 0.0311874828376847, 0.02709138528409693, 0.027601225795931682, 0.027385879986251895, 0.025223565069147913, 0.02790048716678331, 0.0298549095544971, 0.031394472382106686, 0.029712167984190962, 0.0286584002217048, 0.025645447768742818, 0.0338730082727018, 0.023821116089079993, 0.02685176775513718, 0.025727484574984118, 0.02649263094528755, 0.032124308838883134, 0.0277423687112604, 0.031836164475382026, 0.025685902915600172, 0.03136584582696217, 0.02352804921203373, 0.030762828363819616, 0.027843292361189646, 0.023539069084502574, 0.027590867288735454, 0.026791617786886178, 0.027670476682879624, 0.025986543301452815, 0.030307332873090516, 0.028718270720928647, 0.02155753381214593, 0.030130636000448425, 0.027936460637032885, 0.02906341227236244, 0.029325486532200545, 0.028495018946777646, 0.026505481501645906, 0.026112153253763242, 0.030723231132724994, 0.023660799561427293, 0.02483113795673143, 0.025850180534065383, 0.02603606223947121]
+Time taken for each iteration: [544.3610804080963, 1088.880315542221, 1697.6918575763702, 2313.772520542145, 2942.947155237198, 3543.3598506450653, 4109.536945581436, 4651.885849714279, 5224.4391984939575, 5793.306888341904, 6331.302958011627, 6857.539679765701, 7421.203334569931, 7955.240767002106, 8557.437695264816, 9178.260864257812, 9797.804681777954, 10444.058760881424, 10911.585240840912, 11289.765653371811, 11727.189138412476, 12154.588916778564, 12577.844262123108, 13000.585017204285, 13410.173912525177, 13773.635218143463, 14137.01937675476, 14503.782652378082, 14817.433560609818, 15128.620302438736, 15454.220677137375, 15776.165853500366, 16057.231986284256, 16307.220160007477, 16584.04513311386, 16866.355311632156, 17144.545031785965, 17412.307759284973, 17696.90960097313, 17985.708857774734, 18257.915106534958, 18528.667487859726, 18787.532052993774, 19054.015497922897, 19338.417165994644, 19630.115364551544, 19925.969378232956, 20218.688564777374, 20511.768317699432, 20804.73277258873, 21101.722806453705, 21398.740007400513, 21697.06853747368, 21967.032769203186, 22258.208851337433, 22542.756338834763, 22827.782816648483, 23107.11189889908, 23381.502579689026, 23654.819429397583, 23937.189728736877, 24221.092166900635, 24488.115658044815, 24752.68377685547, 25015.99690413475, 25294.220423221588, 25583.0217564106, 25863.440165281296, 26131.43181324005, 26405.393478393555, 26680.008136034012, 26957.475204706192, 27225.308713912964, 27499.135059595108, 27786.818014144897, 28061.119384288788, 28341.169044971466, 28613.068749427795, 28874.492141008377, 29138.671914339066, 29397.02575969696, 29658.089191675186, 29931.232343673706, 30205.01425909996, 30479.605966091156, 30750.614433050156, 31025.274559736252, 31285.361569404602, 31544.943960428238, 31810.155342817307, 32076.868761777878, 32336.248186826706, 32600.691373825073, 32861.159188985825, 33119.338985443115, 33382.16087055206, 33639.31590747833, 33905.41966843605, 34175.99176955223, 34444.119764089584, 34710.967317819595, 34979.75050830841, 35250.49859070778, 35523.0624935627, 35778.31336450577, 36046.6238796711, 36320.09073090553, 36593.65972042084, 36859.26408267021, 37131.282866477966, 37401.47636294365, 37678.00765943527, 37950.26965999603, 38216.108749866486, 38487.708109378815, 38764.17720580101, 39039.40514421463, 39306.285912036896, 39564.29587006569, 39837.886984586716, 40114.44839692116, 40396.08160996437]

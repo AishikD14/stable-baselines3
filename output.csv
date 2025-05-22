@@ -403,7 +403,7 @@ PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training with eval=
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
 PPO_Ablation1_1, ppo_ablation1_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1
 PPO_Ablation2_1, ppo_ablation2_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1
-PPO_Ablation5_1, ppo_ablation5_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, espace4, Ongoing
+PPO_Ablation5_1, ppo_ablation5_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1
 TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training with eval=1 from scratch
 TRPO_upper_bound_1, trpo_upper_bound_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 ----------------
@@ -416,7 +416,7 @@ PPO_normal_training_5, ppo_normal_training_5_out, PPO Normal Training with eval=
 PPO_upper_bound_5, ppo_upper_bound_5_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
 PPO_Ablation1_2, ppo_ablation1_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1
 PPO_Ablation2_2, ppo_ablation2_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1
-PPO_Ablation5_2, ppo_ablation5_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, espace5, Ongoing
+PPO_Ablation5_2, ppo_ablation5_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training with eval=1 from scratch
 TRPO_upper_bound_2, trpo_upper_bound_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 ----------------
@@ -429,7 +429,7 @@ PPO_normal_training_6, ppo_normal_training_6_out, PPO Normal Training with eval=
 PPO_upper_bound_6, ppo_upper_bound_6_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3
 PPO_Ablation1_3, ppo_ablation1_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1
 PPO_Ablation2_3, ppo_ablation2_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0 and search=1
-PPO_Ablation5_3, ppo_ablation5_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1, espace6, Ongoing
+PPO_Ablation5_3, ppo_ablation5_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.9 and search=1
 TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training with eval=1 from scratch
 TRPO_upper_bound_3, trpo_upper_bound_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 ----------------
@@ -457,7 +457,7 @@ Seed 1         |
 PPO_2, ppo_init_1M_1_out, ppo_bipedalwalker_1M_1.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
 PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training with eval=1 from scratch
 PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3 from scratch
-PPO_Ablation1_2, ppo_ablation1_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, espace2, Ongoing
+PPO_Ablation1_2, ppo_ablation1_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1
 TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training with eval=1 from scratch
 ----------------
 Seed 2         |
@@ -465,7 +465,7 @@ Seed 2         |
 PPO_3, ppo_init_1M_2_out, ppo_bipedalwalker_1M_2.zip; PPO Init for 1M steps with new hyperparameters and replay buffer
 PPO_normal_training_3, ppo_normal_training_3_out, PPO Normal Training with eval=1 from scratch
 PPO_upper_bound_3, ppo_upper_bound_3_out, PPO_empty_space with 60 iterations & 1 evaluation & every other point - 20k; gamma=0.3 from scratch
-PPO_Ablation1_3, ppo_ablation1_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1, espace3, Ongoing
+PPO_Ablation1_3, ppo_ablation1_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.5 and search=1
 TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training with eval=1 from scratch
 ----------------
 Seed 3         |
