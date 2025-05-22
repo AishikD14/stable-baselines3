@@ -73,6 +73,9 @@ Seed 0         |
 PPO_FQE_1, ppo_fqe_1_out, PPO FQE with 60 iterations & every other point; gamma=0.3, , Stopped
 PPO_neghrand_1, ppo_neghrand_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , First Half
 PPO_neghrand_1_1, ppo_neghrand_1_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , Second Half
+PPO_eval_1, ppo_eval_1_out, PPO empty space with eval=10, exp1, Ongoing
+PPO_eval_2, ppo_eval_2_out, PPO empty space with eval=20, exp2, Ongoing
+PPO_eval_3, ppo_eval_3_out, PPO empty space with eval=50, exp3, Ongoing
 ----------------
 Seed 1         |
 ----------------
