@@ -131,14 +131,21 @@ BipedalWalker-v3
 Seed 0         |
 ----------------
 PPO_neghrand_1, ppo_neghrand_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , First Half
-PPO_neghrand_1_1, ppo_neghrand_1_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, exp1, Ongoing
+PPO_neghrand_1_1, ppo_neghrand_1_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , Second Half
+TRPO_upper_bound_1, trpo_upper_bound_1_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 ----------------
 Seed 1         |
 ----------------
 PPO_neghrand_2, ppo_neghrand_2_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , First Half
-PPO_neghrand_2_1, ppo_neghrand_2_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, exp2, Ongoing
+PPO_neghrand_2_1, ppo_neghrand_2_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , Second Half
+TRPO_upper_bound_2, trpo_upper_bound_2_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
 ----------------
 Seed 2         |
 ----------------
 PPO_neghrand_3, ppo_neghrand_3_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , First Half
-PPO_neghrand_3_1, ppo_neghrand_3_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, exp3, Ongoing
+PPO_neghrand_3_1, ppo_neghrand_3_1_out, PPO_neghrand with 60 iterations & 3 evaluation & every other point - 60k; gamma=0, , Second Half
+TRPO_upper_bound_3, trpo_upper_bound_3_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
+----------------
+Seed 3         |
+----------------
+TRPO_upper_bound_4, trpo_upper_bound_4_out, TRPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
