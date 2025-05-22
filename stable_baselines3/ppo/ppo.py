@@ -292,7 +292,7 @@ class PPO(OnPolicyAlgorithm):
             
             if self.ckp_dir is not None:
                 os.makedirs(self.ckp_dir, exist_ok=True)
-                if self.env_name == 'Hopper-v5':
+                if self.env_name == 'Hopper-v5' or self.env_name == 'LunarLander-v3':
                     if self.current_iteration % 2 == 1:
                         th.save(self.policy.state_dict(), f'{self.ckp_dir}/agent{epoch+1}.zip')
                     else:

@@ -751,7 +751,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_upper_bound"
+    exp = "PPO_normal_training"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -837,7 +837,7 @@ if __name__ == "__main__":
 
     START_ITER = 1 // (args.n_steps_per_rollout*args.n_envs)
     SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
-    if env_name == "BipedalWalker-v3":
+    if env_name == "BipedalWalker-v3" or env_name == "LunarLander-v3":
         NUM_ITERS = 1000000 // (args.n_steps_per_rollout*args.n_envs)
     elif env_name == "Pendulum-v1":
         NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs)
@@ -896,7 +896,7 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = False
+    normal_train = True
     use_ANN = False
     ANN_lib = "Annoy"
     online_eval = True
