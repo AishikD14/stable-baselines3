@@ -37,7 +37,7 @@ elif env == "BipedalWalker-v3":
 start_iteration = 1
 
 plot_list = [
-    ["PPO_upper_bound", "ExploRLer"],
+    ["PPO_upper_bound", "ExploRLer (PPO)"],
     ["PPO_normal_training", "PPO"],
     ["TRPO_normal_training", "TRPO"],
     # ["PPO_empty_space_ls", "FQE Estimation"],
@@ -45,13 +45,20 @@ plot_list = [
     # ["PPO_upper_bound", "Online Evaluation"],
 ]
 
-if env == "Swimmer-v5":
-    plot_list = [
-        ["TRPO_upper_bound", "ExploRLer (TRPO)"],
-        ["PPO_normal_training", "PPO"],
-        ["TRPO_normal_training", "TRPO"],
-        # ["PPO_upper_bound", "ExploRLer"], 
-    ]
+# plot_list = [
+#     ["TRPO_upper_bound_interpolated", "ExploRLer (TRPO)"],
+#     ["TRPO_normal_training", "TRPO"],
+#     ["PPO_normal_training", "PPO"],
+#     # ["PPO_upper_bound", "ExploRLer"], 
+# ]
+
+# if env == "Swimmer-v5":
+#     plot_list = [
+#         ["TRPO_upper_bound", "ExploRLer (TRPO)"],
+#         ["PPO_normal_training", "PPO"],
+#         ["TRPO_normal_training", "TRPO"],
+#         # ["PPO_upper_bound", "ExploRLer"], 
+#     ]
 
 plot_metrics = []
 
@@ -120,4 +127,4 @@ for spine in ax.spines.values():
     spine.set_visible(False)
 
 # plt.savefig('../paper_plots/'+env+'.png')
-plt.savefig('../paper_plots/'+env+'.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_PPO.pdf', format='pdf', bbox_inches='tight', dpi=300)

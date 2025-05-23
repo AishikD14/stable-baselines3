@@ -910,7 +910,7 @@ if __name__ == "__main__":
 
     if saved_agents:
         # Find best agent index
-        best_agent_index = np.load(f'logs/{env_name}/{exp}/best_agent_{str(saved_iter-1)}_{str(saved_iter)}.npy')
+        best_agent_index = np.load(f'logs/{env_name}/{exp}/best_agent_{str(saved_iter-SEARCH_INTERV)}_{str(saved_iter)}.npy')
         print("Last Best agent index: ", best_agent_index[0])
 
         ckp = torch.load(f'logs/{env_name}/{exp}/models/agent{str(best_agent_index[0])}.zip', map_location=torch.device('cpu'))

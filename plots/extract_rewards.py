@@ -14,10 +14,10 @@ args, rest_args = parser.parse_known_args()
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
+# env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
-# env = "BipedalWalker-v3"
+env = "BipedalWalker-v3"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -68,9 +68,9 @@ file_name_list = [
     ["PPO_Ablation2_1"],
     ["PPO_Ablation2_2"],
     ["PPO_Ablation2_3"]
-    # ["PPO_Ablation3_1"],
-    # ["PPO_Ablation3_2"],
-    # ["PPO_Ablation3_3"]
+    # ["PPO_Ablation3_1", "PPO_Ablation5_1"],
+    # ["PPO_Ablation3_2", "PPO_Ablation5_2"],
+    # ["PPO_Ablation3_3", "PPO_Ablation5_3"],
     # ["PPO_Ablation4_1"],
     # ["PPO_Ablation4_2"],
     # ["PPO_Ablation4_3"],
@@ -80,6 +80,12 @@ file_name_list = [
     # ["TRPO_Ablation1_1"],
     # ["TRPO_Ablation1_2"],
     # ["TRPO_Ablation1_3"],
+    # ["TRPO_Ablation2_1"],
+    # ["TRPO_Ablation2_2"],
+    # ["TRPO_Ablation2_3"],
+    # ["TRPO_Ablation5_1"],
+    # ["TRPO_Ablation5_2"],
+    # ["TRPO_Ablation5_3"],
     # ["PPO_neghrand_1"],
     # ["PPO_neghrand_2"],
     # ["PPO_neghrand_3"]

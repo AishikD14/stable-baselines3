@@ -35,18 +35,23 @@ elif env == "BipedalWalker-v3":
 
 start_iteration = 1
 
-ablation_type = "Ablation1" #gamma
+# ablation_type = "Ablation1" #gamma
 # ablation_type = "Ablation2" #search
 # ablation_type = "Ablation3" #neghrand
 # ablation_type = "Ablation4" #fqe humanoid
 # ablation_type = "Ablation5" #fqe swimmer
+ablation_type = "Ablation6" #n_eval
 
 if ablation_type == "Ablation1":
     plot_list = [
         ["PPO_Ablation1", "gamma=0"],
         ["PPO_upper_bound", "gamma=0.3"],
         ["PPO_Ablation2", "gamma=0.5"],
-        ["PPO_Ablation5", "gamma=0.9"],
+        # ["PPO_Ablation5", "gamma=0.9"],
+        # ["TRPO_Ablation1", "gamma=0"],
+        # ["TRPO_upper_bound", "gamma=0.3"],
+        # ["TRPO_Ablation2", "gamma=0.5"],
+        # ["TRPO_Ablation5", "gamma=0.9"],
     ]
 
 if ablation_type == "Ablation2":
@@ -58,14 +63,24 @@ if ablation_type == "Ablation2":
 
 if ablation_type == "Ablation3":
     plot_list = [
-        ["PPO_upper_bound", "Empty Space Search"],
-        ["PPO_neghrand", "Random Walk"],
+        # ["PPO_upper_bound", "Empty-Space Search"],
+        # ["PPO_neghrand", "Random Walk"],
+        ["TRPO_upper_bound", "Empty-Space Search"],
+        ["TRPO_neghrand", "Random Walk"],
     ]
 
 if ablation_type in ["Ablation4", "Ablation5"]:
     plot_list = [
         ["PPO_upper_bound", "Online Evaluation"],
         ["PPO_FQE", "FQE Evaluation"],
+    ]
+
+if ablation_type == "Ablation6":
+    plot_list = [
+        ["PPO_upper_bound", "n_eval=3"],
+        ["PPO_eval_1", "n_eval=10"],
+        ["PPO_eval_2", "n_eval=20"],
+        ["PPO_eval_3", "n_eval=50"],
     ]
 
 plot_metrics = []
@@ -82,7 +97,10 @@ for plot_item in plot_list:
     print("Rewards shape: ", rewards.shape)
 
     # Smoothing window
-    window = 100
+    if env in ["Pendulum-v1", "BipedalWalker-v3", "Swimmer-v5"]:
+        window = 10
+    else:
+        window = 100
     smoothed = np.convolve(rewards, np.ones(window)/window, mode='valid')
 
     # Calculate standard deviation over the same window
