@@ -35,20 +35,21 @@ def interpolate_after_fixed(arr, fixed_len, target_len):
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
-env = "Pendulum-v1"
+# env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
+env = "LunarLander-v3"
 
 # Load the arrays
-r1 = np.load("../combined_results/"+env+"/TRPO_upper_bound.npy")
+r1 = np.load("../combined_results/"+env+"/PPO_upper_bound.npy")
 # r2 = np.load("../combined_results/Ant-v5/PPO_Ablation4.npy")
-r3 = np.load("../combined_results/"+env+"/PPO_upper_bound.npy")
+r3 = np.load("../combined_results/"+env+"/PPO_normal_training.npy")
 
 # Interpolate all to the same length
 fixed_len = 1954
 # target_len = max(len(r1), len(r2), len(r3))
 target_len = len(r3)
 
-if env in ["Pendulum-v1", "BipedalWalker-v3"]:
+if env in ["Pendulum-v1", "BipedalWalker-v3", "LunarLander-v3"]:
     r1_interp = interpolate_to_length(r1, target_len)
     # r2_interp = interpolate_to_length(r2, target_len)
 else:
@@ -60,5 +61,5 @@ print(r1_interp.shape)
 # print(r2_interp.shape)
 
 # Save the interpolated arrays
-np.save("../combined_results/"+env+"/TRPO_upper_bound_interpolated.npy", r1_interp)
+np.save("../combined_results/"+env+"/PPO_upper_bound_interpolated.npy", r1_interp)
 # np.save("../combined_results/Ant-v5/PPO_Ablation4_interpolated.npy", r2_interp)

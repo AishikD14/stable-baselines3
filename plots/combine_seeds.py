@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
@@ -17,7 +17,8 @@ args, rest_args = parser.parse_known_args()
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
-env = "BipedalWalker-v3"
+# env = "BipedalWalker-v3"
+env = "LunarLander-v3"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -33,6 +34,8 @@ elif env == "Pendulum-v1":
     args = args_pendulum.get_args(rest_args)
 elif env == "BipedalWalker-v3":
     args = args_bipedal_walker.get_args(rest_args)
+elif env == "LunarLander-v3":
+    args = args_lunarlander.get_args(rest_args)
 
 if not hasattr(args, 'n_envs'):
     args.n_envs = 1
@@ -44,19 +47,19 @@ if not hasattr(args, 'n_envs'):
 
 start_iteration = 1
 
-# seed_list = [0]
-seed_list = [0, 1, 2]
+seed_list = [0]
+# seed_list = [0, 1, 2]
 # seed_list = [0, 1, 2, 3]
 # file_name = "PPO_normal_training"
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
     # ["PPO_normal_training", "PPO Normal Training"],
-    # ["PPO_upper_bound", "PPO Upper Bound"],
+    ["PPO_upper_bound", "PPO Upper Bound"],
     # ["TRPO_normal_training", "TRPO Normal Training"],
     # ["TRPO_upper_bound", "TRPO Upper Bound"],
     # ["PPO_Ablation1", "PPO_Ablation1"],
-    ["PPO_Ablation2", "PPO Ablation 2"],
+    # ["PPO_Ablation2", "PPO Ablation 2"],
     # ["PPO_Ablation3", "PPO_Ablation3"]
     # ["PPO_Ablation4", "PPO Ablation 4"],
     # ["PPO_Ablation5", "PPO Ablation 5"],
@@ -84,7 +87,7 @@ for plot_item in plot_list:
         results = np.load(directory + ".npy")
         print(results.shape)
 
-        if env not in ["Pendulum-v1", "BipedalWalker-v3"]:
+        if env not in ["Pendulum-v1", "BipedalWalker-v3", "LunarLander-v3"]:
             # Load pretrained rewards
             if "PPO" in plot_item[0]:
                 pretrain_rewards = np.load("../final_results/"+env+"/PPO_pretrain_"+str(i+1)+".npy")

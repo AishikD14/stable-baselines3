@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander
 import re
 
 parser = argparse.ArgumentParser()
@@ -17,7 +17,8 @@ args, rest_args = parser.parse_known_args()
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
-env = "BipedalWalker-v3"
+# env = "BipedalWalker-v3"
+env = "LunarLander-v3"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -33,6 +34,8 @@ elif env == "Pendulum-v1":
     args = args_pendulum.get_args(rest_args)
 elif env == "BipedalWalker-v3":
     args = args_bipedal_walker.get_args(rest_args)
+elif env == "LunarLander-v3":
+    args = args_lunarlander.get_args(rest_args)
 
 # Pendulum-v1
 file_name_list = [
@@ -44,12 +47,12 @@ file_name_list = [
     # ["TRPO_plot_2", "trpo_plot_1_out", "TRPO_pretrain_2"],
     # ["TRPO_plot_3", "trpo_plot_2_out", "TRPO_pretrain_3"],
     # ["TRPO_plot_4", "trpo_plot_3_out", "TRPO_pretrain_4"],
-    # ["PPO_normal_training_1"],
+    ["PPO_normal_training_1"],
     # ["PPO_normal_training_2"],
     # ["PPO_normal_training_3"],
     # ["PPO_normal_training_4"],
     # ["PPO_normal_training_7", "PPO_normal_training_4"],
-    # ["PPO_upper_bound_1"],
+    ["PPO_upper_bound_1"],
     # ["PPO_upper_bound_2"],
     # ["PPO_upper_bound_3"],
     # ["PPO_upper_bound_4"],
@@ -65,9 +68,9 @@ file_name_list = [
     # ["PPO_Ablation1_1"],
     # ["PPO_Ablation1_2"],
     # ["PPO_Ablation1_3"],
-    ["PPO_Ablation2_1"],
-    ["PPO_Ablation2_2"],
-    ["PPO_Ablation2_3"]
+    # ["PPO_Ablation2_1"],
+    # ["PPO_Ablation2_2"],
+    # ["PPO_Ablation2_3"]
     # ["PPO_Ablation3_1", "PPO_Ablation5_1"],
     # ["PPO_Ablation3_2", "PPO_Ablation5_2"],
     # ["PPO_Ablation3_3", "PPO_Ablation5_3"],

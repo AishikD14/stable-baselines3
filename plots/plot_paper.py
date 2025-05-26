@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander
 import re
 
 parser = argparse.ArgumentParser()
@@ -13,10 +13,11 @@ args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
+# env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
+env = "LunarLander-v3"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -32,17 +33,20 @@ elif env == "Pendulum-v1":
     args = args_pendulum.get_args(rest_args)
 elif env == "BipedalWalker-v3":
     args = args_bipedal_walker.get_args(rest_args)
+elif env == "LunarLander-v3":
+    args = args_lunarlander.get_args(rest_args)
 
 # start_iteration = 1000000 // args.n_steps_per_rollout*1
 start_iteration = 1
 
 plot_list = [
-    ["PPO_upper_bound", "ExploRLer (PPO)"],
+    # ["PPO_upper_bound", "ExploRLer (PPO)"],
     ["PPO_normal_training", "PPO"],
-    ["TRPO_normal_training", "TRPO"],
+    # ["TRPO_normal_training", "TRPO"],
     # ["PPO_empty_space_ls", "FQE Estimation"],
     # ["PPO_baseline", "Baseline"],
     # ["PPO_upper_bound", "Online Evaluation"],
+    ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
 ]
 
 # plot_list = [
