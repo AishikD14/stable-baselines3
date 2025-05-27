@@ -47,9 +47,9 @@ if not hasattr(args, 'n_envs'):
 
 start_iteration = 1
 
-seed_list = [0]
+# seed_list = [0]
 # seed_list = [0, 1, 2]
-# seed_list = [0, 1, 2, 3]
+seed_list = [0, 1, 2, 3]
 # file_name = "PPO_normal_training"
 
 plot_list = [
