@@ -160,18 +160,22 @@ Seed 0         |
 ----------------
 PPO_normal_training_1, ppo_normal_training_1_out, PPO Normal Training
 PPO_upper_bound_1, ppo_upper_bound_1_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
+TRPO_normal_training_1, trpo_normal_training_1_out, TRPO Normal Training, exp1, Ongoing
 ----------------
 Seed 1         |
 ----------------
 PPO_normal_training_2, ppo_normal_training_2_out, PPO Normal Training
 PPO_upper_bound_2, ppo_upper_bound_2_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
+TRPO_normal_training_2, trpo_normal_training_2_out, TRPO Normal Training, exp2, Ongoing
 ----------------
 Seed 2         |
 ----------------
 PPO_normal_training_3, ppo_normal_training_3_out, PPO Normal Training
 PPO_upper_bound_3, ppo_upper_bound_3_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
+TRPO_normal_training_3, trpo_normal_training_3_out, TRPO Normal Training, exp4, Ongoing
 ----------------
 Seed 3         |
 ----------------
 PPO_normal_training_4, ppo_normal_training_4_out, PPO Normal Training
 PPO_upper_bound_4, ppo_upper_bound_4_out, PPO_empty_space with 60 iterations & 3 evaluation & every other point - 60k; gamma=0.3
+TRPO_normal_training_4, trpo_normal_training_4_out, TRPO Normal Training, exp5, Ongoing
