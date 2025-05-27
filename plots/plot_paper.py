@@ -43,6 +43,7 @@ plot_list = [
     # ["PPO_upper_bound", "ExploRLer (PPO)"],
     ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
     ["PPO_normal_training", "PPO"],
+    ["TRPO_normal_training_interpolated", "TRPO"],
     # ["TRPO_normal_training", "TRPO"],
     # ["PPO_empty_space_ls", "FQE Estimation"],
     # ["PPO_baseline", "Baseline"],
