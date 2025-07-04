@@ -1,9 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=espace12
-#SBATCH --output=/home/aideb/stable-baselines3/base_job_output/Swimmer-v5/trpo_upper_bound_4_out.txt
-#SBATCH --error=/home/aideb/stable-baselines3/base_job_output/Swimmer-v5/trpo_upper_bound_4_err.txt
+#SBATCH --job-name=espace3
+#SBATCH --output=/home/aideb/stable-baselines3/base_job_output/Swimmer-v5/trpo_ablation5_3_1_out.txt
+#SBATCH --error=/home/aideb/stable-baselines3/base_job_output/Swimmer-v5/trpo_ablation5_3_1_err.txt
 #SBATCH --time=50-00:00
 #SBATCH --mem=50000
+#SBATCH --nodelist=orion
 
 # Test CUDA compiler (not needed by deep learning people, we just use the python libraries)
 # /cm/shared/apps/cuda11.1/toolkit/11.1.1/bin/nvcc -o saxpy /home/aideb/cuda_c_code/saxpy.cu && ./saxpy
