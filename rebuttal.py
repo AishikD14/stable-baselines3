@@ -982,7 +982,8 @@ if __name__ == "__main__":
                     dummy_env = gym.make(env_name)
                     dummy_env.reset(seed=args.seed)
 
-                    returns_trains1 = evaluate_policy(model, dummy_env, n_eval_episodes=5, deterministic=True, return_episode_rewards=True)[0]
+                    print("Starting 1000 evaluations...")
+                    returns_trains1 = evaluate_policy(model, dummy_env, n_eval_episodes=1000, deterministic=True, return_episode_rewards=True)[0]
                     returns_trains1.sort(reverse=True)
                     returns_trains1 = returns_trains1[:3]
                     returns_trains1 = np.mean(returns_trains1)
