@@ -644,6 +644,28 @@ def d3rl_evaluation(model, exp_name):
         import traceback
         traceback.print_exc()
 
+# Function to average multiple checkpoints
+def average_checkpoints(checkpoint_paths):
+    """Averages the model weights from a list of checkpoint paths."""
+    policies = []
+    for path in checkpoint_paths:
+        policy_vec = []
+        ckp = torch.load(path, map_location='cpu')
+        ckp_layers = ckp.keys()
+
+        for layer in ckp_layers:
+            if 'value_net' not in layer:
+                policy_vec.append(ckp[layer].detach().numpy().reshape(-1))
+
+        policy_vec = np.concatenate(policy_vec)
+        policies.append(policy_vec)
+
+    policies = np.array(policies)
+    avg_policy_vec = np.mean(policies, axis=0)
+    
+    return avg_policy_vec
+
+
 # ------------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
@@ -651,10 +673,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
-    env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
+    # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
     # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
@@ -748,7 +770,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_Ablation3_2"
+    exp = "PPO_Rebuttal_1"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -900,6 +922,8 @@ if __name__ == "__main__":
     start_time = time.time()
     timeArray = []
 
+    avg_checkpoint = True
+
     if exp == "PPO_baseline":
         # START_ITER = 1953
         # NUM_ITERS = 9765
@@ -941,13 +965,14 @@ if __name__ == "__main__":
                             reset_num_timesteps=True if i == START_ITER else False, 
                             first_iteration=True if i == START_ITER else False,
                             )
-            
-            agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned)
-            # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-            # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-            # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-            # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-            distanceArray.append(distance)
+
+            if not avg_checkpoint:
+                agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned)
+                # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+                # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+                # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+                # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+                distanceArray.append(distance)
 
             if saved_agents:
                 saved_agents = False
@@ -956,6 +981,41 @@ if __name__ == "__main__":
             best_agent_index = []
             advantage_rew = []
             # q_losses = []
+
+            if avg_checkpoint:
+                # Average the last checkpoints
+                checkpoint_paths = [f'logs/{DIR}/models/agent{j}.zip' for j in range(1, 11)]
+                avg_policy_vec = average_checkpoints(checkpoint_paths)
+                avg_policy_vec = avg_policy_vec.reshape(1, -1)
+                print("Average policy vector shape: ", avg_policy_vec.shape)
+                agents = dump_weights(model.policy.state_dict(), avg_policy_vec)
+
+                model.policy.load_state_dict(agents[0])
+                model.policy.to(device)
+
+                # Online evaluation
+                if hasattr(args, 'n_envs') and args.n_envs > 1:
+                    # Create a list of environment functions
+                    dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
+                    dummy_env = SubprocVecEnv(dummy_env_fns)
+                else:
+                    dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+                    dummy_env.reset(seed=args.seed)
+
+                returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                print(f'avg return on 3 trajectories of agent: {returns_trains}')
+                cum_rews.append(returns_trains)
+
+                os.makedirs(f'logs/{DIR}', exist_ok=True)
+                np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
+                np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+                timeArray.append(time.time() - start_time)
+
+                load_state_dict(model, agents[0])
+
+                # quit()
+
+                continue
 
             for j, a in enumerate(agents):
                 model.policy.load_state_dict(a)
