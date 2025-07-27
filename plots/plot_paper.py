@@ -13,11 +13,11 @@ args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
+env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
-env = "LunarLander-v3"
+# env = "LunarLander-v3"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -40,14 +40,15 @@ elif env == "LunarLander-v3":
 start_iteration = 1
 
 plot_list = [
-    # ["PPO_upper_bound", "ExploRLer (PPO)"],
-    ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
+    ["PPO_upper_bound", "ExploRLer (PPO)"],
+    # ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
     ["PPO_normal_training", "PPO"],
-    ["TRPO_normal_training_interpolated", "TRPO"],
+    # ["TRPO_normal_training_interpolated", "TRPO"],
     # ["TRPO_normal_training", "TRPO"],
     # ["PPO_empty_space_ls", "FQE Estimation"],
     # ["PPO_baseline", "Baseline"],
     # ["PPO_upper_bound", "Online Evaluation"],
+    ["PPO_Rebuttal_1", "PPO Checkpoint avergaing"],
 ]
 
 # plot_list = [
@@ -132,4 +133,4 @@ for spine in ax.spines.values():
     spine.set_visible(False)
 
 # plt.savefig('../paper_plots/'+env+'.png')
-plt.savefig('../paper_plots/'+env+'_PPO.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_Rebuttal1.pdf', format='pdf', bbox_inches='tight', dpi=300)
