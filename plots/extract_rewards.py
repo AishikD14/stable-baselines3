@@ -14,11 +14,11 @@ args, rest_args = parser.parse_known_args()
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
+env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
-env = "LunarLander-v3"
+# env = "LunarLander-v3"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -53,9 +53,9 @@ file_name_list = [
     # ["PPO_normal_training_4"],
     # ["PPO_normal_training_7", "PPO_normal_training_4"],
     # ["PPO_upper_bound_1"],
-    ["PPO_upper_bound_2"],
-    ["PPO_upper_bound_3"],
-    ["PPO_upper_bound_4"],
+    # ["PPO_upper_bound_2"],
+    # ["PPO_upper_bound_3"],
+    # ["PPO_upper_bound_4"],
     # ["PPO_upper_bound_7", "PPO_upper_bound_4"],
     # ["TRPO_normal_training_1"],
     # ["TRPO_normal_training_2"],
@@ -93,7 +93,11 @@ file_name_list = [
     # ["PPO_neghrand_2"],
     # ["PPO_neghrand_3"]
     # ["PPO_empty_space_ls_1"],
-    # ["PPO_baseline_1"]
+    # ["PPO_baseline_1"],
+    ["PPO_Rebuttal_1_1"],
+    ["PPO_Rebuttal_1_2"],
+    ["PPO_Rebuttal_1_3"],
+    ["PPO_Rebuttal_1_4"],
 ]
 
 for file_name in file_name_list:
