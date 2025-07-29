@@ -1,5 +1,5 @@
 import gymnasium as gym
-from stable_baselines3 import PPO, SAC
+from stable_baselines3 import SAC
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 from scipy.spatial.distance import euclidean
@@ -770,8 +770,8 @@ if __name__ == "__main__":
     # ---------------------------------------------------------------------------------------------------------------
 
     exp = "PPO_Rebuttal_4"
-    DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
-    ckp_dir = f'logs/{DIR}/models'
+    DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('sac_logs/'+env_name+"/", exp)+1)
+    ckp_dir = f'sac_logs/{DIR}/models'
 
     activation_fn_map = {
         'ReLU': nn.ReLU,
@@ -799,56 +799,53 @@ if __name__ == "__main__":
     else:
         normalize_kwargs = None
 
-    ppo_kwargs  = dict(
+    sac_kwargs  = dict(
         policy=args.policy,
         env=env,
         verbose=args.verbose,
         seed=args.seed,
-        n_steps=args.n_steps_per_rollout,
-        gamma=args.gamma,
-        n_epochs=args.n_epochs,
-        gae_lambda=args.gae_lambda,
+        learning_starts=args.learning_starts,
         device=args.device,
         tensorboard_log=args.tensorboard_log,
         ckp_dir=ckp_dir
     )
 
     if hasattr(args, 'max_grad_norm'):
-        ppo_kwargs["max_grad_norm"] = args.max_grad_norm
+        sac_kwargs["max_grad_norm"] = args.max_grad_norm
 
     if hasattr(args, 'vf_coef'):
-        ppo_kwargs["vf_coef"] = args.vf_coef
+        sac_kwargs["vf_coef"] = args.vf_coef
 
     if hasattr(args, 'clip_range'):
-        ppo_kwargs["clip_range"] = args.clip_range
+        sac_kwargs["clip_range"] = args.clip_range
 
     if hasattr(args, 'learning_rate'):
-        ppo_kwargs["learning_rate"] = args.learning_rate
+        sac_kwargs["learning_rate"] = args.learning_rate
 
     if hasattr(args, 'batch_size'): 
-        ppo_kwargs["batch_size"] = args.batch_size
+        sac_kwargs["batch_size"] = args.batch_size
 
     if hasattr(args, 'normalize'):
-        ppo_kwargs["normalize"] = args.normalize
+        sac_kwargs["normalize"] = args.normalize
 
     if hasattr(args, 'n_envs'):
-        ppo_kwargs["n_envs"] = args.n_envs
+        sac_kwargs["n_envs"] = args.n_envs
     else:
         args.n_envs = 1
 
     if hasattr(args, 'sde_sample_freq'):
-        ppo_kwargs["sde_sample_freq"] = args.sde_sample_freq
+        sac_kwargs["sde_sample_freq"] = args.sde_sample_freq
 
     if hasattr(args, 'ent_coef'):
-        ppo_kwargs["ent_coef"] = args.ent_coef
+        sac_kwargs["ent_coef"] = args.ent_coef
 
     if policy_kwargs:
-        ppo_kwargs["policy_kwargs"] = policy_kwargs
+        sac_kwargs["policy_kwargs"] = policy_kwargs
 
     if normalize_kwargs:
-        ppo_kwargs["normalize_kwargs"] = normalize_kwargs
+        sac_kwargs["normalize_kwargs"] = normalize_kwargs
 
-    model = PPO(**ppo_kwargs)
+    model = SAC(**sac_kwargs)
 
     START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
     SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
@@ -1201,10 +1198,10 @@ if __name__ == "__main__":
             returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
             print(f'avg 3 return on policy: {returns_trains}')
             cum_rews.append(returns_trains)
-            np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+            np.save(f'sac_logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
             timeArray.append(time.time() - start_time)
         
-        np.save(f'logs/{DIR}/time.npy', timeArray)
+        np.save(f'sac_logs/{DIR}/time.npy', timeArray)
         print("Time taken for each iteration:", timeArray)
 
     env.close()
