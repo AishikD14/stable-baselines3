@@ -14,8 +14,8 @@ args, rest_args = parser.parse_known_args()
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
-# env = "Swimmer-v5"
+# env = "Humanoid-v5"
+env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
@@ -54,10 +54,10 @@ seed_list = [0, 1, 2, 3]
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
-    ["PPO_normal_training", "PPO Normal Training"],
-    ["PPO_upper_bound", "PPO Upper Bound"],
-    # ["TRPO_normal_training", "TRPO Normal Training"],
-    # ["TRPO_upper_bound", "TRPO Upper Bound"],
+    # ["PPO_normal_training", "PPO Normal Training"],
+    # ["PPO_upper_bound", "PPO Upper Bound"],
+    ["TRPO_normal_training", "TRPO Normal Training"],
+    ["TRPO_upper_bound", "TRPO Upper Bound"],
     # ["PPO_Ablation1", "PPO_Ablation1"],
     # ["PPO_Ablation2", "PPO Ablation 2"],
     # ["PPO_Ablation3", "PPO_Ablation3"]
@@ -81,7 +81,10 @@ for plot_item in plot_list:
     all_times = []
 
     for i in seed_list:
-        directory = "../logs/"+env+"/"+plot_item[0]+"_"+str(i+1)
+        if "PPO" in plot_item[0]:
+            directory = "../logs/"+env+"/"+plot_item[0]+"_"+str(i+1)
+        elif "TRPO" in plot_item[0]:
+            directory = "../trpo_logs/"+env+"/"+plot_item[0]+"_"+str(i+1)
         print("------------------------------------")
         print("Working on "+plot_item[0]+"_"+str(i+1)+" directory")
         
@@ -153,4 +156,4 @@ plt.title('Reward Plot')
 plt.grid()
 plt.legend()
 
-plt.savefig('../images/time1.png')
+plt.savefig('../images/time3.png')
