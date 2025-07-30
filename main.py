@@ -922,7 +922,7 @@ if __name__ == "__main__":
     timeArray = []
 
     avg_checkpoint = False
-    use_ptb = True
+    use_ptb = False
 
     if exp == "PPO_baseline":
         # START_ITER = 1953
@@ -1036,7 +1036,7 @@ if __name__ == "__main__":
                     policies.append(policy_vec)
 
                 rewards = []
-                for i, vec in enumerate(policies):
+                for _, vec in enumerate(policies):
                     policy_vec = vec.reshape(1, -1)
                     a = dump_weights(model.policy.state_dict(), policy_vec)
                     model.policy.load_state_dict(a[0])
@@ -1045,7 +1045,7 @@ if __name__ == "__main__":
                     # Online evaluation
                     if hasattr(args, 'n_envs') and args.n_envs > 1:
                         # Create a list of environment functions
-                        dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
+                        dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=z) for z in range(args.n_envs)]
                         dummy_env = SubprocVecEnv(dummy_env_fns)
                     else:
                         dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
