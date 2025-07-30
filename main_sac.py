@@ -14,7 +14,8 @@ import pandas as pd
 # from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer
+# from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer
+from data_collection_config_sac import args_humanoid
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
 from d3rlpy.dataset import MDPDataset
@@ -807,7 +808,7 @@ if __name__ == "__main__":
         learning_starts=args.learning_starts,
         device=args.device,
         tensorboard_log=args.tensorboard_log,
-        ckp_dir=ckp_dir
+        # ckp_dir=ckp_dir
     )
 
     if hasattr(args, 'max_grad_norm'):
@@ -850,7 +851,7 @@ if __name__ == "__main__":
     START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
     SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
     NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
-    N_EPOCHS = args.n_epochs
+    # N_EPOCHS = args.n_epochs
 
     # ---------------------------------------------------------------------------------------------------------------
 
