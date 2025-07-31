@@ -13,8 +13,8 @@ args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
-# env = "Walker2d-v5"
-env = "Humanoid-v5"
+env = "Walker2d-v5"
+# env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -94,10 +94,10 @@ file_name_list = [
     # ["PPO_neghrand_3"]
     # ["PPO_empty_space_ls_1"],
     # ["PPO_baseline_1"],
-    ["PPO_Rebuttal_1_1"],
-    ["PPO_Rebuttal_1_2"],
-    ["PPO_Rebuttal_1_3"],
-    ["PPO_Rebuttal_1_4"],
+    ["PPO_Rebuttal_3_1"],
+    ["PPO_Rebuttal_3_2"],
+    ["PPO_Rebuttal_3_3"],
+    ["PPO_Rebuttal_3_4"],
 ]
 
 for file_name in file_name_list:
