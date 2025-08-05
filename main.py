@@ -1,3 +1,4 @@
+import copy
 import gymnasium as gym
 from stable_baselines3 import PPO
 import numpy as np
@@ -747,6 +748,41 @@ def search_guided_es_policies(algo, directory, start, end, env, saved_agents, ag
     agent_list = [new_policy]  # we return one updated agent
     return agent_list, 0.0  # dummy distance value for compatibility
 
+# Value Function Search
+def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_num=10,
+                        alpha=0.01, vfs_steps=3):
+    print("---------------------------------")
+    print("Searching policies using Value Function Search")
+
+    # Clone original policy weights to restore later if needed
+    original_state = copy.deepcopy(algo.policy.state_dict())
+
+    # Get one observation to condition value function
+    dummy_env = DummyVecEnv([lambda: gym.make(env_name)])
+    obs = dummy_env.reset()
+    obs_tensor = torch.as_tensor(obs, dtype=torch.float32).to(device).unsqueeze(0)
+
+    # Perform k VFS gradient ascent steps
+    for step in range(vfs_steps):
+        algo.policy.zero_grad()
+        value = algo.policy.predict_values(obs_tensor).mean()
+        value.backward()
+
+        with torch.no_grad():
+            for name, param in algo.policy.named_parameters():
+                if 'value_net' in name or param.grad is None:
+                    continue
+                param += alpha * param.grad
+
+    # Store the updated policy
+    updated_state = copy.deepcopy(algo.policy.state_dict())
+    agent_list = [updated_state]
+
+    # Restore original policy weights to avoid affecting main model
+    algo.policy.load_state_dict(original_state)
+
+    return agent_list, 0.0
+
 # ------------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
@@ -851,7 +887,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_Rebuttal_4"
+    exp = "PPO_Rebuttal_5"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -1054,7 +1090,8 @@ if __name__ == "__main__":
                 # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-                agents, distance = search_guided_es_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
+                # agents, distance = search_guided_es_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
+                agents, distance = search_vfs_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
                 distanceArray.append(distance)
 
             if saved_agents:
