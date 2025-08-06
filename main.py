@@ -791,10 +791,10 @@ if __name__ == "__main__":
     args, rest_args = parser.parse_known_args()
 
     # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
-    # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
+    env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
-    env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
     # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
@@ -887,7 +887,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_Rebuttal_5"
+    exp = "PPO_upper_bound"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -979,7 +979,7 @@ if __name__ == "__main__":
     # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
 
     # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_swimmer_1M"+'_'+str(args.seed))
+    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_1M"+'_'+str(args.seed))
 
     # print("Initial training done") 
 
@@ -1085,13 +1085,13 @@ if __name__ == "__main__":
                             )
 
             if not avg_checkpoint and not use_ptb:
-                # agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned)
+                agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned)
                 # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = search_guided_es_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
-                agents, distance = search_vfs_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
+                # agents, distance = search_vfs_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
                 distanceArray.append(distance)
 
             if saved_agents:
