@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper
 import re
 
 parser = argparse.ArgumentParser()
@@ -13,8 +13,9 @@ args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
+env = "Hopper-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
+# env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -36,13 +37,15 @@ elif env == "BipedalWalker-v3":
     args = args_bipedal_walker.get_args(rest_args)
 elif env == "LunarLander-v3":
     args = args_lunarlander.get_args(rest_args)
+elif env == "Hopper-v5":
+    args = args_hopper.get_args(rest_args)
 
 # Pendulum-v1
 file_name_list = [
-    # ["PPO_plot_1", "ppo_plot_out", "PPO_pretrain_1"],
-    # ["PPO_plot_2", "ppo_plot_1_out", "PPO_pretrain_2"],
-    # ["PPO_plot_3", "ppo_plot_2_out", "PPO_pretrain_3"],
-    # ["PPO_plot_4", "ppo_plot_3_out", "PPO_pretrain_4"],
+    ["PPO_plot_1", "ppo_plot_out", "PPO_pretrain_1"],
+    ["PPO_plot_2", "ppo_plot_1_out", "PPO_pretrain_2"],
+    ["PPO_plot_3", "ppo_plot_2_out", "PPO_pretrain_3"],
+    ["PPO_plot_4", "ppo_plot_3_out", "PPO_pretrain_4"],
     # ["TRPO_plot_1", "trpo_plot_out", "TRPO_pretrain_1"],
     # ["TRPO_plot_2", "trpo_plot_1_out", "TRPO_pretrain_2"],
     # ["TRPO_plot_3", "trpo_plot_2_out", "TRPO_pretrain_3"],
@@ -94,10 +97,10 @@ file_name_list = [
     # ["PPO_neghrand_3"]
     # ["PPO_empty_space_ls_1"],
     # ["PPO_baseline_1"],
-    ["PPO_Rebuttal_4_1"],
-    ["PPO_Rebuttal_4_2"],
-    ["PPO_Rebuttal_4_3"],
-    ["PPO_Rebuttal_4_4"],
+    # ["PPO_Rebuttal_4_1"],
+    # ["PPO_Rebuttal_4_2"],
+    # ["PPO_Rebuttal_4_3"],
+    # ["PPO_Rebuttal_4_4"],
 ]
 
 for file_name in file_name_list:
