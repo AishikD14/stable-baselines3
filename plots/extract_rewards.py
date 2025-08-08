@@ -12,8 +12,8 @@ parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-# env = "HalfCheetah-v5"
-env = "Hopper-v5"
+env = "HalfCheetah-v5"
+# env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
@@ -50,15 +50,15 @@ file_name_list = [
     # ["TRPO_plot_2", "trpo_plot_1_out", "TRPO_pretrain_2"],
     # ["TRPO_plot_3", "trpo_plot_2_out", "TRPO_pretrain_3"],
     # ["TRPO_plot_4", "trpo_plot_3_out", "TRPO_pretrain_4"],
-    ["PPO_normal_training_1"],
-    ["PPO_normal_training_2"],
-    ["PPO_normal_training_3"],
-    ["PPO_normal_training_4"],
+    # ["PPO_normal_training_1"],
+    # ["PPO_normal_training_2"],
+    # ["PPO_normal_training_3"],
+    # ["PPO_normal_training_4"],
     # ["PPO_normal_training_7", "PPO_normal_training_4"],
-    # ["PPO_upper_bound_1"],
-    # ["PPO_upper_bound_2"],
-    # ["PPO_upper_bound_3"],
-    # ["PPO_upper_bound_4"],
+    ["PPO_upper_bound_1"],
+    ["PPO_upper_bound_2"],
+    ["PPO_upper_bound_3"],
+    ["PPO_upper_bound_4"],
     # ["PPO_upper_bound_7", "PPO_upper_bound_4"],
     # ["TRPO_normal_training_1"],
     # ["TRPO_normal_training_2"],
