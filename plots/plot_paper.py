@@ -5,14 +5,15 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper
 import re
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-env = "HalfCheetah-v5"
+# env = "HalfCheetah-v5"
+env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
@@ -24,6 +25,8 @@ if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
 elif env == "HalfCheetah-v5":
     args = args_half_cheetah.get_args(rest_args)
+elif env == "Hopper-v5":
+    args = args_hopper.get_args(rest_args)
 elif env == "Walker2d-v5":
     args = args_walker2d.get_args(rest_args)
 elif env == "Humanoid-v5":
@@ -41,8 +44,8 @@ elif env == "LunarLander-v3":
 start_iteration = 1
 
 plot_list = [
-    ["PPO_upper_bound", "ExploRLer (PPO)"],
-    # ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
+    # ["PPO_upper_bound", "ExploRLer (PPO)"],
+    ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
     ["PPO_normal_training", "PPO"],
     # ["TRPO_normal_training_interpolated", "TRPO"],
     # ["TRPO_normal_training", "TRPO"],

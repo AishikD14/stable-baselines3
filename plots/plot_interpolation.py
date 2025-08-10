@@ -31,13 +31,13 @@ def interpolate_after_fixed(arr, fixed_len, target_len):
 
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
-# env = "Hopper-v5"
+env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
-env = "LunarLander-v3"
+# env = "LunarLander-v3"
 
 # Load the arrays
 r1 = np.load("../combined_results/"+env+"/PPO_upper_bound.npy")
