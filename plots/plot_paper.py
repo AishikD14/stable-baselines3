@@ -12,8 +12,8 @@ parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-# env = "HalfCheetah-v5"
-env = "Hopper-v5"
+env = "HalfCheetah-v5"
+# env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
@@ -44,8 +44,8 @@ elif env == "LunarLander-v3":
 start_iteration = 1
 
 plot_list = [
-    # ["PPO_upper_bound", "ExploRLer (PPO)"],
-    ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
+    ["PPO_upper_bound", "ExploRLer (PPO)"],
+    # ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
     ["PPO_normal_training", "PPO"],
     # ["TRPO_normal_training_interpolated", "TRPO"],
     # ["TRPO_normal_training", "TRPO"],
