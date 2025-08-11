@@ -790,12 +790,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
-    # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
+    env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
@@ -1140,6 +1140,8 @@ if __name__ == "__main__":
             # -----------------------------------------------------------------------------------
 
             if use_ptb:
+                print("Using PBT to search policies")
+
                 checkpoint_paths = [f'logs/{DIR}/models/agent{j}.zip' for j in range(1, 11)]
 
                 policies = []
