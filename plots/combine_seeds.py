@@ -10,10 +10,10 @@ from data_collection_config import args_ant, args_half_cheetah, args_walker2d, a
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-# env = "Ant-v5"
+env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
-env = "Walker2d-v5"
+# env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
@@ -71,8 +71,8 @@ plot_list = [
     # ["PPO_FQE", "PPO FQE"],
     # ["PPO_empty_space_ls", "PPO FQE"],
     # ["PPO_baseline", "PPO Baseline"],
-    ["PPO_CheckpointAvg", "PPO Checkpoint averaging"],
-    # ["PPO_Rebuttal_2", "Population Based Training"],
+    # ["PPO_CheckpointAvg", "PPO Checkpoint averaging"],
+    ["PPO_PBT", "Population Based Training"],
     # ["PPO_Rebuttal_4", "Guided ES"],
     # ["PPO_Rebuttal_5", "VFS"],
 ]

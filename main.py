@@ -790,8 +790,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
-    env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
+    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
@@ -887,7 +887,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_upper_bound"
+    exp = "PPO_PBT"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -969,7 +969,7 @@ if __name__ == "__main__":
     model = PPO(**ppo_kwargs)
 
     START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
-    SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
+    SEARCH_INTERV = 1 # Make this 2 for n_epochs=5 and keep 1 for n_epochs=10
     NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
     N_EPOCHS = args.n_epochs
 
@@ -1040,7 +1040,7 @@ if __name__ == "__main__":
     timeArray = []
 
     avg_checkpoint = False
-    use_ptb = False
+    use_ptb = True
 
     if exp == "PPO_baseline":
         # START_ITER = 1953
@@ -1179,10 +1179,10 @@ if __name__ == "__main__":
                 bottom_indices = rewards.argsort()[:len(checkpoint_paths) - 5]
 
                 new_policies = []
-                for i in top_indices:
-                    new_policies.append(policies[i])  # keep top agents
+                for j in top_indices:
+                    new_policies.append(policies[j])  # keep top agents
 
-                for i in bottom_indices:
+                for j in bottom_indices:
                     parent = np.random.choice(top_indices)
                     noise = np.random.normal(scale=0.02, size=policies[parent].shape)
                     mutated = policies[parent] + noise
