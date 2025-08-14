@@ -13,9 +13,9 @@ args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
-# env = "Hopper-v5"
+env = "Hopper-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
+# env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -52,7 +52,8 @@ plot_list = [
     # ["PPO_empty_space_ls", "FQE Estimation"],
     # ["PPO_baseline", "Baseline"],
     # ["PPO_upper_bound", "Online Evaluation"],
-    ["PPO_CheckpointAvg", "PPO Checkpoint averaging"],
+    # ["PPO_CheckpointAvg", "PPO Checkpoint averaging"],
+    ["PPO_PBT", "Population Based Training"],
 ]
 
 # plot_list = [
@@ -137,4 +138,4 @@ for spine in ax.spines.values():
     spine.set_visible(False)
 
 # plt.savefig('../paper_plots/'+env+'.png')
-plt.savefig('../paper_plots/'+env+'_CheckpointAvg.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_PBT.pdf', format='pdf', bbox_inches='tight', dpi=300)
