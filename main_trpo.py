@@ -15,7 +15,7 @@ import pandas as pd
 # from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config_trpo import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker
+from data_collection_config_trpo import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
 from d3rlpy.dataset import MDPDataset
@@ -651,10 +651,10 @@ if __name__ == "__main__":
 
     # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
-    # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
+    env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
-    env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
+    # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
     # env_name = "Pendulum-v1" # For pendulum (single goal task)
     # env_name = "BipedalWalker-v3" # For bipedal walker (single goal task)
 
@@ -662,6 +662,8 @@ if __name__ == "__main__":
         args = args_ant.get_args(rest_args)
     elif env_name == "HalfCheetah-v5":
         args = args_half_cheetah.get_args(rest_args)
+    elif env_name == "Hopper-v5":
+        args = args_hopper.get_args(rest_args)
     elif env_name == "Walker2d-v5":
         args = args_walker2d.get_args(rest_args)
     elif env_name == "Humanoid-v5":
@@ -718,7 +720,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "TRPO_Ablation5_3"
+    exp = "TRPO_plot"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('trpo_logs/'+env_name+"/", exp)+1)
     ckp_dir = f'trpo_logs/{DIR}/models'
 
@@ -838,7 +840,7 @@ if __name__ == "__main__":
     # os.makedirs(f'full_exp_on_trpo/models/'+env_name, exist_ok=True)
 
     # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_trpo/models/"+env_name+"/trpo_swimmer_1M"+'_'+str(args.seed))
+    # model.save("full_exp_on_trpo/models/"+env_name+"/trpo_hoppper_1M"+'_'+str(args.seed))
 
     # print("Initial training done") 
 
