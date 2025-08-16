@@ -720,7 +720,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "TRPO_plot"
+    exp = "TRPO_upper_bound"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('trpo_logs/'+env_name+"/", exp)+1)
     ckp_dir = f'trpo_logs/{DIR}/models'
 
@@ -840,7 +840,7 @@ if __name__ == "__main__":
     # os.makedirs(f'full_exp_on_trpo/models/'+env_name, exist_ok=True)
 
     # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_trpo/models/"+env_name+"/trpo_hoppper_1M"+'_'+str(args.seed))
+    # model.save("full_exp_on_trpo/models/"+env_name+"/trpo_hopper_1M"+'_'+str(args.seed))
 
     # print("Initial training done") 
 
@@ -867,9 +867,9 @@ if __name__ == "__main__":
     ANN_lib = "Annoy"
     online_eval = True
 
-    saved_agents = True
+    saved_agents = False
     saved_iter = 514
-    model_already_learned = True
+    model_already_learned = False
 
     distanceArray = []
     start_time = time.time()
@@ -937,8 +937,7 @@ if __name__ == "__main__":
                 else:
                     dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
                     dummy_env.reset(seed=args.seed)
-                # dummy_env = gym.make(env_name)
-                # dummy_env.reset(seed=args.seed)
+                
                 returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=eval_episode_num, deterministic=True)[0]
                 print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
                 cum_rews.append(returns_trains)
@@ -1048,8 +1047,7 @@ if __name__ == "__main__":
             else:
                 dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
                 dummy_env.reset(seed=args.seed)
-            # dummy_env = gym.make(env_name)
-            # dummy_env.reset(seed=args.seed)
+            
             returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=eval_episode_num, deterministic=True)[0]
             print(f'avg 3 return on policy: {returns_trains}')
             cum_rews.append(returns_trains)
