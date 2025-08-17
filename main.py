@@ -790,12 +790,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
-    env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
+    # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
@@ -887,7 +887,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_PBT"
+    exp = "PPO_NoPretrain"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -968,7 +968,8 @@ if __name__ == "__main__":
 
     model = PPO(**ppo_kwargs)
 
-    START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+    # START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+    START_ITER = 1
     SEARCH_INTERV = 1 # Make this 2 for n_epochs=5 and keep 1 for n_epochs=10
     NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
     N_EPOCHS = args.n_epochs
@@ -1000,11 +1001,16 @@ if __name__ == "__main__":
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    print("Loading Initial saved model")
+    if START_ITER != 1:
 
-    model.set_parameters(args.init_model_path+'_'+str(args.seed), device=args.device)
+        print("Loading Initial saved model")
 
-    print("Model loaded")
+        model.set_parameters(args.init_model_path+'_'+str(args.seed), device=args.device)
+
+        print("Model loaded")
+
+    else:
+        print("Starting training from scratch")
 
     # -------------------------------------------------------------------------------------------------------------
 
@@ -1040,7 +1046,7 @@ if __name__ == "__main__":
     timeArray = []
 
     avg_checkpoint = False
-    use_ptb = True
+    use_ptb = False
 
     if exp == "PPO_baseline":
         # START_ITER = 1953
