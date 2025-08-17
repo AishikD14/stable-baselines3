@@ -12,9 +12,9 @@ args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
-env = "Hopper-v5"
+# env = "Hopper-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
+env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -57,7 +57,7 @@ plot_list = [
     # ["PPO_normal_training", "PPO Normal Training"],
     # ["PPO_upper_bound", "PPO Upper Bound"],
     # ["TRPO_normal_training", "TRPO Normal Training"],
-    ["TRPO_upper_bound", "TRPO Upper Bound"],
+    # ["TRPO_upper_bound", "TRPO Upper Bound"],
     # ["PPO_Ablation1", "PPO_Ablation1"],
     # ["PPO_Ablation2", "PPO Ablation 2"],
     # ["PPO_Ablation3", "PPO_Ablation3"]
@@ -73,6 +73,7 @@ plot_list = [
     # ["PPO_baseline", "PPO Baseline"],
     # ["PPO_CheckpointAvg", "PPO Checkpoint averaging"],
     # ["PPO_PBT", "Population Based Training"],
+    ["PPO_NoPretrain", "PPO No-Pretraining"],
     # ["PPO_Rebuttal_4", "Guided ES"],
     # ["PPO_Rebuttal_5", "VFS"],
 ]
@@ -91,7 +92,7 @@ for plot_item in plot_list:
         results = np.load(directory + ".npy")
         print(results.shape)
 
-        if env not in ["Pendulum-v1", "BipedalWalker-v3", "LunarLander-v3"]:
+        if env not in ["Pendulum-v1", "BipedalWalker-v3", "LunarLander-v3"] and plot_item[0] not in ["PPO_NoPretrain", "TRPO_NoPretrain"]:
             # Load pretrained rewards
             if "PPO" in plot_item[0]:
                 pretrain_rewards = np.load("../final_results/"+env+"/PPO_pretrain_"+str(i+1)+".npy")
