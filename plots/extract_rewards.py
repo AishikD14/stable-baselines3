@@ -13,9 +13,9 @@ args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
-env = "Hopper-v5"
+# env = "Hopper-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
+env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -64,10 +64,10 @@ file_name_list = [
     # ["TRPO_normal_training_2"],
     # ["TRPO_normal_training_3"],
     # ["TRPO_normal_training_4"],
-    ["TRPO_upper_bound_1"],
-    ["TRPO_upper_bound_2"],
-    ["TRPO_upper_bound_3"],
-    ["TRPO_upper_bound_4"],
+    # ["TRPO_upper_bound_1"],
+    # ["TRPO_upper_bound_2"],
+    # ["TRPO_upper_bound_3"],
+    # ["TRPO_upper_bound_4"],
     # ["PPO_Ablation1_1"],
     # ["PPO_Ablation1_2"],
     # ["PPO_Ablation1_3"],
@@ -105,10 +105,14 @@ file_name_list = [
     # ["PPO_PBT_2"],
     # ["PPO_PBT_3"],
     # ["PPO_PBT_4"],
-    # ["PPO_Rebuttal_4_1"],
-    # ["PPO_Rebuttal_4_2"],
-    # ["PPO_Rebuttal_4_3"],
-    # ["PPO_Rebuttal_4_4"],
+    ["PPO_NoPretrain_1"],
+    ["PPO_NoPretrain_2"],
+    ["PPO_NoPretrain_3"],
+    ["PPO_NoPretrain_4"],
+    # ["PPO_Rebuttal_3_1"],
+    # ["PPO_Rebuttal_3_2"],
+    # ["PPO_Rebuttal_3_3"],
+    # ["PPO_Rebuttal_3_4"],
 ]
 
 for file_name in file_name_list:
