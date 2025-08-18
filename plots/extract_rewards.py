@@ -12,10 +12,10 @@ parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-# env = "HalfCheetah-v5"
+env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
+# env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -101,14 +101,18 @@ file_name_list = [
     # ["PPO_CheckpointAvg_2"],
     # ["PPO_CheckpointAvg_3"],
     # ["PPO_CheckpointAvg_4"],
+    ["TRPO_CheckpointAvg_1"],
+    ["TRPO_CheckpointAvg_2"],
+    ["TRPO_CheckpointAvg_3"],
+    ["TRPO_CheckpointAvg_4"],
     # ["PPO_PBT_1"],
     # ["PPO_PBT_2"],
     # ["PPO_PBT_3"],
     # ["PPO_PBT_4"],
-    ["PPO_NoPretrain_1"],
-    ["PPO_NoPretrain_2"],
-    ["PPO_NoPretrain_3"],
-    ["PPO_NoPretrain_4"],
+    # ["PPO_NoPretrain_1"],
+    # ["PPO_NoPretrain_2"],
+    # ["PPO_NoPretrain_3"],
+    # ["PPO_NoPretrain_4"],
     # ["PPO_Rebuttal_3_1"],
     # ["PPO_Rebuttal_3_2"],
     # ["PPO_Rebuttal_3_3"],

@@ -11,10 +11,10 @@ parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-# env = "HalfCheetah-v5"
+env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
+# env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -72,8 +72,9 @@ plot_list = [
     # ["PPO_empty_space_ls", "PPO FQE"],
     # ["PPO_baseline", "PPO Baseline"],
     # ["PPO_CheckpointAvg", "PPO Checkpoint averaging"],
+    ["TRPO_CheckpointAvg", "TRPO Checkpoint averaging"],
     # ["PPO_PBT", "Population Based Training"],
-    ["PPO_NoPretrain", "PPO No-Pretraining"],
+    # ["PPO_NoPretrain", "PPO No-Pretraining"],
     # ["PPO_Rebuttal_4", "Guided ES"],
     # ["PPO_Rebuttal_5", "VFS"],
 ]
