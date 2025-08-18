@@ -63,7 +63,8 @@ plot_list = [
     # ["TRPO_normal_training", "TRPO"],
     # ["PPO_normal_training", "PPO"],
     # ["PPO_upper_bound", "ExploRLer"], 
-    ["TRPO_CheckpointAvg_interpolated", "TRPO Checkpoint averaging"],
+    # ["TRPO_CheckpointAvg_interpolated", "TRPO Checkpoint averaging"],
+    ["TRPO_PBT_interpolated", "Population Based Training"],
 ]
 
 # if env == "Swimmer-v5":
@@ -141,4 +142,4 @@ for spine in ax.spines.values():
     spine.set_visible(False)
 
 # plt.savefig('../paper_plots/'+env+'.png')
-plt.savefig('../paper_plots/'+env+'_CheckpointAvg.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_PBT.pdf', format='pdf', bbox_inches='tight', dpi=300)
