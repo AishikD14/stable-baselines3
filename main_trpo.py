@@ -742,7 +742,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "TRPO_PBT"
+    exp = "TRPO_NoPretrain"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('trpo_logs/'+env_name+"/", exp)+1)
     ckp_dir = f'trpo_logs/{DIR}/models'
 
@@ -851,7 +851,8 @@ if __name__ == "__main__":
         NUM_ITERS = 1000000 // (args.n_steps_per_rollout*args.n_envs)
         eval_episode_num = 1
     else:
-        START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+        # START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+        START_ITER = 1
         SEARCH_INTERV = 10 
         NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
         eval_episode_num = 3
@@ -871,11 +872,16 @@ if __name__ == "__main__":
     # ----------------------------------------------------------------------------------------------------------------
 
     if env_name not in ["Pendulum-v1", "BipedalWalker-v3"]:
-        print("Loading Initial saved model")
+        if START_ITER != 1:
 
-        model.set_parameters(args.init_model_path+'_'+str(args.seed), device=args.device)
+            print("Loading Initial saved model")
 
-        print("Model loaded")
+            model.set_parameters(args.init_model_path+'_'+str(args.seed), device=args.device)
+
+            print("Model loaded")
+
+        else:
+            print("Starting training from scratch")
 
     # ----------------------------------------------------------------------------------------------------------------
 

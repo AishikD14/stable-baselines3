@@ -968,8 +968,8 @@ if __name__ == "__main__":
 
     model = PPO(**ppo_kwargs)
 
-    # START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
-    START_ITER = 1
+    START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+    # START_ITER = 1
     SEARCH_INTERV = 1 # Make this 2 for n_epochs=5 and keep 1 for n_epochs=10
     NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
     N_EPOCHS = args.n_epochs
