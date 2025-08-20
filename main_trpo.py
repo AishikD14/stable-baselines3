@@ -351,11 +351,11 @@ def random_search_policies(algo, directory, start, end, env, agent_num=10):
     return agents, average_distance
 
 # Neighbor search plus random walk
-def neighbor_search_random_walk(algo, directory, start, end, env, agent_num=10):
+def neighbor_search_random_walk(algo, directory, start, end, env, saved_agents, agent_num=10):
     print("---------------------------------")
     print("Searching random policies")
 
-    dt = load_weights(range(start, end), directory, env)
+    dt = load_weights(range(start, end), directory, env, saved_agents)
     print(dt.shape)
 
     neigh = NearestNeighbors(n_neighbors=6)
@@ -679,6 +679,7 @@ if __name__ == "__main__":
     # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
     # env_name = "Pendulum-v1" # For pendulum (single goal task)
     # env_name = "BipedalWalker-v3" # For bipedal walker (single goal task)
+    # env_name  = "LunarLander-v3" # For lunar lander (single goal task)
 
     if env_name == "Ant-v5":
         args = args_ant.get_args(rest_args)
@@ -695,7 +696,9 @@ if __name__ == "__main__":
     elif env_name == "Pendulum-v1":
         args = args_pendulum.get_args(rest_args)
     elif env_name == "BipedalWalker-v3":
-        args = args_bipedal_walker.get_args(rest_args)    
+        args = args_bipedal_walker.get_args(rest_args)   
+    elif env_name == "LunarLander-v3":
+        args = args_lunarlander.get_args(rest_args)
 
     # ------------------------------------------------------------------------------------------------------------
 
@@ -850,6 +853,11 @@ if __name__ == "__main__":
         SEARCH_INTERV = 10
         NUM_ITERS = 1000000 // (args.n_steps_per_rollout*args.n_envs)
         eval_episode_num = 1
+    elif env_name == "LunarLander-v3":
+        START_ITER = 1 // (args.n_steps_per_rollout*args.n_envs)
+        SEARCH_INTERV = 10
+        NUM_ITERS = 800000 // (args.n_steps_per_rollout*args.n_envs)
+        eval_episode_num = 1
     else:
         # START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
         START_ITER = 1
@@ -871,7 +879,7 @@ if __name__ == "__main__":
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    if env_name not in ["Pendulum-v1", "BipedalWalker-v3"]:
+    if env_name not in ["Pendulum-v1", "BipedalWalker-v3", "LunarLander-v3"]:
         if START_ITER != 1:
 
             print("Loading Initial saved model")
@@ -942,7 +950,7 @@ if __name__ == "__main__":
             
             if not avg_checkpoint and not use_ptb:
                 agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned)
-                # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+                # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
                 # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
