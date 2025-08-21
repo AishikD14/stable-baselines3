@@ -77,7 +77,7 @@ plot_list = [
     # ["TRPO_PBT", "Population Based Training"],
     # ["PPO_NoPretrain", "PPO No-Pretraining"],
     ["TRPO_NoPretrain", "TRPO No-Pretraining"],
-    # ["PPO_Rebuttal_4", "Guided ES"],
+    # ["PPO_GuidedES", "Guided ES"],
     # ["PPO_Rebuttal_5", "VFS"],
 ]
 
