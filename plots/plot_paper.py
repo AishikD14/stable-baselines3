@@ -14,9 +14,9 @@ args, rest_args = parser.parse_known_args()
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
-env = "Walker2d-v5"
+# env = "Walker2d-v5"
 # env = "Humanoid-v5"
-# env = "Swimmer-v5"
+env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
@@ -45,8 +45,8 @@ start_iteration = 1
 
 plot_list = [
     ["PPO_upper_bound", "ExploRLer (PPO)"],
-    ["PPO_NoPretrain", "ExploRLer (PPO) No Pre-training"],
     # ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
+    ["PPO_NoPretrain", "ExploRLer (PPO) No Pre-training"],
     ["PPO_normal_training", "PPO"],
     # ["TRPO_normal_training_interpolated", "TRPO"],
     # ["TRPO_normal_training", "TRPO"],
@@ -57,18 +57,20 @@ plot_list = [
     # ["PPO_PBT", "Population Based Training"],
 ]
 
-# plot_list = [
-#     ["TRPO_upper_bound", "ExploRLer (TRPO)"],
-#     # ["TRPO_upper_bound_interpolated", "ExploRLer (TRPO)"],
-#     # ["TRPO_normal_training_interpolated", "TRPO"],
-#     ["TRPO_normal_training", "TRPO"],
-#     # ["PPO_normal_training", "PPO"],
-#     # ["PPO_upper_bound", "ExploRLer"], 
-#     # ["TRPO_CheckpointAvg", "TRPO Checkpoint averaging"],
-#     # ["TRPO_CheckpointAvg_interpolated", "TRPO Checkpoint averaging"],
-#     ["TRPO_PBT", "Population Based Training"],
-#     # ["TRPO_PBT_interpolated", "Population Based Training"],
-# ]
+plot_list = [
+    ["TRPO_upper_bound", "ExploRLer (TRPO)"],
+    # ["TRPO_upper_bound_interpolated", "ExploRLer (TRPO)"],
+    # ["TRPO_NoPretrain", "ExploRLer (TRPO) No Pre-training"],
+    ["TRPO_NoPretrain_interpolated", "ExploRLer (TRPO) No Pre-training"],
+    ["TRPO_normal_training", "TRPO"],
+    # ["TRPO_normal_training_interpolated", "TRPO"],
+    # ["PPO_normal_training", "PPO"],
+    # ["PPO_upper_bound", "ExploRLer"], 
+    # ["TRPO_CheckpointAvg", "TRPO Checkpoint averaging"],
+    # ["TRPO_CheckpointAvg_interpolated", "TRPO Checkpoint averaging"],
+    # ["TRPO_PBT", "Population Based Training"],
+    # ["TRPO_PBT_interpolated", "Population Based Training"],
+]
 
 # if env == "Swimmer-v5":
 #     plot_list = [
