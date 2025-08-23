@@ -1,3 +1,4 @@
+import copy
 import gymnasium as gym
 from stable_baselines3 import PPO
 from sb3_contrib import TRPO
@@ -788,11 +789,11 @@ if __name__ == "__main__":
     args, rest_args = parser.parse_known_args()
 
     # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
-    env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
+    # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
-    # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
+    env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
     # env_name = "Pendulum-v1" # For pendulum (single goal task)
     # env_name = "BipedalWalker-v3" # For bipedal walker (single goal task)
     # env_name  = "LunarLander-v3" # For lunar lander (single goal task)
