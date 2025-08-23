@@ -79,7 +79,7 @@ plot_list = [
     # ["TRPO_NoPretrain", "TRPO No-Pretraining"],
     ["PPO_GuidedES", "Guided ES"],
     # ["TRPO_GuidedES", "Guided ES"],
-    # ["PPO_Rebuttal_5", "VFS"],
+    # ["PPO_VFS", "VFS"],
 ]
 
 plot_metrics = []
