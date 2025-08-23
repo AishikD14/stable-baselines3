@@ -26,6 +26,7 @@ import matplotlib.pyplot as plt
 from d3rlpy.torch_utility import TorchMiniBatch, TorchObservation
 import random
 import os
+from stable_baselines3.common.vec_env import DummyVecEnv
 
 warnings.filterwarnings("ignore")
 
@@ -663,6 +664,121 @@ def average_checkpoints(checkpoint_paths):
     
     return avg_policy_vec
 
+# Guided Evolutionary Strategies
+def search_guided_es_policies(algo, directory, start, end, env, saved_agents, agent_num=10, sigma=0.02, alpha=0.5, num_candidates=20):
+    print("---------------------------------")
+    print("Searching policies using Guided Evolutionary Strategies")
+
+    # Load current policy parameters as flat vector
+    policy_state = algo.policy.state_dict()
+    theta_anchor = []
+    for layer in policy_state:
+        if 'value_net' not in layer:
+            theta_anchor.append(policy_state[layer].detach().cpu().numpy().reshape(-1))
+    theta_anchor = np.concatenate(theta_anchor)
+    theta_dim = theta_anchor.shape[0]
+
+    # Get PPO gradient (already computed during model.learn)
+    algo.policy.zero_grad()
+    dummy_env = DummyVecEnv([lambda: gym.make(env_name)])
+    obs = dummy_env.reset()
+    obs_tensor = torch.as_tensor(obs, dtype=torch.float32).to(device)
+    obs_tensor = obs_tensor.unsqueeze(0)  # [1, obs_dim]
+    distribution = algo.policy.get_distribution(obs_tensor)
+    action = distribution.sample()
+    log_prob = distribution.log_prob(action).sum(dim=-1)
+    log_prob.mean().backward()  # dummy backward pass to populate gradients
+
+    ppo_grad = []
+    for name, param in algo.policy.named_parameters():
+        if 'value_net' in name:
+            continue  # Skip critic parameters
+        if param.grad is not None:
+            ppo_grad.append(param.grad.view(-1).cpu().numpy())
+    ppo_grad = np.concatenate(ppo_grad)
+
+    # Generate ES candidates and accumulate gradients
+    g_es_total = np.zeros_like(theta_anchor)
+
+    for _ in range(num_candidates):
+        epsilon = np.random.randn(theta_dim)
+        theta_plus = theta_anchor + sigma * epsilon
+        theta_minus = theta_anchor - sigma * epsilon
+
+        # Evaluate both perturbations
+        candidates = [theta_plus, theta_minus]
+        rewards = []
+        for theta in candidates:
+            policy = OrderedDict()
+            pivot = 0
+            for layer in policy_state:
+                if 'value_net' in layer:
+                    policy[layer] = policy_state[layer]
+                else:
+                    sp = policy_state[layer].reshape(-1).shape[0]
+                    policy[layer] = torch.FloatTensor(theta[pivot:pivot + sp].reshape(policy_state[layer].shape))
+                    pivot += sp
+            algo.policy.load_state_dict(policy)
+            algo.policy.to(device)
+            R = evaluate_policy(algo, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+            rewards.append(R)
+
+        R_plus, R_minus = rewards
+        g_es = ((R_plus - R_minus) / (2 * sigma)) * epsilon
+        g_es_total += g_es
+
+    g_es_mean = g_es_total / num_candidates
+    g_combined = alpha * ppo_grad + (1 - alpha) * g_es_mean
+    theta_new = theta_anchor + algo.learning_rate * g_combined
+
+    # Convert updated flat vector back into policy state dict
+    new_policy = OrderedDict()
+    pivot = 0
+    for layer in policy_state:
+        if 'value_net' in layer:
+            new_policy[layer] = policy_state[layer]
+        else:
+            sp = policy_state[layer].reshape(-1).shape[0]
+            new_policy[layer] = torch.FloatTensor(theta_new[pivot:pivot + sp].reshape(policy_state[layer].shape))
+            pivot += sp
+
+    agent_list = [new_policy]  # we return one updated agent
+    return agent_list, 0.0  # dummy distance value for compatibility
+
+# Value Function Search
+def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_num=10,
+                        alpha=0.01, vfs_steps=3):
+    print("---------------------------------")
+    print("Searching policies using Value Function Search")
+
+    # Clone original policy weights to restore later if needed
+    original_state = copy.deepcopy(algo.policy.state_dict())
+
+    # Get one observation to condition value function
+    dummy_env = DummyVecEnv([lambda: gym.make(env_name)])
+    obs = dummy_env.reset()
+    obs_tensor = torch.as_tensor(obs, dtype=torch.float32).to(device).unsqueeze(0)
+
+    # Perform k VFS gradient ascent steps
+    for step in range(vfs_steps):
+        algo.policy.zero_grad()
+        value = algo.policy.predict_values(obs_tensor).mean()
+        value.backward()
+
+        with torch.no_grad():
+            for name, param in algo.policy.named_parameters():
+                if 'value_net' in name or param.grad is None:
+                    continue
+                param += alpha * param.grad
+
+    # Store the updated policy
+    updated_state = copy.deepcopy(algo.policy.state_dict())
+    agent_list = [updated_state]
+
+    # Restore original policy weights to avoid affecting main model
+    algo.policy.load_state_dict(original_state)
+
+    return agent_list, 0.0
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
@@ -745,7 +861,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "TRPO_NoPretrain"
+    exp = "TRPO_GuidedES"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('trpo_logs/'+env_name+"/", exp)+1)
     ckp_dir = f'trpo_logs/{DIR}/models'
 
@@ -859,8 +975,8 @@ if __name__ == "__main__":
         NUM_ITERS = 800000 // (args.n_steps_per_rollout*args.n_envs)
         eval_episode_num = 1
     else:
-        # START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
-        START_ITER = 1
+        START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+        # START_ITER = 1
         SEARCH_INTERV = 10 
         NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
         eval_episode_num = 3
@@ -954,6 +1070,8 @@ if __name__ == "__main__":
                 # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+                # agents, distance = search_guided_es_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
+                # agents, distance = search_vfs_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
                 distanceArray.append(distance)
 
             if saved_agents:
