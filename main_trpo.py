@@ -861,7 +861,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "TRPO_GuidedES"
+    exp = "TRPO_VFS"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('trpo_logs/'+env_name+"/", exp)+1)
     ckp_dir = f'trpo_logs/{DIR}/models'
 
@@ -1065,13 +1065,13 @@ if __name__ == "__main__":
                             )
             
             if not avg_checkpoint and not use_ptb:
-                agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned)
+                # agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned)
                 # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
                 # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = search_guided_es_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
-                # agents, distance = search_vfs_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
+                agents, distance = search_vfs_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
                 distanceArray.append(distance)
 
             if saved_agents:
