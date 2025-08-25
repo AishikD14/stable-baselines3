@@ -15,8 +15,8 @@ args, rest_args = parser.parse_known_args()
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
-env = "Swimmer-v5"
+env = "Humanoid-v5"
+# env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
@@ -44,10 +44,10 @@ elif env == "LunarLander-v3":
 start_iteration = 1
 
 plot_list = [
-    # ["PPO_upper_bound", "ExploRLer (PPO)"],
-    ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
+    ["PPO_upper_bound", "ExploRLer (PPO)"],
+    # ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
     # ["PPO_NoPretrain", "ExploRLer (PPO) No Pre-training"],
-    ["PPO_normal_training", "PPO"],
+    # ["PPO_normal_training", "PPO"],
     # ["TRPO_normal_training_interpolated", "TRPO"],
     # ["TRPO_normal_training", "TRPO"],
     # ["PPO_empty_space_ls", "FQE Estimation"],
@@ -58,27 +58,28 @@ plot_list = [
     # ["PPO_GuidedES", "Guided ES"],
     # ["PPO_GuidedES_interpolated", "Guided ES"],
     # ["PPO_VFS", "VFS"],
-    ["PPO_VFS_interpolated", "VFS"],
+    # ["PPO_VFS_interpolated", "VFS"],
+    ["PPO_neghrand", "Random Walk"],
 ]
 
-plot_list = [
-    ["TRPO_upper_bound", "ExploRLer (TRPO)"],
-    # ["TRPO_upper_bound_interpolated", "ExploRLer (TRPO)"],
-    # ["TRPO_NoPretrain", "ExploRLer (TRPO) No Pre-training"],
-    # ["TRPO_NoPretrain_interpolated", "ExploRLer (TRPO) No Pre-training"],
-    ["TRPO_normal_training", "TRPO"],
-    # ["TRPO_normal_training_interpolated", "TRPO"],
-    # ["PPO_normal_training", "PPO"],
-    # ["PPO_upper_bound", "ExploRLer"], 
-    # ["TRPO_CheckpointAvg", "TRPO Checkpoint averaging"],
-    # ["TRPO_CheckpointAvg_interpolated", "TRPO Checkpoint averaging"],
-    # ["TRPO_PBT", "Population Based Training"],
-    # ["TRPO_PBT_interpolated", "Population Based Training"],
-    # ["TRPO_GuidedES", "Guided ES"],
-    # ["TRPO_GuidedES_interpolated", "Guided ES"],
-    ["TRPO_VFS", "VFS"],
-    # ["TRPO_VFS_interpolated", "VFS"],
-]
+# plot_list = [
+#     ["TRPO_upper_bound", "ExploRLer (TRPO)"],
+#     # ["TRPO_upper_bound_interpolated", "ExploRLer (TRPO)"],
+#     # ["TRPO_NoPretrain", "ExploRLer (TRPO) No Pre-training"],
+#     # ["TRPO_NoPretrain_interpolated", "ExploRLer (TRPO) No Pre-training"],
+#     ["TRPO_normal_training", "TRPO"],
+#     # ["TRPO_normal_training_interpolated", "TRPO"],
+#     # ["PPO_normal_training", "PPO"],
+#     # ["PPO_upper_bound", "ExploRLer"], 
+#     # ["TRPO_CheckpointAvg", "TRPO Checkpoint averaging"],
+#     # ["TRPO_CheckpointAvg_interpolated", "TRPO Checkpoint averaging"],
+#     # ["TRPO_PBT", "Population Based Training"],
+#     # ["TRPO_PBT_interpolated", "Population Based Training"],
+#     # ["TRPO_GuidedES", "Guided ES"],
+#     # ["TRPO_GuidedES_interpolated", "Guided ES"],
+#     ["TRPO_VFS", "VFS"],
+#     # ["TRPO_VFS_interpolated", "VFS"],
+# ]
 
 # if env == "Swimmer-v5":
 #     plot_list = [
@@ -155,4 +156,4 @@ for spine in ax.spines.values():
     spine.set_visible(False)
 
 # plt.savefig('../paper_plots/'+env+'.png')
-plt.savefig('../paper_plots/'+env+'_VFS.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_NeghRand.pdf', format='pdf', bbox_inches='tight', dpi=300)
