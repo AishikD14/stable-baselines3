@@ -12,8 +12,8 @@ parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-# env = "HalfCheetah-v5"
-env = "Hopper-v5"
+env = "HalfCheetah-v5"
+# env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
@@ -92,10 +92,14 @@ file_name_list = [
     # ["TRPO_Ablation5_1"],
     # ["TRPO_Ablation5_2"],
     # ["TRPO_Ablation5_3"],
-    ["PPO_neghrand_1"],
-    ["PPO_neghrand_2"],
-    ["PPO_neghrand_3"],
-    ["PPO_neghrand_4"]
+    # ["PPO_neghrand_1"],
+    # ["PPO_neghrand_2"],
+    # ["PPO_neghrand_3"],
+    # ["PPO_neghrand_4"],
+    ["TRPO_neghrand_1"],
+    ["TRPO_neghrand_2"],
+    ["TRPO_neghrand_3"],
+    ["TRPO_neghrand_4"]
     # ["PPO_empty_space_ls_1"],
     # ["PPO_baseline_1"],
     # ["PPO_CheckpointAvg_1"],

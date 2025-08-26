@@ -12,8 +12,8 @@ parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-# env = "HalfCheetah-v5"
-env = "Hopper-v5"
+env = "HalfCheetah-v5"
+# env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
@@ -64,24 +64,25 @@ plot_list = [
     ["PPO_neghrand_interpolated", "Random Walk"],
 ]
 
-# plot_list = [
-#     ["TRPO_upper_bound", "ExploRLer (TRPO)"],
-#     # ["TRPO_upper_bound_interpolated", "ExploRLer (TRPO)"],
-#     # ["TRPO_NoPretrain", "ExploRLer (TRPO) No Pre-training"],
-#     # ["TRPO_NoPretrain_interpolated", "ExploRLer (TRPO) No Pre-training"],
-#     ["TRPO_normal_training", "TRPO"],
-#     # ["TRPO_normal_training_interpolated", "TRPO"],
-#     # ["PPO_normal_training", "PPO"],
-#     # ["PPO_upper_bound", "ExploRLer"], 
-#     # ["TRPO_CheckpointAvg", "TRPO Checkpoint averaging"],
-#     # ["TRPO_CheckpointAvg_interpolated", "TRPO Checkpoint averaging"],
-#     # ["TRPO_PBT", "Population Based Training"],
-#     # ["TRPO_PBT_interpolated", "Population Based Training"],
-#     # ["TRPO_GuidedES", "Guided ES"],
-#     # ["TRPO_GuidedES_interpolated", "Guided ES"],
-#     ["TRPO_VFS", "VFS"],
-#     # ["TRPO_VFS_interpolated", "VFS"],
-# ]
+plot_list = [
+    # ["TRPO_upper_bound", "ExploRLer (TRPO)"],
+    ["TRPO_upper_bound_interpolated", "ExploRLer (TRPO)"],
+    # ["TRPO_NoPretrain", "ExploRLer (TRPO) No Pre-training"],
+    # ["TRPO_NoPretrain_interpolated", "ExploRLer (TRPO) No Pre-training"],
+    # ["TRPO_normal_training", "TRPO"],
+    # ["TRPO_normal_training_interpolated", "TRPO"],
+    # ["PPO_normal_training", "PPO"],
+    # ["PPO_upper_bound", "ExploRLer"], 
+    # ["TRPO_CheckpointAvg", "TRPO Checkpoint averaging"],
+    # ["TRPO_CheckpointAvg_interpolated", "TRPO Checkpoint averaging"],
+    # ["TRPO_PBT", "Population Based Training"],
+    # ["TRPO_PBT_interpolated", "Population Based Training"],
+    # ["TRPO_GuidedES", "Guided ES"],
+    # ["TRPO_GuidedES_interpolated", "Guided ES"],
+    # ["TRPO_VFS", "VFS"],
+    # ["TRPO_VFS_interpolated", "VFS"],
+    ["TRPO_neghrand_interpolated", "Random Walk"],
+]
 
 # if env == "Swimmer-v5":
 #     plot_list = [
