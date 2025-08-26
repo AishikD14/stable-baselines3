@@ -13,10 +13,10 @@ args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
-# env = "Hopper-v5"
+env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
-env = "Swimmer-v5"
+# env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
@@ -92,9 +92,10 @@ file_name_list = [
     # ["TRPO_Ablation5_1"],
     # ["TRPO_Ablation5_2"],
     # ["TRPO_Ablation5_3"],
-    # ["PPO_neghrand_1"],
-    # ["PPO_neghrand_2"],
-    # ["PPO_neghrand_3"]
+    ["PPO_neghrand_1"],
+    ["PPO_neghrand_2"],
+    ["PPO_neghrand_3"],
+    ["PPO_neghrand_4"]
     # ["PPO_empty_space_ls_1"],
     # ["PPO_baseline_1"],
     # ["PPO_CheckpointAvg_1"],
@@ -133,10 +134,10 @@ file_name_list = [
     # ["PPO_VFS_2"],
     # ["PPO_VFS_3"],
     # ["PPO_VFS_4"],
-    ["TRPO_VFS_1"],
-    ["TRPO_VFS_2"],
-    ["TRPO_VFS_3"],
-    ["TRPO_VFS_4"],
+    # ["TRPO_VFS_1"],
+    # ["TRPO_VFS_2"],
+    # ["TRPO_VFS_3"],
+    # ["TRPO_VFS_4"],
 ]
 
 for file_name in file_name_list:

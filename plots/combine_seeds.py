@@ -12,10 +12,10 @@ args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
-# env = "Hopper-v5"
+env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
-env = "Swimmer-v5"
+# env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
@@ -66,7 +66,7 @@ plot_list = [
     # ["TRPO_Ablation1", "TRPO_Ablation1"],
     # ["TRPO_Ablation2", "TRPO_Ablation2"],
     # ["TRPO_Ablation5", "TRPO_Ablation5"],
-    # ["PPO_neghrand", "PPO Random Walk"],
+    ["PPO_neghrand", "PPO Random Walk"],
     # ["TRPO_neghrand", "TRPO Random Walk"],
     # ["PPO_FQE", "PPO FQE"],
     # ["PPO_empty_space_ls", "PPO FQE"],
@@ -80,7 +80,7 @@ plot_list = [
     # ["PPO_GuidedES", "Guided ES"],
     # ["TRPO_GuidedES", "Guided ES"],
     # ["PPO_VFS", "VFS"],
-    ["TRPO_VFS", "VFS"],
+    # ["TRPO_VFS", "VFS"],
 ]
 
 plot_metrics = []

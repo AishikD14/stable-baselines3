@@ -13,8 +13,8 @@ args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
-# env = "Hopper-v5"
-env = "Walker2d-v5"
+env = "Hopper-v5"
+# env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
@@ -44,8 +44,8 @@ elif env == "LunarLander-v3":
 start_iteration = 1
 
 plot_list = [
-    ["PPO_upper_bound", "ExploRLer (PPO)"],
-    # ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
+    # ["PPO_upper_bound", "ExploRLer (PPO)"],
+    ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
     # ["PPO_NoPretrain", "ExploRLer (PPO) No Pre-training"],
     # ["PPO_NoPretrain_interpolated", "ExploRLer (PPO) No Pre-training"],
     # ["PPO_normal_training", "PPO"],
@@ -60,7 +60,8 @@ plot_list = [
     # ["PPO_GuidedES_interpolated", "Guided ES"],
     # ["PPO_VFS", "VFS"],
     # ["PPO_VFS_interpolated", "VFS"],
-    ["PPO_neghrand", "Random Walk"],
+    # ["PPO_neghrand", "Random Walk"],
+    ["PPO_neghrand_interpolated", "Random Walk"],
 ]
 
 # plot_list = [
