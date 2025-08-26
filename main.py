@@ -355,11 +355,11 @@ def random_search_policies(algo, directory, start, end, env, agent_num=10):
     return agents, average_distance
 
 # Neighbor search plus random walk
-def neighbor_search_random_walk(algo, directory, start, end, env, agent_num=10):
+def neighbor_search_random_walk(algo, directory, start, end, env, saved_agents=False, agent_num=10):
     print("---------------------------------")
     print("Searching random policies")
 
-    dt = load_weights(range(start, end), directory, env)
+    dt = load_weights(range(start, end), directory, env, saved_agents)
     print(dt.shape)
 
     neigh = NearestNeighbors(n_neighbors=6)
@@ -887,7 +887,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_VFS"
+    exp = "PPO_neghrand"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -1092,12 +1092,12 @@ if __name__ == "__main__":
 
             if not avg_checkpoint and not use_ptb:
                 # agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned)
-                # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+                agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = search_guided_es_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
-                agents, distance = search_vfs_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
+                # agents, distance = search_vfs_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
                 distanceArray.append(distance)
 
             if saved_agents:
