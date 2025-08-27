@@ -12,11 +12,11 @@ parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-env = "HalfCheetah-v5"
+# env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
-# env = "Swimmer-v5"
+env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
@@ -65,8 +65,8 @@ plot_list = [
 ]
 
 plot_list = [
-    # ["TRPO_upper_bound", "ExploRLer (TRPO)"],
-    ["TRPO_upper_bound_interpolated", "ExploRLer (TRPO)"],
+    ["TRPO_upper_bound", "ExploRLer (TRPO)"],
+    # ["TRPO_upper_bound_interpolated", "ExploRLer (TRPO)"],
     # ["TRPO_NoPretrain", "ExploRLer (TRPO) No Pre-training"],
     # ["TRPO_NoPretrain_interpolated", "ExploRLer (TRPO) No Pre-training"],
     # ["TRPO_normal_training", "TRPO"],
@@ -81,7 +81,8 @@ plot_list = [
     # ["TRPO_GuidedES_interpolated", "Guided ES"],
     # ["TRPO_VFS", "VFS"],
     # ["TRPO_VFS_interpolated", "VFS"],
-    ["TRPO_neghrand_interpolated", "Random Walk"],
+    # ["TRPO_neghrand_interpolated", "Random Walk"],
+    ["TRPO_neghrand", "Random Walk"],
 ]
 
 # if env == "Swimmer-v5":
