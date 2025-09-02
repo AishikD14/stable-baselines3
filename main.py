@@ -16,7 +16,7 @@ import pandas as pd
 # from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push
+from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
 from d3rlpy.dataset import MDPDataset
@@ -804,8 +804,9 @@ if __name__ == "__main__":
     # env_name = "Pendulum-v1" # For pendulum (single goal task)
 
     # env_name = "FetchReach-v4" # For FetchReach (single goal task) sparse rewards
-    env_name = "FetchReachDense-v4" # For FetchReach (single goal task) dense rewards
-    # env_name = "FetchPush-v4" # For FetchPush (single goal task
+    # env_name = "FetchReachDense-v4" # For FetchReach (single goal task) dense rewards
+    # env_name = "FetchPush-v4" # For FetchPush (single goal task) sparse rewards
+    env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
 
     # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -835,6 +836,8 @@ if __name__ == "__main__":
         args = args_fetch_reach_dense.get_args(rest_args)
     elif env_name == "FetchPush-v4":
         args = args_fetch_push.get_args(rest_args)
+    elif env_name == "FetchPushDense-v4":
+        args = args_fetch_push_dense.get_args(rest_args)
 
     # ------------------------------------------------------------------------------------------------------------
 
@@ -865,7 +868,7 @@ if __name__ == "__main__":
         env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
         env.reset(seed=args.seed)
     
-    if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4"]:
+    if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
         env = FlattenObservation(env)
 
     # env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1) # For AntDir-v0
@@ -1017,7 +1020,7 @@ if __name__ == "__main__":
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    if START_ITER != 1 and env_name not in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4"]:
+    if START_ITER != 1 and env_name not in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
 
         print("Loading Initial saved model")
 
@@ -1230,7 +1233,7 @@ if __name__ == "__main__":
                 else:
                     dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
 
-                    if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4"]:
+                    if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
                         dummy_env = FlattenObservation(dummy_env)
 
                     dummy_env.reset(seed=args.seed)
@@ -1344,7 +1347,7 @@ if __name__ == "__main__":
             else:
                 dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
 
-                if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4"]:
+                if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
                     dummy_env = FlattenObservation(dummy_env)
 
                 dummy_env.reset(seed=args.seed)
