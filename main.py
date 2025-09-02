@@ -1,5 +1,6 @@
 import copy
 import gymnasium as gym
+import gymnasium_robotics
 from stable_baselines3 import PPO
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
@@ -15,7 +16,7 @@ import pandas as pd
 # from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer
+from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_push
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
 from d3rlpy.dataset import MDPDataset
@@ -27,6 +28,7 @@ from d3rlpy.torch_utility import TorchMiniBatch, TorchObservation
 import random
 import os
 from stable_baselines3.common.vec_env import DummyVecEnv
+from gymnasium.wrappers import FlattenObservation
 
 warnings.filterwarnings("ignore")
 
@@ -790,7 +792,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
@@ -800,6 +802,9 @@ if __name__ == "__main__":
     # env_name = "CartPole-v1" # For cartpole (single goal task)
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
     # env_name = "Pendulum-v1" # For pendulum (single goal task)
+
+    env_name = "FetchReach-v4" # For FetchReach (single goal task)
+    # env_name = "FetchPush-v4" # For FetchPush (single goal task
 
     # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -823,6 +828,10 @@ if __name__ == "__main__":
         args = args_mountain_car.get_args(rest_args)
     elif env_name == "Pendulum-v1":
         args = args_pendulum.get_args(rest_args)
+    elif env_name == "FetchReach-v4":
+        args = args_fetch_reach.get_args(rest_args)
+    elif env_name == "FetchPush-v4":
+        args = args_fetch_push.get_args(rest_args)
 
     # ------------------------------------------------------------------------------------------------------------
 
@@ -852,7 +861,10 @@ if __name__ == "__main__":
     else:
         env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
         env.reset(seed=args.seed)
-        
+    
+    if env_name in ["FetchReach-v4", "FetchPush-v4"]:
+        env = FlattenObservation(env)
+
     # env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1) # For AntDir-v0
 
     print("---------------------------------")
@@ -887,7 +899,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_neghrand"
+    exp = "PPO_normal_training"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -968,10 +980,11 @@ if __name__ == "__main__":
 
     model = PPO(**ppo_kwargs)
 
-    START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
-    # START_ITER = 1
+    # START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+    START_ITER = 1
     SEARCH_INTERV = 1 # Make this 2 for n_epochs=5 and keep 1 for n_epochs=10
-    NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
+    # NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
+    NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs) # For FetchReach-v4
     N_EPOCHS = args.n_epochs
 
     # ---------------------------------------------------------------------------------------------------------------
@@ -980,28 +993,28 @@ if __name__ == "__main__":
     # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
 
     # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_1M"+'_'+str(args.seed))
+    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_fetch_reach_1M"+'_'+str(args.seed))
 
     # print("Initial training done") 
 
-    # print("Saving replay buffer for later use")
-    # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
+    # # print("Saving replay buffer for later use")
+    # # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
 
-    # # Save the replay buffer
-    # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
-    #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
-    #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
-    #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
-    #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
-    # )
+    # # # Save the replay buffer
+    # # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
+    # #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
+    # #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
+    # #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
+    # #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+    # # )
     
-    # print("Replay buffer saved")
+    # # print("Replay buffer saved")
 
     # quit()
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    if START_ITER != 1:
+    if START_ITER != 1 and env_name not in ["FetchReach-v4", "FetchPush-v4"]:
 
         print("Loading Initial saved model")
 
@@ -1032,7 +1045,7 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = False
+    normal_train = True
     use_ANN = False
     ANN_lib = "Annoy"
     online_eval = True
@@ -1091,8 +1104,8 @@ if __name__ == "__main__":
                             )
 
             if not avg_checkpoint and not use_ptb:
-                # agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned)
-                agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
+                agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned)
+                # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
@@ -1213,6 +1226,10 @@ if __name__ == "__main__":
                     dummy_env = SubprocVecEnv(dummy_env_fns)
                 else:
                     dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+
+                    if env_name in ["FetchReach-v4", "FetchPush-v4"]:
+                        dummy_env = FlattenObservation(dummy_env)
+
                     dummy_env.reset(seed=args.seed)
 
                 returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
@@ -1323,9 +1340,12 @@ if __name__ == "__main__":
                 dummy_env = SubprocVecEnv(dummy_env_fns)
             else:
                 dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+
+                if env_name in ["FetchReach-v4", "FetchPush-v4"]:
+                    dummy_env = FlattenObservation(dummy_env)
+
                 dummy_env.reset(seed=args.seed)
-            # dummy_env = gym.make(env_name)
-            # dummy_env.reset(seed=args.seed)
+            
             returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
             print(f'avg 3 return on policy: {returns_trains}')
             cum_rews.append(returns_trains)

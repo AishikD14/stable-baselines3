@@ -5,14 +5,14 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach
 import re
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-env = "HalfCheetah-v5"
+# env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
@@ -20,6 +20,7 @@ env = "HalfCheetah-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
+env = "FetchReach-v4"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -39,6 +40,8 @@ elif env == "LunarLander-v3":
     args = args_lunarlander.get_args(rest_args)
 elif env == "Hopper-v5":
     args = args_hopper.get_args(rest_args)
+elif env == "FetchReach-v4":
+    args = args_fetch_reach.get_args(rest_args)
 
 # Pendulum-v1
 file_name_list = [
@@ -50,10 +53,10 @@ file_name_list = [
     # ["TRPO_plot_2", "trpo_plot_1_out", "TRPO_pretrain_2"],
     # ["TRPO_plot_3", "trpo_plot_2_out", "TRPO_pretrain_3"],
     # ["TRPO_plot_4", "trpo_plot_3_out", "TRPO_pretrain_4"],
-    # ["PPO_normal_training_1"],
-    # ["PPO_normal_training_2"],
-    # ["PPO_normal_training_3"],
-    # ["PPO_normal_training_4"],
+    ["PPO_normal_training_1"],
+    ["PPO_normal_training_2"],
+    ["PPO_normal_training_3"],
+    ["PPO_normal_training_4"],
     # ["PPO_normal_training_7", "PPO_normal_training_4"],
     # ["PPO_upper_bound_1"],
     # ["PPO_upper_bound_2"],
@@ -96,10 +99,10 @@ file_name_list = [
     # ["PPO_neghrand_2"],
     # ["PPO_neghrand_3"],
     # ["PPO_neghrand_4"],
-    ["TRPO_neghrand_1"],
-    ["TRPO_neghrand_2"],
-    ["TRPO_neghrand_3"],
-    ["TRPO_neghrand_4"]
+    # ["TRPO_neghrand_1"],
+    # ["TRPO_neghrand_2"],
+    # ["TRPO_neghrand_3"],
+    # ["TRPO_neghrand_4"]
     # ["PPO_empty_space_ls_1"],
     # ["PPO_baseline_1"],
     # ["PPO_CheckpointAvg_1"],

@@ -5,20 +5,21 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
-env = "Hopper-v5"
+# env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
+env = "FetchReach-v4"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -28,6 +29,8 @@ elif env == "Walker2d-v5":
     args = args_walker2d.get_args(rest_args)
 elif env == "Humanoid-v5":
     args = args_humanoid.get_args(rest_args)
+elif env == "Hopper-v5":
+    args = args_hopper.get_args(rest_args)
 elif env == "Swimmer-v5":
     args = args_swimmer.get_args(rest_args)
 elif env == "Pendulum-v1":
@@ -36,6 +39,8 @@ elif env == "BipedalWalker-v3":
     args = args_bipedal_walker.get_args(rest_args)
 elif env == "LunarLander-v3":
     args = args_lunarlander.get_args(rest_args)
+elif env == "FetchReach-v4":
+    args = args_fetch_reach.get_args(rest_args)
 
 if not hasattr(args, 'n_envs'):
     args.n_envs = 1
@@ -54,7 +59,7 @@ seed_list = [0, 1, 2, 3]
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
-    # ["PPO_normal_training", "PPO Normal Training"],
+    ["PPO_normal_training", "PPO Normal Training"],
     # ["PPO_upper_bound", "PPO Upper Bound"],
     # ["TRPO_normal_training", "TRPO Normal Training"],
     # ["TRPO_upper_bound", "TRPO Upper Bound"],
@@ -66,7 +71,7 @@ plot_list = [
     # ["TRPO_Ablation1", "TRPO_Ablation1"],
     # ["TRPO_Ablation2", "TRPO_Ablation2"],
     # ["TRPO_Ablation5", "TRPO_Ablation5"],
-    ["PPO_neghrand", "PPO Random Walk"],
+    # ["PPO_neghrand", "PPO Random Walk"],
     # ["TRPO_neghrand", "TRPO Random Walk"],
     # ["PPO_FQE", "PPO FQE"],
     # ["PPO_empty_space_ls", "PPO FQE"],
@@ -97,7 +102,7 @@ for plot_item in plot_list:
         results = np.load(directory + ".npy")
         print(results.shape)
 
-        if env not in ["Pendulum-v1", "BipedalWalker-v3", "LunarLander-v3"] and plot_item[0] not in ["PPO_NoPretrain", "TRPO_NoPretrain"]:
+        if env not in ["Pendulum-v1", "BipedalWalker-v3", "LunarLander-v3", "FetchReach-v4"] and plot_item[0] not in ["PPO_NoPretrain", "TRPO_NoPretrain"]:
             # Load pretrained rewards
             if "PPO" in plot_item[0]:
                 pretrain_rewards = np.load("../final_results/"+env+"/PPO_pretrain_"+str(i+1)+".npy")

@@ -21,6 +21,8 @@ from stable_baselines3.common.vec_env import VecEnv
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.vec_env import SubprocVecEnv
 
+from gymnasium.wrappers import FlattenObservation
+
 SelfOnPolicyAlgorithm = TypeVar("SelfOnPolicyAlgorithm", bound="OnPolicyAlgorithm")
 
 
@@ -393,6 +395,10 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                     # self.env_name = self.env.spec.id
                     self.env_name = self.env.envs[0].spec.id
                     dummy_env = gymnasium.make(self.env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+                    
+                    if self.env_name in ["FetchReach-v4", "FetchPush-v4"]:
+                        dummy_env = FlattenObservation(dummy_env)
+
                     dummy_env.reset(seed=self.seed)
 
                 returns_trains = evaluate_policy(self, dummy_env, n_eval_episodes=3, deterministic=True)[0]

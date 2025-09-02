@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach
 import re
 
 parser = argparse.ArgumentParser()
@@ -16,10 +16,11 @@ args, rest_args = parser.parse_known_args()
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
-env = "Swimmer-v5"
+# env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
+env = "FetchReach-v4"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -39,16 +40,18 @@ elif env == "BipedalWalker-v3":
     args = args_bipedal_walker.get_args(rest_args)
 elif env == "LunarLander-v3":
     args = args_lunarlander.get_args(rest_args)
+elif env == "FetchReach-v4":
+    args = args_fetch_reach.get_args(rest_args)
 
 # start_iteration = 1000000 // args.n_steps_per_rollout*1
 start_iteration = 1
 
 plot_list = [
     # ["PPO_upper_bound", "ExploRLer (PPO)"],
-    ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
+    # ["PPO_upper_bound_interpolated", "ExploRLer (PPO)"],
     # ["PPO_NoPretrain", "ExploRLer (PPO) No Pre-training"],
     # ["PPO_NoPretrain_interpolated", "ExploRLer (PPO) No Pre-training"],
-    # ["PPO_normal_training", "PPO"],
+    ["PPO_normal_training", "PPO"],
     # ["TRPO_normal_training_interpolated", "TRPO"],
     # ["TRPO_normal_training", "TRPO"],
     # ["PPO_empty_space_ls", "FQE Estimation"],
@@ -61,29 +64,29 @@ plot_list = [
     # ["PPO_VFS", "VFS"],
     # ["PPO_VFS_interpolated", "VFS"],
     # ["PPO_neghrand", "Random Walk"],
-    ["PPO_neghrand_interpolated", "Random Walk"],
+    # ["PPO_neghrand_interpolated", "Random Walk"],
 ]
 
-plot_list = [
-    ["TRPO_upper_bound", "ExploRLer (TRPO)"],
-    # ["TRPO_upper_bound_interpolated", "ExploRLer (TRPO)"],
-    # ["TRPO_NoPretrain", "ExploRLer (TRPO) No Pre-training"],
-    # ["TRPO_NoPretrain_interpolated", "ExploRLer (TRPO) No Pre-training"],
-    # ["TRPO_normal_training", "TRPO"],
-    # ["TRPO_normal_training_interpolated", "TRPO"],
-    # ["PPO_normal_training", "PPO"],
-    # ["PPO_upper_bound", "ExploRLer"], 
-    # ["TRPO_CheckpointAvg", "TRPO Checkpoint averaging"],
-    # ["TRPO_CheckpointAvg_interpolated", "TRPO Checkpoint averaging"],
-    # ["TRPO_PBT", "Population Based Training"],
-    # ["TRPO_PBT_interpolated", "Population Based Training"],
-    # ["TRPO_GuidedES", "Guided ES"],
-    # ["TRPO_GuidedES_interpolated", "Guided ES"],
-    # ["TRPO_VFS", "VFS"],
-    # ["TRPO_VFS_interpolated", "VFS"],
-    # ["TRPO_neghrand_interpolated", "Random Walk"],
-    ["TRPO_neghrand", "Random Walk"],
-]
+# plot_list = [
+#     ["TRPO_upper_bound", "ExploRLer (TRPO)"],
+#     # ["TRPO_upper_bound_interpolated", "ExploRLer (TRPO)"],
+#     # ["TRPO_NoPretrain", "ExploRLer (TRPO) No Pre-training"],
+#     # ["TRPO_NoPretrain_interpolated", "ExploRLer (TRPO) No Pre-training"],
+#     # ["TRPO_normal_training", "TRPO"],
+#     # ["TRPO_normal_training_interpolated", "TRPO"],
+#     # ["PPO_normal_training", "PPO"],
+#     # ["PPO_upper_bound", "ExploRLer"], 
+#     # ["TRPO_CheckpointAvg", "TRPO Checkpoint averaging"],
+#     # ["TRPO_CheckpointAvg_interpolated", "TRPO Checkpoint averaging"],
+#     # ["TRPO_PBT", "Population Based Training"],
+#     # ["TRPO_PBT_interpolated", "Population Based Training"],
+#     # ["TRPO_GuidedES", "Guided ES"],
+#     # ["TRPO_GuidedES_interpolated", "Guided ES"],
+#     # ["TRPO_VFS", "VFS"],
+#     # ["TRPO_VFS_interpolated", "VFS"],
+#     # ["TRPO_neghrand_interpolated", "Random Walk"],
+#     ["TRPO_neghrand", "Random Walk"],
+# ]
 
 # if env == "Swimmer-v5":
 #     plot_list = [
@@ -109,7 +112,7 @@ for plot_item in plot_list:
     # Smoothing window
     window = 100
 
-    if env == "Pendulum-v1" or env == "BipedalWalker-v3" or env == "Swimmer-v5":
+    if env == "Pendulum-v1" or env == "BipedalWalker-v3" or env == "Swimmer-v5" or env == "FetchReach-v4":
         window = 10
 
     smoothed = np.convolve(rewards, np.ones(window)/window, mode='valid')
@@ -160,4 +163,4 @@ for spine in ax.spines.values():
     spine.set_visible(False)
 
 # plt.savefig('../paper_plots/'+env+'.png')
-plt.savefig('../paper_plots/'+env+'_NeghRand.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'.pdf', format='pdf', bbox_inches='tight', dpi=300)
