@@ -1,0 +1,2881 @@
+No devices were found
+Setting seed -  1
+---------------------------------
+Environment created
+Box(-1.0, 1.0, (4,), float32) Box(-inf, inf, (16,), float64)
+Starting training from scratch
+Starting evaluation
+1
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.030392368774601025
+avg 3 return on policy: -6.793178980549176, Success rate: 0.00
+avg 3 return on policy: -6.813566851119201, Success rate: 0.00
+avg 3 return on policy: -6.854026640454928, Success rate: 0.00
+avg 3 return on policy: -6.909955978393555, Success rate: 0.00
+avg 3 return on policy: -6.742574334144592, Success rate: 0.00
+avg 3 return on policy: -6.690982565283775, Success rate: 0.00
+avg 3 return on policy: -6.587270967662334, Success rate: 0.00
+avg 3 return on policy: -6.506381397445996, Success rate: 0.00
+avg 3 return on policy: -6.800963461399078, Success rate: 0.00
+avg 3 return on policy: -6.812237662573655, Success rate: 0.00
+avg 3 return on policy: -6.843090735375881, Success rate: 0.00
+avg 3 return on policy: -6.901744353274505, Success rate: 0.00
+avg 3 return on policy: -6.573883990446727, Success rate: 0.00
+avg 3 return on policy: -6.508469904462497, Success rate: 0.00
+avg 3 return on policy: -6.414696964124839, Success rate: 0.00
+avg 3 return on policy: -6.329413915673892, Success rate: 0.00
+avg 3 return on policy: -6.695991789301236, Success rate: 0.00
+avg 3 return on policy: -6.550496692458789, Success rate: 0.00
+avg 3 return on policy: -6.410459889719884, Success rate: 0.00
+avg 3 return on policy: -6.2675125660995645, Success rate: 0.00
+avg cum rews: -6.650344981998205, std: 0.19244436221625694
+avg success rate: 0.00, std: 0.00
+the best agent: 19, best agent cum rewards: -6.2675125660995645, best agent success rate: 0.0
+2
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.031145641131207012
+avg 3 return on policy: -6.110078975558281, Success rate: 0.00
+avg 3 return on policy: -6.354707075903813, Success rate: 0.00
+avg 3 return on policy: -6.621186638871829, Success rate: 0.00
+avg 3 return on policy: -6.903043867399295, Success rate: 0.00
+avg 3 return on policy: -6.074971197793881, Success rate: 0.00
+avg 3 return on policy: -6.15905083467563, Success rate: 0.00
+avg 3 return on policy: -6.165917421380679, Success rate: 0.00
+avg 3 return on policy: -6.173877124985059, Success rate: 0.00
+avg 3 return on policy: -5.853688207144539, Success rate: 0.00
+avg 3 return on policy: -5.8965868937472505, Success rate: 0.00
+avg 3 return on policy: -5.875576666245858, Success rate: 0.00
+avg 3 return on policy: -5.834435308972995, Success rate: 0.00
+avg 3 return on policy: -5.504922154049079, Success rate: 0.00
+avg 3 return on policy: -5.480251409113407, Success rate: 0.00
+avg 3 return on policy: -5.423558081189792, Success rate: 0.00
+avg 3 return on policy: -5.396566495299339, Success rate: 0.00
+avg 3 return on policy: -5.58831864905854, Success rate: 0.00
+avg 3 return on policy: -5.792830576499303, Success rate: 0.00
+avg 3 return on policy: -6.019281150152286, Success rate: 0.00
+avg 3 return on policy: -6.2695072417457895, Success rate: 0.00
+avg cum rews: -5.974917798489331, std: 0.38648749857811576
+avg success rate: 0.00, std: 0.00
+the best agent: 15, best agent cum rewards: -5.396566495299339, best agent success rate: 0.0
+3
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.030376943448857264
+avg 3 return on policy: -5.936963610351086, Success rate: 0.00
+avg 3 return on policy: -6.18144303560257, Success rate: 0.00
+avg 3 return on policy: -6.48855874935786, Success rate: 0.00
+avg 3 return on policy: -6.850481451799472, Success rate: 0.00
+avg 3 return on policy: -6.014113745341699, Success rate: 0.00
+avg 3 return on policy: -6.304337489108245, Success rate: 0.00
+avg 3 return on policy: -6.650473736226559, Success rate: 0.00
+avg 3 return on policy: -7.039196280141671, Success rate: 0.00
+avg 3 return on policy: -5.752881538743774, Success rate: 0.00
+avg 3 return on policy: -5.8183715380728245, Success rate: 0.00
+avg 3 return on policy: -5.95106619472305, Success rate: 0.00
+avg 3 return on policy: -6.1499391086399555, Success rate: 0.00
+avg 3 return on policy: -5.553953559448321, Success rate: 0.00
+avg 3 return on policy: -5.761755919704835, Success rate: 0.00
+avg 3 return on policy: -5.951859184851249, Success rate: 0.00
+avg 3 return on policy: -6.185282265146573, Success rate: 0.00
+avg 3 return on policy: -5.415272175023953, Success rate: 0.00
+avg 3 return on policy: -5.638932601859172, Success rate: 0.00
+avg 3 return on policy: -5.898010801523924, Success rate: 0.00
+avg 3 return on policy: -6.217028105010589, Success rate: 0.00
+avg cum rews: -6.0879960545338685, std: 0.41115566375423934
+avg success rate: 0.00, std: 0.00
+the best agent: 16, best agent cum rewards: -5.415272175023953, best agent success rate: 0.0
+4
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.028078703965522672
+avg 3 return on policy: -6.523678434391816, Success rate: 0.00
+avg 3 return on policy: -6.739169972638289, Success rate: 0.00
+avg 3 return on policy: -6.993430291612943, Success rate: 0.00
+avg 3 return on policy: -7.279215723276138, Success rate: 0.00
+avg 3 return on policy: -6.62107640504837, Success rate: 0.00
+avg 3 return on policy: -6.718300476670265, Success rate: 0.00
+avg 3 return on policy: -6.915161480506261, Success rate: 0.00
+avg 3 return on policy: -7.120556319753329, Success rate: 0.00
+avg 3 return on policy: -6.268564326067765, Success rate: 0.00
+avg 3 return on policy: -6.022935412824154, Success rate: 0.00
+avg 3 return on policy: -5.751181453466415, Success rate: 0.00
+avg 3 return on policy: -5.4964499200383825, Success rate: 0.00
+avg 3 return on policy: -6.255939565598965, Success rate: 0.00
+avg 3 return on policy: -6.433956056833267, Success rate: 0.00
+avg 3 return on policy: -6.605320652325948, Success rate: 0.00
+avg 3 return on policy: -6.752563138802846, Success rate: 0.00
+avg 3 return on policy: -6.218761528531711, Success rate: 0.00
+avg 3 return on policy: -6.297786275545756, Success rate: 0.00
+avg 3 return on policy: -6.443590213855107, Success rate: 0.00
+avg 3 return on policy: -6.57230365773042, Success rate: 0.00
+avg cum rews: -6.501497065275908, std: 0.4268682940374217
+avg success rate: 0.00, std: 0.00
+the best agent: 11, best agent cum rewards: -5.4964499200383825, best agent success rate: 0.0
+5
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.03130609227835303
+avg 3 return on policy: -6.42437728246053, Success rate: 0.00
+avg 3 return on policy: -6.288771033287048, Success rate: 0.00
+avg 3 return on policy: -6.1770002121726675, Success rate: 0.00
+avg 3 return on policy: -6.08581147591273, Success rate: 0.00
+avg 3 return on policy: -6.590445791681607, Success rate: 0.00
+avg 3 return on policy: -6.5891459956765175, Success rate: 0.00
+avg 3 return on policy: -6.598071453471978, Success rate: 0.00
+avg 3 return on policy: -6.617761669059594, Success rate: 0.00
+avg 3 return on policy: -6.214193552732468, Success rate: 0.00
+avg 3 return on policy: -6.398441272477309, Success rate: 0.00
+avg 3 return on policy: -6.604323921104272, Success rate: 0.00
+avg 3 return on policy: -6.811973579227924, Success rate: 0.00
+avg 3 return on policy: -6.072189199427764, Success rate: 0.00
+avg 3 return on policy: -6.093688823282719, Success rate: 0.00
+avg 3 return on policy: -6.115735640128453, Success rate: 0.00
+avg 3 return on policy: -6.155014341076215, Success rate: 0.00
+avg 3 return on policy: -6.012675739824772, Success rate: 0.00
+avg 3 return on policy: -5.945801538725694, Success rate: 0.00
+avg 3 return on policy: -5.913374337057273, Success rate: 0.00
+avg 3 return on policy: -5.918301398555438, Success rate: 0.00
+avg cum rews: -6.281354912867149, std: 0.2694287111774166
+avg success rate: 0.00, std: 0.00
+the best agent: 18, best agent cum rewards: -5.913374337057273, best agent success rate: 0.0
+6
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02715198021067643
+avg 3 return on policy: -6.653887122869492, Success rate: 0.00
+avg 3 return on policy: -6.654132594664891, Success rate: 0.00
+avg 3 return on policy: -6.690963054696719, Success rate: 0.00
+avg 3 return on policy: -6.754173159599304, Success rate: 0.00
+avg 3 return on policy: -6.693166290720304, Success rate: 0.00
+avg 3 return on policy: -6.645843451221784, Success rate: 0.00
+avg 3 return on policy: -6.635292701423168, Success rate: 0.00
+avg 3 return on policy: -6.67184779047966, Success rate: 0.00
+avg 3 return on policy: -6.45934650550286, Success rate: 0.00
+avg 3 return on policy: -6.534675146142642, Success rate: 0.00
+avg 3 return on policy: -6.633670414487521, Success rate: 0.00
+avg 3 return on policy: -6.745278410613537, Success rate: 0.00
+avg 3 return on policy: -6.258605507512887, Success rate: 0.00
+avg 3 return on policy: -6.393181251982848, Success rate: 0.00
+avg 3 return on policy: -6.566325729091962, Success rate: 0.00
+avg 3 return on policy: -6.752082981169224, Success rate: 0.00
+avg 3 return on policy: -6.22120913118124, Success rate: 0.00
+avg 3 return on policy: -6.333340220153332, Success rate: 0.00
+avg 3 return on policy: -6.462240735689799, Success rate: 0.00
+avg 3 return on policy: -6.587966884175937, Success rate: 0.00
+avg cum rews: -6.567361454168956, std: 0.15769457453334262
+avg success rate: 0.00, std: 0.00
+the best agent: 16, best agent cum rewards: -6.22120913118124, best agent success rate: 0.0
+7
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.025660806628542428
+avg 3 return on policy: -6.170448998610179, Success rate: 0.00
+avg 3 return on policy: -6.443184460202853, Success rate: 0.00
+avg 3 return on policy: -6.786626386145751, Success rate: 0.00
+avg 3 return on policy: -7.190691322088242, Success rate: 0.00
+avg 3 return on policy: -6.240416345496972, Success rate: 0.00
+avg 3 return on policy: -6.452903280655543, Success rate: 0.00
+avg 3 return on policy: -6.6626002838214236, Success rate: 0.00
+avg 3 return on policy: -6.874709563950698, Success rate: 0.00
+avg 3 return on policy: -5.816016900042693, Success rate: 0.00
+avg 3 return on policy: -5.621612260739009, Success rate: 0.00
+avg 3 return on policy: -5.392179201046626, Success rate: 0.00
+avg 3 return on policy: -5.150824844837189, Success rate: 0.00
+avg 3 return on policy: -5.8925195808211965, Success rate: 0.00
+avg 3 return on policy: -6.081812786559264, Success rate: 0.00
+avg 3 return on policy: -6.351515548924605, Success rate: 0.00
+avg 3 return on policy: -6.608172262708346, Success rate: 0.00
+avg 3 return on policy: -5.825595585008462, Success rate: 0.00
+avg 3 return on policy: -6.044844654699166, Success rate: 0.00
+avg 3 return on policy: -6.346341331799825, Success rate: 0.00
+avg 3 return on policy: -6.67073746273915, Success rate: 0.00
+avg cum rews: -6.231187653044859, std: 0.5020775663436724
+avg success rate: 0.00, std: 0.00
+the best agent: 11, best agent cum rewards: -5.150824844837189, best agent success rate: 0.0
+8
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.027270599781155997
+avg 3 return on policy: -4.028300953408082, Success rate: 0.00
+avg 3 return on policy: -4.489726894845565, Success rate: 0.00
+avg 3 return on policy: -4.944789516429107, Success rate: 0.00
+avg 3 return on policy: -5.403765266140302, Success rate: 0.00
+avg 3 return on policy: -4.198890263835589, Success rate: 0.00
+avg 3 return on policy: -4.745730442305406, Success rate: 0.00
+avg 3 return on policy: -5.287925414741039, Success rate: 0.00
+avg 3 return on policy: -5.73615625500679, Success rate: 0.00
+avg 3 return on policy: -3.9279092475771904, Success rate: 0.00
+avg 3 return on policy: -3.8977086059749126, Success rate: 0.00
+avg 3 return on policy: -3.9911775725583234, Success rate: 0.00
+avg 3 return on policy: -4.199839840332667, Success rate: 0.00
+avg 3 return on policy: -4.176736831665039, Success rate: 0.00
+avg 3 return on policy: -4.2995854914188385, Success rate: 0.00
+avg 3 return on policy: -4.441265599181254, Success rate: 0.00
+avg 3 return on policy: -4.645164020359516, Success rate: 0.00
+avg 3 return on policy: -4.145690801242988, Success rate: 0.00
+avg 3 return on policy: -3.950717774530252, Success rate: 0.00
+avg 3 return on policy: -3.8518915387491384, Success rate: 0.00
+avg 3 return on policy: -3.853473705550035, Success rate: 0.00
+avg cum rews: -4.410822301792601, std: 0.5409091531218246
+avg success rate: 0.00, std: 0.00
+the best agent: 18, best agent cum rewards: -3.8518915387491384, best agent success rate: 0.0
+9
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02676519749083236
+avg 3 return on policy: -2.4588538321355977, Success rate: 1.00
+avg 3 return on policy: -2.4698214139789343, Success rate: 1.00
+avg 3 return on policy: -2.6936315950006247, Success rate: 0.00
+avg 3 return on policy: -3.0539367385208607, Success rate: 0.00
+avg 3 return on policy: -2.5055114484081664, Success rate: 0.00
+avg 3 return on policy: -2.577240555857619, Success rate: 0.00
+avg 3 return on policy: -2.89960966942211, Success rate: 0.00
+avg 3 return on policy: -3.3405247467259565, Success rate: 0.00
+avg 3 return on policy: -2.524079894647002, Success rate: 0.00
+avg 3 return on policy: -2.838723625987768, Success rate: 0.00
+avg 3 return on policy: -3.18489341934522, Success rate: 0.00
+avg 3 return on policy: -3.5512974336743355, Success rate: 0.00
+avg 3 return on policy: -2.33243392718335, Success rate: 1.00
+avg 3 return on policy: -2.188881337021788, Success rate: 1.00
+avg 3 return on policy: -2.3287855436404548, Success rate: 1.00
+avg 3 return on policy: -2.7298363062242665, Success rate: 1.00
+avg 3 return on policy: -2.567421735574802, Success rate: 0.00
+avg 3 return on policy: -1.9976459542910259, Success rate: 1.00
+avg 3 return on policy: -1.881690033711493, Success rate: 1.00
+avg 3 return on policy: -2.274564605206251, Success rate: 1.00
+avg cum rews: -2.6199691908278817, std: 0.419399672488163
+avg success rate: 0.45, std: 0.50
+the best agent: 18, best agent cum rewards: -1.881690033711493, best agent success rate: 1.0
+10
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.029082208972155937
+avg 3 return on policy: -1.6519467209776242, Success rate: 1.00
+avg 3 return on policy: -1.763445376418531, Success rate: 1.00
+avg 3 return on policy: -1.9681466954449813, Success rate: 1.00
+avg 3 return on policy: -2.1995248831808567, Success rate: 1.00
+avg 3 return on policy: -1.769351275016864, Success rate: 1.00
+avg 3 return on policy: -1.8301363096882899, Success rate: 1.00
+avg 3 return on policy: -1.9087130172799032, Success rate: 1.00
+avg 3 return on policy: -2.000705978522698, Success rate: 1.00
+avg 3 return on policy: -1.4428090858273208, Success rate: 1.00
+avg 3 return on policy: -1.6856667284543316, Success rate: 1.00
+avg 3 return on policy: -1.9644293617457151, Success rate: 1.00
+avg 3 return on policy: -2.2654361004630723, Success rate: 1.00
+avg 3 return on policy: -1.4188516126790394, Success rate: 1.00
+avg 3 return on policy: -1.4517237689966958, Success rate: 1.00
+avg 3 return on policy: -1.9041319862008095, Success rate: 1.00
+avg 3 return on policy: -2.4348512018720307, Success rate: 1.00
+avg 3 return on policy: -1.489331671812882, Success rate: 1.00
+avg 3 return on policy: -1.4558004890568554, Success rate: 1.00
+avg 3 return on policy: -2.0086143457641206, Success rate: 1.00
+avg 3 return on policy: -2.6368574487666288, Success rate: 0.00
+avg cum rews: -1.8625237029084623, std: 0.3324550916067368
+avg success rate: 0.95, std: 0.22
+the best agent: 12, best agent cum rewards: -1.4188516126790394, best agent success rate: 1.0
+11
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.026606594518572224
+avg 3 return on policy: -1.4111903893450897, Success rate: 1.00
+avg 3 return on policy: -1.8747265444447596, Success rate: 1.00
+avg 3 return on policy: -2.4513270488629737, Success rate: 1.00
+avg 3 return on policy: -2.9613004910449185, Success rate: 1.00
+avg 3 return on policy: -1.352999188316365, Success rate: 1.00
+avg 3 return on policy: -1.3338142715704937, Success rate: 1.00
+avg 3 return on policy: -1.3298966406534116, Success rate: 1.00
+avg 3 return on policy: -1.3481626512948424, Success rate: 1.00
+avg 3 return on policy: -1.2510662227869034, Success rate: 1.00
+avg 3 return on policy: -1.4980770143059392, Success rate: 1.00
+avg 3 return on policy: -1.8894495600834489, Success rate: 1.00
+avg 3 return on policy: -2.3269171683738628, Success rate: 1.00
+avg 3 return on policy: -1.3168507602531463, Success rate: 1.00
+avg 3 return on policy: -1.5600681078309815, Success rate: 1.00
+avg 3 return on policy: -1.9437127920488517, Success rate: 1.00
+avg 3 return on policy: -2.3866472827891507, Success rate: 1.00
+avg 3 return on policy: -1.2721611683761391, Success rate: 1.00
+avg 3 return on policy: -1.6075688786804676, Success rate: 1.00
+avg 3 return on policy: -2.1384175376345715, Success rate: 1.00
+avg 3 return on policy: -2.6465854346752167, Success rate: 1.00
+avg cum rews: -1.7950469576685766, std: 0.5124558320004634
+avg success rate: 1.00, std: 0.00
+the best agent: 8, best agent cum rewards: -1.2510662227869034, best agent success rate: 1.0
+12
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.027813481185545264
+avg 3 return on policy: -1.0457724969213207, Success rate: 1.00
+avg 3 return on policy: -1.2734445848812659, Success rate: 1.00
+avg 3 return on policy: -1.6318537735690672, Success rate: 1.00
+avg 3 return on policy: -2.1028251058111587, Success rate: 1.00
+avg 3 return on policy: -1.060146989650093, Success rate: 1.00
+avg 3 return on policy: -1.2925554780910413, Success rate: 1.00
+avg 3 return on policy: -1.6503716055303812, Success rate: 1.00
+avg 3 return on policy: -2.045891754950086, Success rate: 1.00
+avg 3 return on policy: -1.0688015025419493, Success rate: 1.00
+avg 3 return on policy: -1.0783326952174928, Success rate: 1.00
+avg 3 return on policy: -1.1554797262263794, Success rate: 1.00
+avg 3 return on policy: -1.2923164010668795, Success rate: 1.00
+avg 3 return on policy: -1.0944754611700773, Success rate: 1.00
+avg 3 return on policy: -1.3412685313572486, Success rate: 1.00
+avg 3 return on policy: -1.785017006099224, Success rate: 1.00
+avg 3 return on policy: -2.269140511751175, Success rate: 1.00
+avg 3 return on policy: -1.2159272919719417, Success rate: 1.00
+avg 3 return on policy: -1.280441459423552, Success rate: 1.00
+avg 3 return on policy: -1.6431713420897722, Success rate: 1.00
+avg 3 return on policy: -2.0581536144018173, Success rate: 1.00
+avg cum rews: -1.469269366636096, std: 0.3889483225696873
+avg success rate: 1.00, std: 0.00
+the best agent: 0, best agent cum rewards: -1.0457724969213207, best agent success rate: 1.0
+13
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02750478174326166
+avg 3 return on policy: -1.6738869529217482, Success rate: 1.00
+avg 3 return on policy: -1.5951289143413305, Success rate: 1.00
+avg 3 return on policy: -1.8872642101099093, Success rate: 1.00
+avg 3 return on policy: -2.3605168368667364, Success rate: 1.00
+avg 3 return on policy: -1.6811969969421625, Success rate: 1.00
+avg 3 return on policy: -1.482778384660681, Success rate: 1.00
+avg 3 return on policy: -1.4128230577334762, Success rate: 1.00
+avg 3 return on policy: -1.5139497177054484, Success rate: 1.00
+avg 3 return on policy: -1.6599698414405186, Success rate: 1.00
+avg 3 return on policy: -1.8330707177519798, Success rate: 1.00
+avg 3 return on policy: -2.0547010029355683, Success rate: 1.00
+avg 3 return on policy: -2.294411774724722, Success rate: 1.00
+avg 3 return on policy: -1.5235345627491672, Success rate: 1.00
+avg 3 return on policy: -1.5714868086700637, Success rate: 1.00
+avg 3 return on policy: -1.7683406129168968, Success rate: 1.00
+avg 3 return on policy: -2.054596634892126, Success rate: 1.00
+avg 3 return on policy: -1.5577386828760307, Success rate: 1.00
+avg 3 return on policy: -1.5379709204037983, Success rate: 1.00
+avg 3 return on policy: -1.6468833913095295, Success rate: 1.00
+avg 3 return on policy: -1.869655685654531, Success rate: 1.00
+avg cum rews: -1.748995285380321, std: 0.26021654083423307
+avg success rate: 1.00, std: 0.00
+the best agent: 6, best agent cum rewards: -1.4128230577334762, best agent success rate: 1.0
+14
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02822028423025181
+avg 3 return on policy: -1.9710169285535812, Success rate: 1.00
+avg 3 return on policy: -1.4604405642797549, Success rate: 1.00
+avg 3 return on policy: -1.2908920493597786, Success rate: 1.00
+avg 3 return on policy: -1.6156573199356596, Success rate: 1.00
+avg 3 return on policy: -1.8621885366737843, Success rate: 1.00
+avg 3 return on policy: -1.6529171857982874, Success rate: 1.00
+avg 3 return on policy: -1.4751904718577862, Success rate: 1.00
+avg 3 return on policy: -1.4733796752989292, Success rate: 1.00
+avg 3 return on policy: -1.8805899880826473, Success rate: 1.00
+avg 3 return on policy: -2.0125451100369296, Success rate: 1.00
+avg 3 return on policy: -2.146299883723259, Success rate: 1.00
+avg 3 return on policy: -2.2868309691548347, Success rate: 0.00
+avg 3 return on policy: -1.3248697423065703, Success rate: 1.00
+avg 3 return on policy: -1.0710912141948938, Success rate: 1.00
+avg 3 return on policy: -0.952193385688588, Success rate: 1.00
+avg 3 return on policy: -1.0416760557175924, Success rate: 1.00
+avg 3 return on policy: -1.5178043923030298, Success rate: 1.00
+avg 3 return on policy: -1.4480599500238895, Success rate: 1.00
+avg 3 return on policy: -1.3805639551331599, Success rate: 1.00
+avg 3 return on policy: -1.3140328548227747, Success rate: 1.00
+avg cum rews: -1.5589120116472865, std: 0.3597226733476254
+avg success rate: 0.95, std: 0.22
+the best agent: 14, best agent cum rewards: -0.952193385688588, best agent success rate: 1.0
+15
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02479031956245425
+avg 3 return on policy: -1.2509111777568858, Success rate: 1.00
+avg 3 return on policy: -1.0830511602883537, Success rate: 1.00
+avg 3 return on policy: -1.019163284295549, Success rate: 1.00
+avg 3 return on policy: -1.1026769895882655, Success rate: 1.00
+avg 3 return on policy: -1.2604338654006522, Success rate: 1.00
+avg 3 return on policy: -1.1609652042388916, Success rate: 1.00
+avg 3 return on policy: -1.084618454799056, Success rate: 1.00
+avg 3 return on policy: -1.0568459471687675, Success rate: 1.00
+avg 3 return on policy: -1.150694167862336, Success rate: 1.00
+avg 3 return on policy: -1.1934409198972087, Success rate: 1.00
+avg 3 return on policy: -1.3454872146248817, Success rate: 1.00
+avg 3 return on policy: -1.5562803130596876, Success rate: 1.00
+avg 3 return on policy: -1.1660295988743503, Success rate: 1.00
+avg 3 return on policy: -1.384291235357523, Success rate: 1.00
+avg 3 return on policy: -1.6662153930713732, Success rate: 1.00
+avg 3 return on policy: -1.9736908959845703, Success rate: 1.00
+avg 3 return on policy: -1.1228101418043177, Success rate: 1.00
+avg 3 return on policy: -1.244328078192969, Success rate: 1.00
+avg 3 return on policy: -1.4129902826001246, Success rate: 1.00
+avg 3 return on policy: -1.6202952557553847, Success rate: 1.00
+avg cum rews: -1.2927609790310572, std: 0.24051161797015747
+avg success rate: 1.00, std: 0.00
+the best agent: 2, best agent cum rewards: -1.019163284295549, best agent success rate: 1.0
+16
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.025237542470041785
+avg 3 return on policy: -0.9243571488186717, Success rate: 1.00
+avg 3 return on policy: -1.1249654597292345, Success rate: 1.00
+avg 3 return on policy: -1.3922191162904103, Success rate: 1.00
+avg 3 return on policy: -1.6475851846237977, Success rate: 1.00
+avg 3 return on policy: -0.9249238244568309, Success rate: 1.00
+avg 3 return on policy: -0.9965976546518505, Success rate: 1.00
+avg 3 return on policy: -1.1215782331613202, Success rate: 1.00
+avg 3 return on policy: -1.2748309917127092, Success rate: 1.00
+avg 3 return on policy: -0.9317625248804688, Success rate: 1.00
+avg 3 return on policy: -0.9301096991014978, Success rate: 1.00
+avg 3 return on policy: -0.8927119347887734, Success rate: 1.00
+avg 3 return on policy: -0.8423367873765528, Success rate: 1.00
+avg 3 return on policy: -1.0358470532422264, Success rate: 1.00
+avg 3 return on policy: -1.1263067858914535, Success rate: 1.00
+avg 3 return on policy: -1.3840998457744718, Success rate: 1.00
+avg 3 return on policy: -1.659587715441982, Success rate: 1.00
+avg 3 return on policy: -1.0838014259934425, Success rate: 1.00
+avg 3 return on policy: -1.438026325777173, Success rate: 1.00
+avg 3 return on policy: -1.7927149180322886, Success rate: 1.00
+avg 3 return on policy: -2.1232032316426435, Success rate: 1.00
+avg cum rews: -1.23237829306939, std: 0.34242643068078665
+avg success rate: 1.00, std: 0.00
+the best agent: 11, best agent cum rewards: -0.8423367873765528, best agent success rate: 1.0
+17
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.025061206563697376
+avg 3 return on policy: -0.9523072907080253, Success rate: 1.00
+avg 3 return on policy: -0.8385941742453724, Success rate: 1.00
+avg 3 return on policy: -1.1294580834607284, Success rate: 1.00
+avg 3 return on policy: -1.5215231056014697, Success rate: 1.00
+avg 3 return on policy: -0.9977891040034592, Success rate: 1.00
+avg 3 return on policy: -1.0129193554942806, Success rate: 1.00
+avg 3 return on policy: -0.9786687414161861, Success rate: 1.00
+avg 3 return on policy: -0.9652882247852782, Success rate: 1.00
+avg 3 return on policy: -0.8253594070362548, Success rate: 1.00
+avg 3 return on policy: -0.9217932323614756, Success rate: 1.00
+avg 3 return on policy: -1.110387343292435, Success rate: 1.00
+avg 3 return on policy: -1.3707030446579058, Success rate: 1.00
+avg 3 return on policy: -0.9242587646779915, Success rate: 1.00
+avg 3 return on policy: -1.3081030817702413, Success rate: 1.00
+avg 3 return on policy: -1.7066036838417251, Success rate: 1.00
+avg 3 return on policy: -2.1163659719750285, Success rate: 1.00
+avg 3 return on policy: -0.7658660824721059, Success rate: 1.00
+avg 3 return on policy: -1.355947346581767, Success rate: 1.00
+avg 3 return on policy: -1.945661136880517, Success rate: 1.00
+avg 3 return on policy: -2.4906227389971414, Success rate: 1.00
+avg cum rews: -1.2619109957129695, std: 0.4624474346509681
+avg success rate: 1.00, std: 0.00
+the best agent: 16, best agent cum rewards: -0.7658660824721059, best agent success rate: 1.0
+18
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.025771855308664066
+avg 3 return on policy: -0.9825063642735282, Success rate: 1.00
+avg 3 return on policy: -1.0181576278991997, Success rate: 1.00
+avg 3 return on policy: -1.0751386649596195, Success rate: 1.00
+avg 3 return on policy: -1.1493300925940275, Success rate: 1.00
+avg 3 return on policy: -0.8369871017833551, Success rate: 1.00
+avg 3 return on policy: -0.83711126105239, Success rate: 1.00
+avg 3 return on policy: -1.0601950054988265, Success rate: 1.00
+avg 3 return on policy: -1.3685872027029593, Success rate: 1.00
+avg 3 return on policy: -1.0757437436841428, Success rate: 1.00
+avg 3 return on policy: -1.219015000698467, Success rate: 1.00
+avg 3 return on policy: -1.47355649775515, Success rate: 1.00
+avg 3 return on policy: -1.7484638020396233, Success rate: 1.00
+avg 3 return on policy: -0.8819682955121001, Success rate: 1.00
+avg 3 return on policy: -0.9491346372912327, Success rate: 1.00
+avg 3 return on policy: -1.1719699949026108, Success rate: 1.00
+avg 3 return on policy: -1.4633661576857169, Success rate: 1.00
+avg 3 return on policy: -0.9135775212198496, Success rate: 1.00
+avg 3 return on policy: -0.8987019235889117, Success rate: 1.00
+avg 3 return on policy: -0.907796793927749, Success rate: 1.00
+avg 3 return on policy: -0.9495716638242205, Success rate: 1.00
+avg cum rews: -1.099043967644684, std: 0.24007358502027873
+avg success rate: 1.00, std: 0.00
+the best agent: 4, best agent cum rewards: -0.8369871017833551, best agent success rate: 1.0
+19
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.027730513745422188
+avg 3 return on policy: -0.8381821974180639, Success rate: 1.00
+avg 3 return on policy: -0.8706979857136806, Success rate: 1.00
+avg 3 return on policy: -1.139946340272824, Success rate: 1.00
+avg 3 return on policy: -1.427597946797808, Success rate: 1.00
+avg 3 return on policy: -0.9580417436858019, Success rate: 1.00
+avg 3 return on policy: -1.286873324463765, Success rate: 1.00
+avg 3 return on policy: -1.5998742909481127, Success rate: 1.00
+avg 3 return on policy: -1.9261318892240524, Success rate: 1.00
+avg 3 return on policy: -0.8182277816037337, Success rate: 1.00
+avg 3 return on policy: -0.9857327391703924, Success rate: 1.00
+avg 3 return on policy: -1.2615767487635214, Success rate: 1.00
+avg 3 return on policy: -1.592812388514479, Success rate: 1.00
+avg 3 return on policy: -0.9199485471472144, Success rate: 1.00
+avg 3 return on policy: -0.9369299431952337, Success rate: 1.00
+avg 3 return on policy: -1.1026943890998762, Success rate: 1.00
+avg 3 return on policy: -1.2633727962772052, Success rate: 1.00
+avg 3 return on policy: -0.7931496671711405, Success rate: 1.00
+avg 3 return on policy: -1.2445004200562835, Success rate: 1.00
+avg 3 return on policy: -1.6370966614534457, Success rate: 1.00
+avg 3 return on policy: -1.9625156453500192, Success rate: 1.00
+avg cum rews: -1.2282951723163327, std: 0.3523399361677755
+avg success rate: 1.00, std: 0.00
+the best agent: 16, best agent cum rewards: -0.7931496671711405, best agent success rate: 1.0
+20
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02405330652500228
+avg 3 return on policy: -0.6416190718300641, Success rate: 1.00
+avg 3 return on policy: -0.8883525828520457, Success rate: 1.00
+avg 3 return on policy: -1.220390527509153, Success rate: 1.00
+avg 3 return on policy: -1.6048010811209679, Success rate: 1.00
+avg 3 return on policy: -0.6748010634134213, Success rate: 1.00
+avg 3 return on policy: -0.8340497103830179, Success rate: 1.00
+avg 3 return on policy: -1.0560216925417383, Success rate: 1.00
+avg 3 return on policy: -1.3004513029009104, Success rate: 1.00
+avg 3 return on policy: -0.4961289294684927, Success rate: 1.00
+avg 3 return on policy: -0.540401325483496, Success rate: 1.00
+avg 3 return on policy: -0.6162583364639431, Success rate: 1.00
+avg 3 return on policy: -0.7004439728334546, Success rate: 1.00
+avg 3 return on policy: -0.5792572419159114, Success rate: 1.00
+avg 3 return on policy: -0.693172455765307, Success rate: 1.00
+avg 3 return on policy: -0.8088587364181876, Success rate: 1.00
+avg 3 return on policy: -0.9307796011368433, Success rate: 1.00
+avg 3 return on policy: -0.5515168611891568, Success rate: 1.00
+avg 3 return on policy: -0.7631455156952143, Success rate: 1.00
+avg 3 return on policy: -1.0014228654714923, Success rate: 1.00
+avg 3 return on policy: -1.2037686822004616, Success rate: 1.00
+avg cum rews: -0.8552820778296638, std: 0.2895219762735927
+avg success rate: 1.00, std: 0.00
+the best agent: 8, best agent cum rewards: -0.4961289294684927, best agent success rate: 1.0
+21
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.0252888712224388
+avg 3 return on policy: -0.7031683940440416, Success rate: 1.00
+avg 3 return on policy: -0.8822582419961691, Success rate: 1.00
+avg 3 return on policy: -1.2227940919498603, Success rate: 1.00
+avg 3 return on policy: -1.574511685098211, Success rate: 1.00
+avg 3 return on policy: -0.6570406267419457, Success rate: 1.00
+avg 3 return on policy: -0.5015966477027783, Success rate: 1.00
+avg 3 return on policy: -0.6083739815124621, Success rate: 1.00
+avg 3 return on policy: -0.8248673452374836, Success rate: 1.00
+avg 3 return on policy: -0.6132261796543995, Success rate: 1.00
+avg 3 return on policy: -0.8254471675803264, Success rate: 1.00
+avg 3 return on policy: -1.1057088191931446, Success rate: 1.00
+avg 3 return on policy: -1.4001432278503974, Success rate: 1.00
+avg 3 return on policy: -0.4741069707670249, Success rate: 1.00
+avg 3 return on policy: -0.6321964639549454, Success rate: 1.00
+avg 3 return on policy: -0.8262490887815753, Success rate: 1.00
+avg 3 return on policy: -1.02925101450334, Success rate: 1.00
+avg 3 return on policy: -0.45324138427774113, Success rate: 1.00
+avg 3 return on policy: -0.605785705226784, Success rate: 1.00
+avg 3 return on policy: -0.8216711529530585, Success rate: 1.00
+avg 3 return on policy: -1.0429008115703862, Success rate: 1.00
+avg cum rews: -0.8402269500298039, std: 0.3002852797291752
+avg success rate: 1.00, std: 0.00
+the best agent: 16, best agent cum rewards: -0.45324138427774113, best agent success rate: 1.0
+22
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.020387175284364394
+avg 3 return on policy: -0.6220190959672133, Success rate: 1.00
+avg 3 return on policy: -0.6639639100370308, Success rate: 1.00
+avg 3 return on policy: -0.8332022757579883, Success rate: 1.00
+avg 3 return on policy: -1.0378089537844062, Success rate: 1.00
+avg 3 return on policy: -0.7049625882258018, Success rate: 1.00
+avg 3 return on policy: -1.0613629836589098, Success rate: 1.00
+avg 3 return on policy: -1.414894603813688, Success rate: 1.00
+avg 3 return on policy: -1.7683386548111837, Success rate: 1.00
+avg 3 return on policy: -0.6411496885120869, Success rate: 1.00
+avg 3 return on policy: -0.7041721187221507, Success rate: 1.00
+avg 3 return on policy: -0.7999012206370631, Success rate: 1.00
+avg 3 return on policy: -0.9101031832396984, Success rate: 1.00
+avg 3 return on policy: -0.48156448861118406, Success rate: 1.00
+avg 3 return on policy: -0.5131086918214957, Success rate: 1.00
+avg 3 return on policy: -0.5802944187695781, Success rate: 1.00
+avg 3 return on policy: -0.6714240706836184, Success rate: 1.00
+avg 3 return on policy: -0.5782967891233662, Success rate: 1.00
+avg 3 return on policy: -0.6435286725560824, Success rate: 1.00
+avg 3 return on policy: -0.6955439282270769, Success rate: 1.00
+avg 3 return on policy: -0.7188044471355776, Success rate: 1.00
+avg cum rews: -0.8022222392047599, std: 0.3071682111745547
+avg success rate: 1.00, std: 0.00
+the best agent: 12, best agent cum rewards: -0.48156448861118406, best agent success rate: 1.0
+23
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.024089250717340208
+avg 3 return on policy: -0.5839728546173623, Success rate: 1.00
+avg 3 return on policy: -0.4739920930781712, Success rate: 1.00
+avg 3 return on policy: -0.8158914044809839, Success rate: 1.00
+avg 3 return on policy: -1.2066379090150197, Success rate: 1.00
+avg 3 return on policy: -0.5948845335903267, Success rate: 1.00
+avg 3 return on policy: -0.4233159404830076, Success rate: 1.00
+avg 3 return on policy: -0.48152391457309324, Success rate: 1.00
+avg 3 return on policy: -0.6896864481580754, Success rate: 1.00
+avg 3 return on policy: -0.6607222439100345, Success rate: 1.00
+avg 3 return on policy: -0.7963391548643509, Success rate: 1.00
+avg 3 return on policy: -0.9533539526164532, Success rate: 1.00
+avg 3 return on policy: -1.1150687417636316, Success rate: 1.00
+avg 3 return on policy: -0.5692093282317122, Success rate: 1.00
+avg 3 return on policy: -0.432620614184998, Success rate: 1.00
+avg 3 return on policy: -0.6256300584257891, Success rate: 1.00
+avg 3 return on policy: -0.8620025192697843, Success rate: 1.00
+avg 3 return on policy: -0.6423996396673223, Success rate: 1.00
+avg 3 return on policy: -0.491334601615866, Success rate: 1.00
+avg 3 return on policy: -0.7206011833623052, Success rate: 1.00
+avg 3 return on policy: -0.998900909597675, Success rate: 1.00
+avg cum rews: -0.7069044022752983, std: 0.2206168463848363
+avg success rate: 1.00, std: 0.00
+the best agent: 5, best agent cum rewards: -0.4233159404830076, best agent success rate: 1.0
+24
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.024244065868612552
+avg 3 return on policy: -0.5499296193011105, Success rate: 1.00
+avg 3 return on policy: -0.6644933877202371, Success rate: 1.00
+avg 3 return on policy: -0.963651042121152, Success rate: 1.00
+avg 3 return on policy: -1.2886902118722598, Success rate: 1.00
+avg 3 return on policy: -0.5629936549812555, Success rate: 1.00
+avg 3 return on policy: -0.5509786594969531, Success rate: 1.00
+avg 3 return on policy: -0.671963683484743, Success rate: 1.00
+avg 3 return on policy: -0.8392077516764402, Success rate: 1.00
+avg 3 return on policy: -0.4783437737884621, Success rate: 1.00
+avg 3 return on policy: -0.4465067352866754, Success rate: 1.00
+avg 3 return on policy: -0.48411418435474235, Success rate: 1.00
+avg 3 return on policy: -0.561646243246893, Success rate: 1.00
+avg 3 return on policy: -0.6020843169341484, Success rate: 1.00
+avg 3 return on policy: -0.721860426167647, Success rate: 1.00
+avg 3 return on policy: -0.9015800769751271, Success rate: 1.00
+avg 3 return on policy: -1.0986480880528688, Success rate: 1.00
+avg 3 return on policy: -0.5599272091252109, Success rate: 1.00
+avg 3 return on policy: -0.6915644827919701, Success rate: 1.00
+avg 3 return on policy: -0.8940567392855883, Success rate: 1.00
+avg 3 return on policy: -1.1120668975636363, Success rate: 1.00
+avg cum rews: -0.732215359211356, std: 0.23410936134627017
+avg success rate: 1.00, std: 0.00
+the best agent: 9, best agent cum rewards: -0.4465067352866754, best agent success rate: 1.0
+25
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02282497469771457
+avg 3 return on policy: -0.42245547473430634, Success rate: 1.00
+avg 3 return on policy: -0.5696627933842441, Success rate: 1.00
+avg 3 return on policy: -0.8551083672791719, Success rate: 1.00
+avg 3 return on policy: -1.1422483796874683, Success rate: 1.00
+avg 3 return on policy: -0.5165818931224445, Success rate: 1.00
+avg 3 return on policy: -0.6289482261054218, Success rate: 1.00
+avg 3 return on policy: -0.7749520967093607, Success rate: 1.00
+avg 3 return on policy: -0.9331876803189516, Success rate: 1.00
+avg 3 return on policy: -0.4070654852160563, Success rate: 1.00
+avg 3 return on policy: -0.4652483050789063, Success rate: 1.00
+avg 3 return on policy: -0.5426853462898483, Success rate: 1.00
+avg 3 return on policy: -0.6267000765850147, Success rate: 1.00
+avg 3 return on policy: -0.42556193106186885, Success rate: 1.00
+avg 3 return on policy: -0.5473356104145447, Success rate: 1.00
+avg 3 return on policy: -0.7414852222427726, Success rate: 1.00
+avg 3 return on policy: -0.9476150493137538, Success rate: 1.00
+avg 3 return on policy: -0.41613870261547464, Success rate: 1.00
+avg 3 return on policy: -0.6089368847509226, Success rate: 1.00
+avg 3 return on policy: -0.8074157151083151, Success rate: 1.00
+avg 3 return on policy: -1.0146048792327444, Success rate: 1.00
+avg cum rews: -0.6696969059625796, std: 0.21518144313221882
+avg success rate: 1.00, std: 0.00
+the best agent: 8, best agent cum rewards: -0.4070654852160563, best agent success rate: 1.0
+26
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.026364540546292847
+avg 3 return on policy: -0.4715429352751623, Success rate: 1.00
+avg 3 return on policy: -0.6183835285094877, Success rate: 1.00
+avg 3 return on policy: -1.0168582008530695, Success rate: 1.00
+avg 3 return on policy: -1.4197401215011876, Success rate: 1.00
+avg 3 return on policy: -0.5634068008512259, Success rate: 1.00
+avg 3 return on policy: -0.848111762975653, Success rate: 1.00
+avg 3 return on policy: -1.1803162768483162, Success rate: 1.00
+avg 3 return on policy: -1.5256180856376886, Success rate: 1.00
+avg 3 return on policy: -0.5498323307062188, Success rate: 1.00
+avg 3 return on policy: -0.9011654102553924, Success rate: 1.00
+avg 3 return on policy: -1.3461871274436514, Success rate: 1.00
+avg 3 return on policy: -1.8206539334108431, Success rate: 1.00
+avg 3 return on policy: -0.4889886024563263, Success rate: 1.00
+avg 3 return on policy: -0.5102370103510717, Success rate: 1.00
+avg 3 return on policy: -0.6131518787393967, Success rate: 1.00
+avg 3 return on policy: -0.7274945334841808, Success rate: 1.00
+avg 3 return on policy: -0.5238788356073201, Success rate: 1.00
+avg 3 return on policy: -0.5689221578650177, Success rate: 1.00
+avg 3 return on policy: -0.6748377202699581, Success rate: 1.00
+avg 3 return on policy: -0.7688194323951999, Success rate: 1.00
+avg cum rews: -0.8569073342718185, std: 0.3883728180618636
+avg success rate: 1.00, std: 0.00
+the best agent: 0, best agent cum rewards: -0.4715429352751623, best agent success rate: 1.0
+27
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.022255727235360664
+avg 3 return on policy: -0.5301076996450623, Success rate: 1.00
+avg 3 return on policy: -0.6604653452523053, Success rate: 1.00
+avg 3 return on policy: -0.93418032124949, Success rate: 1.00
+avg 3 return on policy: -1.234905744669959, Success rate: 1.00
+avg 3 return on policy: -0.464771765905122, Success rate: 1.00
+avg 3 return on policy: -0.518000869313255, Success rate: 1.00
+avg 3 return on policy: -0.7097957585162172, Success rate: 1.00
+avg 3 return on policy: -0.938518399062256, Success rate: 1.00
+avg 3 return on policy: -0.4831911261814336, Success rate: 1.00
+avg 3 return on policy: -0.6016234398509065, Success rate: 1.00
+avg 3 return on policy: -0.7669962722187241, Success rate: 1.00
+avg 3 return on policy: -0.941005482027928, Success rate: 1.00
+avg 3 return on policy: -0.5538731892593205, Success rate: 1.00
+avg 3 return on policy: -0.6871598428115249, Success rate: 1.00
+avg 3 return on policy: -0.8297465061768889, Success rate: 1.00
+avg 3 return on policy: -0.9780742215613524, Success rate: 1.00
+avg 3 return on policy: -0.48746505348632735, Success rate: 1.00
+avg 3 return on policy: -0.7266844486196836, Success rate: 1.00
+avg 3 return on policy: -0.9589821385840575, Success rate: 1.00
+avg 3 return on policy: -1.1955452269564073, Success rate: 1.00
+avg cum rews: -0.7600546425674111, std: 0.22783286123297286
+avg success rate: 1.00, std: 0.00
+the best agent: 4, best agent cum rewards: -0.464771765905122, best agent success rate: 1.0
+28
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02258283500265397
+avg 3 return on policy: -0.40134442077639204, Success rate: 1.00
+avg 3 return on policy: -0.41470887816588703, Success rate: 1.00
+avg 3 return on policy: -0.4925704781198874, Success rate: 1.00
+avg 3 return on policy: -0.5788803965939829, Success rate: 1.00
+avg 3 return on policy: -0.45868335113239783, Success rate: 1.00
+avg 3 return on policy: -0.5621738018041166, Success rate: 1.00
+avg 3 return on policy: -0.7333516830888888, Success rate: 1.00
+avg 3 return on policy: -0.9146029468004903, Success rate: 1.00
+avg 3 return on policy: -0.4196410363074392, Success rate: 1.00
+avg 3 return on policy: -0.46701117147070664, Success rate: 1.00
+avg 3 return on policy: -0.5286399450463554, Success rate: 1.00
+avg 3 return on policy: -0.6049304607634743, Success rate: 1.00
+avg 3 return on policy: -0.41717984116015333, Success rate: 1.00
+avg 3 return on policy: -0.4707323450905581, Success rate: 1.00
+avg 3 return on policy: -0.5599712473340333, Success rate: 1.00
+avg 3 return on policy: -0.6628194185905159, Success rate: 1.00
+avg 3 return on policy: -0.43733877145374817, Success rate: 1.00
+avg 3 return on policy: -0.4618050175874184, Success rate: 1.00
+avg 3 return on policy: -0.5345346226046482, Success rate: 1.00
+avg 3 return on policy: -0.6207807104413708, Success rate: 1.00
+avg cum rews: -0.5370850272166232, std: 0.12370629642335684
+avg success rate: 1.00, std: 0.00
+the best agent: 0, best agent cum rewards: -0.40134442077639204, best agent success rate: 1.0
+29
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02208061923516292
+avg 3 return on policy: -0.40426664931389195, Success rate: 1.00
+avg 3 return on policy: -0.38736509198012453, Success rate: 1.00
+avg 3 return on policy: -0.4120958230923861, Success rate: 1.00
+avg 3 return on policy: -0.44737868996647495, Success rate: 1.00
+avg 3 return on policy: -0.41030912900653976, Success rate: 1.00
+avg 3 return on policy: -0.4499381447676569, Success rate: 1.00
+avg 3 return on policy: -0.5304715088568628, Success rate: 1.00
+avg 3 return on policy: -0.6220879225681225, Success rate: 1.00
+avg 3 return on policy: -0.450887447843949, Success rate: 1.00
+avg 3 return on policy: -0.4563519263174385, Success rate: 1.00
+avg 3 return on policy: -0.541745769403254, Success rate: 1.00
+avg 3 return on policy: -0.6346683152175198, Success rate: 1.00
+avg 3 return on policy: -0.49524297410001356, Success rate: 1.00
+avg 3 return on policy: -0.6795640892038742, Success rate: 1.00
+avg 3 return on policy: -0.9725674955795208, Success rate: 1.00
+avg 3 return on policy: -1.2896984306474526, Success rate: 1.00
+avg 3 return on policy: -0.40622884027349454, Success rate: 1.00
+avg 3 return on policy: -0.6475236785287658, Success rate: 1.00
+avg 3 return on policy: -0.908308081018428, Success rate: 1.00
+avg 3 return on policy: -1.2026090677827597, Success rate: 1.00
+avg cum rews: -0.6174654537734264, std: 0.26240292126353165
+avg success rate: 1.00, std: 0.00
+the best agent: 1, best agent cum rewards: -0.38736509198012453, best agent success rate: 1.0
+30
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.024360423387249384
+avg 3 return on policy: -0.4741052940953523, Success rate: 1.00
+avg 3 return on policy: -0.3983778990029047, Success rate: 1.00
+avg 3 return on policy: -0.3474253834380458, Success rate: 1.00
+avg 3 return on policy: -0.3842607595336934, Success rate: 1.00
+avg 3 return on policy: -0.4439253489642094, Success rate: 1.00
+avg 3 return on policy: -0.42534428035529953, Success rate: 1.00
+avg 3 return on policy: -0.5164686143398285, Success rate: 1.00
+avg 3 return on policy: -0.6858059420095136, Success rate: 1.00
+avg 3 return on policy: -0.4494273128608863, Success rate: 1.00
+avg 3 return on policy: -0.5849460813527306, Success rate: 1.00
+avg 3 return on policy: -0.7644551815465093, Success rate: 1.00
+avg 3 return on policy: -0.9502573944628239, Success rate: 1.00
+avg 3 return on policy: -0.47381139717375237, Success rate: 1.00
+avg 3 return on policy: -0.6038598388743898, Success rate: 1.00
+avg 3 return on policy: -0.752598007209599, Success rate: 1.00
+avg 3 return on policy: -0.8890935725842913, Success rate: 1.00
+avg 3 return on policy: -0.36842878609119606, Success rate: 1.00
+avg 3 return on policy: -0.5736252830053369, Success rate: 1.00
+avg 3 return on policy: -0.7612982305387656, Success rate: 1.00
+avg 3 return on policy: -0.91007166604201, Success rate: 1.00
+avg cum rews: -0.5878793136740568, std: 0.1877512682964872
+avg success rate: 1.00, std: 0.00
+the best agent: 2, best agent cum rewards: -0.3474253834380458, best agent success rate: 1.0
+31
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02125786817269288
+avg 3 return on policy: -0.5086834992592534, Success rate: 1.00
+avg 3 return on policy: -0.4684170846982549, Success rate: 1.00
+avg 3 return on policy: -0.5502417072032889, Success rate: 1.00
+avg 3 return on policy: -0.6603117161430418, Success rate: 1.00
+avg 3 return on policy: -0.5188478158476452, Success rate: 1.00
+avg 3 return on policy: -0.5167035145374635, Success rate: 1.00
+avg 3 return on policy: -0.5623532988441488, Success rate: 1.00
+avg 3 return on policy: -0.634250734311839, Success rate: 1.00
+avg 3 return on policy: -0.5312313962106904, Success rate: 1.00
+avg 3 return on policy: -0.6890786938990155, Success rate: 1.00
+avg 3 return on policy: -0.8668183131764332, Success rate: 1.00
+avg 3 return on policy: -1.0598187356566389, Success rate: 1.00
+avg 3 return on policy: -0.42289069985660416, Success rate: 1.00
+avg 3 return on policy: -0.6130938262989124, Success rate: 1.00
+avg 3 return on policy: -0.8721820975964268, Success rate: 1.00
+avg 3 return on policy: -1.1246860759953659, Success rate: 1.00
+avg 3 return on policy: -0.42379823598700267, Success rate: 1.00
+avg 3 return on policy: -0.43988147331401706, Success rate: 1.00
+avg 3 return on policy: -0.5941835862273971, Success rate: 1.00
+avg 3 return on policy: -0.7511985652769605, Success rate: 1.00
+avg cum rews: -0.6404335535170198, std: 0.196337727361036
+avg success rate: 1.00, std: 0.00
+the best agent: 12, best agent cum rewards: -0.42289069985660416, best agent success rate: 1.0
+32
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02235754421630359
+avg 3 return on policy: -0.47368224477395415, Success rate: 1.00
+avg 3 return on policy: -0.8571598219374815, Success rate: 1.00
+avg 3 return on policy: -1.1739058264841635, Success rate: 1.00
+avg 3 return on policy: -1.4709228370338678, Success rate: 1.00
+avg 3 return on policy: -0.5052098093243936, Success rate: 1.00
+avg 3 return on policy: -0.6959410924464464, Success rate: 1.00
+avg 3 return on policy: -0.8789915144443512, Success rate: 1.00
+avg 3 return on policy: -1.0716138612478971, Success rate: 1.00
+avg 3 return on policy: -0.45085728432362276, Success rate: 1.00
+avg 3 return on policy: -0.489451279786105, Success rate: 1.00
+avg 3 return on policy: -0.7802072322616974, Success rate: 1.00
+avg 3 return on policy: -1.0738012955213587, Success rate: 1.00
+avg 3 return on policy: -0.5539445259297887, Success rate: 1.00
+avg 3 return on policy: -0.5684687558872005, Success rate: 1.00
+avg 3 return on policy: -0.5857083448208869, Success rate: 1.00
+avg 3 return on policy: -0.5761209103899697, Success rate: 1.00
+avg 3 return on policy: -0.5443440180582305, Success rate: 1.00
+avg 3 return on policy: -0.6738773910328746, Success rate: 1.00
+avg 3 return on policy: -0.7285183817148209, Success rate: 1.00
+avg 3 return on policy: -0.77462680110087, Success rate: 1.00
+avg cum rews: -0.7463676614259992, std: 0.26559568752379176
+avg success rate: 1.00, std: 0.00
+the best agent: 8, best agent cum rewards: -0.45085728432362276, best agent success rate: 1.0
+33
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.021299248405587525
+avg 3 return on policy: -0.7109648028078178, Success rate: 1.00
+avg 3 return on policy: -0.7417926788330078, Success rate: 1.00
+avg 3 return on policy: -0.9111619020501772, Success rate: 1.00
+avg 3 return on policy: -1.110409755880634, Success rate: 1.00
+avg 3 return on policy: -0.7565531702712178, Success rate: 1.00
+avg 3 return on policy: -0.9706459973628322, Success rate: 1.00
+avg 3 return on policy: -1.2474524099379778, Success rate: 1.00
+avg 3 return on policy: -1.5519883936891954, Success rate: 1.00
+avg 3 return on policy: -0.6992441735540827, Success rate: 1.00
+avg 3 return on policy: -0.606370487017557, Success rate: 1.00
+avg 3 return on policy: -0.7233779060964783, Success rate: 1.00
+avg 3 return on policy: -0.9441621002430717, Success rate: 1.00
+avg 3 return on policy: -0.6539210481569171, Success rate: 1.00
+avg 3 return on policy: -0.6930364519357681, Success rate: 1.00
+avg 3 return on policy: -0.7473125460868081, Success rate: 1.00
+avg 3 return on policy: -0.8065857651333014, Success rate: 1.00
+avg 3 return on policy: -0.6863557230681181, Success rate: 1.00
+avg 3 return on policy: -0.7779617734874288, Success rate: 1.00
+avg 3 return on policy: -0.8259608633816242, Success rate: 1.00
+avg 3 return on policy: -0.8435666291043162, Success rate: 1.00
+avg cum rews: -0.8504412289049167, std: 0.22267893746701914
+avg success rate: 1.00, std: 0.00
+the best agent: 9, best agent cum rewards: -0.606370487017557, best agent success rate: 1.0
+34
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.022016594841603763
+avg 3 return on policy: -0.46793302210668725, Success rate: 1.00
+avg 3 return on policy: -0.4823293370815615, Success rate: 1.00
+avg 3 return on policy: -0.6434365874156356, Success rate: 1.00
+avg 3 return on policy: -0.8349933270365, Success rate: 1.00
+avg 3 return on policy: -0.3950085297692567, Success rate: 1.00
+avg 3 return on policy: -0.4601947395130992, Success rate: 1.00
+avg 3 return on policy: -0.6013079748178521, Success rate: 1.00
+avg 3 return on policy: -0.7633845998595158, Success rate: 1.00
+avg 3 return on policy: -0.5260060437334081, Success rate: 1.00
+avg 3 return on policy: -0.5152530263488492, Success rate: 1.00
+avg 3 return on policy: -0.6155708166770637, Success rate: 1.00
+avg 3 return on policy: -0.7679737449313203, Success rate: 1.00
+avg 3 return on policy: -0.4362051694188267, Success rate: 1.00
+avg 3 return on policy: -0.41613393362301093, Success rate: 1.00
+avg 3 return on policy: -0.43453980167396367, Success rate: 1.00
+avg 3 return on policy: -0.4760848694325735, Success rate: 1.00
+avg 3 return on policy: -0.4602063321508467, Success rate: 1.00
+avg 3 return on policy: -0.41764041245914996, Success rate: 1.00
+avg 3 return on policy: -0.5293607884862771, Success rate: 1.00
+avg 3 return on policy: -0.6662620889643828, Success rate: 1.00
+avg cum rews: -0.545491257274989, std: 0.12725879405208143
+avg success rate: 1.00, std: 0.00
+the best agent: 4, best agent cum rewards: -0.3950085297692567, best agent success rate: 1.0
+35
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.022701034720435907
+avg 3 return on policy: -0.4644959520082921, Success rate: 1.00
+avg 3 return on policy: -0.6939158579334617, Success rate: 1.00
+avg 3 return on policy: -0.9584667095914483, Success rate: 1.00
+avg 3 return on policy: -1.2255720272660255, Success rate: 1.00
+avg 3 return on policy: -0.40060563730852056, Success rate: 1.00
+avg 3 return on policy: -0.4361086027541508, Success rate: 1.00
+avg 3 return on policy: -0.5084097944200039, Success rate: 1.00
+avg 3 return on policy: -0.5948731019161642, Success rate: 1.00
+avg 3 return on policy: -0.4321813974529505, Success rate: 1.00
+avg 3 return on policy: -0.4623302516993135, Success rate: 1.00
+avg 3 return on policy: -0.5365485134534538, Success rate: 1.00
+avg 3 return on policy: -0.6224838146008551, Success rate: 1.00
+avg 3 return on policy: -0.4017144057434052, Success rate: 1.00
+avg 3 return on policy: -0.36595105449669063, Success rate: 1.00
+avg 3 return on policy: -0.43224951970235753, Success rate: 1.00
+avg 3 return on policy: -0.5290482887066901, Success rate: 1.00
+avg 3 return on policy: -0.45099587203003466, Success rate: 1.00
+avg 3 return on policy: -0.4640935550754269, Success rate: 1.00
+avg 3 return on policy: -0.5537978049057225, Success rate: 1.00
+avg 3 return on policy: -0.6834212156633536, Success rate: 1.00
+avg cum rews: -0.5608631688364161, std: 0.20249748703000608
+avg success rate: 1.00, std: 0.00
+the best agent: 13, best agent cum rewards: -0.36595105449669063, best agent success rate: 1.0
+36
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.019633164924430263
+avg 3 return on policy: -0.3789704478112981, Success rate: 1.00
+avg 3 return on policy: -0.7084521426974485, Success rate: 1.00
+avg 3 return on policy: -1.0416507778378825, Success rate: 1.00
+avg 3 return on policy: -1.3599005686119199, Success rate: 1.00
+avg 3 return on policy: -0.44591737786928815, Success rate: 1.00
+avg 3 return on policy: -0.7771112313494086, Success rate: 1.00
+avg 3 return on policy: -1.116978555296858, Success rate: 1.00
+avg 3 return on policy: -1.4220830282817285, Success rate: 1.00
+avg 3 return on policy: -0.3643940047089321, Success rate: 1.00
+avg 3 return on policy: -0.5489787374002238, Success rate: 1.00
+avg 3 return on policy: -0.7434236761182547, Success rate: 1.00
+avg 3 return on policy: -0.9287038954595724, Success rate: 1.00
+avg 3 return on policy: -0.4720087668392807, Success rate: 1.00
+avg 3 return on policy: -0.7121737296693027, Success rate: 1.00
+avg 3 return on policy: -0.8940025687528154, Success rate: 1.00
+avg 3 return on policy: -1.0738817447175582, Success rate: 1.00
+avg 3 return on policy: -0.36197052341109764, Success rate: 1.00
+avg 3 return on policy: -0.4999701859584699, Success rate: 1.00
+avg 3 return on policy: -0.6558092256697515, Success rate: 1.00
+avg 3 return on policy: -0.7757625486701727, Success rate: 1.00
+avg cum rews: -0.7641071868565631, std: 0.30984360793340837
+avg success rate: 1.00, std: 0.00
+the best agent: 16, best agent cum rewards: -0.36197052341109764, best agent success rate: 1.0
+37
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.020915462047758578
+avg 3 return on policy: -0.5094187024515122, Success rate: 1.00
+avg 3 return on policy: -0.5933577725663781, Success rate: 1.00
+avg 3 return on policy: -0.7190006100572646, Success rate: 1.00
+avg 3 return on policy: -0.8588643820645908, Success rate: 1.00
+avg 3 return on policy: -0.49099531047977507, Success rate: 1.00
+avg 3 return on policy: -0.5758109631327292, Success rate: 1.00
+avg 3 return on policy: -0.6711192349903286, Success rate: 1.00
+avg 3 return on policy: -0.7500731940381229, Success rate: 1.00
+avg 3 return on policy: -0.4756844656852384, Success rate: 1.00
+avg 3 return on policy: -0.4645435622272392, Success rate: 1.00
+avg 3 return on policy: -0.5455881397550305, Success rate: 1.00
+avg 3 return on policy: -0.6716361651197076, Success rate: 1.00
+avg 3 return on policy: -0.4831598013018568, Success rate: 1.00
+avg 3 return on policy: -0.5821368649291495, Success rate: 1.00
+avg 3 return on policy: -0.7032492163901528, Success rate: 1.00
+avg 3 return on policy: -0.8356684272487959, Success rate: 1.00
+avg 3 return on policy: -0.5440295568356911, Success rate: 1.00
+avg 3 return on policy: -0.5724716797315826, Success rate: 1.00
+avg 3 return on policy: -0.6213683597743511, Success rate: 1.00
+avg 3 return on policy: -0.6845261059546223, Success rate: 1.00
+avg cum rews: -0.617635125736706, std: 0.11331499933105504
+avg success rate: 1.00, std: 0.00
+the best agent: 9, best agent cum rewards: -0.4645435622272392, best agent success rate: 1.0
+38
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.01998642231123379
+avg 3 return on policy: -0.4128018661867827, Success rate: 1.00
+avg 3 return on policy: -0.3468924998693789, Success rate: 1.00
+avg 3 return on policy: -0.3339340466288074, Success rate: 1.00
+avg 3 return on policy: -0.38405159942340106, Success rate: 1.00
+avg 3 return on policy: -0.3980613291884462, Success rate: 1.00
+avg 3 return on policy: -0.43125377820494276, Success rate: 1.00
+avg 3 return on policy: -0.48302985122427344, Success rate: 1.00
+avg 3 return on policy: -0.5721546364948153, Success rate: 1.00
+avg 3 return on policy: -0.46490053669549525, Success rate: 1.00
+avg 3 return on policy: -0.5093567838581899, Success rate: 1.00
+avg 3 return on policy: -0.596614638188233, Success rate: 1.00
+avg 3 return on policy: -0.7079560337588191, Success rate: 1.00
+avg 3 return on policy: -0.5012960874009877, Success rate: 1.00
+avg 3 return on policy: -0.5401564352990439, Success rate: 1.00
+avg 3 return on policy: -0.6179401596697668, Success rate: 1.00
+avg 3 return on policy: -0.7053838664044937, Success rate: 1.00
+avg 3 return on policy: -0.470482576948901, Success rate: 1.00
+avg 3 return on policy: -0.5046346350573003, Success rate: 1.00
+avg 3 return on policy: -0.5356297165465852, Success rate: 1.00
+avg 3 return on policy: -0.5722861914352203, Success rate: 1.00
+avg cum rews: -0.5044408634241943, std: 0.10278096240434977
+avg success rate: 1.00, std: 0.00
+the best agent: 2, best agent cum rewards: -0.3339340466288074, best agent success rate: 1.0
+39
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02016420857166928
+avg 3 return on policy: -0.408143719813476, Success rate: 1.00
+avg 3 return on policy: -0.6036078205021719, Success rate: 1.00
+avg 3 return on policy: -0.8165785695115725, Success rate: 1.00
+avg 3 return on policy: -1.0546326109518607, Success rate: 1.00
+avg 3 return on policy: -0.41087282293786603, Success rate: 1.00
+avg 3 return on policy: -0.6141830609800915, Success rate: 1.00
+avg 3 return on policy: -0.8582177736485997, Success rate: 1.00
+avg 3 return on policy: -1.1018564843883116, Success rate: 1.00
+avg 3 return on policy: -0.4062956719038387, Success rate: 1.00
+avg 3 return on policy: -0.561912705656141, Success rate: 1.00
+avg 3 return on policy: -0.725247421922783, Success rate: 1.00
+avg 3 return on policy: -0.8762338313584527, Success rate: 1.00
+avg 3 return on policy: -0.37889933566718054, Success rate: 1.00
+avg 3 return on policy: -0.3382179754941414, Success rate: 1.00
+avg 3 return on policy: -0.5431257196081182, Success rate: 1.00
+avg 3 return on policy: -0.7516373423859477, Success rate: 1.00
+avg 3 return on policy: -0.45163059878783923, Success rate: 1.00
+avg 3 return on policy: -0.47483939010029036, Success rate: 1.00
+avg 3 return on policy: -0.6969137446333965, Success rate: 1.00
+avg 3 return on policy: -0.968525592237711, Success rate: 1.00
+avg cum rews: -0.6520786096244895, std: 0.22892923585794706
+avg success rate: 1.00, std: 0.00
+the best agent: 13, best agent cum rewards: -0.3382179754941414, best agent success rate: 1.0
+40
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02441523084558298
+avg 3 return on policy: -0.35586244058019173, Success rate: 1.00
+avg 3 return on policy: -0.6087526602204889, Success rate: 1.00
+avg 3 return on policy: -0.8741345162658641, Success rate: 1.00
+avg 3 return on policy: -1.1318630430614576, Success rate: 1.00
+avg 3 return on policy: -0.41135551982248825, Success rate: 1.00
+avg 3 return on policy: -0.5674819134486219, Success rate: 1.00
+avg 3 return on policy: -0.7775578840325276, Success rate: 1.00
+avg 3 return on policy: -0.9871110295255979, Success rate: 1.00
+avg 3 return on policy: -0.3688206032384187, Success rate: 1.00
+avg 3 return on policy: -0.47298133249084157, Success rate: 1.00
+avg 3 return on policy: -0.5962143113526205, Success rate: 1.00
+avg 3 return on policy: -0.7160181629781922, Success rate: 1.00
+avg 3 return on policy: -0.3711001039094602, Success rate: 1.00
+avg 3 return on policy: -0.4111185048241168, Success rate: 1.00
+avg 3 return on policy: -0.5512450113892555, Success rate: 1.00
+avg 3 return on policy: -0.712514697574079, Success rate: 1.00
+avg 3 return on policy: -0.380682425845104, Success rate: 1.00
+avg 3 return on policy: -0.518444431014359, Success rate: 1.00
+avg 3 return on policy: -0.6940778139978647, Success rate: 1.00
+avg 3 return on policy: -0.9101766630386313, Success rate: 1.00
+avg cum rews: -0.6208756534305091, std: 0.22056628719053062
+avg success rate: 1.00, std: 0.00
+the best agent: 0, best agent cum rewards: -0.35586244058019173, best agent success rate: 1.0
+41
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.019286802103319345
+avg 3 return on policy: -0.3332645418898513, Success rate: 1.00
+avg 3 return on policy: -0.5176260731338213, Success rate: 1.00
+avg 3 return on policy: -0.7261583606402079, Success rate: 1.00
+avg 3 return on policy: -0.9532671921576062, Success rate: 1.00
+avg 3 return on policy: -0.31528148384920013, Success rate: 1.00
+avg 3 return on policy: -0.5012820539996028, Success rate: 1.00
+avg 3 return on policy: -0.7386579597368836, Success rate: 1.00
+avg 3 return on policy: -0.9768402666474382, Success rate: 1.00
+avg 3 return on policy: -0.3395985469493705, Success rate: 1.00
+avg 3 return on policy: -0.4537405266116063, Success rate: 1.00
+avg 3 return on policy: -0.5913060411500434, Success rate: 1.00
+avg 3 return on policy: -0.7290103755270442, Success rate: 1.00
+avg 3 return on policy: -0.338025509340999, Success rate: 1.00
+avg 3 return on policy: -0.4274782337403546, Success rate: 1.00
+avg 3 return on policy: -0.5371666557621211, Success rate: 1.00
+avg 3 return on policy: -0.6668612474265198, Success rate: 1.00
+avg 3 return on policy: -0.36108445818535984, Success rate: 1.00
+avg 3 return on policy: -0.3836380700425555, Success rate: 1.00
+avg 3 return on policy: -0.4204795389280965, Success rate: 1.00
+avg 3 return on policy: -0.451838116782407, Success rate: 1.00
+avg cum rews: -0.5381302626250545, std: 0.19556835452960156
+avg success rate: 1.00, std: 0.00
+the best agent: 4, best agent cum rewards: -0.31528148384920013, best agent success rate: 1.0
+42
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.019403077088129987
+avg 3 return on policy: -0.34929462052726495, Success rate: 1.00
+avg 3 return on policy: -0.3704194815751786, Success rate: 1.00
+avg 3 return on policy: -0.4168654663177828, Success rate: 1.00
+avg 3 return on policy: -0.5040946276082346, Success rate: 1.00
+avg 3 return on policy: -0.3517439156227435, Success rate: 1.00
+avg 3 return on policy: -0.42990254911516484, Success rate: 1.00
+avg 3 return on policy: -0.57873403847528, Success rate: 1.00
+avg 3 return on policy: -0.7516226400621235, Success rate: 1.00
+avg 3 return on policy: -0.34443482764375705, Success rate: 1.00
+avg 3 return on policy: -0.3551875461707823, Success rate: 1.00
+avg 3 return on policy: -0.37553869106341153, Success rate: 1.00
+avg 3 return on policy: -0.4076759858677785, Success rate: 1.00
+avg 3 return on policy: -0.3538665664576304, Success rate: 1.00
+avg 3 return on policy: -0.41591746158276993, Success rate: 1.00
+avg 3 return on policy: -0.48257155204191804, Success rate: 1.00
+avg 3 return on policy: -0.5492835932721695, Success rate: 1.00
+avg 3 return on policy: -0.36942918489997584, Success rate: 1.00
+avg 3 return on policy: -0.39369789355744916, Success rate: 1.00
+avg 3 return on policy: -0.45862596792479354, Success rate: 1.00
+avg 3 return on policy: -0.5370995171057681, Success rate: 1.00
+avg cum rews: -0.4398003063445988, std: 0.10053304069859437
+avg success rate: 1.00, std: 0.00
+the best agent: 8, best agent cum rewards: -0.34443482764375705, best agent success rate: 1.0
+43
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.023008811558399452
+avg 3 return on policy: -0.35791838824904215, Success rate: 1.00
+avg 3 return on policy: -0.5008076884939024, Success rate: 1.00
+avg 3 return on policy: -0.6123293970401088, Success rate: 1.00
+avg 3 return on policy: -0.7026715827329705, Success rate: 1.00
+avg 3 return on policy: -0.4301516786411715, Success rate: 1.00
+avg 3 return on policy: -0.5239470272790641, Success rate: 1.00
+avg 3 return on policy: -0.6323279805170993, Success rate: 1.00
+avg 3 return on policy: -0.7622006285625199, Success rate: 1.00
+avg 3 return on policy: -0.39625486684963107, Success rate: 1.00
+avg 3 return on policy: -0.5223741576385995, Success rate: 1.00
+avg 3 return on policy: -0.6783145917579532, Success rate: 1.00
+avg 3 return on policy: -0.844131199332575, Success rate: 1.00
+avg 3 return on policy: -0.40423738048411906, Success rate: 1.00
+avg 3 return on policy: -0.38117920521957177, Success rate: 1.00
+avg 3 return on policy: -0.4518980283755809, Success rate: 1.00
+avg 3 return on policy: -0.5428624912165105, Success rate: 1.00
+avg 3 return on policy: -0.400093032590424, Success rate: 1.00
+avg 3 return on policy: -0.3464015478384681, Success rate: 1.00
+avg 3 return on policy: -0.4526716763308893, Success rate: 1.00
+avg 3 return on policy: -0.6194593069764475, Success rate: 1.00
+avg cum rews: -0.5281115928063325, std: 0.13942715798153904
+avg success rate: 1.00, std: 0.00
+the best agent: 17, best agent cum rewards: -0.3464015478384681, best agent success rate: 1.0
+44
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.023962307134856045
+avg 3 return on policy: -0.4518344895138095, Success rate: 1.00
+avg 3 return on policy: -0.5298535148613155, Success rate: 1.00
+avg 3 return on policy: -0.6085238618155321, Success rate: 1.00
+avg 3 return on policy: -0.7271379757051667, Success rate: 1.00
+avg 3 return on policy: -0.4130914967196683, Success rate: 1.00
+avg 3 return on policy: -0.4364221428986639, Success rate: 1.00
+avg 3 return on policy: -0.4713228701924284, Success rate: 1.00
+avg 3 return on policy: -0.5618129447102547, Success rate: 1.00
+avg 3 return on policy: -0.38192771398462355, Success rate: 1.00
+avg 3 return on policy: -0.39856586209498346, Success rate: 1.00
+avg 3 return on policy: -0.5330462286559244, Success rate: 1.00
+avg 3 return on policy: -0.6845892950271567, Success rate: 1.00
+avg 3 return on policy: -0.339498753232571, Success rate: 1.00
+avg 3 return on policy: -0.308064331416972, Success rate: 1.00
+avg 3 return on policy: -0.3899294302488367, Success rate: 1.00
+avg 3 return on policy: -0.5433672910245756, Success rate: 1.00
+avg 3 return on policy: -0.37762612717536587, Success rate: 1.00
+avg 3 return on policy: -0.46072724647819996, Success rate: 1.00
+avg 3 return on policy: -0.673166719575723, Success rate: 1.00
+avg 3 return on policy: -0.8774293477957448, Success rate: 1.00
+avg cum rews: -0.5083968821563759, std: 0.14254074632186922
+avg success rate: 1.00, std: 0.00
+the best agent: 13, best agent cum rewards: -0.308064331416972, best agent success rate: 1.0
+45
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.022561652067773837
+avg 3 return on policy: -0.39403601704786223, Success rate: 1.00
+avg 3 return on policy: -0.3785290338564664, Success rate: 1.00
+avg 3 return on policy: -0.4205866101353119, Success rate: 1.00
+avg 3 return on policy: -0.4940213748874764, Success rate: 1.00
+avg 3 return on policy: -0.39556023230155307, Success rate: 1.00
+avg 3 return on policy: -0.44647194336478907, Success rate: 1.00
+avg 3 return on policy: -0.5002926462329924, Success rate: 1.00
+avg 3 return on policy: -0.5544809110773107, Success rate: 1.00
+avg 3 return on policy: -0.3142391452565789, Success rate: 1.00
+avg 3 return on policy: -0.4488572448802491, Success rate: 1.00
+avg 3 return on policy: -0.6241059120123585, Success rate: 1.00
+avg 3 return on policy: -0.8060486322889725, Success rate: 1.00
+avg 3 return on policy: -0.30334899908242124, Success rate: 1.00
+avg 3 return on policy: -0.3825473050043608, Success rate: 1.00
+avg 3 return on policy: -0.4762952561335017, Success rate: 1.00
+avg 3 return on policy: -0.5898446586603919, Success rate: 1.00
+avg 3 return on policy: -0.29012909715917584, Success rate: 1.00
+avg 3 return on policy: -0.44045900836742174, Success rate: 1.00
+avg 3 return on policy: -0.6736709900821248, Success rate: 1.00
+avg 3 return on policy: -0.9812697366190454, Success rate: 1.00
+avg cum rews: -0.4957397377225182, std: 0.16813216744428838
+avg success rate: 1.00, std: 0.00
+the best agent: 16, best agent cum rewards: -0.29012909715917584, best agent success rate: 1.0
+46
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02221512233162414
+avg 3 return on policy: -0.3221328044310212, Success rate: 1.00
+avg 3 return on policy: -0.3813396683738877, Success rate: 1.00
+avg 3 return on policy: -0.46613339815909666, Success rate: 1.00
+avg 3 return on policy: -0.5509259381021062, Success rate: 1.00
+avg 3 return on policy: -0.3204398380282025, Success rate: 1.00
+avg 3 return on policy: -0.3778709212783724, Success rate: 1.00
+avg 3 return on policy: -0.4420165504173686, Success rate: 1.00
+avg 3 return on policy: -0.5071239341050386, Success rate: 1.00
+avg 3 return on policy: -0.3260093787879062, Success rate: 1.00
+avg 3 return on policy: -0.42997715389356017, Success rate: 1.00
+avg 3 return on policy: -0.5652263914234936, Success rate: 1.00
+avg 3 return on policy: -0.7496929191984236, Success rate: 1.00
+avg 3 return on policy: -0.2879439569175399, Success rate: 1.00
+avg 3 return on policy: -0.5047844291354219, Success rate: 1.00
+avg 3 return on policy: -0.7369057848118246, Success rate: 1.00
+avg 3 return on policy: -0.9739751449475685, Success rate: 1.00
+avg 3 return on policy: -0.35833514272235334, Success rate: 1.00
+avg 3 return on policy: -0.574543078429997, Success rate: 1.00
+avg 3 return on policy: -0.8461840335900584, Success rate: 1.00
+avg 3 return on policy: -1.149782808497548, Success rate: 1.00
+avg cum rews: -0.5435671637625394, std: 0.2299235473809724
+avg success rate: 1.00, std: 0.00
+the best agent: 12, best agent cum rewards: -0.2879439569175399, best agent success rate: 1.0
+47
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.021341745832539845
+avg 3 return on policy: -0.3142868590657599, Success rate: 1.00
+avg 3 return on policy: -0.4576559046593805, Success rate: 1.00
+avg 3 return on policy: -0.6838098295653859, Success rate: 1.00
+avg 3 return on policy: -0.9235642884547511, Success rate: 1.00
+avg 3 return on policy: -0.36674072725387913, Success rate: 1.00
+avg 3 return on policy: -0.625176090747118, Success rate: 1.00
+avg 3 return on policy: -0.9226483314608535, Success rate: 1.00
+avg 3 return on policy: -1.2200925530244906, Success rate: 1.00
+avg 3 return on policy: -0.32839352371714386, Success rate: 1.00
+avg 3 return on policy: -0.45802728420433897, Success rate: 1.00
+avg 3 return on policy: -0.6112495971222719, Success rate: 1.00
+avg 3 return on policy: -0.7981942361220717, Success rate: 1.00
+avg 3 return on policy: -0.3558841934524632, Success rate: 1.00
+avg 3 return on policy: -0.4579699346795678, Success rate: 1.00
+avg 3 return on policy: -0.5976822524874782, Success rate: 1.00
+avg 3 return on policy: -0.7429511939020207, Success rate: 1.00
+avg 3 return on policy: -0.3314923949074, Success rate: 1.00
+avg 3 return on policy: -0.502530774101615, Success rate: 1.00
+avg 3 return on policy: -0.6571044758893549, Success rate: 1.00
+avg 3 return on policy: -0.8154990643573304, Success rate: 1.00
+avg cum rews: -0.6085476754587338, std: 0.23671160072373643
+avg success rate: 1.00, std: 0.00
+the best agent: 0, best agent cum rewards: -0.3142868590657599, best agent success rate: 1.0
+48
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.024782516523397524
+avg 3 return on policy: -0.37979439335564774, Success rate: 1.00
+avg 3 return on policy: -0.6437531509436667, Success rate: 1.00
+avg 3 return on policy: -0.9326065496231118, Success rate: 1.00
+avg 3 return on policy: -1.2147716054071982, Success rate: 1.00
+avg 3 return on policy: -0.38500165147706866, Success rate: 1.00
+avg 3 return on policy: -0.624513525981456, Success rate: 1.00
+avg 3 return on policy: -0.8922939505428076, Success rate: 1.00
+avg 3 return on policy: -1.1691416762769222, Success rate: 1.00
+avg 3 return on policy: -0.34985289342390996, Success rate: 1.00
+avg 3 return on policy: -0.49564614209036034, Success rate: 1.00
+avg 3 return on policy: -0.6974029736593366, Success rate: 1.00
+avg 3 return on policy: -0.896048367023468, Success rate: 1.00
+avg 3 return on policy: -0.3227990037606408, Success rate: 1.00
+avg 3 return on policy: -0.36270176790033776, Success rate: 1.00
+avg 3 return on policy: -0.5126808083926638, Success rate: 1.00
+avg 3 return on policy: -0.678806290961802, Success rate: 1.00
+avg 3 return on policy: -0.4296982109857102, Success rate: 1.00
+avg 3 return on policy: -0.4600857347249985, Success rate: 1.00
+avg 3 return on policy: -0.5108259036205709, Success rate: 1.00
+avg 3 return on policy: -0.5636012186296284, Success rate: 1.00
+avg cum rews: -0.6261012909390653, std: 0.26047749735115544
+avg success rate: 1.00, std: 0.00
+the best agent: 12, best agent cum rewards: -0.3227990037606408, best agent success rate: 1.0
+49
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02651427688408623
+avg 3 return on policy: -0.3859157559151451, Success rate: 1.00
+avg 3 return on policy: -0.4349458183472355, Success rate: 1.00
+avg 3 return on policy: -0.5186661620003482, Success rate: 1.00
+avg 3 return on policy: -0.6160456289847692, Success rate: 1.00
+avg 3 return on policy: -0.39053896081168205, Success rate: 1.00
+avg 3 return on policy: -0.40906901137592894, Success rate: 1.00
+avg 3 return on policy: -0.4288269521202892, Success rate: 1.00
+avg 3 return on policy: -0.44832399774653214, Success rate: 1.00
+avg 3 return on policy: -0.42549854951600236, Success rate: 1.00
+avg 3 return on policy: -0.46346881504481036, Success rate: 1.00
+avg 3 return on policy: -0.5129940296368053, Success rate: 1.00
+avg 3 return on policy: -0.5691859037615359, Success rate: 1.00
+avg 3 return on policy: -0.40397068885310244, Success rate: 1.00
+avg 3 return on policy: -0.4354697975407665, Success rate: 1.00
+avg 3 return on policy: -0.49322995093340677, Success rate: 1.00
+avg 3 return on policy: -0.5546646293563148, Success rate: 1.00
+avg 3 return on policy: -0.42389278831736493, Success rate: 1.00
+avg 3 return on policy: -0.43405562577148277, Success rate: 1.00
+avg 3 return on policy: -0.4497878681868315, Success rate: 1.00
+avg 3 return on policy: -0.504507316586872, Success rate: 1.00
+avg cum rews: -0.4651529125403613, std: 0.06152436972161498
+avg success rate: 1.00, std: 0.00
+the best agent: 0, best agent cum rewards: -0.3859157559151451, best agent success rate: 1.0
+50
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.024099375805001204
+avg 3 return on policy: -0.3183050170385589, Success rate: 1.00
+avg 3 return on policy: -0.4300443175015971, Success rate: 1.00
+avg 3 return on policy: -0.5567113882085929, Success rate: 1.00
+avg 3 return on policy: -0.6857750176762542, Success rate: 1.00
+avg 3 return on policy: -0.36365510255564004, Success rate: 1.00
+avg 3 return on policy: -0.39933073295590776, Success rate: 1.00
+avg 3 return on policy: -0.4390286630950868, Success rate: 1.00
+avg 3 return on policy: -0.46902040236939985, Success rate: 1.00
+avg 3 return on policy: -0.39361559234869975, Success rate: 1.00
+avg 3 return on policy: -0.5943934881749252, Success rate: 1.00
+avg 3 return on policy: -0.8121669301763177, Success rate: 1.00
+avg 3 return on policy: -1.0434787540386121, Success rate: 1.00
+avg 3 return on policy: -0.3144616548185392, Success rate: 1.00
+avg 3 return on policy: -0.3811169418428714, Success rate: 1.00
+avg 3 return on policy: -0.407516922801733, Success rate: 1.00
+avg 3 return on policy: -0.4583302503451705, Success rate: 1.00
+avg 3 return on policy: -0.384016809752211, Success rate: 1.00
+avg 3 return on policy: -0.420159288837264, Success rate: 1.00
+avg 3 return on policy: -0.45358219808743644, Success rate: 1.00
+avg 3 return on policy: -0.5514137075127413, Success rate: 1.00
+avg cum rews: -0.49380615900687796, std: 0.173894578785923
+avg success rate: 1.00, std: 0.00
+the best agent: 12, best agent cum rewards: -0.3144616548185392, best agent success rate: 1.0
+51
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.023665863140333133
+avg 3 return on policy: -0.3751279537876447, Success rate: 1.00
+avg 3 return on policy: -0.47661434253677726, Success rate: 1.00
+avg 3 return on policy: -0.592707223414133, Success rate: 1.00
+avg 3 return on policy: -0.7397789920990666, Success rate: 1.00
+avg 3 return on policy: -0.3866823771192382, Success rate: 1.00
+avg 3 return on policy: -0.4678962870966643, Success rate: 1.00
+avg 3 return on policy: -0.5528775015845895, Success rate: 1.00
+avg 3 return on policy: -0.6465498056883613, Success rate: 1.00
+avg 3 return on policy: -0.3434938768623397, Success rate: 1.00
+avg 3 return on policy: -0.5700663277336085, Success rate: 1.00
+avg 3 return on policy: -0.8176311213367929, Success rate: 1.00
+avg 3 return on policy: -1.0642259034017723, Success rate: 1.00
+avg 3 return on policy: -0.43104046722874045, Success rate: 1.00
+avg 3 return on policy: -0.606343446765095, Success rate: 1.00
+avg 3 return on policy: -0.7943084102589637, Success rate: 1.00
+avg 3 return on policy: -0.9732239938651522, Success rate: 1.00
+avg 3 return on policy: -0.3382960573071614, Success rate: 1.00
+avg 3 return on policy: -0.4852329425824185, Success rate: 1.00
+avg 3 return on policy: -0.6117368216315905, Success rate: 1.00
+avg 3 return on policy: -0.7425629890834292, Success rate: 1.00
+avg cum rews: -0.600819842069177, std: 0.19875045291234555
+avg success rate: 1.00, std: 0.00
+the best agent: 16, best agent cum rewards: -0.3382960573071614, best agent success rate: 1.0
+52
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.021370286061439023
+avg 3 return on policy: -0.3442457617105295, Success rate: 1.00
+avg 3 return on policy: -0.3403010050339314, Success rate: 1.00
+avg 3 return on policy: -0.38025569419066113, Success rate: 1.00
+avg 3 return on policy: -0.4601148469373584, Success rate: 1.00
+avg 3 return on policy: -0.3319101611850783, Success rate: 1.00
+avg 3 return on policy: -0.4382731569154809, Success rate: 1.00
+avg 3 return on policy: -0.6113116901057462, Success rate: 1.00
+avg 3 return on policy: -0.793606630836924, Success rate: 1.00
+avg 3 return on policy: -0.33670832639715326, Success rate: 1.00
+avg 3 return on policy: -0.3913805615932991, Success rate: 1.00
+avg 3 return on policy: -0.5086134512287875, Success rate: 1.00
+avg 3 return on policy: -0.6332697776767114, Success rate: 1.00
+avg 3 return on policy: -0.3651024077165251, Success rate: 1.00
+avg 3 return on policy: -0.4345412609788279, Success rate: 1.00
+avg 3 return on policy: -0.6348693508965274, Success rate: 1.00
+avg 3 return on policy: -0.83197055850178, Success rate: 1.00
+avg 3 return on policy: -0.3182343669856588, Success rate: 1.00
+avg 3 return on policy: -0.4466344165072466, Success rate: 1.00
+avg 3 return on policy: -0.6208105163338283, Success rate: 1.00
+avg 3 return on policy: -0.7939406762210032, Success rate: 1.00
+avg cum rews: -0.5008047308976529, std: 0.16437700245778344
+avg success rate: 1.00, std: 0.00
+the best agent: 16, best agent cum rewards: -0.3182343669856588, best agent success rate: 1.0
+53
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.019723048348840748
+avg 3 return on policy: -0.3126357047197719, Success rate: 1.00
+avg 3 return on policy: -0.4917026827267061, Success rate: 1.00
+avg 3 return on policy: -0.7095640185289085, Success rate: 1.00
+avg 3 return on policy: -0.9194153525556127, Success rate: 1.00
+avg 3 return on policy: -0.3290423585179572, Success rate: 1.00
+avg 3 return on policy: -0.5063915005885065, Success rate: 1.00
+avg 3 return on policy: -0.6767224495609602, Success rate: 1.00
+avg 3 return on policy: -0.8386312819396456, Success rate: 1.00
+avg 3 return on policy: -0.3829929401787619, Success rate: 1.00
+avg 3 return on policy: -0.516793500787268, Success rate: 1.00
+avg 3 return on policy: -0.647198672251155, Success rate: 1.00
+avg 3 return on policy: -0.7588267258057991, Success rate: 1.00
+avg 3 return on policy: -0.3123663695684324, Success rate: 1.00
+avg 3 return on policy: -0.3619493351240332, Success rate: 1.00
+avg 3 return on policy: -0.5017132655096551, Success rate: 1.00
+avg 3 return on policy: -0.6799574213412901, Success rate: 1.00
+avg 3 return on policy: -0.29174686974147335, Success rate: 1.00
+avg 3 return on policy: -0.35004740945684415, Success rate: 1.00
+avg 3 return on policy: -0.4741564244808008, Success rate: 1.00
+avg 3 return on policy: -0.6391542200775197, Success rate: 1.00
+avg cum rews: -0.5350504251730551, std: 0.18449519425495178
+avg success rate: 1.00, std: 0.00
+the best agent: 16, best agent cum rewards: -0.29174686974147335, best agent success rate: 1.0
+54
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.018767100600205776
+avg 3 return on policy: -0.29420723706910695, Success rate: 1.00
+avg 3 return on policy: -0.46497519547119737, Success rate: 1.00
+avg 3 return on policy: -0.6539035982762774, Success rate: 1.00
+avg 3 return on policy: -0.8488806467503309, Success rate: 1.00
+avg 3 return on policy: -0.38893320023392636, Success rate: 1.00
+avg 3 return on policy: -0.5506712949524323, Success rate: 1.00
+avg 3 return on policy: -0.7109842837477723, Success rate: 1.00
+avg 3 return on policy: -0.8793593626469374, Success rate: 1.00
+avg 3 return on policy: -0.3531431284112235, Success rate: 1.00
+avg 3 return on policy: -0.33549839626842487, Success rate: 1.00
+avg 3 return on policy: -0.3166037769600128, Success rate: 1.00
+avg 3 return on policy: -0.3438893686203907, Success rate: 1.00
+avg 3 return on policy: -0.33197158068651333, Success rate: 1.00
+avg 3 return on policy: -0.38310091888221603, Success rate: 1.00
+avg 3 return on policy: -0.48945333637918037, Success rate: 1.00
+avg 3 return on policy: -0.6220327358072003, Success rate: 1.00
+avg 3 return on policy: -0.3513394636102021, Success rate: 1.00
+avg 3 return on policy: -0.381544120144099, Success rate: 1.00
+avg 3 return on policy: -0.5015793804389735, Success rate: 1.00
+avg 3 return on policy: -0.6512055722996593, Success rate: 1.00
+avg cum rews: -0.49266382988280394, std: 0.17518109196743895
+avg success rate: 1.00, std: 0.00
+the best agent: 0, best agent cum rewards: -0.29420723706910695, best agent success rate: 1.0
+55
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.020584824381668324
+avg 3 return on policy: -0.3189986875707594, Success rate: 1.00
+avg 3 return on policy: -0.4094747592850278, Success rate: 1.00
+avg 3 return on policy: -0.5999544203902284, Success rate: 1.00
+avg 3 return on policy: -0.8092693897585074, Success rate: 1.00
+avg 3 return on policy: -0.3671665861814593, Success rate: 1.00
+avg 3 return on policy: -0.38362370889323455, Success rate: 1.00
+avg 3 return on policy: -0.43766076280735433, Success rate: 1.00
+avg 3 return on policy: -0.5241399925823013, Success rate: 1.00
+avg 3 return on policy: -0.29258618236053735, Success rate: 1.00
+avg 3 return on policy: -0.3385183800710365, Success rate: 1.00
+avg 3 return on policy: -0.43268718275551993, Success rate: 1.00
+avg 3 return on policy: -0.5840838281437755, Success rate: 1.00
+avg 3 return on policy: -0.2869857018716478, Success rate: 1.00
+avg 3 return on policy: -0.44333385140635073, Success rate: 1.00
+avg 3 return on policy: -0.6147488953235248, Success rate: 1.00
+avg 3 return on policy: -0.7911958772068223, Success rate: 1.00
+avg 3 return on policy: -0.2983821404729194, Success rate: 1.00
+avg 3 return on policy: -0.4193016019805024, Success rate: 1.00
+avg 3 return on policy: -0.5996745166679224, Success rate: 1.00
+avg 3 return on policy: -0.7702670451253653, Success rate: 1.00
+avg cum rews: -0.4861026755427399, std: 0.1636729635678332
+avg success rate: 1.00, std: 0.00
+the best agent: 12, best agent cum rewards: -0.2869857018716478, best agent success rate: 1.0
+56
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.020763872708740503
+avg 3 return on policy: -0.35707872950782377, Success rate: 1.00
+avg 3 return on policy: -0.43374776809165877, Success rate: 1.00
+avg 3 return on policy: -0.5468747296060125, Success rate: 1.00
+avg 3 return on policy: -0.667834730197986, Success rate: 1.00
+avg 3 return on policy: -0.4299150335912903, Success rate: 1.00
+avg 3 return on policy: -0.6029061425166825, Success rate: 1.00
+avg 3 return on policy: -0.8046233138690392, Success rate: 1.00
+avg 3 return on policy: -0.9883956058571736, Success rate: 1.00
+avg 3 return on policy: -0.29265241967126104, Success rate: 1.00
+avg 3 return on policy: -0.37676854408346117, Success rate: 1.00
+avg 3 return on policy: -0.5158135772993168, Success rate: 1.00
+avg 3 return on policy: -0.6677336031571031, Success rate: 1.00
+avg 3 return on policy: -0.3305104347721984, Success rate: 1.00
+avg 3 return on policy: -0.38996965857222676, Success rate: 1.00
+avg 3 return on policy: -0.5100380973890424, Success rate: 1.00
+avg 3 return on policy: -0.6659780526533723, Success rate: 1.00
+avg 3 return on policy: -0.31933294570383924, Success rate: 1.00
+avg 3 return on policy: -0.47224658471532166, Success rate: 1.00
+avg 3 return on policy: -0.7078268306019405, Success rate: 1.00
+avg 3 return on policy: -0.9676950459834188, Success rate: 1.00
+avg cum rews: -0.5523970923920084, std: 0.19968571289084086
+avg success rate: 1.00, std: 0.00
+the best agent: 8, best agent cum rewards: -0.29265241967126104, best agent success rate: 1.0
+57
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.021671681087410286
+avg 3 return on policy: -0.3685189750588809, Success rate: 1.00
+avg 3 return on policy: -0.38983712539387244, Success rate: 1.00
+avg 3 return on policy: -0.4368133891063432, Success rate: 1.00
+avg 3 return on policy: -0.511556716170162, Success rate: 1.00
+avg 3 return on policy: -0.2994631451244156, Success rate: 1.00
+avg 3 return on policy: -0.2694275745889172, Success rate: 1.00
+avg 3 return on policy: -0.3102268156556723, Success rate: 1.00
+avg 3 return on policy: -0.38915719848591834, Success rate: 1.00
+avg 3 return on policy: -0.34912803136588383, Success rate: 1.00
+avg 3 return on policy: -0.30979895188162726, Success rate: 1.00
+avg 3 return on policy: -0.2958011432395627, Success rate: 1.00
+avg 3 return on policy: -0.3557587372294317, Success rate: 1.00
+avg 3 return on policy: -0.42184204088213545, Success rate: 1.00
+avg 3 return on policy: -0.3815480866857494, Success rate: 1.00
+avg 3 return on policy: -0.33967589322128333, Success rate: 1.00
+avg 3 return on policy: -0.3252112930252527, Success rate: 1.00
+avg 3 return on policy: -0.3970709476464738, Success rate: 1.00
+avg 3 return on policy: -0.4413429636818667, Success rate: 1.00
+avg 3 return on policy: -0.44187816597210866, Success rate: 1.00
+avg 3 return on policy: -0.4630289801085989, Success rate: 1.00
+avg cum rews: -0.37485430872620784, std: 0.06269568765472558
+avg success rate: 1.00, std: 0.00
+the best agent: 5, best agent cum rewards: -0.2694275745889172, best agent success rate: 1.0
+58
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.021637985952659918
+avg 3 return on policy: -0.33406813838519156, Success rate: 1.00
+avg 3 return on policy: -0.4066733388074984, Success rate: 1.00
+avg 3 return on policy: -0.5731658659254512, Success rate: 1.00
+avg 3 return on policy: -0.7471415360147754, Success rate: 1.00
+avg 3 return on policy: -0.329716836529163, Success rate: 1.00
+avg 3 return on policy: -0.44849775180531043, Success rate: 1.00
+avg 3 return on policy: -0.626971605544289, Success rate: 1.00
+avg 3 return on policy: -0.8083229184461137, Success rate: 1.00
+avg 3 return on policy: -0.33310043239422765, Success rate: 1.00
+avg 3 return on policy: -0.484982683788985, Success rate: 1.00
+avg 3 return on policy: -0.6959693695728978, Success rate: 1.00
+avg 3 return on policy: -0.9243635047848026, Success rate: 1.00
+avg 3 return on policy: -0.3664942624357839, Success rate: 1.00
+avg 3 return on policy: -0.5115701531370481, Success rate: 1.00
+avg 3 return on policy: -0.7047862208758792, Success rate: 1.00
+avg 3 return on policy: -0.8875074274837971, Success rate: 1.00
+avg 3 return on policy: -0.30330559289238107, Success rate: 1.00
+avg 3 return on policy: -0.5458402552952369, Success rate: 1.00
+avg 3 return on policy: -0.7389125476280848, Success rate: 1.00
+avg 3 return on policy: -0.9324198296914498, Success rate: 1.00
+avg cum rews: -0.5851905135719183, std: 0.20516373423155063
+avg success rate: 1.00, std: 0.00
+the best agent: 16, best agent cum rewards: -0.30330559289238107, best agent success rate: 1.0
+59
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.019895049059042706
+avg 3 return on policy: -0.31488818178574246, Success rate: 1.00
+avg 3 return on policy: -0.37554998719133437, Success rate: 1.00
+avg 3 return on policy: -0.4312812143859143, Success rate: 1.00
+avg 3 return on policy: -0.493633735847349, Success rate: 1.00
+avg 3 return on policy: -0.2630404471807803, Success rate: 1.00
+avg 3 return on policy: -0.36679653462488204, Success rate: 1.00
+avg 3 return on policy: -0.5001886867297193, Success rate: 1.00
+avg 3 return on policy: -0.6505925419429938, Success rate: 1.00
+avg 3 return on policy: -0.3809621692635119, Success rate: 1.00
+avg 3 return on policy: -0.5107446174758176, Success rate: 1.00
+avg 3 return on policy: -0.6772516608859102, Success rate: 1.00
+avg 3 return on policy: -0.8473773278916875, Success rate: 1.00
+avg 3 return on policy: -0.27322468677690875, Success rate: 1.00
+avg 3 return on policy: -0.37064895515019697, Success rate: 1.00
+avg 3 return on policy: -0.49182120547629893, Success rate: 1.00
+avg 3 return on policy: -0.6168375383131206, Success rate: 1.00
+avg 3 return on policy: -0.31872412502222386, Success rate: 1.00
+avg 3 return on policy: -0.34446069155819714, Success rate: 1.00
+avg 3 return on policy: -0.45750380912795663, Success rate: 1.00
+avg 3 return on policy: -0.5797211015596986, Success rate: 1.00
+avg cum rews: -0.4632624609095123, std: 0.14791234695297187
+avg success rate: 1.00, std: 0.00
+the best agent: 4, best agent cum rewards: -0.2630404471807803, best agent success rate: 1.0
+60
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.0203826398038211
+avg 3 return on policy: -0.29282034271939966, Success rate: 1.00
+avg 3 return on policy: -0.2954569324307765, Success rate: 1.00
+avg 3 return on policy: -0.3584953722505209, Success rate: 1.00
+avg 3 return on policy: -0.43656524453156936, Success rate: 1.00
+avg 3 return on policy: -0.33056431733227026, Success rate: 1.00
+avg 3 return on policy: -0.4238519653833161, Success rate: 1.00
+avg 3 return on policy: -0.47948741416136426, Success rate: 1.00
+avg 3 return on policy: -0.5297915572300553, Success rate: 1.00
+avg 3 return on policy: -0.2956471413684388, Success rate: 1.00
+avg 3 return on policy: -0.33922212892988074, Success rate: 1.00
+avg 3 return on policy: -0.43650704389438033, Success rate: 1.00
+avg 3 return on policy: -0.5452239536680281, Success rate: 1.00
+avg 3 return on policy: -0.32615159611062455, Success rate: 1.00
+avg 3 return on policy: -0.3787403523456305, Success rate: 1.00
+avg 3 return on policy: -0.5102962199598551, Success rate: 1.00
+avg 3 return on policy: -0.6633252846077085, Success rate: 1.00
+avg 3 return on policy: -0.334784224027923, Success rate: 1.00
+avg 3 return on policy: -0.3491171734058298, Success rate: 1.00
+avg 3 return on policy: -0.4803193697395424, Success rate: 1.00
+avg 3 return on policy: -0.6289691599085927, Success rate: 1.00
+avg cum rews: -0.42176683970028533, std: 0.10832642615950697
+avg success rate: 1.00, std: 0.00
+the best agent: 0, best agent cum rewards: -0.29282034271939966, best agent success rate: 1.0
+61
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.022329317743647877
+avg 3 return on policy: -0.2818252110737376, Success rate: 1.00
+avg 3 return on policy: -0.4031584698241204, Success rate: 1.00
+avg 3 return on policy: -0.558832896562914, Success rate: 1.00
+avg 3 return on policy: -0.7306456357861558, Success rate: 1.00
+avg 3 return on policy: -0.3298190933807443, Success rate: 1.00
+avg 3 return on policy: -0.4097267684992403, Success rate: 1.00
+avg 3 return on policy: -0.5252844537608325, Success rate: 1.00
+avg 3 return on policy: -0.6451670483996471, Success rate: 1.00
+avg 3 return on policy: -0.3071512821673726, Success rate: 1.00
+avg 3 return on policy: -0.2950987665293117, Success rate: 1.00
+avg 3 return on policy: -0.3279839945801844, Success rate: 1.00
+avg 3 return on policy: -0.36689906707033515, Success rate: 1.00
+avg 3 return on policy: -0.33481921697966754, Success rate: 1.00
+avg 3 return on policy: -0.37809732859022915, Success rate: 1.00
+avg 3 return on policy: -0.41729833620289963, Success rate: 1.00
+avg 3 return on policy: -0.46129117005815107, Success rate: 1.00
+avg 3 return on policy: -0.3190551522420719, Success rate: 1.00
+avg 3 return on policy: -0.32335027152051526, Success rate: 1.00
+avg 3 return on policy: -0.31943860296936083, Success rate: 1.00
+avg 3 return on policy: -0.34731733791219693, Success rate: 1.00
+avg cum rews: -0.4041130052054844, std: 0.1194567858788228
+avg success rate: 1.00, std: 0.00
+the best agent: 0, best agent cum rewards: -0.2818252110737376, best agent success rate: 1.0
+62
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.018368973433033488
+avg 3 return on policy: -0.3400405914677928, Success rate: 1.00
+avg 3 return on policy: -0.39104722952470183, Success rate: 1.00
+avg 3 return on policy: -0.545831683712701, Success rate: 1.00
+avg 3 return on policy: -0.7165839301111797, Success rate: 1.00
+avg 3 return on policy: -0.35913412323376787, Success rate: 1.00
+avg 3 return on policy: -0.42236199936208624, Success rate: 1.00
+avg 3 return on policy: -0.5643082835401098, Success rate: 1.00
+avg 3 return on policy: -0.7010105938340226, Success rate: 1.00
+avg 3 return on policy: -0.37498289661016315, Success rate: 1.00
+avg 3 return on policy: -0.3841741872796168, Success rate: 1.00
+avg 3 return on policy: -0.454046136001125, Success rate: 1.00
+avg 3 return on policy: -0.5504088744831582, Success rate: 1.00
+avg 3 return on policy: -0.32669804625523585, Success rate: 1.00
+avg 3 return on policy: -0.3129442239102597, Success rate: 1.00
+avg 3 return on policy: -0.3989170521963388, Success rate: 1.00
+avg 3 return on policy: -0.5119544790747265, Success rate: 1.00
+avg 3 return on policy: -0.32993638028468314, Success rate: 1.00
+avg 3 return on policy: -0.3046023315012765, Success rate: 1.00
+avg 3 return on policy: -0.3847530144266784, Success rate: 1.00
+avg 3 return on policy: -0.5032086130231619, Success rate: 1.00
+avg cum rews: -0.44384723349163924, std: 0.11901506661138965
+avg success rate: 1.00, std: 0.00
+the best agent: 17, best agent cum rewards: -0.3046023315012765, best agent success rate: 1.0
+63
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.019352241311674862
+avg 3 return on policy: -0.3498414287654062, Success rate: 1.00
+avg 3 return on policy: -0.5599284620645145, Success rate: 1.00
+avg 3 return on policy: -0.7728200803200403, Success rate: 1.00
+avg 3 return on policy: -0.9904161874825755, Success rate: 1.00
+avg 3 return on policy: -0.3140284359299888, Success rate: 1.00
+avg 3 return on policy: -0.41521898261271417, Success rate: 1.00
+avg 3 return on policy: -0.5312325018458068, Success rate: 1.00
+avg 3 return on policy: -0.660302744867901, Success rate: 1.00
+avg 3 return on policy: -0.3785507472542425, Success rate: 1.00
+avg 3 return on policy: -0.37177545002972084, Success rate: 1.00
+avg 3 return on policy: -0.4260699110842931, Success rate: 1.00
+avg 3 return on policy: -0.4887673396151513, Success rate: 1.00
+avg 3 return on policy: -0.3500187905350079, Success rate: 1.00
+avg 3 return on policy: -0.3253143902208346, Success rate: 1.00
+avg 3 return on policy: -0.4440153467779358, Success rate: 1.00
+avg 3 return on policy: -0.5984008939315876, Success rate: 1.00
+avg 3 return on policy: -0.36587531461069983, Success rate: 1.00
+avg 3 return on policy: -0.32516326060673845, Success rate: 1.00
+avg 3 return on policy: -0.4533568002904455, Success rate: 1.00
+avg 3 return on policy: -0.6176561669756969, Success rate: 1.00
+avg cum rews: -0.48693766179106496, std: 0.16930691767759293
+avg success rate: 1.00, std: 0.00
+the best agent: 4, best agent cum rewards: -0.3140284359299888, best agent success rate: 1.0
+64
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.021144357929525546
+avg 3 return on policy: -0.2924864239563855, Success rate: 1.00
+avg 3 return on policy: -0.4562176630521814, Success rate: 1.00
+avg 3 return on policy: -0.6467488561756909, Success rate: 1.00
+avg 3 return on policy: -0.8311218520005544, Success rate: 1.00
+avg 3 return on policy: -0.3409278108738363, Success rate: 1.00
+avg 3 return on policy: -0.45398565257589024, Success rate: 1.00
+avg 3 return on policy: -0.5905468498822302, Success rate: 1.00
+avg 3 return on policy: -0.7272443836554885, Success rate: 1.00
+avg 3 return on policy: -0.30507875718952465, Success rate: 1.00
+avg 3 return on policy: -0.3775981159415096, Success rate: 1.00
+avg 3 return on policy: -0.46028295446497697, Success rate: 1.00
+avg 3 return on policy: -0.5375065115901331, Success rate: 1.00
+avg 3 return on policy: -0.38817375999254483, Success rate: 1.00
+avg 3 return on policy: -0.47943604333947104, Success rate: 1.00
+avg 3 return on policy: -0.6193032603090008, Success rate: 1.00
+avg 3 return on policy: -0.7576548736542463, Success rate: 1.00
+avg 3 return on policy: -0.34775560768321157, Success rate: 1.00
+avg 3 return on policy: -0.4340213089405249, Success rate: 1.00
+avg 3 return on policy: -0.5127293013501912, Success rate: 1.00
+avg 3 return on policy: -0.5902706911632171, Success rate: 1.00
+avg cum rews: -0.5074545338895404, std: 0.14960859979893926
+avg success rate: 1.00, std: 0.00
+the best agent: 0, best agent cum rewards: -0.2924864239563855, best agent success rate: 1.0
+65
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.018407530311894345
+avg 3 return on policy: -0.32289001213697094, Success rate: 1.00
+avg 3 return on policy: -0.40638577068845433, Success rate: 1.00
+avg 3 return on policy: -0.6036215603041152, Success rate: 1.00
+avg 3 return on policy: -0.8061479103441039, Success rate: 1.00
+avg 3 return on policy: -0.4100864415522665, Success rate: 1.00
+avg 3 return on policy: -0.650292297359556, Success rate: 1.00
+avg 3 return on policy: -0.934568579463909, Success rate: 1.00
+avg 3 return on policy: -1.2351893857121468, Success rate: 1.00
+avg 3 return on policy: -0.34520454045074683, Success rate: 1.00
+avg 3 return on policy: -0.48545235379909474, Success rate: 1.00
+avg 3 return on policy: -0.7184956286412975, Success rate: 1.00
+avg 3 return on policy: -0.9546701137442142, Success rate: 1.00
+avg 3 return on policy: -0.2998596571851522, Success rate: 1.00
+avg 3 return on policy: -0.3712533273889373, Success rate: 1.00
+avg 3 return on policy: -0.4104030509479344, Success rate: 1.00
+avg 3 return on policy: -0.4558236350615819, Success rate: 1.00
+avg 3 return on policy: -0.320167962112464, Success rate: 1.00
+avg 3 return on policy: -0.3373280249070376, Success rate: 1.00
+avg 3 return on policy: -0.37380093700873357, Success rate: 1.00
+avg 3 return on policy: -0.4418586048608025, Success rate: 1.00
+avg cum rews: -0.5441749896834759, std: 0.25386515712586266
+avg success rate: 1.00, std: 0.00
+the best agent: 12, best agent cum rewards: -0.2998596571851522, best agent success rate: 1.0
+66
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.020729510827263167
+avg 3 return on policy: -0.3662914982220779, Success rate: 1.00
+avg 3 return on policy: -0.4647994100426634, Success rate: 1.00
+avg 3 return on policy: -0.6611664496983091, Success rate: 1.00
+avg 3 return on policy: -0.8741161776706576, Success rate: 1.00
+avg 3 return on policy: -0.40956628481702256, Success rate: 1.00
+avg 3 return on policy: -0.5553955161788812, Success rate: 1.00
+avg 3 return on policy: -0.7177999216752747, Success rate: 1.00
+avg 3 return on policy: -0.883592737528185, Success rate: 1.00
+avg 3 return on policy: -0.32287636601055664, Success rate: 1.00
+avg 3 return on policy: -0.3501623885240406, Success rate: 1.00
+avg 3 return on policy: -0.5177025691761324, Success rate: 1.00
+avg 3 return on policy: -0.692701718925188, Success rate: 1.00
+avg 3 return on policy: -0.32708884940560284, Success rate: 1.00
+avg 3 return on policy: -0.34589883937345195, Success rate: 1.00
+avg 3 return on policy: -0.3729702496590714, Success rate: 1.00
+avg 3 return on policy: -0.4334008499669532, Success rate: 1.00
+avg 3 return on policy: -0.33866066790263477, Success rate: 1.00
+avg 3 return on policy: -0.32149617513641715, Success rate: 1.00
+avg 3 return on policy: -0.2934701589207786, Success rate: 1.00
+avg 3 return on policy: -0.336459139517198, Success rate: 1.00
+avg cum rews: -0.4792807984175548, std: 0.18372248618808432
+avg success rate: 1.00, std: 0.00
+the best agent: 18, best agent cum rewards: -0.2934701589207786, best agent success rate: 1.0
+67
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.018933652056479556
+avg 3 return on policy: -0.32711708654339117, Success rate: 1.00
+avg 3 return on policy: -0.3130516581295524, Success rate: 1.00
+avg 3 return on policy: -0.3782805390267943, Success rate: 1.00
+avg 3 return on policy: -0.4487381016369909, Success rate: 1.00
+avg 3 return on policy: -0.2901952126218627, Success rate: 1.00
+avg 3 return on policy: -0.3176245710346848, Success rate: 1.00
+avg 3 return on policy: -0.3920331127010286, Success rate: 1.00
+avg 3 return on policy: -0.44143186455282074, Success rate: 1.00
+avg 3 return on policy: -0.4132715933180104, Success rate: 1.00
+avg 3 return on policy: -0.4609813511682053, Success rate: 1.00
+avg 3 return on policy: -0.5443604302903017, Success rate: 1.00
+avg 3 return on policy: -0.6497261493156353, Success rate: 1.00
+avg 3 return on policy: -0.3506658166879788, Success rate: 1.00
+avg 3 return on policy: -0.4187110993079841, Success rate: 1.00
+avg 3 return on policy: -0.5998282544314861, Success rate: 1.00
+avg 3 return on policy: -0.7996122796709338, Success rate: 1.00
+avg 3 return on policy: -0.333941207092721, Success rate: 1.00
+avg 3 return on policy: -0.3929617003692935, Success rate: 1.00
+avg 3 return on policy: -0.5667935280750195, Success rate: 1.00
+avg 3 return on policy: -0.7597612158084909, Success rate: 1.00
+avg cum rews: -0.4599543385891593, std: 0.1441555099607632
+avg success rate: 1.00, std: 0.00
+the best agent: 4, best agent cum rewards: -0.2901952126218627, best agent success rate: 1.0
+68
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.018367810224727662
+avg 3 return on policy: -0.27056852718427155, Success rate: 1.00
+avg 3 return on policy: -0.5493775832777222, Success rate: 1.00
+avg 3 return on policy: -0.844381281795601, Success rate: 1.00
+avg 3 return on policy: -1.153973026201129, Success rate: 1.00
+avg 3 return on policy: -0.36342238433038193, Success rate: 1.00
+avg 3 return on policy: -0.6078830684224764, Success rate: 1.00
+avg 3 return on policy: -0.8111653629069527, Success rate: 1.00
+avg 3 return on policy: -1.0218621386835973, Success rate: 1.00
+avg 3 return on policy: -0.3635183113316695, Success rate: 1.00
+avg 3 return on policy: -0.4546018537754814, Success rate: 1.00
+avg 3 return on policy: -0.5692810278075436, Success rate: 1.00
+avg 3 return on policy: -0.7186570055782795, Success rate: 1.00
+avg 3 return on policy: -0.2690699324399854, Success rate: 1.00
+avg 3 return on policy: -0.3471278186577062, Success rate: 1.00
+avg 3 return on policy: -0.5233377112696568, Success rate: 1.00
+avg 3 return on policy: -0.7075655308241645, Success rate: 1.00
+avg 3 return on policy: -0.2996990967464323, Success rate: 1.00
+avg 3 return on policy: -0.325030920910649, Success rate: 1.00
+avg 3 return on policy: -0.5164392489629487, Success rate: 1.00
+avg 3 return on policy: -0.7230481387426456, Success rate: 1.00
+avg cum rews: -0.5720004984924647, std: 0.24612109958806377
+avg success rate: 1.00, std: 0.00
+the best agent: 12, best agent cum rewards: -0.2690699324399854, best agent success rate: 1.0
+69
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02108457951726077
+avg 3 return on policy: -0.3369030386675149, Success rate: 1.00
+avg 3 return on policy: -0.2948582783380213, Success rate: 1.00
+avg 3 return on policy: -0.3579106002192323, Success rate: 1.00
+avg 3 return on policy: -0.4241573390706132, Success rate: 1.00
+avg 3 return on policy: -0.36936726576338214, Success rate: 1.00
+avg 3 return on policy: -0.38646717090159655, Success rate: 1.00
+avg 3 return on policy: -0.4589337658447524, Success rate: 1.00
+avg 3 return on policy: -0.5391464816251149, Success rate: 1.00
+avg 3 return on policy: -0.30287147243507206, Success rate: 1.00
+avg 3 return on policy: -0.36051128478720784, Success rate: 1.00
+avg 3 return on policy: -0.4777337512932718, Success rate: 1.00
+avg 3 return on policy: -0.6155366658543547, Success rate: 1.00
+avg 3 return on policy: -0.3229648447983588, Success rate: 1.00
+avg 3 return on policy: -0.46458265588929254, Success rate: 1.00
+avg 3 return on policy: -0.607541108969599, Success rate: 1.00
+avg 3 return on policy: -0.7317100636040171, Success rate: 1.00
+avg 3 return on policy: -0.32017480857515085, Success rate: 1.00
+avg 3 return on policy: -0.36062896507792175, Success rate: 1.00
+avg 3 return on policy: -0.44068827650820214, Success rate: 1.00
+avg 3 return on policy: -0.5256991096151372, Success rate: 1.00
+avg cum rews: -0.43491934739189064, std: 0.11598283807947682
+avg success rate: 1.00, std: 0.00
+the best agent: 1, best agent cum rewards: -0.2948582783380213, best agent success rate: 1.0
+70
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.022597767255861358
+avg 3 return on policy: -0.34505238515945774, Success rate: 1.00
+avg 3 return on policy: -0.4373425687663257, Success rate: 1.00
+avg 3 return on policy: -0.4504627777884404, Success rate: 1.00
+avg 3 return on policy: -0.4804859727931519, Success rate: 1.00
+avg 3 return on policy: -0.3337517965895434, Success rate: 1.00
+avg 3 return on policy: -0.4162895465269685, Success rate: 1.00
+avg 3 return on policy: -0.48795871358985704, Success rate: 1.00
+avg 3 return on policy: -0.559988530818373, Success rate: 1.00
+avg 3 return on policy: -0.4163407932501286, Success rate: 1.00
+avg 3 return on policy: -0.44747921933109563, Success rate: 1.00
+avg 3 return on policy: -0.5294248910310367, Success rate: 1.00
+avg 3 return on policy: -0.6224154857142518, Success rate: 1.00
+avg 3 return on policy: -0.33943394261101884, Success rate: 1.00
+avg 3 return on policy: -0.4001492087263614, Success rate: 1.00
+avg 3 return on policy: -0.6212463116583725, Success rate: 1.00
+avg 3 return on policy: -0.8713829036181172, Success rate: 1.00
+avg 3 return on policy: -0.4591059568338096, Success rate: 1.00
+avg 3 return on policy: -0.4193052710033953, Success rate: 1.00
+avg 3 return on policy: -0.5743187520032128, Success rate: 1.00
+avg 3 return on policy: -0.7425375070888549, Success rate: 1.00
+avg cum rews: -0.4977236267450887, std: 0.13333665196812675
+avg success rate: 1.00, std: 0.00
+the best agent: 4, best agent cum rewards: -0.3337517965895434, best agent success rate: 1.0
+71
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.018910257211900837
+avg 3 return on policy: -0.34404769908481586, Success rate: 1.00
+avg 3 return on policy: -0.312867941102013, Success rate: 1.00
+avg 3 return on policy: -0.3567030471749604, Success rate: 1.00
+avg 3 return on policy: -0.4177463989860068, Success rate: 1.00
+avg 3 return on policy: -0.3417337484812985, Success rate: 1.00
+avg 3 return on policy: -0.3915304701464872, Success rate: 1.00
+avg 3 return on policy: -0.46971936291083694, Success rate: 1.00
+avg 3 return on policy: -0.5666092056781054, Success rate: 1.00
+avg 3 return on policy: -0.3539869078279783, Success rate: 1.00
+avg 3 return on policy: -0.48698651992405456, Success rate: 1.00
+avg 3 return on policy: -0.667859396742036, Success rate: 1.00
+avg 3 return on policy: -0.8645715580011407, Success rate: 1.00
+avg 3 return on policy: -0.4224987223278731, Success rate: 1.00
+avg 3 return on policy: -0.49814124979699653, Success rate: 1.00
+avg 3 return on policy: -0.6390835708007216, Success rate: 1.00
+avg 3 return on policy: -0.7985192248597741, Success rate: 1.00
+avg 3 return on policy: -0.39923888196547824, Success rate: 1.00
+avg 3 return on policy: -0.5026249755173922, Success rate: 1.00
+avg 3 return on policy: -0.6405387464910746, Success rate: 1.00
+avg 3 return on policy: -0.8040892351418734, Success rate: 1.00
+avg cum rews: -0.5139548431480458, std: 0.16497565462631336
+avg success rate: 1.00, std: 0.00
+the best agent: 1, best agent cum rewards: -0.312867941102013, best agent success rate: 1.0
+72
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.020362758251733143
+avg 3 return on policy: -0.31397428111328435, Success rate: 1.00
+avg 3 return on policy: -0.31891229380077374, Success rate: 1.00
+avg 3 return on policy: -0.4673557219405969, Success rate: 1.00
+avg 3 return on policy: -0.6255292488882939, Success rate: 1.00
+avg 3 return on policy: -0.30681971134617925, Success rate: 1.00
+avg 3 return on policy: -0.28549126397895935, Success rate: 1.00
+avg 3 return on policy: -0.3625110104524841, Success rate: 1.00
+avg 3 return on policy: -0.4390956171943496, Success rate: 1.00
+avg 3 return on policy: -0.32857231204009923, Success rate: 1.00
+avg 3 return on policy: -0.30828521129054326, Success rate: 1.00
+avg 3 return on policy: -0.2863441419516069, Success rate: 1.00
+avg 3 return on policy: -0.2925163369703417, Success rate: 1.00
+avg 3 return on policy: -0.2733151384551699, Success rate: 1.00
+avg 3 return on policy: -0.33317162255601335, Success rate: 1.00
+avg 3 return on policy: -0.3958638842838506, Success rate: 1.00
+avg 3 return on policy: -0.4825174913275987, Success rate: 1.00
+avg 3 return on policy: -0.28409362433012575, Success rate: 1.00
+avg 3 return on policy: -0.32693281886167824, Success rate: 1.00
+avg 3 return on policy: -0.3798862549786766, Success rate: 1.00
+avg 3 return on policy: -0.47053745699425537, Success rate: 1.00
+avg cum rews: -0.36408627213774397, std: 0.08882204193634233
+avg success rate: 1.00, std: 0.00
+the best agent: 12, best agent cum rewards: -0.2733151384551699, best agent success rate: 1.0
+73
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.01932160063362926
+avg 3 return on policy: -0.29030118347145617, Success rate: 1.00
+avg 3 return on policy: -0.3144384999371444, Success rate: 1.00
+avg 3 return on policy: -0.33031688576253754, Success rate: 1.00
+avg 3 return on policy: -0.36508171873477596, Success rate: 1.00
+avg 3 return on policy: -0.3074124018506457, Success rate: 1.00
+avg 3 return on policy: -0.39369688540076214, Success rate: 1.00
+avg 3 return on policy: -0.4872339914242427, Success rate: 1.00
+avg 3 return on policy: -0.5796876614913344, Success rate: 1.00
+avg 3 return on policy: -0.3536113062097381, Success rate: 1.00
+avg 3 return on policy: -0.3768873156514019, Success rate: 1.00
+avg 3 return on policy: -0.43305660023664433, Success rate: 1.00
+avg 3 return on policy: -0.47936174102748436, Success rate: 1.00
+avg 3 return on policy: -0.3124817411492889, Success rate: 1.00
+avg 3 return on policy: -0.2815165326464921, Success rate: 1.00
+avg 3 return on policy: -0.3785776915804793, Success rate: 1.00
+avg 3 return on policy: -0.5041343318298459, Success rate: 1.00
+avg 3 return on policy: -0.35751056686664623, Success rate: 1.00
+avg 3 return on policy: -0.2898677597210432, Success rate: 1.00
+avg 3 return on policy: -0.3078140231858318, Success rate: 1.00
+avg 3 return on policy: -0.4175550573660682, Success rate: 1.00
+avg cum rews: -0.3780271947771932, std: 0.08065414995006857
+avg success rate: 1.00, std: 0.00
+the best agent: 13, best agent cum rewards: -0.2815165326464921, best agent success rate: 1.0
+74
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.023121359798112195
+avg 3 return on policy: -0.3303065384194876, Success rate: 1.00
+avg 3 return on policy: -0.38538907701149583, Success rate: 1.00
+avg 3 return on policy: -0.5070591090867916, Success rate: 1.00
+avg 3 return on policy: -0.6371243375663956, Success rate: 1.00
+avg 3 return on policy: -0.39217202730166417, Success rate: 1.00
+avg 3 return on policy: -0.40850357540572685, Success rate: 1.00
+avg 3 return on policy: -0.484539489261806, Success rate: 1.00
+avg 3 return on policy: -0.571855355364581, Success rate: 1.00
+avg 3 return on policy: -0.34764958972421783, Success rate: 1.00
+avg 3 return on policy: -0.39794676487023634, Success rate: 1.00
+avg 3 return on policy: -0.4736635660713849, Success rate: 1.00
+avg 3 return on policy: -0.5545778465457261, Success rate: 1.00
+avg 3 return on policy: -0.30322165094548836, Success rate: 1.00
+avg 3 return on policy: -0.38210814554865163, Success rate: 1.00
+avg 3 return on policy: -0.5036584526921312, Success rate: 1.00
+avg 3 return on policy: -0.629668114396433, Success rate: 1.00
+avg 3 return on policy: -0.2955799698053549, Success rate: 1.00
+avg 3 return on policy: -0.34015533432830125, Success rate: 1.00
+avg 3 return on policy: -0.4406230569196244, Success rate: 1.00
+avg 3 return on policy: -0.5694186061931154, Success rate: 1.00
+avg cum rews: -0.4477610303729307, std: 0.10344917573359488
+avg success rate: 1.00, std: 0.00
+the best agent: 16, best agent cum rewards: -0.2955799698053549, best agent success rate: 1.0
+75
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.023159599964135184
+avg 3 return on policy: -0.2942647779515634, Success rate: 1.00
+avg 3 return on policy: -0.2987675204252203, Success rate: 1.00
+avg 3 return on policy: -0.35755273047834635, Success rate: 1.00
+avg 3 return on policy: -0.4436380141414702, Success rate: 1.00
+avg 3 return on policy: -0.31964336256108555, Success rate: 1.00
+avg 3 return on policy: -0.36739789647981524, Success rate: 1.00
+avg 3 return on policy: -0.4477650439366698, Success rate: 1.00
+avg 3 return on policy: -0.5359921494188408, Success rate: 1.00
+avg 3 return on policy: -0.2918533655659606, Success rate: 1.00
+avg 3 return on policy: -0.3459504699567333, Success rate: 1.00
+avg 3 return on policy: -0.42893340190251666, Success rate: 1.00
+avg 3 return on policy: -0.5078237544124325, Success rate: 1.00
+avg 3 return on policy: -0.29702357039786875, Success rate: 1.00
+avg 3 return on policy: -0.3680430055828765, Success rate: 1.00
+avg 3 return on policy: -0.4495662380941212, Success rate: 1.00
+avg 3 return on policy: -0.5329356347210705, Success rate: 1.00
+avg 3 return on policy: -0.29435977747198194, Success rate: 1.00
+avg 3 return on policy: -0.3303869853261858, Success rate: 1.00
+avg 3 return on policy: -0.40931680682115257, Success rate: 1.00
+avg 3 return on policy: -0.49445948532472056, Success rate: 1.00
+avg cum rews: -0.39078369954853165, std: 0.08233471649835726
+avg success rate: 1.00, std: 0.00
+the best agent: 8, best agent cum rewards: -0.2918533655659606, best agent success rate: 1.0
+76
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.019640558158098325
+avg 3 return on policy: -0.4152643298730254, Success rate: 1.00
+avg 3 return on policy: -0.33026145573239774, Success rate: 1.00
+avg 3 return on policy: -0.3998557893404116, Success rate: 1.00
+avg 3 return on policy: -0.5697129250814518, Success rate: 1.00
+avg 3 return on policy: -0.38884859912407893, Success rate: 1.00
+avg 3 return on policy: -0.3257540207511435, Success rate: 1.00
+avg 3 return on policy: -0.4321463336236775, Success rate: 1.00
+avg 3 return on policy: -0.5714874876042207, Success rate: 1.00
+avg 3 return on policy: -0.3377155417110771, Success rate: 1.00
+avg 3 return on policy: -0.3644054903027912, Success rate: 1.00
+avg 3 return on policy: -0.5349749469508728, Success rate: 1.00
+avg 3 return on policy: -0.7437628793219725, Success rate: 1.00
+avg 3 return on policy: -0.33315064082853496, Success rate: 1.00
+avg 3 return on policy: -0.46078686804200214, Success rate: 1.00
+avg 3 return on policy: -0.6218229237323006, Success rate: 1.00
+avg 3 return on policy: -0.7827781767894825, Success rate: 1.00
+avg 3 return on policy: -0.3198889420600608, Success rate: 1.00
+avg 3 return on policy: -0.432037226545314, Success rate: 1.00
+avg 3 return on policy: -0.5750822781895598, Success rate: 1.00
+avg 3 return on policy: -0.721887280854086, Success rate: 1.00
+avg cum rews: -0.483081206822923, std: 0.14475197368255183
+avg success rate: 1.00, std: 0.00
+the best agent: 16, best agent cum rewards: -0.3198889420600608, best agent success rate: 1.0
+77
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(12, 5512)
+(12, 5512)
+Average distance of agents to nearest neighbors: 0.007657988794471933
+avg 3 return on policy: -6.894581951200962, Success rate: 0.00
+avg 3 return on policy: -7.683848443130652, Success rate: 0.00
+avg 3 return on policy: -8.47506549457709, Success rate: 0.00
+avg 3 return on policy: -9.27454691628615, Success rate: 0.00
+avg 3 return on policy: -6.8978979016343756, Success rate: 0.00
+avg 3 return on policy: -6.8978979016343756, Success rate: 0.00
+avg 3 return on policy: -6.897898482779662, Success rate: 0.00
+avg 3 return on policy: -6.897898482779662, Success rate: 0.00
+avg 3 return on policy: -6.897898646692435, Success rate: 0.00
+avg 3 return on policy: -6.897898646692435, Success rate: 0.00
+avg 3 return on policy: -6.897898646692435, Success rate: 0.00
+avg 3 return on policy: -6.897898646692435, Success rate: 0.00
+avg cum rews: -7.292602513399391, std: 0.7574159270011197
+avg success rate: 0.00, std: 0.00
+the best agent: 0, best agent cum rewards: -6.894581951200962, best agent success rate: 0.0
+78
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.023089114158492505
+avg 3 return on policy: -6.879242074986299, Success rate: 0.00
+avg 3 return on policy: -6.850050039589405, Success rate: 0.00
+avg 3 return on policy: -6.813524191578229, Success rate: 0.00
+avg 3 return on policy: -6.782290955384572, Success rate: 0.00
+avg 3 return on policy: -6.878431362410386, Success rate: 0.00
+avg 3 return on policy: -6.863105185329914, Success rate: 0.00
+avg 3 return on policy: -6.8429087201754255, Success rate: 0.00
+avg 3 return on policy: -6.817128196358681, Success rate: 0.00
+avg 3 return on policy: -6.840932699541251, Success rate: 0.00
+avg 3 return on policy: -6.820380598306656, Success rate: 0.00
+avg 3 return on policy: -6.750995385150115, Success rate: 0.00
+avg 3 return on policy: -6.689523267249267, Success rate: 0.00
+avg 3 return on policy: -6.840264591077964, Success rate: 0.00
+avg 3 return on policy: -6.841533849636714, Success rate: 0.00
+avg 3 return on policy: -6.881462352971236, Success rate: 0.00
+avg 3 return on policy: -6.8923143694798155, Success rate: 0.00
+avg 3 return on policy: -6.811195681492488, Success rate: 0.00
+avg 3 return on policy: -6.79936055590709, Success rate: 0.00
+avg 3 return on policy: -6.818172819912434, Success rate: 0.00
+avg 3 return on policy: -6.820564416547616, Success rate: 0.00
+avg cum rews: -6.826669065654279, std: 0.04658593780260194
+avg success rate: 0.00, std: 0.00
+the best agent: 11, best agent cum rewards: -6.689523267249267, best agent success rate: 0.0
+79
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.021326507089269094
+avg 3 return on policy: -6.6477336411674814, Success rate: 0.00
+avg 3 return on policy: -6.744919091463089, Success rate: 0.00
+avg 3 return on policy: -6.930049076676369, Success rate: 0.00
+avg 3 return on policy: -7.098879737158616, Success rate: 0.00
+avg 3 return on policy: -6.630952626466751, Success rate: 0.00
+avg 3 return on policy: -6.706520232061545, Success rate: 0.00
+avg 3 return on policy: -6.808193152149518, Success rate: 0.00
+avg 3 return on policy: -6.917977561553319, Success rate: 0.00
+avg 3 return on policy: -6.662619744737943, Success rate: 0.00
+avg 3 return on policy: -6.827542116244634, Success rate: 0.00
+avg 3 return on policy: -7.0203331758578615, Success rate: 0.00
+avg 3 return on policy: -7.228178809086482, Success rate: 0.00
+avg 3 return on policy: -6.6424566606680555, Success rate: 0.00
+avg 3 return on policy: -6.65197791159153, Success rate: 0.00
+avg 3 return on policy: -6.717295055588086, Success rate: 0.00
+avg 3 return on policy: -6.78716541826725, Success rate: 0.00
+avg 3 return on policy: -6.5924440150459604, Success rate: 0.00
+avg 3 return on policy: -6.630458258092403, Success rate: 0.00
+avg 3 return on policy: -6.56744788090388, Success rate: 0.00
+avg 3 return on policy: -6.494006445010503, Success rate: 0.00
+avg cum rews: -6.765357530489564, std: 0.18500642203254478
+avg success rate: 0.00, std: 0.00
+the best agent: 19, best agent cum rewards: -6.494006445010503, best agent success rate: 0.0
+80
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.021170868077682932
+avg 3 return on policy: -6.532650048534076, Success rate: 0.00
+avg 3 return on policy: -6.584304057061672, Success rate: 0.00
+avg 3 return on policy: -6.618100732564926, Success rate: 0.00
+avg 3 return on policy: -6.659507282078266, Success rate: 0.00
+avg 3 return on policy: -6.5112898126244545, Success rate: 0.00
+avg 3 return on policy: -6.522438781956832, Success rate: 0.00
+avg 3 return on policy: -6.534538115064303, Success rate: 0.00
+avg 3 return on policy: -6.544354557991028, Success rate: 0.00
+avg 3 return on policy: -6.4987865289052325, Success rate: 0.00
+avg 3 return on policy: -6.420207689205806, Success rate: 0.00
+avg 3 return on policy: -6.356768416861693, Success rate: 0.00
+avg 3 return on policy: -6.269393329819043, Success rate: 0.00
+avg 3 return on policy: -6.463101044297218, Success rate: 0.00
+avg 3 return on policy: -6.3746669019262, Success rate: 0.00
+avg 3 return on policy: -6.299273205300172, Success rate: 0.00
+avg 3 return on policy: -6.231002070009708, Success rate: 0.00
+avg 3 return on policy: -6.525172519187133, Success rate: 0.00
+avg 3 return on policy: -6.6182986696561175, Success rate: 0.00
+avg 3 return on policy: -6.725472621619701, Success rate: 0.00
+avg 3 return on policy: -6.874040452142556, Success rate: 0.00
+avg cum rews: -6.508168341840308, std: 0.15250848164775466
+avg success rate: 0.00, std: 0.00
+the best agent: 15, best agent cum rewards: -6.231002070009708, best agent success rate: 0.0
+81
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.020804282625193682
+avg 3 return on policy: -6.081115536391735, Success rate: 0.00
+avg 3 return on policy: -6.003352860609691, Success rate: 0.00
+avg 3 return on policy: -5.933110634485881, Success rate: 0.00
+avg 3 return on policy: -5.8644425347447395, Success rate: 0.00
+avg 3 return on policy: -6.112845639387767, Success rate: 0.00
+avg 3 return on policy: -6.09629522015651, Success rate: 0.00
+avg 3 return on policy: -6.093141148487727, Success rate: 0.00
+avg 3 return on policy: -6.09412616242965, Success rate: 0.00
+avg 3 return on policy: -6.105709532896678, Success rate: 0.00
+avg 3 return on policy: -6.081157890458901, Success rate: 0.00
+avg 3 return on policy: -6.020539827644825, Success rate: 0.00
+avg 3 return on policy: -5.956220279137294, Success rate: 0.00
+avg 3 return on policy: -6.10614637285471, Success rate: 0.00
+avg 3 return on policy: -6.052400027712186, Success rate: 0.00
+avg 3 return on policy: -5.987059486409028, Success rate: 0.00
+avg 3 return on policy: -5.9106644714872045, Success rate: 0.00
+avg 3 return on policy: -6.111287911732991, Success rate: 0.00
+avg 3 return on policy: -6.000022369126479, Success rate: 0.00
+avg 3 return on policy: -5.910156118373076, Success rate: 0.00
+avg 3 return on policy: -5.800825707614422, Success rate: 0.00
+avg cum rews: -6.016030986607076, std: 0.09116774050640886
+avg success rate: 0.00, std: 0.00
+the best agent: 19, best agent cum rewards: -5.800825707614422, best agent success rate: 0.0
+82
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.016977177747420934
+avg 3 return on policy: -5.658725408216317, Success rate: 0.00
+avg 3 return on policy: -5.583001983662446, Success rate: 0.00
+avg 3 return on policy: -5.6197019790609675, Success rate: 0.00
+avg 3 return on policy: -5.626750806967418, Success rate: 0.00
+avg 3 return on policy: -5.641783711810906, Success rate: 0.00
+avg 3 return on policy: -5.504918972651164, Success rate: 0.00
+avg 3 return on policy: -5.398274526000023, Success rate: 0.00
+avg 3 return on policy: -5.3056898564100266, Success rate: 0.00
+avg 3 return on policy: -5.719438570241134, Success rate: 0.00
+avg 3 return on policy: -5.767130767305692, Success rate: 0.00
+avg 3 return on policy: -5.877212643623352, Success rate: 0.00
+avg 3 return on policy: -5.993885899583499, Success rate: 0.00
+avg 3 return on policy: -5.556105102101962, Success rate: 0.00
+avg 3 return on policy: -5.417876732846101, Success rate: 0.00
+avg 3 return on policy: -5.239215495685737, Success rate: 0.00
+avg 3 return on policy: -5.075575505693753, Success rate: 0.00
+avg 3 return on policy: -5.558283674220244, Success rate: 0.00
+avg 3 return on policy: -5.420307315886021, Success rate: 0.00
+avg 3 return on policy: -5.2451378007729845, Success rate: 0.00
+avg 3 return on policy: -5.075539710621039, Success rate: 0.00
+avg cum rews: -5.5142278231680395, std: 0.23930010674485655
+avg success rate: 0.00, std: 0.00
+the best agent: 19, best agent cum rewards: -5.075539710621039, best agent success rate: 0.0
+83
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.02239536290460959
+avg 3 return on policy: -4.991305433213711, Success rate: 0.00
+avg 3 return on policy: -4.956149791677793, Success rate: 0.00
+avg 3 return on policy: -4.960775847236316, Success rate: 0.00
+avg 3 return on policy: -4.956608119110267, Success rate: 0.00
+avg 3 return on policy: -5.0082932934165, Success rate: 0.00
+avg 3 return on policy: -4.996680527925491, Success rate: 0.00
+avg 3 return on policy: -5.0271201233069105, Success rate: 0.00
+avg 3 return on policy: -5.061393561462562, Success rate: 0.00
+avg 3 return on policy: -4.953458547592163, Success rate: 0.00
+avg 3 return on policy: -4.968178297082583, Success rate: 0.00
+avg 3 return on policy: -4.969836011528969, Success rate: 0.00
+avg 3 return on policy: -4.9763303473591805, Success rate: 0.00
+avg 3 return on policy: -4.935576369365056, Success rate: 0.00
+avg 3 return on policy: -4.954915925860405, Success rate: 0.00
+avg 3 return on policy: -5.034023513396581, Success rate: 0.00
+avg 3 return on policy: -5.114504868785541, Success rate: 0.00
+avg 3 return on policy: -4.868059612810612, Success rate: 0.00
+avg 3 return on policy: -4.855998429159324, Success rate: 0.00
+avg 3 return on policy: -4.832542116443316, Success rate: 0.00
+avg 3 return on policy: -4.805427019794782, Success rate: 0.00
+avg cum rews: -4.961358887826403, std: 0.07392153846943834
+avg success rate: 0.00, std: 0.00
+the best agent: 19, best agent cum rewards: -4.805427019794782, best agent success rate: 0.0
+84
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.021078423768791692
+avg 3 return on policy: -4.650123919049899, Success rate: 0.00
+avg 3 return on policy: -4.557641640305519, Success rate: 0.00
+avg 3 return on policy: -4.465866133570671, Success rate: 0.00
+avg 3 return on policy: -4.393674376110236, Success rate: 0.00
+avg 3 return on policy: -4.596356960634391, Success rate: 0.00
+avg 3 return on policy: -4.44687952597936, Success rate: 0.00
+avg 3 return on policy: -4.294445832570394, Success rate: 0.00
+avg 3 return on policy: -4.157687497635682, Success rate: 0.00
+avg 3 return on policy: -4.659673194090526, Success rate: 0.00
+avg 3 return on policy: -4.658040784299374, Success rate: 0.00
+avg 3 return on policy: -4.669879801571369, Success rate: 0.00
+avg 3 return on policy: -4.679283857345581, Success rate: 0.00
+avg 3 return on policy: -4.691595442593098, Success rate: 0.00
+avg 3 return on policy: -4.788596995174885, Success rate: 0.00
+avg 3 return on policy: -4.897287343939145, Success rate: 0.00
+avg 3 return on policy: -5.017828558882077, Success rate: 0.00
+avg 3 return on policy: -4.6918236042062444, Success rate: 0.00
+avg 3 return on policy: -4.75443318237861, Success rate: 0.00
+avg 3 return on policy: -4.857587734858195, Success rate: 0.00
+avg 3 return on policy: -5.00393994897604, Success rate: 0.00
+avg cum rews: -4.646632316708565, std: 0.21455279681178702
+avg success rate: 0.00, std: 0.00
+the best agent: 7, best agent cum rewards: -4.157687497635682, best agent success rate: 0.0
+85
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.021234221198862625
+avg 3 return on policy: -4.0994525502125425, Success rate: 0.00
+avg 3 return on policy: -4.068929684658845, Success rate: 0.00
+avg 3 return on policy: -4.004360069831212, Success rate: 0.00
+avg 3 return on policy: -3.9582411696513495, Success rate: 0.00
+avg 3 return on policy: -4.109961524605751, Success rate: 0.00
+avg 3 return on policy: -4.087905017038186, Success rate: 0.00
+avg 3 return on policy: -4.0621364042162895, Success rate: 0.00
+avg 3 return on policy: -4.044244967401028, Success rate: 0.00
+avg 3 return on policy: -4.096428329745929, Success rate: 0.00
+avg 3 return on policy: -4.094404054184754, Success rate: 0.00
+avg 3 return on policy: -4.094282433390617, Success rate: 0.00
+avg 3 return on policy: -4.093500117460887, Success rate: 0.00
+avg 3 return on policy: -4.09965896854798, Success rate: 0.00
+avg 3 return on policy: -4.156975852946441, Success rate: 0.00
+avg 3 return on policy: -4.223572440445423, Success rate: 0.00
+avg 3 return on policy: -4.295831561088562, Success rate: 0.00
+avg 3 return on policy: -4.130004219710827, Success rate: 0.00
+avg 3 return on policy: -4.211862991253535, Success rate: 0.00
+avg 3 return on policy: -4.373400347928206, Success rate: 0.00
+avg 3 return on policy: -4.540682179232438, Success rate: 0.00
+avg cum rews: -4.14229174417754, std: 0.13010992051915957
+avg success rate: 0.00, std: 0.00
+the best agent: 3, best agent cum rewards: -3.9582411696513495, best agent success rate: 0.0
+86
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.021309368095687682
+avg 3 return on policy: -3.855887326101462, Success rate: 0.00
+avg 3 return on policy: -3.8112162252267203, Success rate: 0.00
+avg 3 return on policy: -3.75189250955979, Success rate: 0.00
+avg 3 return on policy: -3.7051560506224632, Success rate: 0.00
+avg 3 return on policy: -3.831215883294741, Success rate: 0.00
+avg 3 return on policy: -3.7682076866428056, Success rate: 0.00
+avg 3 return on policy: -3.702835234502951, Success rate: 0.00
+avg 3 return on policy: -3.64060939848423, Success rate: 0.00
+avg 3 return on policy: -3.903108020623525, Success rate: 0.00
+avg 3 return on policy: -4.004615865647793, Success rate: 0.00
+avg 3 return on policy: -4.072883516550064, Success rate: 0.00
+avg 3 return on policy: -4.135898619890213, Success rate: 0.00
+avg 3 return on policy: -3.8323567708333335, Success rate: 0.00
+avg 3 return on policy: -3.863645553588867, Success rate: 0.00
+avg 3 return on policy: -3.868982923527559, Success rate: 0.00
+avg 3 return on policy: -3.8848169508079686, Success rate: 0.00
+avg 3 return on policy: -3.8762945706645646, Success rate: 0.00
+avg 3 return on policy: -3.906246170401573, Success rate: 0.00
+avg 3 return on policy: -3.9616956810156503, Success rate: 0.00
+avg 3 return on policy: -4.044092652698358, Success rate: 0.00
+avg cum rews: -3.8710828805342317, std: 0.12450165414411361
+avg success rate: 0.00, std: 0.00
+the best agent: 7, best agent cum rewards: -3.64060939848423, best agent success rate: 0.0
+87
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.020107691582688186
+avg 3 return on policy: -3.5614673234522343, Success rate: 0.00
+avg 3 return on policy: -3.568383354693651, Success rate: 0.00
+avg 3 return on policy: -3.5650701398650804, Success rate: 0.00
+avg 3 return on policy: -3.569768530627092, Success rate: 0.00
+avg 3 return on policy: -3.4882353780170283, Success rate: 0.00
+avg 3 return on policy: -3.4720388129353523, Success rate: 0.00
+avg 3 return on policy: -3.4237634191910424, Success rate: 0.00
+avg 3 return on policy: -3.3826551102101803, Success rate: 0.00
+avg 3 return on policy: -3.4148356802761555, Success rate: 0.00
+avg 3 return on policy: -3.344381327430407, Success rate: 0.00
+avg 3 return on policy: -3.284326727191607, Success rate: 0.00
+avg 3 return on policy: -3.220231309533119, Success rate: 0.00
+avg 3 return on policy: -3.4684586822986603, Success rate: 0.00
+avg 3 return on policy: -3.480011055866877, Success rate: 0.00
+avg 3 return on policy: -3.4805762780209384, Success rate: 0.00
+avg 3 return on policy: -3.4591618788739047, Success rate: 0.00
+avg 3 return on policy: -3.4145933439334235, Success rate: 0.00
+avg 3 return on policy: -3.538090143352747, Success rate: 0.00
+avg 3 return on policy: -3.587125524878502, Success rate: 0.00
+avg 3 return on policy: -3.645725168287754, Success rate: 0.00
+avg cum rews: -3.4684449594467877, std: 0.1037812229731666
+avg success rate: 0.00, std: 0.00
+the best agent: 11, best agent cum rewards: -3.220231309533119, best agent success rate: 0.0
+88
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.018801646432069823
+avg 3 return on policy: -3.082541275769472, Success rate: 0.00
+avg 3 return on policy: -3.2543024346232414, Success rate: 0.00
+avg 3 return on policy: -3.4219613472620645, Success rate: 0.00
+avg 3 return on policy: -3.606148732205232, Success rate: 0.00
+avg 3 return on policy: -3.0562915205955505, Success rate: 0.00
+avg 3 return on policy: -3.117440768827995, Success rate: 0.00
+avg 3 return on policy: -3.1312337604661784, Success rate: 0.00
+avg 3 return on policy: -3.1636623156567416, Success rate: 0.00
+avg 3 return on policy: -3.099360084782044, Success rate: 0.00
+avg 3 return on policy: -3.143895381440719, Success rate: 0.00
+avg 3 return on policy: -3.154176726937294, Success rate: 0.00
+avg 3 return on policy: -3.156659041841825, Success rate: 0.00
+avg 3 return on policy: -3.0855609700083733, Success rate: 0.00
+avg 3 return on policy: -3.0612055249512196, Success rate: 0.00
+avg 3 return on policy: -3.0001367082198462, Success rate: 0.00
+avg 3 return on policy: -2.942864919702212, Success rate: 0.00
+avg 3 return on policy: -3.133221920579672, Success rate: 0.00
+avg 3 return on policy: -3.1032973043620586, Success rate: 0.00
+avg 3 return on policy: -3.0896586813032627, Success rate: 0.00
+avg 3 return on policy: -3.0995150978366532, Success rate: 0.00
+avg cum rews: -3.145156725868582, std: 0.14072883162296274
+avg success rate: 0.00, std: 0.00
+the best agent: 15, best agent cum rewards: -2.942864919702212, best agent success rate: 0.0
+89
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.020867182363482034
+avg 3 return on policy: -2.816011463602384, Success rate: 0.00
+avg 3 return on policy: -2.837344016879797, Success rate: 0.00
+avg 3 return on policy: -2.816276829689741, Success rate: 0.00
+avg 3 return on policy: -2.814583713809649, Success rate: 0.00
+avg 3 return on policy: -2.8177753426134586, Success rate: 0.00
+avg 3 return on policy: -2.8220856798191867, Success rate: 0.00
+avg 3 return on policy: -2.824133971085151, Success rate: 0.00
+avg 3 return on policy: -2.821930330246687, Success rate: 0.00
+avg 3 return on policy: -2.812450351814429, Success rate: 0.00
+avg 3 return on policy: -2.8505750708281994, Success rate: 0.00
+avg 3 return on policy: -2.8734994928042092, Success rate: 0.00
+avg 3 return on policy: -2.9055819995701313, Success rate: 0.00
+avg 3 return on policy: -2.7995650395751, Success rate: 0.00
+avg 3 return on policy: -2.8033090668419995, Success rate: 0.00
+avg 3 return on policy: -2.850714523345232, Success rate: 0.00
+avg 3 return on policy: -2.944157329698404, Success rate: 0.00
+avg 3 return on policy: -2.8589033260941505, Success rate: 0.00
+avg 3 return on policy: -2.898306891322136, Success rate: 0.00
+avg 3 return on policy: -3.00909336283803, Success rate: 0.00
+avg 3 return on policy: -3.1516978243986764, Success rate: 0.00
+avg cum rews: -2.8663997813438375, std: 0.08336346106322672
+avg success rate: 0.00, std: 0.00
+the best agent: 12, best agent cum rewards: -2.7995650395751, best agent success rate: 0.0
+90
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.022845542479694367
+avg 3 return on policy: -2.6024464642008147, Success rate: 0.00
+avg 3 return on policy: -2.621309625605742, Success rate: 0.00
+avg 3 return on policy: -2.6236396729946136, Success rate: 0.00
+avg 3 return on policy: -2.650224025050799, Success rate: 0.00
+avg 3 return on policy: -2.610561872522036, Success rate: 0.00
+avg 3 return on policy: -2.6378451411922774, Success rate: 0.00
+avg 3 return on policy: -2.6747771377364793, Success rate: 0.00
+avg 3 return on policy: -2.719674628227949, Success rate: 0.00
+avg 3 return on policy: -2.6135645657777786, Success rate: 0.00
+avg 3 return on policy: -2.6368779788414636, Success rate: 0.00
+avg 3 return on policy: -2.6679902399579682, Success rate: 0.00
+avg 3 return on policy: -2.6813107853134475, Success rate: 0.00
+avg 3 return on policy: -2.618607277671496, Success rate: 0.00
+avg 3 return on policy: -2.6565925839046636, Success rate: 0.00
+avg 3 return on policy: -2.683785426119963, Success rate: 0.00
+avg 3 return on policy: -2.7108308101693788, Success rate: 0.00
+avg 3 return on policy: -2.666533456494411, Success rate: 0.00
+avg 3 return on policy: -2.701349165290594, Success rate: 0.00
+avg 3 return on policy: -2.775317975630363, Success rate: 0.00
+avg 3 return on policy: -2.86444803327322, Success rate: 0.00
+avg cum rews: -2.6708843432987734, std: 0.06144307945994417
+avg success rate: 0.00, std: 0.00
+the best agent: 0, best agent cum rewards: -2.6024464642008147, best agent success rate: 0.0
+91
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.018471862528316573
+avg 3 return on policy: -2.4249623343348503, Success rate: 1.00
+avg 3 return on policy: -2.2771569391091666, Success rate: 1.00
+avg 3 return on policy: -2.1469717671473822, Success rate: 1.00
+avg 3 return on policy: -2.034294872234265, Success rate: 1.00
+avg 3 return on policy: -2.410987059275309, Success rate: 1.00
+avg 3 return on policy: -2.370559237897396, Success rate: 1.00
+avg 3 return on policy: -2.302531559020281, Success rate: 1.00
+avg 3 return on policy: -2.264211085935434, Success rate: 1.00
+avg 3 return on policy: -2.4987678887943425, Success rate: 1.00
+avg 3 return on policy: -2.6278118987878165, Success rate: 0.00
+avg 3 return on policy: -2.745841554055611, Success rate: 0.00
+avg 3 return on policy: -2.8880171490212283, Success rate: 0.00
+avg 3 return on policy: -2.4550198080639043, Success rate: 1.00
+avg 3 return on policy: -2.422748599201441, Success rate: 1.00
+avg 3 return on policy: -2.4185463848213353, Success rate: 1.00
+avg 3 return on policy: -2.4051991204420724, Success rate: 1.00
+avg 3 return on policy: -2.461889242132505, Success rate: 1.00
+avg 3 return on policy: -2.4400165354212127, Success rate: 1.00
+avg 3 return on policy: -2.441358644515276, Success rate: 1.00
+avg 3 return on policy: -2.436858224372069, Success rate: 1.00
+avg cum rews: -2.423687495229145, std: 0.18207390457625672
+avg success rate: 0.85, std: 0.36
+the best agent: 3, best agent cum rewards: -2.034294872234265, best agent success rate: 1.0
+92
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.01765097564149962
+avg 3 return on policy: -1.8925624092419941, Success rate: 1.00
+avg 3 return on policy: -1.9381332856913407, Success rate: 1.00
+avg 3 return on policy: -1.9615431105097134, Success rate: 1.00
+avg 3 return on policy: -2.0386714140574136, Success rate: 1.00
+avg 3 return on policy: -1.8619177229702473, Success rate: 1.00
+avg 3 return on policy: -1.8631927495201428, Success rate: 1.00
+avg 3 return on policy: -1.888414729386568, Success rate: 1.00
+avg 3 return on policy: -1.9191745420296986, Success rate: 1.00
+avg 3 return on policy: -1.9462085117896397, Success rate: 1.00
+avg 3 return on policy: -1.9285808379451435, Success rate: 1.00
+avg 3 return on policy: -1.9381481098632019, Success rate: 1.00
+avg 3 return on policy: -1.94679556787014, Success rate: 1.00
+avg 3 return on policy: -1.915339541931947, Success rate: 1.00
+avg 3 return on policy: -1.8223501220345497, Success rate: 1.00
+avg 3 return on policy: -1.7200702217717965, Success rate: 1.00
+avg 3 return on policy: -1.618552712102731, Success rate: 1.00
+avg 3 return on policy: -1.9469834094246228, Success rate: 1.00
+avg 3 return on policy: -1.8383798065284889, Success rate: 1.00
+avg 3 return on policy: -1.737115994716684, Success rate: 1.00
+avg 3 return on policy: -1.6438377698262532, Success rate: 1.00
+avg cum rews: -1.8682986284606158, std: 0.10731687504793236
+avg success rate: 1.00, std: 0.00
+the best agent: 15, best agent cum rewards: -1.618552712102731, best agent success rate: 1.0
+93
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.01975251459530432
+avg 3 return on policy: -1.58996007964015, Success rate: 1.00
+avg 3 return on policy: -1.5898728234072526, Success rate: 1.00
+avg 3 return on policy: -1.5462237081180017, Success rate: 1.00
+avg 3 return on policy: -1.5245669186115265, Success rate: 1.00
+avg 3 return on policy: -1.504744133601586, Success rate: 1.00
+avg 3 return on policy: -1.4037997449437778, Success rate: 1.00
+avg 3 return on policy: -1.276725963378946, Success rate: 1.00
+avg 3 return on policy: -1.1537247157345216, Success rate: 1.00
+avg 3 return on policy: -1.5310457448164623, Success rate: 1.00
+avg 3 return on policy: -1.5362788972755272, Success rate: 1.00
+avg 3 return on policy: -1.577176259830594, Success rate: 1.00
+avg 3 return on policy: -1.6338315301885207, Success rate: 1.00
+avg 3 return on policy: -1.5721311134596665, Success rate: 1.00
+avg 3 return on policy: -1.6527156836042802, Success rate: 1.00
+avg 3 return on policy: -1.7588541054477294, Success rate: 1.00
+avg 3 return on policy: -1.8913066604485114, Success rate: 1.00
+avg 3 return on policy: -1.506069431702296, Success rate: 1.00
+avg 3 return on policy: -1.6101488582789898, Success rate: 1.00
+avg 3 return on policy: -1.7171033105502527, Success rate: 1.00
+avg 3 return on policy: -1.8438166286796331, Success rate: 1.00
+avg cum rews: -1.5710048155859115, std: 0.16574423079522635
+avg success rate: 1.00, std: 0.00
+the best agent: 7, best agent cum rewards: -1.1537247157345216, best agent success rate: 1.0
+94
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.017523967466737945
+avg 3 return on policy: -1.1076697781682014, Success rate: 1.00
+avg 3 return on policy: -0.9809769416848818, Success rate: 1.00
+avg 3 return on policy: -0.9306404758244753, Success rate: 1.00
+avg 3 return on policy: -1.0996114869291584, Success rate: 1.00
+avg 3 return on policy: -1.0849968834469716, Success rate: 1.00
+avg 3 return on policy: -1.0503092734143138, Success rate: 1.00
+avg 3 return on policy: -1.185147803587218, Success rate: 1.00
+avg 3 return on policy: -1.4542589926471312, Success rate: 1.00
+avg 3 return on policy: -1.1594085364292066, Success rate: 1.00
+avg 3 return on policy: -1.2391608748584986, Success rate: 1.00
+avg 3 return on policy: -1.404405717427532, Success rate: 1.00
+avg 3 return on policy: -1.5791390016674995, Success rate: 1.00
+avg 3 return on policy: -1.1250171512365341, Success rate: 1.00
+avg 3 return on policy: -1.0890295697997014, Success rate: 1.00
+avg 3 return on policy: -1.0896328538656235, Success rate: 1.00
+avg 3 return on policy: -1.0958562524368365, Success rate: 1.00
+avg 3 return on policy: -1.1399487778544426, Success rate: 1.00
+avg 3 return on policy: -1.1560736397902172, Success rate: 1.00
+avg 3 return on policy: -1.185057871043682, Success rate: 1.00
+avg 3 return on policy: -1.2573017279307048, Success rate: 1.00
+avg cum rews: -1.1706821805021417, std: 0.1518476837408898
+avg success rate: 1.00, std: 0.00
+the best agent: 2, best agent cum rewards: -0.9306404758244753, best agent success rate: 1.0
+95
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.022070676683081967
+avg 3 return on policy: -0.8304073493927717, Success rate: 1.00
+avg 3 return on policy: -0.7955910693854094, Success rate: 1.00
+avg 3 return on policy: -0.7569327143331369, Success rate: 1.00
+avg 3 return on policy: -0.7725283050288757, Success rate: 1.00
+avg 3 return on policy: -0.834414454177022, Success rate: 1.00
+avg 3 return on policy: -0.812620883497099, Success rate: 1.00
+avg 3 return on policy: -0.8368290653452277, Success rate: 1.00
+avg 3 return on policy: -0.8737044365455707, Success rate: 1.00
+avg 3 return on policy: -0.7928815068056186, Success rate: 1.00
+avg 3 return on policy: -0.6961824900160233, Success rate: 1.00
+avg 3 return on policy: -0.6581795522943139, Success rate: 1.00
+avg 3 return on policy: -0.6910886773839593, Success rate: 1.00
+avg 3 return on policy: -0.8572753636787335, Success rate: 1.00
+avg 3 return on policy: -0.8995852141330639, Success rate: 1.00
+avg 3 return on policy: -0.9576513335729638, Success rate: 1.00
+avg 3 return on policy: -1.019792382294933, Success rate: 1.00
+avg 3 return on policy: -0.8641566239918271, Success rate: 1.00
+avg 3 return on policy: -1.0355838515485327, Success rate: 1.00
+avg 3 return on policy: -1.2482733471939962, Success rate: 1.00
+avg 3 return on policy: -1.4656033553183079, Success rate: 1.00
+avg cum rews: -0.8849640987968692, std: 0.18709146942875526
+avg success rate: 1.00, std: 0.00
+the best agent: 10, best agent cum rewards: -0.6581795522943139, best agent success rate: 1.0
+96
+---------------------------------
+Searching empty space policies
+(10, 5512)
+(20, 5512)
+(20, 5512)
+Average distance of agents to nearest neighbors: 0.0227737604231376
+avg 3 return on policy: -0.6639234386384487, Success rate: 1.00
+avg 3 return on policy: -0.6088438777563473, Success rate: 1.00
+avg 3 return on policy: -0.6538189084579548, Success rate: 1.00
+avg 3 return on policy: -0.7929444384450713, Success rate: 1.00
+avg 3 return on policy: -0.5953534518678983, Success rate: 1.00
+avg 3 return on policy: -0.5425543331851562, Success rate: 1.00
+avg 3 return on policy: -0.5518680481861035, Success rate: 1.00
+avg 3 return on policy: -0.6399868042208254, Success rate: 1.00
+avg 3 return on policy: -0.5794669824341933, Success rate: 1.00
+avg 3 return on policy: -0.45305842300876975, Success rate: 1.00
+avg 3 return on policy: -0.3434211079729721, Success rate: 1.00
+avg 3 return on policy: -0.34110422781668603, Success rate: 1.00
+avg 3 return on policy: -0.6452956289673845, Success rate: 1.00
+avg 3 return on policy: -0.7671818607486784, Success rate: 1.00
+avg 3 return on policy: -0.9432064232726892, Success rate: 1.00
+avg 3 return on policy: -1.1128258937969804, Success rate: 1.00
+avg 3 return on policy: -0.5705110520745317, Success rate: 1.00
+avg 3 return on policy: -0.7366166732584437, Success rate: 1.00
+avg 3 return on policy: -0.852772788455089, Success rate: 1.00
+avg 3 return on policy: -0.9669184846182665, Success rate: 1.00
+avg cum rews: -0.6680836423591245, std: 0.19268247123945148
+avg success rate: 1.00, std: 0.00
+the best agent: 11, best agent cum rewards: -0.34110422781668603, best agent success rate: 1.0
+Average distance of random agents to nearest neighbors: [0.030392368774601025, 0.031145641131207012, 0.030376943448857264, 0.028078703965522672, 0.03130609227835303, 0.02715198021067643, 0.025660806628542428, 0.027270599781155997, 0.02676519749083236, 0.029082208972155937, 0.026606594518572224, 0.027813481185545264, 0.02750478174326166, 0.02822028423025181, 0.02479031956245425, 0.025237542470041785, 0.025061206563697376, 0.025771855308664066, 0.027730513745422188, 0.02405330652500228, 0.0252888712224388, 0.020387175284364394, 0.024089250717340208, 0.024244065868612552, 0.02282497469771457, 0.026364540546292847, 0.022255727235360664, 0.02258283500265397, 0.02208061923516292, 0.024360423387249384, 0.02125786817269288, 0.02235754421630359, 0.021299248405587525, 0.022016594841603763, 0.022701034720435907, 0.019633164924430263, 0.020915462047758578, 0.01998642231123379, 0.02016420857166928, 0.02441523084558298, 0.019286802103319345, 0.019403077088129987, 0.023008811558399452, 0.023962307134856045, 0.022561652067773837, 0.02221512233162414, 0.021341745832539845, 0.024782516523397524, 0.02651427688408623, 0.024099375805001204, 0.023665863140333133, 0.021370286061439023, 0.019723048348840748, 0.018767100600205776, 0.020584824381668324, 0.020763872708740503, 0.021671681087410286, 0.021637985952659918, 0.019895049059042706, 0.0203826398038211, 0.022329317743647877, 0.018368973433033488, 0.019352241311674862, 0.021144357929525546, 0.018407530311894345, 0.020729510827263167, 0.018933652056479556, 0.018367810224727662, 0.02108457951726077, 0.022597767255861358, 0.018910257211900837, 0.020362758251733143, 0.01932160063362926, 0.023121359798112195, 0.023159599964135184, 0.019640558158098325, 0.007657988794471933, 0.023089114158492505, 0.021326507089269094, 0.021170868077682932, 0.020804282625193682, 0.016977177747420934, 0.02239536290460959, 0.021078423768791692, 0.021234221198862625, 0.021309368095687682, 0.020107691582688186, 0.018801646432069823, 0.020867182363482034, 0.022845542479694367, 0.018471862528316573, 0.01765097564149962, 0.01975251459530432, 0.017523967466737945, 0.022070676683081967, 0.0227737604231376]
+Time taken for each iteration: [20.373624086380005, 39.87153363227844, 55.18219232559204, 70.96058964729309, 87.10768628120422, 103.5327079296112, 119.96269488334656, 135.96932315826416, 152.03773069381714, 168.21178698539734, 184.36886024475098, 200.49645376205444, 220.9777536392212, 237.07078862190247, 257.6613824367523, 278.36639761924744, 294.74133706092834, 311.15470361709595, 327.67899656295776, 348.58180117607117, 365.18117570877075, 381.6258807182312, 398.67469215393066, 415.3876531124115, 432.2063970565796, 449.32435178756714, 472.00659346580505, 489.8248450756073, 507.5708303451538, 525.5167543888092, 548.3139672279358, 566.0279190540314, 583.8308107852936, 601.6369876861572, 624.4502537250519, 642.4112277030945, 660.2638828754425, 678.0446391105652, 695.757155418396, 713.4396357536316, 731.1984539031982, 748.9351515769958, 766.6066710948944, 784.3740575313568, 802.1416511535645, 819.8854146003723, 837.6729691028595, 855.4858193397522, 873.365480184555, 895.9980003833771, 918.644944190979, 936.4798979759216, 954.1657629013062, 971.9296171665192, 994.6348769664764, 1017.4766099452972, 1040.3006002902985, 1057.9082469940186, 1075.5431544780731, 1093.1863396167755, 1115.9243907928467, 1133.608139038086, 1156.485405921936, 1174.3026282787323, 1197.1585836410522, 1214.882250070572, 1232.481561422348, 1250.1003589630127, 1272.7383248806, 1290.5827310085297, 1308.3910639286041, 1331.0526683330536, 1348.7185866832733, 1366.5462055206299, 1384.388400554657, 1402.1610279083252, 1414.6298685073853, 1432.1697072982788, 1449.0671727657318, 1465.8620426654816, 1482.6187584400177, 1499.3831202983856, 1516.0429682731628, 1537.8546903133392, 1554.4917449951172, 1571.1227939128876, 1587.797238111496, 1603.9172868728638, 1620.037718296051, 1636.05339717865, 1652.2241327762604, 1668.2574751377106, 1684.6845519542694, 1700.8471429347992, 1717.263011932373, 1733.319603919983]
