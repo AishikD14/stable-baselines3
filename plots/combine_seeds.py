@@ -19,8 +19,8 @@ args, rest_args = parser.parse_known_args()
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
-env = "FetchReach-v4"
-# env = "FetchReachDense-v4"
+# env = "FetchReach-v4"
+env = "FetchReachDense-v4"
 # env = "FetchPush-v4"
 # env = "FetchPushDense-v4"
 
@@ -180,7 +180,10 @@ for i, plot_metric in enumerate(plot_metrics):
 
 # plt.xlabel('Samples (x' + str(args.n_steps_per_rollout*args.n_envs) + ')')
 plt.xlabel("Number of Iterations")
-plt.ylabel('Average Return')
+if env in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+    plt.ylabel('Success Rate')
+else:
+    plt.ylabel('Average Return')
 plt.title('Reward Plot')
 plt.grid()
 plt.legend()
