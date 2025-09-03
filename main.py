@@ -803,10 +803,10 @@ if __name__ == "__main__":
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
     # env_name = "Pendulum-v1" # For pendulum (single goal task)
 
-    env_name = "FetchReach-v4" # For FetchReach (single goal task) sparse rewards
+    # env_name = "FetchReach-v4" # For FetchReach (single goal task) sparse rewards
     # env_name = "FetchReachDense-v4" # For FetchReach (single goal task) dense rewards
     # env_name = "FetchPush-v4" # For FetchPush (single goal task) sparse rewards
-    # env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
+    env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
 
     # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -905,7 +905,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_normal_training"
+    exp = "PPO_upper_bound"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -989,8 +989,8 @@ if __name__ == "__main__":
     # START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
     START_ITER = 1
     SEARCH_INTERV = 1 # Make this 2 for n_epochs=5 and keep 1 for n_epochs=10
-    # NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
-    NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs) # For FetchReach-v4
+    NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
+    # NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs) # For FetchReach-v4
     N_EPOCHS = args.n_epochs
 
     # ---------------------------------------------------------------------------------------------------------------
@@ -1051,7 +1051,7 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = True
+    normal_train = False
     use_ANN = False
     ANN_lib = "Annoy"
     online_eval = True
@@ -1241,8 +1241,7 @@ if __name__ == "__main__":
 
                 if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
                     mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
-                    print(f'avg 3 return on policy: {mean_rew}')
-                    print(f'Success rate: {success:.2f}')
+                    print(f'avg 3 return on policy: {mean_rew}, Success rate: {success:.2f}')
                     cum_rews.append(mean_rew)
                     cum_success.append(success)
                 else:
@@ -1329,9 +1328,22 @@ if __name__ == "__main__":
 
             # Finding the best agent from online evaluation
             if online_eval:
-                best_idx = np.argsort(cum_rews)[-1]
+                if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                    # Mask for successes
+                    success_mask = cum_success == 1.0
+
+                    if np.any(success_mask):  # <-- only true if there's at least one success
+                        successful_rews = cum_rews[success_mask]
+                        best_idx_in_success = np.argmax(successful_rews)  # first occurrence of max
+                        best_idx = np.where(success_mask)[0][best_idx_in_success]
+                    else:
+                        # No successes at all → fallback to best reward overall
+                        best_idx = np.argmax(cum_rews)
+                else:
+                    best_idx = np.argsort(cum_rews)[-1]
+
                 best_agent = agents[best_idx]
-                print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}')
+                print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}, best agent success rate: {cum_success[best_idx] if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] else "N/A"}')
                 best_agent_index.append(best_idx)
                 np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
                 load_state_dict(model, best_agent)
