@@ -20,9 +20,9 @@ args, rest_args = parser.parse_known_args()
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
-env = "FetchReach-v4"
+# env = "FetchReach-v4"
 # env = "FetchReachDense-v4"
-# env = "FetchPush-v4"
+env = "FetchPush-v4"
 # env = "FetchPushDense-v4"
 
 if env == "Ant-v5":
@@ -160,7 +160,7 @@ ax.set_facecolor('#f5f5f5')
 # plt.xlabel('Samples (x' + str(args.n_steps_per_rollout) + ')')
 plt.xlabel('Iterations', fontsize=20)
 if env in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-    plt.ylabel('Success Rate', fontsize=20)
+    plt.ylabel('Average Success Rate', fontsize=20)
 else:
     plt.ylabel('Average Return', fontsize=20)
 plt.title(env, fontsize=20)

@@ -20,8 +20,10 @@ args, rest_args = parser.parse_known_args()
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
-env = "FetchReach-v4"
+# env = "FetchReach-v4"
 # env = "FetchReachDense-v4"
+env = "FetchPush-v4"
+# env = "FetchPushDense-v4"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
