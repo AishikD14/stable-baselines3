@@ -6,7 +6,7 @@ def get_args(rest_args):
     parser.add_argument('--env-name', default='FetchReachDense-v4', type=str, help='Gym environment ID')
     parser.add_argument('--policy', default='MlpPolicy', type=str, help='Policy architecture')
     parser.add_argument('--verbose', default=0, type=int, help='Verbosity level')
-    parser.add_argument('--seed', default=3, type=int, help='Random seed')
+    parser.add_argument('--seed', default=0, type=int, help='Random seed')
     parser.add_argument('--n-steps-per-rollout', default=2048, type=int, help='Number of steps per rollout')
     parser.add_argument('--batch-size', default=64, type=int, help='Batch size')
     parser.add_argument('--gamma', default=0.95, type=float, help='Discount factor')
