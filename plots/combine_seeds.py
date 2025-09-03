@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
@@ -20,6 +20,9 @@ args, rest_args = parser.parse_known_args()
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
 env = "FetchReach-v4"
+# env = "FetchReachDense-v4"
+# env = "FetchPush-v4"
+# env = "FetchPushDense-v4"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -41,6 +44,12 @@ elif env == "LunarLander-v3":
     args = args_lunarlander.get_args(rest_args)
 elif env == "FetchReach-v4":
     args = args_fetch_reach.get_args(rest_args)
+elif env == "FetchReachDense-v4":
+    args = args_fetch_reach_dense.get_args(rest_args)
+elif env == "FetchPush-v4":
+    args = args_fetch_push.get_args(rest_args)
+elif env == "FetchPushDense-v4":
+    args = args_fetch_push_dense.get_args(rest_args)
 
 if not hasattr(args, 'n_envs'):
     args.n_envs = 1
@@ -102,7 +111,7 @@ for plot_item in plot_list:
         results = np.load(directory + ".npy")
         print(results.shape)
 
-        if env not in ["Pendulum-v1", "BipedalWalker-v3", "LunarLander-v3", "FetchReach-v4"] and plot_item[0] not in ["PPO_NoPretrain", "TRPO_NoPretrain"]:
+        if env not in ["Pendulum-v1", "BipedalWalker-v3", "LunarLander-v3", "FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] and plot_item[0] not in ["PPO_NoPretrain", "TRPO_NoPretrain"]:
             # Load pretrained rewards
             if "PPO" in plot_item[0]:
                 pretrain_rewards = np.load("../final_results/"+env+"/PPO_pretrain_"+str(i+1)+".npy")

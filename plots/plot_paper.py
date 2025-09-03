@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense
 import re
 
 parser = argparse.ArgumentParser()
@@ -21,6 +21,9 @@ args, rest_args = parser.parse_known_args()
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
 env = "FetchReach-v4"
+# env = "FetchReachDense-v4"
+# env = "FetchPush-v4"
+# env = "FetchPushDense-v4"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -42,6 +45,12 @@ elif env == "LunarLander-v3":
     args = args_lunarlander.get_args(rest_args)
 elif env == "FetchReach-v4":
     args = args_fetch_reach.get_args(rest_args)
+elif env == "FetchReachDense-v4":
+    args = args_fetch_reach_dense.get_args(rest_args)
+elif env == "FetchPush-v4":
+    args = args_fetch_push.get_args(rest_args)
+elif env == "FetchPushDense-v4":
+    args = args_fetch_push_dense.get_args(rest_args)
 
 # start_iteration = 1000000 // args.n_steps_per_rollout*1
 start_iteration = 1
@@ -112,7 +121,7 @@ for plot_item in plot_list:
     # Smoothing window
     window = 100
 
-    if env == "Pendulum-v1" or env == "BipedalWalker-v3" or env == "Swimmer-v5" or env == "FetchReach-v4":
+    if  env in ["Pendulum-v1", "BipedalWalker-v3", "Swimmer-v5", "FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
         window = 10
 
     smoothed = np.convolve(rewards, np.ones(window)/window, mode='valid')
@@ -150,7 +159,10 @@ ax.set_facecolor('#f5f5f5')
 
 # plt.xlabel('Samples (x' + str(args.n_steps_per_rollout) + ')')
 plt.xlabel('Iterations', fontsize=20)
-plt.ylabel('Average Return', fontsize=20)
+if env in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+    plt.ylabel('Success Rate', fontsize=20)
+else:
+    plt.ylabel('Average Return', fontsize=20)
 plt.title(env, fontsize=20)
 plt.grid(True, color='white')
 plt.xticks(fontsize=16)

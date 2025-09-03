@@ -803,10 +803,10 @@ if __name__ == "__main__":
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
     # env_name = "Pendulum-v1" # For pendulum (single goal task)
 
-    # env_name = "FetchReach-v4" # For FetchReach (single goal task) sparse rewards
+    env_name = "FetchReach-v4" # For FetchReach (single goal task) sparse rewards
     # env_name = "FetchReachDense-v4" # For FetchReach (single goal task) dense rewards
     # env_name = "FetchPush-v4" # For FetchPush (single goal task) sparse rewards
-    env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
+    # env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
 
     # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -1123,6 +1123,7 @@ if __name__ == "__main__":
                 saved_agents = False
 
             cum_rews = []
+            cum_success = []
             best_agent_index = []
             advantage_rew = []
             # q_losses = []
@@ -1238,9 +1239,16 @@ if __name__ == "__main__":
 
                     dummy_env.reset(seed=args.seed)
 
-                returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
-                print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
-                cum_rews.append(returns_trains)
+                if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                    mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
+                    print(f'avg 3 return on policy: {mean_rew}')
+                    print(f'Success rate: {success:.2f}')
+                    cum_rews.append(mean_rew)
+                    cum_success.append(success)
+                else:
+                    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                    print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
+                    cum_rews.append(returns_trains)
 
                 # Q-function evaluation
                 if not online_eval:
@@ -1256,13 +1264,19 @@ if __name__ == "__main__":
             if not online_eval:
                 # print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
                 print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
+            
             print(f'avg cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
+            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                print(f'avg success rate: {np.mean(cum_success):.2f}, std: {np.std(cum_success):.2f}')
 
             os.makedirs(f'logs/{DIR}', exist_ok=True)
 
             np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
             if online_eval:
                 np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+
+                if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                    np.save(f'logs/{DIR}/success_{i}_{i + SEARCH_INTERV}.npy', cum_success)
             if not online_eval:
                 np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
             timeArray.append(time.time() - start_time)
@@ -1338,6 +1352,7 @@ if __name__ == "__main__":
                         )
 
             cum_rews = []
+            cum_success = []
 
             if hasattr(args, 'n_envs') and args.n_envs > 1:
                 # print("Creating multiple envs - ", args.n_envs)
@@ -1352,10 +1367,20 @@ if __name__ == "__main__":
 
                 dummy_env.reset(seed=args.seed)
             
-            returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
-            print(f'avg 3 return on policy: {returns_trains}')
-            cum_rews.append(returns_trains)
+            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
+                print(f'avg 3 return on policy: {mean_rew}')
+                print(f'Success rate: {success:.2f}')
+                cum_rews.append(mean_rew)
+                cum_success.append(success)
+            else:
+                returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                print(f'avg return on 3 trajectories: {returns_trains}')
+                cum_rews.append(returns_trains)
+
             np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                np.save(f'logs/{DIR}/success_{i}_{i + SEARCH_INTERV}.npy', cum_success)
             timeArray.append(time.time() - start_time)
         
         np.save(f'logs/{DIR}/time.npy', timeArray)

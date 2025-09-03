@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense
 import re
 
 parser = argparse.ArgumentParser()
@@ -21,6 +21,7 @@ args, rest_args = parser.parse_known_args()
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
 env = "FetchReach-v4"
+# env = "FetchReachDense-v4"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -42,6 +43,12 @@ elif env == "Hopper-v5":
     args = args_hopper.get_args(rest_args)
 elif env == "FetchReach-v4":
     args = args_fetch_reach.get_args(rest_args)
+elif env == "FetchReachDense-v4":
+    args = args_fetch_reach_dense.get_args(rest_args)
+elif env == "FetchPush-v4":
+    args = args_fetch_push.get_args(rest_args)
+elif env == "FetchPushDense-v4":
+    args = args_fetch_push_dense.get_args(rest_args)
 
 # Pendulum-v1
 file_name_list = [
@@ -158,6 +165,9 @@ for file_name in file_name_list:
         print("Working on "+file_name[0]+" directory")
         reward_values = []
         searchString = "results"
+
+        if env in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+            searchString = "success"
 
         for filename in os.listdir(directory):
             # Check if the filename starts with "results"

@@ -17,6 +17,7 @@ def evaluate_policy(
     callback: Optional[Callable[[dict[str, Any], dict[str, Any]], None]] = None,
     reward_threshold: Optional[float] = None,
     return_episode_rewards: bool = False,
+    return_success_rate: bool = False,
     warn: bool = True,
 ) -> Union[tuple[float, float], tuple[list[float], list[int]]]:
     """
@@ -94,6 +95,7 @@ def evaluate_policy(
         new_observations, rewards, dones, infos = env.step(actions)
         current_rewards += rewards
         current_lengths += 1
+        successes: list[float] = []
         for i in range(n_envs):
             if episode_counts[i] < episode_count_targets[i]:
                 # unpack values so that the callback can access the local variables
@@ -106,6 +108,9 @@ def evaluate_policy(
                     callback(locals(), globals())
 
                 if dones[i]:
+                    if "is_success" in info:
+                        successes.append(info["is_success"])
+
                     if is_monitor_wrapped:
                         # Atari wrapper can send a "done" signal when
                         # the agent loses a life, but it does not correspond
@@ -132,8 +137,12 @@ def evaluate_policy(
 
     mean_reward = np.mean(episode_rewards)
     std_reward = np.std(episode_rewards)
+    success_rate = np.mean(successes) if successes else None
+    
     if reward_threshold is not None:
         assert mean_reward > reward_threshold, "Mean reward below threshold: " f"{mean_reward:.2f} < {reward_threshold:.2f}"
     if return_episode_rewards:
         return episode_rewards, episode_lengths
+    if return_success_rate:
+        return mean_reward, std_reward, success_rate
     return mean_reward, std_reward
