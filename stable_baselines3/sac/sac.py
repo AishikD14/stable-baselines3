@@ -306,6 +306,9 @@ class SAC(OffPolicyAlgorithm):
                 #         th.save(self.policy.state_dict(), f'{self.ckp_dir}/agent{epoch+6}.zip')
                 # else:
                 th.save(self.policy.state_dict(), f'{self.ckp_dir}/agent{self.current_iteration}.zip')
+
+                if self.current_iteration % 10 == 0:
+                    self.current_iteration = 0
         
         self._n_updates += gradient_steps
 
