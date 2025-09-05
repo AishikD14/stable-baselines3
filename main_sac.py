@@ -1,4 +1,5 @@
 import gymnasium as gym
+import gymnasium_robotics
 from stable_baselines3 import SAC
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
@@ -26,6 +27,8 @@ import matplotlib.pyplot as plt
 from d3rlpy.torch_utility import TorchMiniBatch, TorchObservation
 import random
 import os
+from stable_baselines3.common.vec_env import DummyVecEnv
+from gymnasium.wrappers import FlattenObservation
 
 warnings.filterwarnings("ignore")
 
@@ -354,11 +357,11 @@ def random_search_policies(algo, directory, start, end, env, agent_num=10):
     return agents, average_distance
 
 # Neighbor search plus random walk
-def neighbor_search_random_walk(algo, directory, start, end, env, agent_num=10):
+def neighbor_search_random_walk(algo, directory, start, end, env, saved_agents=False, agent_num=10):
     print("---------------------------------")
     print("Searching random policies")
 
-    dt = load_weights(range(start, end), directory, env)
+    dt = load_weights(range(start, end), directory, env, saved_agents)
     print(dt.shape)
 
     neigh = NearestNeighbors(n_neighbors=6)
@@ -564,10 +567,6 @@ class PPOQWrapper(QLearningAlgoBase):
 def d3rl_evaluation(model, exp_name):
     # terminals = model.replay_buffer.dones
 
-    # print("[INFO] Forcing terminal flags every", args.n_steps_per_rollout, "steps.")
-    # terminals = np.zeros_like(model.replay_buffer.rewards, dtype=bool)
-    # terminals[args.n_steps_per_rollout - 1 :: args.n_steps_per_rollout] = True
-
     # Flatten the replay buffer data
     observations = model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1])
     actions = model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1])
@@ -666,6 +665,122 @@ def average_checkpoints(checkpoint_paths):
     
     return avg_policy_vec
 
+# Guided Evolutionary Strategies
+def search_guided_es_policies(algo, directory, start, end, env, saved_agents, agent_num=10, sigma=0.02, alpha=0.5, num_candidates=20):
+    print("---------------------------------")
+    print("Searching policies using Guided Evolutionary Strategies")
+
+    # Load current policy parameters as flat vector
+    policy_state = algo.policy.state_dict()
+    theta_anchor = []
+    for layer in policy_state:
+        if 'value_net' not in layer:
+            theta_anchor.append(policy_state[layer].detach().cpu().numpy().reshape(-1))
+    theta_anchor = np.concatenate(theta_anchor)
+    theta_dim = theta_anchor.shape[0]
+
+    # Get PPO gradient (already computed during model.learn)
+    algo.policy.zero_grad()
+    dummy_env = DummyVecEnv([lambda: gym.make(env_name)])
+    obs = dummy_env.reset()
+    obs_tensor = torch.as_tensor(obs, dtype=torch.float32).to(device)
+    obs_tensor = obs_tensor.unsqueeze(0)  # [1, obs_dim]
+    distribution = algo.policy.get_distribution(obs_tensor)
+    action = distribution.sample()
+    log_prob = distribution.log_prob(action).sum(dim=-1)
+    log_prob.mean().backward()  # dummy backward pass to populate gradients
+
+    ppo_grad = []
+    for name, param in algo.policy.named_parameters():
+        if 'value_net' in name:
+            continue  # Skip critic parameters
+        if param.grad is not None:
+            ppo_grad.append(param.grad.view(-1).cpu().numpy())
+    ppo_grad = np.concatenate(ppo_grad)
+
+    # Generate ES candidates and accumulate gradients
+    g_es_total = np.zeros_like(theta_anchor)
+
+    for _ in range(num_candidates):
+        epsilon = np.random.randn(theta_dim)
+        theta_plus = theta_anchor + sigma * epsilon
+        theta_minus = theta_anchor - sigma * epsilon
+
+        # Evaluate both perturbations
+        candidates = [theta_plus, theta_minus]
+        rewards = []
+        for theta in candidates:
+            policy = OrderedDict()
+            pivot = 0
+            for layer in policy_state:
+                if 'value_net' in layer:
+                    policy[layer] = policy_state[layer]
+                else:
+                    sp = policy_state[layer].reshape(-1).shape[0]
+                    policy[layer] = torch.FloatTensor(theta[pivot:pivot + sp].reshape(policy_state[layer].shape))
+                    pivot += sp
+            algo.policy.load_state_dict(policy)
+            algo.policy.to(device)
+            R = evaluate_policy(algo, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+            rewards.append(R)
+
+        R_plus, R_minus = rewards
+        g_es = ((R_plus - R_minus) / (2 * sigma)) * epsilon
+        g_es_total += g_es
+
+    g_es_mean = g_es_total / num_candidates
+    g_combined = alpha * ppo_grad + (1 - alpha) * g_es_mean
+    theta_new = theta_anchor + algo.learning_rate * g_combined
+
+    # Convert updated flat vector back into policy state dict
+    new_policy = OrderedDict()
+    pivot = 0
+    for layer in policy_state:
+        if 'value_net' in layer:
+            new_policy[layer] = policy_state[layer]
+        else:
+            sp = policy_state[layer].reshape(-1).shape[0]
+            new_policy[layer] = torch.FloatTensor(theta_new[pivot:pivot + sp].reshape(policy_state[layer].shape))
+            pivot += sp
+
+    agent_list = [new_policy]  # we return one updated agent
+    return agent_list, 0.0  # dummy distance value for compatibility
+
+# Value Function Search
+def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_num=10,
+                        alpha=0.01, vfs_steps=3):
+    print("---------------------------------")
+    print("Searching policies using Value Function Search")
+
+    # Clone original policy weights to restore later if needed
+    original_state = copy.deepcopy(algo.policy.state_dict())
+
+    # Get one observation to condition value function
+    dummy_env = DummyVecEnv([lambda: gym.make(env_name)])
+    obs = dummy_env.reset()
+    obs_tensor = torch.as_tensor(obs, dtype=torch.float32).to(device).unsqueeze(0)
+
+    # Perform k VFS gradient ascent steps
+    for step in range(vfs_steps):
+        algo.policy.zero_grad()
+        value = algo.policy.predict_values(obs_tensor).mean()
+        value.backward()
+
+        with torch.no_grad():
+            for name, param in algo.policy.named_parameters():
+                if 'value_net' in name or param.grad is None:
+                    continue
+                param += alpha * param.grad
+
+    # Store the updated policy
+    updated_state = copy.deepcopy(algo.policy.state_dict())
+    agent_list = [updated_state]
+
+    # Restore original policy weights to avoid affecting main model
+    algo.policy.load_state_dict(original_state)
+
+    return agent_list, 0.0
+
 # ------------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
@@ -683,6 +798,11 @@ if __name__ == "__main__":
     # env_name = "CartPole-v1" # For cartpole (single goal task)
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
     # env_name = "Pendulum-v1" # For pendulum (single goal task)
+
+    # env_name = "FetchReach-v4" # For FetchReach (single goal task) sparse rewards
+    # env_name = "FetchReachDense-v4" # For FetchReach (single goal task) dense rewards
+    # env_name = "FetchPush-v4" # For FetchPush (single goal task) sparse rewards
+    # env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
 
     # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -706,6 +826,14 @@ if __name__ == "__main__":
         args = args_mountain_car.get_args(rest_args)
     elif env_name == "Pendulum-v1":
         args = args_pendulum.get_args(rest_args)
+    elif env_name == "FetchReach-v4":
+        args = args_fetch_reach.get_args(rest_args)
+    elif env_name == "FetchReachDense-v4":
+        args = args_fetch_reach_dense.get_args(rest_args)
+    elif env_name == "FetchPush-v4":
+        args = args_fetch_push.get_args(rest_args)
+    elif env_name == "FetchPushDense-v4":
+        args = args_fetch_push_dense.get_args(rest_args)
 
     # ------------------------------------------------------------------------------------------------------------
 
@@ -736,6 +864,9 @@ if __name__ == "__main__":
         env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
         env.reset(seed=args.seed)
         
+    if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+        env = FlattenObservation(env)
+
     # env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1) # For AntDir-v0
 
     print("---------------------------------")
@@ -748,29 +879,9 @@ if __name__ == "__main__":
 
     # print(env.action_space, env.observation_space)
 
-    n_steps_per_rollout = args.n_steps_per_rollout
-
     # --------------------------------------------------------------------------------------------------------------
 
-    # START_ITER = 5000   #For 1M steps initialisation (Optimal hyperparameters)
-    # # START_ITER = 25000  #For 5M steps initialisation (Just used for visualization right now)
-
-    # SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
-
-    # # NUM_ITERS = START_ITER + 100 # Just for testing
-    # # NUM_ITERS = START_ITER + 20000 #5M steps (n_steps_per_rollout = 200)
-    # NUM_ITERS = START_ITER + 7812 #5M steps (n_steps_per_rollout = 512)
-
-    # N_EPOCHS = 10 # Since set to 10 updates per rollout
-
-    # START_ITER = 1000000 // args.n_steps_per_rollout
-    # SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
-    # NUM_ITERS = 3000000 // args.n_steps_per_rollout
-    # N_EPOCHS = args.n_epochs
-
-    # ---------------------------------------------------------------------------------------------------------------
-
-    exp = "PPO_Rebuttal_4"
+    exp = "SAC_plot"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('sac_logs/'+env_name+"/", exp)+1)
     ckp_dir = f'sac_logs/{DIR}/models'
 
@@ -808,7 +919,7 @@ if __name__ == "__main__":
         learning_starts=args.learning_starts,
         device=args.device,
         tensorboard_log=args.tensorboard_log,
-        # ckp_dir=ckp_dir
+        ckp_dir=ckp_dir
     )
 
     if hasattr(args, 'max_grad_norm'):
@@ -848,10 +959,9 @@ if __name__ == "__main__":
 
     model = SAC(**sac_kwargs)
 
-    START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
-    SEARCH_INTERV = 1 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
-    NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
-    # N_EPOCHS = args.n_epochs
+    START_ITER = 1000000 // args.n_envs
+    SEARCH_INTERV = 10 
+    NUM_ITERS = 3000000 // args.n_envs
 
     # ---------------------------------------------------------------------------------------------------------------
 
@@ -906,7 +1016,7 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = False
+    normal_train = True
     use_ANN = False
     ANN_lib = "Annoy"
     online_eval = True
@@ -949,7 +1059,7 @@ if __name__ == "__main__":
 
             if saved_agents:
                 if not model_already_learned:
-                    model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
+                    model.learn(total_timesteps=SEARCH_INTERV*vec_env.num_envs,
                                 log_interval=1, 
                                 tb_log_name=exp, 
                                 reset_num_timesteps=True if i == START_ITER else False, 
@@ -957,7 +1067,7 @@ if __name__ == "__main__":
                                 )
 
             else:
-                model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
+                model.learn(total_timesteps=SEARCH_INTERV*vec_env.num_envs,
                             log_interval=1, 
                             tb_log_name=exp, 
                             reset_num_timesteps=True if i == START_ITER else False, 
@@ -1177,7 +1287,7 @@ if __name__ == "__main__":
     else:
         for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
             print(i)
-            model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
+            model.learn(total_timesteps=SEARCH_INTERV*vec_env.num_envs,
                         log_interval=1, 
                         tb_log_name=exp, 
                         reset_num_timesteps=True if i == START_ITER else False, 
@@ -1194,8 +1304,7 @@ if __name__ == "__main__":
             else:
                 dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
                 dummy_env.reset(seed=args.seed)
-            # dummy_env = gym.make(env_name)
-            # dummy_env.reset(seed=args.seed)
+            
             returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
             print(f'avg 3 return on policy: {returns_trains}')
             cum_rews.append(returns_trains)

@@ -4,6 +4,7 @@ import numpy as np
 import torch as th
 from gymnasium import spaces
 from torch.nn import functional as F
+import os
 
 from stable_baselines3.common.buffers import ReplayBuffer
 from stable_baselines3.common.noise import ActionNoise
@@ -116,6 +117,7 @@ class SAC(OffPolicyAlgorithm):
         seed: Optional[int] = None,
         device: Union[th.device, str] = "auto",
         _init_setup_model: bool = True,
+        **kwargs
     ):
         super().__init__(
             policy,
@@ -155,6 +157,15 @@ class SAC(OffPolicyAlgorithm):
 
         if _init_setup_model:
             self._setup_model()
+
+        self.ckp_dir = kwargs['ckp_dir'] if 'ckp_dir' in kwargs else None
+
+        if 'n_envs' in kwargs and kwargs['n_envs'] > 1:
+            self.env_name = env.get_attr("spec")[0].id
+        else:
+            self.env_name = env.spec.id
+
+        self.current_iteration = 1
 
     def _setup_model(self) -> None:
         super()._setup_model()
@@ -286,14 +297,26 @@ class SAC(OffPolicyAlgorithm):
                 # Copy running stats, see GH issue #996
                 polyak_update(self.batch_norm_stats, self.batch_norm_stats_target, 1.0)
 
+            if self.ckp_dir is not None:
+                os.makedirs(self.ckp_dir, exist_ok=True)
+                # if self.env_name == 'Hopper-v5' or self.env_name == 'LunarLander-v3':
+                #     if self.current_iteration % 2 == 1:
+                #         th.save(self.policy.state_dict(), f'{self.ckp_dir}/agent{epoch+1}.zip')
+                #     else:
+                #         th.save(self.policy.state_dict(), f'{self.ckp_dir}/agent{epoch+6}.zip')
+                # else:
+                th.save(self.policy.state_dict(), f'{self.ckp_dir}/agent{self.current_iteration}.zip')
+        
         self._n_updates += gradient_steps
 
-        self.logger.record("train/n_updates", self._n_updates, exclude="tensorboard")
-        self.logger.record("train/ent_coef", np.mean(ent_coefs))
-        self.logger.record("train/actor_loss", np.mean(actor_losses))
-        self.logger.record("train/critic_loss", np.mean(critic_losses))
-        if len(ent_coef_losses) > 0:
-            self.logger.record("train/ent_coef_loss", np.mean(ent_coef_losses))
+        self.current_iteration += 1
+
+        # self.logger.record("train/n_updates", self._n_updates, exclude="tensorboard")
+        # self.logger.record("train/ent_coef", np.mean(ent_coefs))
+        # self.logger.record("train/actor_loss", np.mean(actor_losses))
+        # self.logger.record("train/critic_loss", np.mean(critic_losses))
+        # if len(ent_coef_losses) > 0:
+        #     self.logger.record("train/ent_coef_loss", np.mean(ent_coef_losses))
 
     def learn(
         self: SelfSAC,
@@ -303,6 +326,8 @@ class SAC(OffPolicyAlgorithm):
         tb_log_name: str = "SAC",
         reset_num_timesteps: bool = True,
         progress_bar: bool = False,
+        first_iteration: Optional[bool] = True,
+        init_call: Optional[bool] = False,
     ) -> SelfSAC:
         return super().learn(
             total_timesteps=total_timesteps,
@@ -311,6 +336,8 @@ class SAC(OffPolicyAlgorithm):
             tb_log_name=tb_log_name,
             reset_num_timesteps=reset_num_timesteps,
             progress_bar=progress_bar,
+            first_iteration=first_iteration,
+            init_call=init_call,
         )
 
     def _excluded_save_params(self) -> list[str]:
