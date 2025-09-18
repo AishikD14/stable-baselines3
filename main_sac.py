@@ -187,12 +187,12 @@ def load_weights(arng, directory, env, saved_agents):
         policy_vec = []
 
         # new_model = PPO("MlpPolicy", env, verbose=0, device='cpu')
-        # new_model.load(f'logs/{directory}/models/agent{i}.zip', device='cpu')
+        # new_model.load(f'sac_logs/{directory}/models/agent{i}.zip', device='cpu')
 
         if saved_agents:
-            ckp = torch.load(f'logs/{directory[:-2]}/models/agent{i+1}.zip', map_location=torch.device('cpu'))
+            ckp = torch.load(f'sac_logs/{directory[:-2]}/models/agent{i+1}.zip', map_location=torch.device('cpu'))
         else:
-            ckp = torch.load(f'logs/{directory}/models/agent{i+1}.zip', map_location=torch.device('cpu'))
+            ckp = torch.load(f'sac_logs/{directory}/models/agent{i+1}.zip', map_location=torch.device('cpu'))
 
         # ckp = new_model.policy.state_dict()
         ckp_layers = ckp.keys()
@@ -881,7 +881,7 @@ if __name__ == "__main__":
 
     # --------------------------------------------------------------------------------------------------------------
 
-    exp = "SAC_normal_training"
+    exp = "SAC_upper_bound"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('sac_logs/'+env_name+"/", exp)+1)
     ckp_dir = f'sac_logs/{DIR}/models'
 
@@ -1016,7 +1016,7 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = True
+    normal_train = False
     use_ANN = False
     ANN_lib = "Annoy"
     online_eval = True
@@ -1042,10 +1042,10 @@ if __name__ == "__main__":
 
     if saved_agents:
         # Find best agent index
-        best_agent_index = np.load(f'logs/{env_name}/{exp}/best_agent_{str(saved_iter-SEARCH_INTERV)}_{str(saved_iter)}.npy')
+        best_agent_index = np.load(f'sac_logs/{env_name}/{exp}/best_agent_{str(saved_iter-SEARCH_INTERV)}_{str(saved_iter)}.npy')
         print("Last Best agent index: ", best_agent_index[0])
 
-        ckp = torch.load(f'logs/{env_name}/{exp}/models/agent{str(best_agent_index[0])}.zip', map_location=torch.device('cpu'))
+        ckp = torch.load(f'sac_logs/{env_name}/{exp}/models/agent{str(best_agent_index[0])}.zip', map_location=torch.device('cpu'))
         print("Checkpoint loaded")
 
         load_state_dict(model, ckp)
@@ -1094,7 +1094,7 @@ if __name__ == "__main__":
 
             if avg_checkpoint:
                 # Average the last checkpoints
-                checkpoint_paths = [f'logs/{DIR}/models/agent{j}.zip' for j in range(1, 11)]
+                checkpoint_paths = [f'sac_logs/{DIR}/models/agent{j}.zip' for j in range(1, 11)]
                 avg_policy_vec = average_checkpoints(checkpoint_paths)
                 avg_policy_vec = avg_policy_vec.reshape(1, -1)
                 print("Average policy vector shape: ", avg_policy_vec.shape)
@@ -1116,9 +1116,9 @@ if __name__ == "__main__":
                 print(f'avg return on 3 trajectories of agent: {returns_trains}')
                 cum_rews.append(returns_trains)
 
-                os.makedirs(f'logs/{DIR}', exist_ok=True)
-                np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
-                np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+                os.makedirs(f'sac_logs/{DIR}', exist_ok=True)
+                np.save(f'sac_logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
+                np.save(f'sac_logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
                 timeArray.append(time.time() - start_time)
 
                 load_state_dict(model, agents[0])
@@ -1128,7 +1128,7 @@ if __name__ == "__main__":
             # -----------------------------------------------------------------------------------
 
             if use_ptb:
-                checkpoint_paths = [f'logs/{DIR}/models/agent{j}.zip' for j in range(1, 11)]
+                checkpoint_paths = [f'sac_logs/{DIR}/models/agent{j}.zip' for j in range(1, 11)]
 
                 policies = []
                 for path in checkpoint_paths:
@@ -1215,13 +1215,13 @@ if __name__ == "__main__":
                 print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
             print(f'avg cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
 
-            os.makedirs(f'logs/{DIR}', exist_ok=True)
+            os.makedirs(f'sac_logs/{DIR}', exist_ok=True)
 
-            np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
+            np.save(f'sac_logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
             if online_eval:
-                np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+                np.save(f'sac_logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
             if not online_eval:
-                np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
+                np.save(f'sac_logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
             timeArray.append(time.time() - start_time)
 
             # Correlation calculation
@@ -1255,7 +1255,7 @@ if __name__ == "__main__":
 
                 # print(f'the best agent: {best_idx}, avg policy: {returns_trains}')
                 # best_agent_index.append(best_idx)
-                # np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+                # np.save(f'sac_logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
                 # load_state_dict(model, best_agent)
 
                 # -----------------------------------------------------------------------------
@@ -1266,8 +1266,8 @@ if __name__ == "__main__":
                 best_agent = agents[best_idx]
                 print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}')
                 best_agent_index.append(best_idx)
-                np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
-                np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews[best_idx])
+                np.save(f'sac_logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+                np.save(f'sac_logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews[best_idx])
                 load_state_dict(model, best_agent)
 
             # Finding the best agent from online evaluation
@@ -1276,11 +1276,11 @@ if __name__ == "__main__":
                 best_agent = agents[best_idx]
                 print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}')
                 best_agent_index.append(best_idx)
-                np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
+                np.save(f'sac_logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
                 load_state_dict(model, best_agent)
 
-        np.save(f'logs/{DIR}/distance.npy', distanceArray)
-        np.save(f'logs/{DIR}/time.npy', timeArray)
+        np.save(f'sac_logs/{DIR}/distance.npy', distanceArray)
+        np.save(f'sac_logs/{DIR}/time.npy', timeArray)
         print("Average distance of random agents to nearest neighbors:", distanceArray)
         print("Time taken for each iteration:", timeArray)
 
