@@ -959,9 +959,9 @@ if __name__ == "__main__":
 
     model = SAC(**sac_kwargs)
 
-    START_ITER = 20000 // args.n_envs # First 10k steps no learning
+    START_ITER = 10000 // args.n_envs # Total 20k steps - First 10k steps no learning since learning_starts=10000
     SEARCH_INTERV = 10 
-    NUM_ITERS = 60000 // args.n_envs
+    NUM_ITERS = 30000 // args.n_envs
 
     # ---------------------------------------------------------------------------------------------------------------
 
@@ -969,7 +969,7 @@ if __name__ == "__main__":
     # os.makedirs(f'full_exp_on_sac/models/'+env_name, exist_ok=True)
 
     # model.learn(total_timesteps=20000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_sac/models/"+env_name+"/sac_humanoid_20k"+'_'+str(args.seed))
+    # model.save("full_exp_on_sac/models/"+env_name+"/sac_humanoid_10k"+'_'+str(args.seed))
 
     # print("Initial training done") 
 
