@@ -11,7 +11,7 @@ def get_args(rest_args):
     parser.add_argument('--device', default='cpu', type=str, help='Device to use: cpu or cuda')
     parser.add_argument('--tensorboard-log', default='sac_logs/Humanoid-v5/', type=str, help='Tensorboard log directory base')
 
-    parser.add_argument('--init-model-path', default='full_exp_on_sac/models/Humanoid-v5/sac_humanoid_1M', type=str, help='Base directory for init model')
+    parser.add_argument('--init-model-path', default='full_exp_on_sac/models/Humanoid-v5/sac_humanoid_20k', type=str, help='Base directory for init model')
 
     args = parser.parse_args(rest_args)
 

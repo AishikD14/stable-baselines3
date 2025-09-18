@@ -959,34 +959,34 @@ if __name__ == "__main__":
 
     model = SAC(**sac_kwargs)
 
-    START_ITER = 1000000 // args.n_envs
+    START_ITER = 20000 // args.n_envs
     SEARCH_INTERV = 10 
-    NUM_ITERS = 3000000 // args.n_envs
+    NUM_ITERS = 60000 // args.n_envs
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    print("Starting Initial training")
-    os.makedirs(f'full_exp_on_sac/models/'+env_name, exist_ok=True)
+    # print("Starting Initial training")
+    # os.makedirs(f'full_exp_on_sac/models/'+env_name, exist_ok=True)
 
-    model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    model.save("full_exp_on_sac/models/"+env_name+"/sac_humanoid_1M"+'_'+str(args.seed))
+    # model.learn(total_timesteps=20000, log_interval=50, tb_log_name=exp, init_call=True)
+    # model.save("full_exp_on_sac/models/"+env_name+"/sac_humanoid_20k"+'_'+str(args.seed))
 
-    print("Initial training done") 
+    # print("Initial training done") 
 
-    # print("Saving replay buffer for later use")
-    # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
+    # # print("Saving replay buffer for later use")
+    # # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
 
-    # # Save the replay buffer
-    # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
-    #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
-    #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
-    #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
-    #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
-    # )
+    # # # Save the replay buffer
+    # # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
+    # #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
+    # #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
+    # #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
+    # #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+    # # )
     
-    # print("Replay buffer saved")
+    # # print("Replay buffer saved")
 
-    quit()
+    # quit()
 
     # ----------------------------------------------------------------------------------------------------------------
 
