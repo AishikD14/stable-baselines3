@@ -881,7 +881,7 @@ if __name__ == "__main__":
 
     # --------------------------------------------------------------------------------------------------------------
 
-    exp = "SAC_plot"
+    exp = "SAC_normal_training"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('sac_logs/'+env_name+"/", exp)+1)
     ckp_dir = f'sac_logs/{DIR}/models'
 
@@ -959,7 +959,7 @@ if __name__ == "__main__":
 
     model = SAC(**sac_kwargs)
 
-    START_ITER = 20000 // args.n_envs
+    START_ITER = 20000 // args.n_envs # First 10k steps no learning
     SEARCH_INTERV = 10 
     NUM_ITERS = 60000 // args.n_envs
 
