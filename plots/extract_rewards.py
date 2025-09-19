@@ -15,14 +15,14 @@ args, rest_args = parser.parse_known_args()
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
+env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
 # env = "FetchReach-v4"
 # env = "FetchReachDense-v4"
-env = "FetchPush-v4"
+# env = "FetchPush-v4"
 # env = "FetchPushDense-v4"
 
 if env == "Ant-v5":
@@ -62,14 +62,18 @@ file_name_list = [
     # ["TRPO_plot_2", "trpo_plot_1_out", "TRPO_pretrain_2"],
     # ["TRPO_plot_3", "trpo_plot_2_out", "TRPO_pretrain_3"],
     # ["TRPO_plot_4", "trpo_plot_3_out", "TRPO_pretrain_4"],
-    ["SAC_plot_1", "sac_plot_1_out", "SAC_pretrain_1"],
-    ["SAC_plot_2", "sac_plot_2_out", "SAC_pretrain_2"],
-    ["SAC_plot_3", "sac_plot_3_out", "SAC_pretrain_3"],
-    ["SAC_plot_4", "sac_plot_4_out", "SAC_pretrain_4"],
+    # ["SAC_plot_1", "sac_plot_1_out", "SAC_pretrain_1"],
+    # ["SAC_plot_2", "sac_plot_2_out", "SAC_pretrain_2"],
+    # ["SAC_plot_3", "sac_plot_3_out", "SAC_pretrain_3"],
+    # ["SAC_plot_4", "sac_plot_4_out", "SAC_pretrain_4"],
     # ["PPO_normal_training_1"],
     # ["PPO_normal_training_2"],
     # ["PPO_normal_training_3"],
     # ["PPO_normal_training_4"],
+    ["SAC_normal_training_1"],
+    ["SAC_normal_training_2"],
+    ["SAC_normal_training_3"],
+    ["SAC_normal_training_4"],
     # ["PPO_normal_training_7", "PPO_normal_training_4"],
     # ["PPO_upper_bound_1"],
     # ["PPO_upper_bound_2"],
@@ -165,6 +169,8 @@ for file_name in file_name_list:
         log_dir = "logs"
         if "TRPO" in file_name[0]:
             log_dir = "trpo_logs"
+        elif "SAC" in file_name[0]:
+            log_dir = "sac_logs"
 
         directory = "../"+log_dir+"/"+env+"/"+file_name[0]
         print("------------------------------------")
