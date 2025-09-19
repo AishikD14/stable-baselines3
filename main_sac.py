@@ -198,7 +198,7 @@ def load_weights(arng, directory, env, saved_agents):
         ckp_layers = ckp.keys()
 
         for layer in ckp_layers:
-            if 'value_net' not in layer:
+            if 'actor' in layer:
                 policy_vec.append(ckp[layer].detach().numpy().reshape(-1))
 
         policy_vec = np.concatenate(policy_vec)
@@ -214,7 +214,7 @@ def dump_weights(agent_net, es_models):
         policy = OrderedDict()
         pivot = 0
         for layer in agent_net:
-            if 'value_net' in layer:
+            if 'actor' not in layer:
                 policy[layer] = agent_net[layer]
             else:
                 sp = agent_net[layer].reshape(-1).shape[0]
@@ -654,7 +654,7 @@ def average_checkpoints(checkpoint_paths):
         ckp_layers = ckp.keys()
 
         for layer in ckp_layers:
-            if 'value_net' not in layer:
+            if 'actor' in layer:
                 policy_vec.append(ckp[layer].detach().numpy().reshape(-1))
 
         policy_vec = np.concatenate(policy_vec)
@@ -674,7 +674,7 @@ def search_guided_es_policies(algo, directory, start, end, env, saved_agents, ag
     policy_state = algo.policy.state_dict()
     theta_anchor = []
     for layer in policy_state:
-        if 'value_net' not in layer:
+        if 'actor' in layer:
             theta_anchor.append(policy_state[layer].detach().cpu().numpy().reshape(-1))
     theta_anchor = np.concatenate(theta_anchor)
     theta_dim = theta_anchor.shape[0]
@@ -692,7 +692,7 @@ def search_guided_es_policies(algo, directory, start, end, env, saved_agents, ag
 
     ppo_grad = []
     for name, param in algo.policy.named_parameters():
-        if 'value_net' in name:
+        if 'actor' not in name:
             continue  # Skip critic parameters
         if param.grad is not None:
             ppo_grad.append(param.grad.view(-1).cpu().numpy())
@@ -713,7 +713,7 @@ def search_guided_es_policies(algo, directory, start, end, env, saved_agents, ag
             policy = OrderedDict()
             pivot = 0
             for layer in policy_state:
-                if 'value_net' in layer:
+                if 'actor' not in layer:
                     policy[layer] = policy_state[layer]
                 else:
                     sp = policy_state[layer].reshape(-1).shape[0]
@@ -736,7 +736,7 @@ def search_guided_es_policies(algo, directory, start, end, env, saved_agents, ag
     new_policy = OrderedDict()
     pivot = 0
     for layer in policy_state:
-        if 'value_net' in layer:
+        if 'actor' not in layer:
             new_policy[layer] = policy_state[layer]
         else:
             sp = policy_state[layer].reshape(-1).shape[0]
@@ -768,7 +768,7 @@ def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_nu
 
         with torch.no_grad():
             for name, param in algo.policy.named_parameters():
-                if 'value_net' in name or param.grad is None:
+                if 'actor' not in name or param.grad is None:
                     continue
                 param += alpha * param.grad
 
@@ -1030,7 +1030,7 @@ if __name__ == "__main__":
     timeArray = []
 
     avg_checkpoint = False
-    use_ptb = True
+    use_ptb = False
 
     if exp == "PPO_baseline":
         # START_ITER = 1953
@@ -1137,7 +1137,7 @@ if __name__ == "__main__":
                     ckp_layers = ckp.keys()
 
                     for layer in ckp_layers:
-                        if 'value_net' not in layer:
+                        if 'actor' in layer:
                             policy_vec.append(ckp[layer].detach().numpy().reshape(-1))
 
                     policy_vec = np.concatenate(policy_vec)
