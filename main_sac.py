@@ -16,7 +16,7 @@ import pandas as pd
 import torch.nn as nn
 import argparse
 # from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer
-from data_collection_config_sac import args_humanoid
+from data_collection_config_sac import args_humanoid, args_fetch_push
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
 from d3rlpy.dataset import MDPDataset
@@ -29,6 +29,7 @@ import random
 import os
 from stable_baselines3.common.vec_env import DummyVecEnv
 from gymnasium.wrappers import FlattenObservation
+from stable_baselines3.her.her_replay_buffer import HerReplayBuffer
 
 warnings.filterwarnings("ignore")
 
@@ -792,7 +793,7 @@ if __name__ == "__main__":
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
-    env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
     # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
@@ -801,7 +802,7 @@ if __name__ == "__main__":
 
     # env_name = "FetchReach-v4" # For FetchReach (single goal task) sparse rewards
     # env_name = "FetchReachDense-v4" # For FetchReach (single goal task) dense rewards
-    # env_name = "FetchPush-v4" # For FetchPush (single goal task) sparse rewards
+    env_name = "FetchPush-v4" # For FetchPush (single goal task) sparse rewards
     # env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
 
     # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
@@ -864,8 +865,8 @@ if __name__ == "__main__":
         env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
         env.reset(seed=args.seed)
         
-    if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-        env = FlattenObservation(env)
+    # if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+    #     env = FlattenObservation(env)
 
     # env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1) # For AntDir-v0
 
@@ -881,7 +882,7 @@ if __name__ == "__main__":
 
     # --------------------------------------------------------------------------------------------------------------
 
-    exp = "SAC_upper_bound"
+    exp = "SAC_plot"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('sac_logs/'+env_name+"/", exp)+1)
     ckp_dir = f'sac_logs/{DIR}/models'
 
@@ -893,13 +894,8 @@ if __name__ == "__main__":
 
     if hasattr(args, 'use_policy_kwargs') and args.use_policy_kwargs:
         policy_kwargs = {
-            "net_arch": [dict(pi=args.pi_layers, vf=args.vf_layers)],
-            "activation_fn": activation_fn_map[args.activation_fn]
+            "net_arch": args.net_arch
         }
-        if hasattr(args, 'log_std_init'):
-            policy_kwargs["log_std_init"] = args.log_std_init
-        if hasattr(args, 'ortho_init'):
-            policy_kwargs["ortho_init"] = args.ortho_init
     else:
         policy_kwargs = None
 
@@ -910,6 +906,14 @@ if __name__ == "__main__":
         }
     else:
         normalize_kwargs = None
+
+    if hasattr(args, 'use_replay_buffer_kwargs') and args.use_replay_buffer_kwargs:
+        replay_buffer_kwargs = {
+            "goal_selection_strategy": args.goal_selection_strategy,
+            "n_sampled_goal": args.n_sampled_goal
+        }
+    else:
+        replay_buffer_kwargs = None
 
     sac_kwargs  = dict(
         policy=args.policy,
@@ -957,6 +961,13 @@ if __name__ == "__main__":
     if normalize_kwargs:
         sac_kwargs["normalize_kwargs"] = normalize_kwargs
 
+    if replay_buffer_kwargs:
+        sac_kwargs["replay_buffer_kwargs"] = replay_buffer_kwargs
+
+    if hasattr(args, 'replay_buffer_class'):
+        if args.replay_buffer_class == "HerReplayBuffer":
+            sac_kwargs["replay_buffer_class"] = HerReplayBuffer  
+
     model = SAC(**sac_kwargs)
 
     START_ITER = 10000 // args.n_envs # Total 20k steps - First 10k steps no learning since learning_starts=10000
@@ -965,28 +976,28 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    # print("Starting Initial training")
-    # os.makedirs(f'full_exp_on_sac/models/'+env_name, exist_ok=True)
+    print("Starting Initial training")
+    os.makedirs(f'full_exp_on_sac/models/'+env_name, exist_ok=True)
 
-    # model.learn(total_timesteps=20000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_sac/models/"+env_name+"/sac_humanoid_10k"+'_'+str(args.seed))
+    model.learn(total_timesteps=20000, log_interval=50, tb_log_name=exp, init_call=True)
+    model.save("full_exp_on_sac/models/"+env_name+"/sac_fetch_push_19k"+'_'+str(args.seed))
 
-    # print("Initial training done") 
+    print("Initial training done") 
 
-    # # print("Saving replay buffer for later use")
-    # # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
+    # print("Saving replay buffer for later use")
+    # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
 
-    # # # Save the replay buffer
-    # # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
-    # #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
-    # #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
-    # #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
-    # #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
-    # # )
+    # # Save the replay buffer
+    # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
+    #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
+    #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
+    #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
+    #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+    # )
     
-    # # print("Replay buffer saved")
+    # print("Replay buffer saved")
 
-    # quit()
+    quit()
 
     # ----------------------------------------------------------------------------------------------------------------
 

@@ -379,8 +379,8 @@ class OffPolicyAlgorithm(BaseAlgorithm):
                             self.env_name = self.env.envs[0].spec.id
                             dummy_env = gymnasium.make(self.env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
                             
-                            if self.env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-                                dummy_env = FlattenObservation(dummy_env)
+                            # if self.env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                            #     dummy_env = FlattenObservation(dummy_env)
 
                             dummy_env.reset(seed=self.seed)
 
