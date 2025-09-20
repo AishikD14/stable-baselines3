@@ -14,13 +14,13 @@ args, rest_args = parser.parse_known_args()
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
+env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
 # env = "FetchReach-v4"
-env = "FetchReachDense-v4"
+# env = "FetchReachDense-v4"
 # env = "FetchPush-v4"
 # env = "FetchPushDense-v4"
 
@@ -68,7 +68,8 @@ seed_list = [0, 1, 2, 3]
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
-    ["PPO_normal_training", "PPO Normal Training"],
+    # ["PPO_normal_training", "PPO Normal Training"],
+    ["SAC_normal_training", "SAC Normal Training"],
     # ["PPO_upper_bound", "PPO Upper Bound"],
     # ["TRPO_normal_training", "TRPO Normal Training"],
     # ["TRPO_upper_bound", "TRPO Upper Bound"],
@@ -117,6 +118,8 @@ for plot_item in plot_list:
                 pretrain_rewards = np.load("../final_results/"+env+"/PPO_pretrain_"+str(i+1)+".npy")
             elif "TRPO" in plot_item[0]:
                 pretrain_rewards = np.load("../final_results/"+env+"/TRPO_pretrain_"+str(i+1)+".npy")
+            elif "SAC" in plot_item[0]:
+                pretrain_rewards = np.load("../final_results/"+env+"/SAC_pretrain_"+str(i+1)+".npy")
 
             # Add pretrain rewards to the beginning of results
             results = np.concatenate((pretrain_rewards, results))
