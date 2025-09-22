@@ -15,8 +15,8 @@ args, rest_args = parser.parse_known_args()
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
-# env = "Swimmer-v5"
+# env = "Humanoid-v5"
+env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
@@ -56,59 +56,64 @@ elif env == "FetchPushDense-v4":
 start_iteration = 1
 
 plot_list = [
-    ["PPO_upper_bound", "ExploRLer(P)"],
-    # ["PPO_upper_bound_interpolated", "ExploRLer(P)"],
-    # ["PPO_NoPretrain", "ExploRLer (PPO) No Pre-training"],
-    # ["PPO_NoPretrain_interpolated", "ExploRLer (PPO) No Pre-training"],
-    ["PPO_normal_training", "PPO"],
+    # ["PPO_upper_bound", "ExploRLer-P"],
+    ["PPO_upper_bound_interpolated", "ExploRLer-P"],
+    # ["PPO_NoPretrain", "ExploRLer-P No Pre-training"],
+    # ["PPO_NoPretrain_interpolated", "ExploRLer-P No Pre-training"],
+    # ["PPO_normal_training", "PPO"],
+    ["PPO_normal_training_interpolated", "PPO"],
     # ["SAC_normal_training", "SAC"],
-    # ["TRPO_upper_bound", "ExploRLer (TRPO)"],
-    ["TRPO_upper_bound_interpolated", "ExploRLer(T)"],
-    # ["TRPO_normal_training", "TRPO"],
-    ["TRPO_normal_training_interpolated", "TRPO"],
+    ["TRPO_upper_bound", "ExploRLer-T"],
+    # ["TRPO_upper_bound_interpolated", "ExploRLer-T"],
+    ["TRPO_normal_training", "TRPO"],
+    # ["TRPO_normal_training_interpolated", "TRPO"],
     # ["PPO_empty_space_ls", "FQE Estimation"],
     # ["PPO_baseline", "Baseline"],
     # ["PPO_upper_bound", "Online Evaluation"],
     # ["PPO_PBT", "PBT"],
     # ["PPO_PBT_interpolated", "PBT"],
-    ["TRPO_PBT_interpolated", "PBT"],
+    ["TRPO_PBT", "PBT"],
+    # ["TRPO_PBT_interpolated", "PBT"],
     # ["PPO_VFS", "VFS"],
     # ["PPO_VFS_interpolated", "VFS"],
-    ["TRPO_VFS_interpolated", "VFS"],
+    ["TRPO_VFS", "VFS"],
+    # ["TRPO_VFS_interpolated", "VFS"],
     # ["PPO_GuidedES", "Guided ES"],
     # ["PPO_GuidedES_interpolated", "Guided ES"],
-    ["TRPO_GuidedES_interpolated", "Guided ES"],
+    ["TRPO_GuidedES", "Guided ES"],
+    # ["TRPO_GuidedES_interpolated", "Guided ES"],
     # ["PPO_neghrand", "Random Walk"],
     # ["PPO_neghrand_interpolated", "Random Walk"],
     # ["PPO_CheckpointAvg", "Checkpoint Avg"],
     # ["PPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
-    ["TRPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
+    ["TRPO_CheckpointAvg", "Checkpoint Avg"],
+    # ["TRPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
 ]
 
 # plot_list = [
-#     ["TRPO_upper_bound", "ExploRLer (TRPO)"],
-#     # ["TRPO_upper_bound_interpolated", "ExploRLer (TRPO)"],
-#     # ["TRPO_NoPretrain", "ExploRLer (TRPO) No Pre-training"],
-#     # ["TRPO_NoPretrain_interpolated", "ExploRLer (TRPO) No Pre-training"],
-#     ["TRPO_normal_training", "TRPO"],
-#     # ["TRPO_normal_training_interpolated", "TRPO"],
+#     # ["TRPO_upper_bound", "ExploRLer-T"],
+#     ["TRPO_upper_bound_interpolated", "ExploRLer-T"],
+#     # ["TRPO_NoPretrain", "ExploRLer-T No Pre-training"],
+#     # ["TRPO_NoPretrain_interpolated", "ExploRLer-T No Pre-training"],
+#     # ["TRPO_normal_training", "TRPO"],
+#     ["TRPO_normal_training_interpolated", "TRPO"],
 #     ["PPO_normal_training", "PPO"],
-#     # ["PPO_upper_bound", "ExploRLer"], 
-#     ["TRPO_PBT", "PBT"],
-#     # ["TRPO_PBT_interpolated", "PBT"],
-#     ["TRPO_VFS", "VFS"],
-#     # ["TRPO_VFS_interpolated", "VFS"],
-#     ["TRPO_GuidedES", "Guided ES"],
-#     # ["TRPO_GuidedES_interpolated", "Guided ES"],
+#     ["PPO_upper_bound", "ExploRLer-P"], 
+#     # ["TRPO_PBT", "PBT"],
+#     ["TRPO_PBT_interpolated", "PBT"],
+#     # ["TRPO_VFS", "VFS"],
+#     ["TRPO_VFS_interpolated", "VFS"],
+#     # ["TRPO_GuidedES", "Guided ES"],
+#     ["TRPO_GuidedES_interpolated", "Guided ES"],
 #     # ["TRPO_neghrand_interpolated", "Random Walk"],
-#     ["TRPO_neghrand", "Random Walk"],
-#     ["TRPO_CheckpointAvg", "Checkpoint Avg"],
-#     # ["TRPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
+#     # ["TRPO_neghrand", "Random Walk"],
+#     # ["TRPO_CheckpointAvg", "Checkpoint Avg"],
+#     ["TRPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
 # ]
 
-plot_list = [
-    ["SAC_normal_training", "SAC"],
-]
+# plot_list = [
+#     ["SAC_normal_training", "SAC"],
+# ]
 
 
 plot_metrics = []
@@ -174,11 +179,11 @@ plt.grid(True, color='white')
 plt.xticks(fontsize=16)
 plt.yticks(fontsize=16)
 
-legend = plt.legend(fontsize=16)
-legend.get_frame().set_facecolor('#f5f5f5')
+# legend = plt.legend(fontsize=16)
+# legend.get_frame().set_facecolor('#f5f5f5')
 
 for spine in ax.spines.values():
     spine.set_visible(False)
 
 # plt.savefig('../paper_plots/'+env+'.png')
-plt.savefig('../paper_plots/'+env+'_SAC.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_combined.pdf', format='pdf', bbox_inches='tight', dpi=300)
