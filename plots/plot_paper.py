@@ -186,8 +186,9 @@ plt.yticks(fontsize=16)
 # handles, labels = ax.get_legend_handles_labels()
 
 # # Create a new figure just for the legend
-# fig_legend = plt.figure(figsize=(6, 1))  # adjust size as needed
-# fig_legend.legend(handles, labels, loc='center', ncol=len(labels), frameon=False)
+# fig_legend = plt.figure(figsize=(6, 6))  # adjust size as needed
+# leg = fig_legend.legend(handles, labels, loc='center', ncol=len(labels), frameon=False, fontsize=20)
+# leg.get_frame().set_facecolor('#f5f5f5')
 
 # # Save only the legend
 # fig_legend.savefig("../paper_plots/legend.pdf", format='pdf', bbox_inches='tight', dpi=300)
@@ -196,4 +197,4 @@ plt.yticks(fontsize=16)
 for spine in ax.spines.values():
     spine.set_visible(False)
 
-# plt.savefig('../paper_plots/'+env+'_combined.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_combined.pdf', format='pdf', bbox_inches='tight', dpi=300)
