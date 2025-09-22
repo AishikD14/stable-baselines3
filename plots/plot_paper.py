@@ -150,7 +150,8 @@ for plot_item in plot_list:
 # -------------------------------------------------------
 
 # plt.style.use('neurips.mplstyle')
-line_styles = ['-', '--', '-.']
+# line_styles = ['-', '--', '-.']
+line_styles = ['-', '--', '-', '--', '--', '--', '--', '--']
 plt.figure(figsize=(10, 6))
 # Find the minimum length of x
 min_length = min([len(x) for x, _, _, _ in plot_metrics])
@@ -161,8 +162,8 @@ for i, plot_metric in enumerate(plot_metrics):
     smoothed = smoothed[:min_length]
     stds = stds[:min_length]
     
-    line_style = line_styles[i % len(line_styles)]
-    plt.plot(x, smoothed, label=plot_list[i][1], linestyle=line_style)
+    # line_style = line_styles[i % len(line_styles)]
+    plt.plot(x, smoothed, label=plot_list[i][1], linestyle=line_styles[i])
     plt.fill_between(x, smoothed - stds, smoothed + stds, alpha=0.2)
 
 ax = plt.gca()
@@ -182,8 +183,17 @@ plt.yticks(fontsize=16)
 # legend = plt.legend(fontsize=16)
 # legend.get_frame().set_facecolor('#f5f5f5')
 
+# handles, labels = ax.get_legend_handles_labels()
+
+# # Create a new figure just for the legend
+# fig_legend = plt.figure(figsize=(6, 1))  # adjust size as needed
+# fig_legend.legend(handles, labels, loc='center', ncol=len(labels), frameon=False)
+
+# # Save only the legend
+# fig_legend.savefig("../paper_plots/legend.pdf", format='pdf', bbox_inches='tight', dpi=300)
+# plt.close(fig_legend)
+
 for spine in ax.spines.values():
     spine.set_visible(False)
 
-# plt.savefig('../paper_plots/'+env+'.png')
-plt.savefig('../paper_plots/'+env+'_combined.pdf', format='pdf', bbox_inches='tight', dpi=300)
+# plt.savefig('../paper_plots/'+env+'_combined.pdf', format='pdf', bbox_inches='tight', dpi=300)
