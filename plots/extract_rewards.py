@@ -15,9 +15,9 @@ args, rest_args = parser.parse_known_args()
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
+# env = "Humanoid-v5"
 # env = "Swimmer-v5"
-# env = "Pendulum-v1"
+env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
 # env = "FetchReach-v4"
@@ -70,10 +70,10 @@ file_name_list = [
     # ["PPO_normal_training_2"],
     # ["PPO_normal_training_3"],
     # ["PPO_normal_training_4"],
-    ["SAC_normal_training_1"],
-    ["SAC_normal_training_2"],
-    ["SAC_normal_training_3"],
-    ["SAC_normal_training_4"],
+    # ["SAC_normal_training_1"],
+    # ["SAC_normal_training_2"],
+    # ["SAC_normal_training_3"],
+    # ["SAC_normal_training_4"],
     # ["PPO_normal_training_7", "PPO_normal_training_4"],
     # ["PPO_upper_bound_1"],
     # ["PPO_upper_bound_2"],
@@ -146,10 +146,10 @@ file_name_list = [
     # ["TRPO_NoPretrain_2"],
     # ["TRPO_NoPretrain_3"],
     # ["TRPO_NoPretrain_4"],
-    # ["PPO_GuidedES_1"],
-    # ["PPO_GuidedES_2"],
-    # ["PPO_GuidedES_3"],
-    # ["PPO_GuidedES_4"],
+    ["PPO_GuidedES_1"],
+    ["PPO_GuidedES_2"],
+    ["PPO_GuidedES_3"],
+    ["PPO_GuidedES_4"],
     # ["TRPO_GuidedES_1"],
     # ["TRPO_GuidedES_2"],
     # ["TRPO_GuidedES_3"],
