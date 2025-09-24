@@ -1,0 +1,681 @@
+No devices were found
+Setting seed -  1
+Creating multiple envs -  4
+---------------------------------
+Environment created
+Box(-2.0, 2.0, (1,), float32) Box([-1. -1. -8.], [1. 1. 8.], (3,), float32)
+Starting evaluation
+0
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -1693.9114809844307
+avg return on 3 trajectories of agent1: -1685.593092400352
+avg return on 3 trajectories of agent2: -1610.188373062545
+avg return on 3 trajectories of agent3: -1559.0765040372416
+avg return on 3 trajectories of agent4: -1553.7419543060837
+avg return on 3 trajectories of agent5: -1614.954838734697
+avg return on 3 trajectories of agent6: -1791.8173558714911
+avg return on 3 trajectories of agent7: -1677.997034218657
+avg return on 3 trajectories of agent8: -1596.5173090365422
+avg return on 3 trajectories of agent9: -1597.8304350077897
+avg cum rews: -1638.162837765983, std: 69.72645325364873
+the best agent: 4, best agent cum rewards: -1553.7419543060837
+1
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -1399.319240594049
+avg return on 3 trajectories of agent1: -1376.5371229129082
+avg return on 3 trajectories of agent2: -1375.4723893935516
+avg return on 3 trajectories of agent3: -1325.2169981497445
+avg return on 3 trajectories of agent4: -1183.027081943139
+avg return on 3 trajectories of agent5: -1405.332106535597
+avg return on 3 trajectories of agent6: -1365.0101330776752
+avg return on 3 trajectories of agent7: -1472.5500673939166
+avg return on 3 trajectories of agent8: -1343.8995486749484
+avg return on 3 trajectories of agent9: -1099.7564651023367
+avg cum rews: -1334.6121153777865, std: 105.29778678193085
+the best agent: 9, best agent cum rewards: -1099.7564651023367
+2
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -1205.7133987811796
+avg return on 3 trajectories of agent1: -1195.2644247480835
+avg return on 3 trajectories of agent2: -1163.6493446705963
+avg return on 3 trajectories of agent3: -1112.7561647270766
+avg return on 3 trajectories of agent4: -1108.9635960470785
+avg return on 3 trajectories of agent5: -1139.2137441904215
+avg return on 3 trajectories of agent6: -1099.973090291998
+avg return on 3 trajectories of agent7: -1107.339089450103
+avg return on 3 trajectories of agent8: -1191.5181848467266
+avg return on 3 trajectories of agent9: -1090.6307160284105
+avg cum rews: -1141.5021753781675, std: 41.68401959286906
+the best agent: 9, best agent cum rewards: -1090.6307160284105
+3
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -720.7429059253918
+avg return on 3 trajectories of agent1: -719.2822579823963
+avg return on 3 trajectories of agent2: -718.6258085159294
+avg return on 3 trajectories of agent3: -647.7828043797854
+avg return on 3 trajectories of agent4: -450.53790603381833
+avg return on 3 trajectories of agent5: -717.4352174252764
+avg return on 3 trajectories of agent6: -715.9698097675566
+avg return on 3 trajectories of agent7: -468.52065700015436
+avg return on 3 trajectories of agent8: -737.3335269140396
+avg return on 3 trajectories of agent9: -714.5643993133523
+avg cum rews: -661.0795293257701, std: 103.29886623623521
+the best agent: 4, best agent cum rewards: -450.53790603381833
+4
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -464.9738771808896
+avg return on 3 trajectories of agent1: -463.4755544332092
+avg return on 3 trajectories of agent2: -443.2839268583602
+avg return on 3 trajectories of agent3: -442.0555222918262
+avg return on 3 trajectories of agent4: -372.8853130130789
+avg return on 3 trajectories of agent5: -692.9913763854765
+avg return on 3 trajectories of agent6: -453.3569662308251
+avg return on 3 trajectories of agent7: -503.3714734117855
+avg return on 3 trajectories of agent8: -439.0786028470512
+avg return on 3 trajectories of agent9: -439.02172215809685
+avg cum rews: -471.44943348106, std: 80.00269545858536
+the best agent: 4, best agent cum rewards: -372.8853130130789
+5
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -359.75014262034585
+avg return on 3 trajectories of agent1: -358.4378361288548
+avg return on 3 trajectories of agent2: -358.2765167810781
+avg return on 3 trajectories of agent3: -357.6032333673822
+avg return on 3 trajectories of agent4: -356.3728332750843
+avg return on 3 trajectories of agent5: -358.0276502949744
+avg return on 3 trajectories of agent6: -355.41286771866254
+avg return on 3 trajectories of agent7: -356.366317448116
+avg return on 3 trajectories of agent8: -358.2828325457774
+avg return on 3 trajectories of agent9: -357.110124460394
+avg cum rews: -357.564035464067, std: 1.2029303856931595
+the best agent: 6, best agent cum rewards: -355.41286771866254
+6
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -357.7385407881824
+avg return on 3 trajectories of agent1: -357.7317964902156
+avg return on 3 trajectories of agent2: -357.25914543956424
+avg return on 3 trajectories of agent3: -357.13824465701674
+avg return on 3 trajectories of agent4: -355.0039828626705
+avg return on 3 trajectories of agent5: -355.91300952457806
+avg return on 3 trajectories of agent6: -357.38604994586046
+avg return on 3 trajectories of agent7: -357.296536892443
+avg return on 3 trajectories of agent8: -355.99288186976236
+avg return on 3 trajectories of agent9: -356.7785536894435
+avg cum rews: -356.82387421597366, std: 0.8557429764312834
+the best agent: 4, best agent cum rewards: -355.0039828626705
+7
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -355.3406547590588
+avg return on 3 trajectories of agent1: -355.19465417683114
+avg return on 3 trajectories of agent2: -354.9520108411365
+avg return on 3 trajectories of agent3: -354.73678472797707
+avg return on 3 trajectories of agent4: -354.38869857811085
+avg return on 3 trajectories of agent5: -355.0552281702666
+avg return on 3 trajectories of agent6: -355.4048615891077
+avg return on 3 trajectories of agent7: -355.43777141039004
+avg return on 3 trajectories of agent8: -355.1260007814328
+avg return on 3 trajectories of agent9: -355.9891876599025
+avg cum rews: -355.1625852694214, std: 0.41083405051223526
+the best agent: 4, best agent cum rewards: -354.38869857811085
+8
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -360.5077773631924
+avg return on 3 trajectories of agent1: -360.22065700539525
+avg return on 3 trajectories of agent2: -359.79168641813146
+avg return on 3 trajectories of agent3: -358.8047173174098
+avg return on 3 trajectories of agent4: -358.13558184991666
+avg return on 3 trajectories of agent5: -358.08260907237474
+avg return on 3 trajectories of agent6: -363.1254155910581
+avg return on 3 trajectories of agent7: -360.2338302928638
+avg return on 3 trajectories of agent8: -358.7352361505649
+avg return on 3 trajectories of agent9: -360.80684925075576
+avg cum rews: -359.8444360311663, std: 1.4409231991668068
+the best agent: 5, best agent cum rewards: -358.08260907237474
+9
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -357.9553481324363
+avg return on 3 trajectories of agent1: -357.7918644244433
+avg return on 3 trajectories of agent2: -357.7547577511293
+avg return on 3 trajectories of agent3: -357.7086168323406
+avg return on 3 trajectories of agent4: -357.35470479768424
+avg return on 3 trajectories of agent5: -356.70351708813405
+avg return on 3 trajectories of agent6: -357.90683135342783
+avg return on 3 trajectories of agent7: -357.72103791437763
+avg return on 3 trajectories of agent8: -356.59998044965124
+avg return on 3 trajectories of agent9: -358.17414867885367
+avg cum rews: -357.56708074224787, std: 0.49903184921454513
+the best agent: 8, best agent cum rewards: -356.59998044965124
+10
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -357.23802048638254
+avg return on 3 trajectories of agent1: -357.12780787252166
+avg return on 3 trajectories of agent2: -356.9484493284046
+avg return on 3 trajectories of agent3: -356.7944541548728
+avg return on 3 trajectories of agent4: -356.057298188335
+avg return on 3 trajectories of agent5: -357.5360084607109
+avg return on 3 trajectories of agent6: -355.7396445863413
+avg return on 3 trajectories of agent7: -359.0979735473476
+avg return on 3 trajectories of agent8: -355.5871696222765
+avg return on 3 trajectories of agent9: -356.09566470820516
+avg cum rews: -356.82224909553986, std: 0.9890315402466291
+the best agent: 8, best agent cum rewards: -355.5871696222765
+11
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -355.1665944603979
+avg return on 3 trajectories of agent1: -355.0669329207418
+avg return on 3 trajectories of agent2: -354.7762435478582
+avg return on 3 trajectories of agent3: -354.45757449985337
+avg return on 3 trajectories of agent4: -354.30322599444605
+avg return on 3 trajectories of agent5: -354.8305682373361
+avg return on 3 trajectories of agent6: -356.35002331394486
+avg return on 3 trajectories of agent7: -355.5084042526903
+avg return on 3 trajectories of agent8: -355.46960084612635
+avg return on 3 trajectories of agent9: -354.9874460993811
+avg cum rews: -355.0916614172776, std: 0.5575329114493601
+the best agent: 4, best agent cum rewards: -354.30322599444605
+12
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -355.5956006245169
+avg return on 3 trajectories of agent1: -355.5029752554026
+avg return on 3 trajectories of agent2: -355.15981475114785
+avg return on 3 trajectories of agent3: -354.5698701330815
+avg return on 3 trajectories of agent4: -354.48848355817717
+avg return on 3 trajectories of agent5: -354.51764160044746
+avg return on 3 trajectories of agent6: -356.9289415737662
+avg return on 3 trajectories of agent7: -355.3608567762515
+avg return on 3 trajectories of agent8: -354.0041848817355
+avg return on 3 trajectories of agent9: -353.5666566369396
+avg cum rews: -354.96950257914665, std: 0.9055632828147693
+the best agent: 9, best agent cum rewards: -353.5666566369396
+13
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -356.590221199844
+avg return on 3 trajectories of agent1: -355.7617561742201
+avg return on 3 trajectories of agent2: -355.69963498952717
+avg return on 3 trajectories of agent3: -355.49814882765025
+avg return on 3 trajectories of agent4: -354.8391511730596
+avg return on 3 trajectories of agent5: -355.17029214517953
+avg return on 3 trajectories of agent6: -358.05019407536474
+avg return on 3 trajectories of agent7: -355.9418276434394
+avg return on 3 trajectories of agent8: -355.38367288323224
+avg return on 3 trajectories of agent9: -355.63569251296934
+avg cum rews: -355.8570591624486, std: 0.8542902344421323
+the best agent: 4, best agent cum rewards: -354.8391511730596
+14
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -360.182422414986
+avg return on 3 trajectories of agent1: -359.8018326858544
+avg return on 3 trajectories of agent2: -359.48725342822917
+avg return on 3 trajectories of agent3: -358.24246094816203
+avg return on 3 trajectories of agent4: -355.9384350924735
+avg return on 3 trajectories of agent5: -359.2174739768344
+avg return on 3 trajectories of agent6: -360.0474542136333
+avg return on 3 trajectories of agent7: -357.64385912329
+avg return on 3 trajectories of agent8: -354.65727857038405
+avg return on 3 trajectories of agent9: -494.9873944371872
+avg cum rews: -372.0205864891034, std: 41.02594672008295
+the best agent: 8, best agent cum rewards: -354.65727857038405
+15
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -355.01908193416364
+avg return on 3 trajectories of agent1: -354.6144648675926
+avg return on 3 trajectories of agent2: -354.463250927528
+avg return on 3 trajectories of agent3: -354.30302634956934
+avg return on 3 trajectories of agent4: -353.9454429990054
+avg return on 3 trajectories of agent5: -354.8207245510917
+avg return on 3 trajectories of agent6: -355.11642695651534
+avg return on 3 trajectories of agent7: -355.55560966637665
+avg return on 3 trajectories of agent8: -354.4389613775458
+avg return on 3 trajectories of agent9: -354.4907021477827
+avg cum rews: -354.6767691777171, std: 0.43803285044050566
+the best agent: 4, best agent cum rewards: -353.9454429990054
+16
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -352.82198699307315
+avg return on 3 trajectories of agent1: -352.7562121923892
+avg return on 3 trajectories of agent2: -352.70687345540654
+avg return on 3 trajectories of agent3: -352.57985284733763
+avg return on 3 trajectories of agent4: -352.32921249630004
+avg return on 3 trajectories of agent5: -352.1569386204858
+avg return on 3 trajectories of agent6: -352.4236394990071
+avg return on 3 trajectories of agent7: -353.53191056216593
+avg return on 3 trajectories of agent8: -352.99450069482646
+avg return on 3 trajectories of agent9: -352.41150007528876
+avg cum rews: -352.67126274362806, std: 0.3735073133528094
+the best agent: 5, best agent cum rewards: -352.1569386204858
+17
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -352.55687932659293
+avg return on 3 trajectories of agent1: -352.27042199047384
+avg return on 3 trajectories of agent2: -351.97688919340123
+avg return on 3 trajectories of agent3: -351.9292075846652
+avg return on 3 trajectories of agent4: -351.8859153809492
+avg return on 3 trajectories of agent5: -352.33861079230195
+avg return on 3 trajectories of agent6: -352.0330972443748
+avg return on 3 trajectories of agent7: -353.29665776443954
+avg return on 3 trajectories of agent8: -352.0886233179732
+avg return on 3 trajectories of agent9: -353.76096679196684
+avg cum rews: -352.41372693871386, std: 0.599669576027156
+the best agent: 4, best agent cum rewards: -351.8859153809492
+18
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -352.94126180912144
+avg return on 3 trajectories of agent1: -352.90968237335375
+avg return on 3 trajectories of agent2: -352.7541869031191
+avg return on 3 trajectories of agent3: -352.4409939623289
+avg return on 3 trajectories of agent4: -351.58250164179884
+avg return on 3 trajectories of agent5: -353.5359150646613
+avg return on 3 trajectories of agent6: -352.42691207484836
+avg return on 3 trajectories of agent7: -352.7031930114859
+avg return on 3 trajectories of agent8: -353.764152321186
+avg return on 3 trajectories of agent9: -351.41294723531547
+avg cum rews: -352.64717463972187, std: 0.7039430294586345
+the best agent: 9, best agent cum rewards: -351.41294723531547
+19
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -351.56920563613664
+avg return on 3 trajectories of agent1: -351.5164072388862
+avg return on 3 trajectories of agent2: -351.0735223275256
+avg return on 3 trajectories of agent3: -351.0424923189651
+avg return on 3 trajectories of agent4: -350.7978720748986
+avg return on 3 trajectories of agent5: -351.1655262754076
+avg return on 3 trajectories of agent6: -351.27909789929873
+avg return on 3 trajectories of agent7: -352.7048740379756
+avg return on 3 trajectories of agent8: -352.018855985322
+avg return on 3 trajectories of agent9: -352.5854815476324
+avg cum rews: -351.57533353420484, std: 0.6238878819158823
+the best agent: 4, best agent cum rewards: -350.7978720748986
+20
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -351.306801059201
+avg return on 3 trajectories of agent1: -351.27738705719355
+avg return on 3 trajectories of agent2: -351.07800743459916
+avg return on 3 trajectories of agent3: -350.8599386279969
+avg return on 3 trajectories of agent4: -350.14934746023425
+avg return on 3 trajectories of agent5: -349.9578741059567
+avg return on 3 trajectories of agent6: -350.4435772672955
+avg return on 3 trajectories of agent7: -352.57939189787055
+avg return on 3 trajectories of agent8: -352.1384002521871
+avg return on 3 trajectories of agent9: -350.31115214006195
+avg cum rews: -351.01018773025964, std: 0.8111672191369016
+the best agent: 5, best agent cum rewards: -349.9578741059567
+21
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -351.918995352004
+avg return on 3 trajectories of agent1: -351.58015805523684
+avg return on 3 trajectories of agent2: -351.5171500894996
+avg return on 3 trajectories of agent3: -351.23313216995075
+avg return on 3 trajectories of agent4: -350.66100680789475
+avg return on 3 trajectories of agent5: -351.7084747658787
+avg return on 3 trajectories of agent6: -351.88035645370917
+avg return on 3 trajectories of agent7: -351.8675784067448
+avg return on 3 trajectories of agent8: -351.35003076665686
+avg return on 3 trajectories of agent9: -350.9893921276723
+avg cum rews: -351.47062749952477, std: 0.39436467094386435
+the best agent: 4, best agent cum rewards: -350.66100680789475
+22
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -351.3908612396854
+avg return on 3 trajectories of agent1: -351.3351842768962
+avg return on 3 trajectories of agent2: -351.3042940351726
+avg return on 3 trajectories of agent3: -351.2077491354338
+avg return on 3 trajectories of agent4: -350.789482761948
+avg return on 3 trajectories of agent5: -350.71559441106007
+avg return on 3 trajectories of agent6: -353.31971120635626
+avg return on 3 trajectories of agent7: -351.63999142878043
+avg return on 3 trajectories of agent8: -350.32329243365376
+avg return on 3 trajectories of agent9: -353.2327101962844
+avg cum rews: -351.52588711252713, std: 0.9483714529311956
+the best agent: 8, best agent cum rewards: -350.32329243365376
+23
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -347.5511459023063
+avg return on 3 trajectories of agent1: -347.4397346587267
+avg return on 3 trajectories of agent2: -347.33026228402036
+avg return on 3 trajectories of agent3: -347.3204720641464
+avg return on 3 trajectories of agent4: -347.1107008748237
+avg return on 3 trajectories of agent5: -347.6906329028072
+avg return on 3 trajectories of agent6: -347.42674425313095
+avg return on 3 trajectories of agent7: -347.1363545266182
+avg return on 3 trajectories of agent8: -347.81161779124153
+avg return on 3 trajectories of agent9: -347.3796163218606
+avg cum rews: -347.4197281579682, std: 0.20974992859696417
+the best agent: 4, best agent cum rewards: -347.1107008748237
+24
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -348.5479036012466
+avg return on 3 trajectories of agent1: -348.53587103580577
+avg return on 3 trajectories of agent2: -347.86345545247485
+avg return on 3 trajectories of agent3: -347.5000095961045
+avg return on 3 trajectories of agent4: -347.14468384761193
+avg return on 3 trajectories of agent5: -347.88231547898073
+avg return on 3 trajectories of agent6: -347.52704609650283
+avg return on 3 trajectories of agent7: -347.0600739440661
+avg return on 3 trajectories of agent8: -349.196912313024
+avg return on 3 trajectories of agent9: -349.019355123064
+avg cum rews: -348.02776264888814, std: 0.7192029615104059
+the best agent: 7, best agent cum rewards: -347.0600739440661
+25
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -346.9756158464233
+avg return on 3 trajectories of agent1: -346.87138350867946
+avg return on 3 trajectories of agent2: -346.67274395921004
+avg return on 3 trajectories of agent3: -346.65583723462777
+avg return on 3 trajectories of agent4: -346.3593831983142
+avg return on 3 trajectories of agent5: -347.16056591633856
+avg return on 3 trajectories of agent6: -346.423545191434
+avg return on 3 trajectories of agent7: -346.66866988967274
+avg return on 3 trajectories of agent8: -346.69586019657214
+avg return on 3 trajectories of agent9: -346.98203631831996
+avg cum rews: -346.7465641259592, std: 0.23905202234827702
+the best agent: 4, best agent cum rewards: -346.3593831983142
+26
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -350.08211074368944
+avg return on 3 trajectories of agent1: -350.0713811421521
+avg return on 3 trajectories of agent2: -349.8464152721898
+avg return on 3 trajectories of agent3: -349.7978191190234
+avg return on 3 trajectories of agent4: -348.4784503457115
+avg return on 3 trajectories of agent5: -349.80703033811045
+avg return on 3 trajectories of agent6: -351.0189457306821
+avg return on 3 trajectories of agent7: -349.06870668670734
+avg return on 3 trajectories of agent8: -350.19826927919684
+avg return on 3 trajectories of agent9: -350.94915547506173
+avg cum rews: -349.93182841325245, std: 0.7230452453189504
+the best agent: 4, best agent cum rewards: -348.4784503457115
+27
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -348.1844713777152
+avg return on 3 trajectories of agent1: -348.1206485883609
+avg return on 3 trajectories of agent2: -347.82999751701357
+avg return on 3 trajectories of agent3: -347.60386495342607
+avg return on 3 trajectories of agent4: -347.1677540292999
+avg return on 3 trajectories of agent5: -348.37247850581844
+avg return on 3 trajectories of agent6: -349.074921013111
+avg return on 3 trajectories of agent7: -347.8245565643691
+avg return on 3 trajectories of agent8: -348.4821462469308
+avg return on 3 trajectories of agent9: -347.4024530311813
+avg cum rews: -348.00632918272265, std: 0.5330239736472171
+the best agent: 4, best agent cum rewards: -347.1677540292999
+28
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -348.87596219336194
+avg return on 3 trajectories of agent1: -348.3982916545289
+avg return on 3 trajectories of agent2: -348.15902261422633
+avg return on 3 trajectories of agent3: -347.89205849412997
+avg return on 3 trajectories of agent4: -347.8397556279918
+avg return on 3 trajectories of agent5: -347.6852442183768
+avg return on 3 trajectories of agent6: -348.26327411433465
+avg return on 3 trajectories of agent7: -348.8139174958403
+avg return on 3 trajectories of agent8: -348.36654567309
+avg return on 3 trajectories of agent9: -349.6822124684423
+avg cum rews: -348.3976284554323, std: 0.56590817370664
+the best agent: 5, best agent cum rewards: -347.6852442183768
+29
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -350.76203978750607
+avg return on 3 trajectories of agent1: -350.713520450023
+avg return on 3 trajectories of agent2: -350.2769016814012
+avg return on 3 trajectories of agent3: -349.75324947663137
+avg return on 3 trajectories of agent4: -349.53049240367847
+avg return on 3 trajectories of agent5: -765.5820250488244
+avg return on 3 trajectories of agent6: -350.42761709927305
+avg return on 3 trajectories of agent7: -351.19504167026844
+avg return on 3 trajectories of agent8: -349.69806805466106
+avg return on 3 trajectories of agent9: -350.09854621616364
+avg cum rews: -391.8037501888431, std: 124.59375743359644
+the best agent: 4, best agent cum rewards: -349.53049240367847
+30
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -351.1219016553512
+avg return on 3 trajectories of agent1: -350.98856113390485
+avg return on 3 trajectories of agent2: -350.9103194546533
+avg return on 3 trajectories of agent3: -350.7101430864053
+avg return on 3 trajectories of agent4: -349.82063385338733
+avg return on 3 trajectories of agent5: -482.9461799313663
+avg return on 3 trajectories of agent6: -350.6258350436263
+avg return on 3 trajectories of agent7: -351.21323198574555
+avg return on 3 trajectories of agent8: -351.7145513346056
+avg return on 3 trajectories of agent9: -350.304868444587
+avg cum rews: -364.0356225923632, std: 39.63987518718771
+the best agent: 4, best agent cum rewards: -349.82063385338733
+31
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -349.2429870543676
+avg return on 3 trajectories of agent1: -349.086759183792
+avg return on 3 trajectories of agent2: -348.88163815973013
+avg return on 3 trajectories of agent3: -348.5986442636411
+avg return on 3 trajectories of agent4: -348.5634689943592
+avg return on 3 trajectories of agent5: -349.53865831362947
+avg return on 3 trajectories of agent6: -349.710731930778
+avg return on 3 trajectories of agent7: -348.69342689897593
+avg return on 3 trajectories of agent8: -349.42120397478783
+avg return on 3 trajectories of agent9: -348.0813724962807
+avg cum rews: -348.9818891270342, std: 0.4836852385695032
+the best agent: 9, best agent cum rewards: -348.0813724962807
+32
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -348.018296364394
+avg return on 3 trajectories of agent1: -347.9943482627329
+avg return on 3 trajectories of agent2: -347.84124980230797
+avg return on 3 trajectories of agent3: -347.76430980842997
+avg return on 3 trajectories of agent4: -347.63350429513724
+avg return on 3 trajectories of agent5: -348.3498695398194
+avg return on 3 trajectories of agent6: -348.3133929496907
+avg return on 3 trajectories of agent7: -348.53575626203127
+avg return on 3 trajectories of agent8: -347.55168543647267
+avg return on 3 trajectories of agent9: -349.2174592316434
+avg cum rews: -348.12198719526594, std: 0.47512946351993757
+the best agent: 8, best agent cum rewards: -347.55168543647267
+33
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -347.40177745617603
+avg return on 3 trajectories of agent1: -347.29868983878123
+avg return on 3 trajectories of agent2: -347.2802942365158
+avg return on 3 trajectories of agent3: -347.0542557711067
+avg return on 3 trajectories of agent4: -346.7729379012559
+avg return on 3 trajectories of agent5: -346.81601952483453
+avg return on 3 trajectories of agent6: -347.093016677692
+avg return on 3 trajectories of agent7: -347.1214550751105
+avg return on 3 trajectories of agent8: -348.70446303524363
+avg return on 3 trajectories of agent9: -348.94885303435456
+avg cum rews: -347.4491762551071, std: 0.7160019586451302
+the best agent: 4, best agent cum rewards: -346.7729379012559
+34
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -347.05329867664307
+avg return on 3 trajectories of agent1: -346.9516892135534
+avg return on 3 trajectories of agent2: -346.9339634531555
+avg return on 3 trajectories of agent3: -346.7629976678897
+avg return on 3 trajectories of agent4: -346.74473093834337
+avg return on 3 trajectories of agent5: -346.31461293613
+avg return on 3 trajectories of agent6: -346.44687734668366
+avg return on 3 trajectories of agent7: -347.00618215200427
+avg return on 3 trajectories of agent8: -346.84696837520386
+avg return on 3 trajectories of agent9: -346.7081216621535
+avg cum rews: -346.776944242176, std: 0.22752563658759412
+the best agent: 5, best agent cum rewards: -346.31461293613
+35
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -346.8597887670895
+avg return on 3 trajectories of agent1: -346.74429838713996
+avg return on 3 trajectories of agent2: -346.7167797931867
+avg return on 3 trajectories of agent3: -346.64883936379556
+avg return on 3 trajectories of agent4: -346.19037380198426
+avg return on 3 trajectories of agent5: -346.6873989595774
+avg return on 3 trajectories of agent6: -346.9084490395769
+avg return on 3 trajectories of agent7: -347.921327647911
+avg return on 3 trajectories of agent8: -346.8785264176201
+avg return on 3 trajectories of agent9: -347.75969906156143
+avg cum rews: -346.93154812394425, std: 0.4943735519589215
+the best agent: 4, best agent cum rewards: -346.19037380198426
+36
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -345.8361150439469
+avg return on 3 trajectories of agent1: -345.6444120351734
+avg return on 3 trajectories of agent2: -345.6042077174171
+avg return on 3 trajectories of agent3: -345.57647968182283
+avg return on 3 trajectories of agent4: -345.5687346366518
+avg return on 3 trajectories of agent5: -345.4361853197607
+avg return on 3 trajectories of agent6: -345.98021130622885
+avg return on 3 trajectories of agent7: -345.8230266367968
+avg return on 3 trajectories of agent8: -345.6391041123625
+avg return on 3 trajectories of agent9: -347.49458136495804
+avg cum rews: -345.86030578551185, std: 0.5651357893419906
+the best agent: 5, best agent cum rewards: -345.4361853197607
+37
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -346.42383690376107
+avg return on 3 trajectories of agent1: -346.3126417795652
+avg return on 3 trajectories of agent2: -345.9540543543328
+avg return on 3 trajectories of agent3: -345.89306647674647
+avg return on 3 trajectories of agent4: -345.7716603714756
+avg return on 3 trajectories of agent5: -347.1679704598643
+avg return on 3 trajectories of agent6: -347.27489516800836
+avg return on 3 trajectories of agent7: -347.44638808664075
+avg return on 3 trajectories of agent8: -347.4791880489355
+avg return on 3 trajectories of agent9: -346.0630159107226
+avg cum rews: -346.5786717560053, std: 0.653297545446479
+the best agent: 4, best agent cum rewards: -345.7716603714756
+38
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -345.9992646050665
+avg return on 3 trajectories of agent1: -345.8821267357533
+avg return on 3 trajectories of agent2: -345.71140432214264
+avg return on 3 trajectories of agent3: -345.5301773461646
+avg return on 3 trajectories of agent4: -344.8968702232168
+avg return on 3 trajectories of agent5: -344.5895835253758
+avg return on 3 trajectories of agent6: -346.72012058129656
+avg return on 3 trajectories of agent7: -344.83181917143844
+avg return on 3 trajectories of agent8: -346.0912821412194
+avg return on 3 trajectories of agent9: -346.8508988167356
+avg cum rews: -345.71035474684095, std: 0.7280606412627654
+the best agent: 5, best agent cum rewards: -344.5895835253758
+39
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -345.47749785979994
+avg return on 3 trajectories of agent1: -345.34199800255425
+avg return on 3 trajectories of agent2: -345.2604840825859
+avg return on 3 trajectories of agent3: -345.2379965390165
+avg return on 3 trajectories of agent4: -344.0448289380924
+avg return on 3 trajectories of agent5: -344.6221403156084
+avg return on 3 trajectories of agent6: -345.43065935449937
+avg return on 3 trajectories of agent7: -343.8906953222568
+avg return on 3 trajectories of agent8: -344.7990489999239
+avg return on 3 trajectories of agent9: -345.2606139411145
+avg cum rews: -344.9365963355452, std: 0.548517627800222
+the best agent: 7, best agent cum rewards: -343.8906953222568
+40
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -343.7061470527842
+avg return on 3 trajectories of agent1: -343.37980034798113
+avg return on 3 trajectories of agent2: -343.1116230084433
+avg return on 3 trajectories of agent3: -342.6862107932791
+avg return on 3 trajectories of agent4: -342.3228870618537
+avg return on 3 trajectories of agent5: -342.24550262130003
+avg return on 3 trajectories of agent6: -342.4248833900148
+avg return on 3 trajectories of agent7: -345.2066175825246
+avg return on 3 trajectories of agent8: -344.07508790884134
+avg return on 3 trajectories of agent9: -343.3041990176962
+avg cum rews: -343.24629587847187, std: 0.8731104328428704
+the best agent: 5, best agent cum rewards: -342.24550262130003
+41
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -343.09407231411575
+avg return on 3 trajectories of agent1: -342.5968521660977
+avg return on 3 trajectories of agent2: -342.52075490959845
+avg return on 3 trajectories of agent3: -342.48409513334695
+avg return on 3 trajectories of agent4: -342.26582460511213
+avg return on 3 trajectories of agent5: -344.593403061952
+avg return on 3 trajectories of agent6: -342.8965064377943
+avg return on 3 trajectories of agent7: -342.11323038401144
+avg return on 3 trajectories of agent8: -344.0736576699115
+avg return on 3 trajectories of agent9: -345.24163142174183
+avg cum rews: -343.1880028103682, std: 1.0181567275211352
+the best agent: 7, best agent cum rewards: -342.11323038401144
+42
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -341.9943513215315
+avg return on 3 trajectories of agent1: -341.98318990783713
+avg return on 3 trajectories of agent2: -341.8990817857301
+avg return on 3 trajectories of agent3: -341.85389111399746
+avg return on 3 trajectories of agent4: -341.38722726794583
+avg return on 3 trajectories of agent5: -342.2938502298957
+avg return on 3 trajectories of agent6: -341.9402408378762
+avg return on 3 trajectories of agent7: -342.058195106899
+avg return on 3 trajectories of agent8: -342.07410437478353
+avg return on 3 trajectories of agent9: -342.5691424864421
+avg cum rews: -342.0053274432938, std: 0.28805794516138183
+the best agent: 4, best agent cum rewards: -341.38722726794583
+43
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -342.25534871846486
+avg return on 3 trajectories of agent1: -342.2300536595072
+avg return on 3 trajectories of agent2: -342.0931230519485
+avg return on 3 trajectories of agent3: -341.71436071533964
+avg return on 3 trajectories of agent4: -341.6146856258926
+avg return on 3 trajectories of agent5: -341.92572998192264
+avg return on 3 trajectories of agent6: -342.3231771428014
+avg return on 3 trajectories of agent7: -342.34738112360634
+avg return on 3 trajectories of agent8: -342.07872614416084
+avg return on 3 trajectories of agent9: -342.87734779795056
+avg cum rews: -342.1459933961595, std: 0.3391586528879153
+the best agent: 4, best agent cum rewards: -341.6146856258926
+44
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -342.3655020865695
+avg return on 3 trajectories of agent1: -341.97950031632695
+avg return on 3 trajectories of agent2: -341.88365611710043
+avg return on 3 trajectories of agent3: -341.6662006535807
+avg return on 3 trajectories of agent4: -341.61064416093063
+avg return on 3 trajectories of agent5: -341.24915411234156
+avg return on 3 trajectories of agent6: -341.79636425141274
+avg return on 3 trajectories of agent7: -342.5172627033082
+avg return on 3 trajectories of agent8: -341.2933738110368
+avg return on 3 trajectories of agent9: -341.7965008388657
+avg cum rews: -341.8158159051473, std: 0.3853388541773116
+the best agent: 5, best agent cum rewards: -341.24915411234156
+45
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -341.99894008866454
+avg return on 3 trajectories of agent1: -341.894476998253
+avg return on 3 trajectories of agent2: -341.7093418936632
+avg return on 3 trajectories of agent3: -341.6981938302852
+avg return on 3 trajectories of agent4: -341.6074042358393
+avg return on 3 trajectories of agent5: -341.9290821412038
+avg return on 3 trajectories of agent6: -341.8279248407726
+avg return on 3 trajectories of agent7: -342.8565449777211
+avg return on 3 trajectories of agent8: -342.1000575129076
+avg return on 3 trajectories of agent9: -341.7790547414632
+avg cum rews: -341.94010212607736, std: 0.33646634636128725
+the best agent: 4, best agent cum rewards: -341.6074042358393
+46
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -342.3063296783874
+avg return on 3 trajectories of agent1: -342.2903289913656
+avg return on 3 trajectories of agent2: -342.23571622020256
+avg return on 3 trajectories of agent3: -342.0679282155999
+avg return on 3 trajectories of agent4: -341.9229582160553
+avg return on 3 trajectories of agent5: -342.07064420484437
+avg return on 3 trajectories of agent6: -343.345744157877
+avg return on 3 trajectories of agent7: -342.5980527716602
+avg return on 3 trajectories of agent8: -342.61400929514616
+avg return on 3 trajectories of agent9: -343.086469040958
+avg cum rews: -342.45381807920967, std: 0.43770304678425004
+the best agent: 4, best agent cum rewards: -341.9229582160553
+47
+Using PBT to search policies
+avg return on 3 trajectories of agent0: -341.5625755697356
+avg return on 3 trajectories of agent1: -341.2589785618682
+avg return on 3 trajectories of agent2: -341.2031580901207
+avg return on 3 trajectories of agent3: -341.0858645762654
+avg return on 3 trajectories of agent4: -340.973105059549
+avg return on 3 trajectories of agent5: -341.3128164797608
+avg return on 3 trajectories of agent6: -341.4348434282709
+avg return on 3 trajectories of agent7: -341.49249411121593
+avg return on 3 trajectories of agent8: -341.2789739009333
+avg return on 3 trajectories of agent9: -341.45299819803364
+avg cum rews: -341.3055807975753, std: 0.17653934776409674
+the best agent: 4, best agent cum rewards: -340.973105059549
+Average distance of random agents to nearest neighbors: []
+Time taken for each iteration: [279.09639835357666, 565.2712397575378, 853.3098287582397, 1130.950210571289, 1408.1292309761047, 1682.8246474266052, 1958.4435770511627, 2233.8213024139404, 2510.7990396022797, 2784.313403606415, 3058.453126192093, 3332.044946193695, 3603.5413115024567, 3873.3190698623657, 4144.917125940323, 4414.244956970215, 4686.925462722778, 4954.585458755493, 5229.412684440613, 5498.482902765274, 5765.8614382743835, 6036.438702344894, 6312.434399604797, 6579.834528684616, 6847.3717749118805, 7115.773006439209, 7383.465451478958, 7652.131827354431, 7920.727628946304, 8189.890648603439, 8459.29634809494, 8728.783046245575, 8996.523765563965, 9265.886118888855, 9536.2378115654, 9806.557924985886, 10078.384330272675, 10348.023269891739, 10616.736320495605, 10883.609555721283, 11151.35868859291, 11418.787641525269, 11686.996630191803, 11955.167428970337, 12224.350594043732, 12492.461869239807, 12760.93609905243, 13017.203604698181]
