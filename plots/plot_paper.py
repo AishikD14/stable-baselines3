@@ -11,13 +11,13 @@ import re
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-env = "Ant-v5"
+# env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
-# env = "Pendulum-v1"
+env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
 # env = "FetchReach-v4"
@@ -55,7 +55,7 @@ elif env == "FetchPushDense-v4":
 # start_iteration = 1000000 // args.n_steps_per_rollout*1
 start_iteration = 1
 
-if env in ["Ant-v5", "Walker2d-v5", "Humanoid-v5"]:
+if env in ["Ant-v5", "Walker2d-v5", "Humanoid-v5", "Pendulum-v1", "BipedalWalker-v3"]:
     plot_list = [
         ["PPO_upper_bound", "ExploRLer-P"],
         # ["PPO_upper_bound_interpolated", "ExploRLer-P"],
@@ -66,8 +66,8 @@ if env in ["Ant-v5", "Walker2d-v5", "Humanoid-v5"]:
         # ["SAC_normal_training", "SAC"],
         # ["TRPO_upper_bound", "ExploRLer-T"],
         ["TRPO_upper_bound_interpolated", "ExploRLer-T"],
-        ["TRPO_normal_training", "TRPO"],
-        # ["TRPO_normal_training_interpolated", "TRPO"],
+        # ["TRPO_normal_training", "TRPO"],
+        ["TRPO_normal_training_interpolated", "TRPO"],
         # ["PPO_empty_space_ls", "FQE Estimation"],
         # ["PPO_baseline", "Baseline"],
         # ["PPO_upper_bound", "Online Evaluation"],
@@ -223,7 +223,7 @@ if env in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDens
     plt.ylabel('Average Success Rate', fontsize=20)
 else:
     plt.ylabel('Average Return', fontsize=35)
-    if env != "Ant-v5":
+    if env not in  ["Ant-v5", "BipedalWalker-v3", "Pendulum-v1"]:
         ax.yaxis.label.set_visible(False)
 
 plt.title(env, fontsize=40)
@@ -252,5 +252,5 @@ plt.yticks(fontsize=20)
 for spine in ax.spines.values():
     spine.set_visible(False)
 
-# plt.savefig('../paper_plots/'+env+'_combined.pdf', format='pdf', bbox_inches='tight', dpi=300)
-# plt.savefig('../paper_plots/'+env+'_combined.png', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_combined.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_combined.png', bbox_inches='tight', dpi=300)
