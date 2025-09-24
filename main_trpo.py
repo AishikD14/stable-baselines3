@@ -793,9 +793,9 @@ if __name__ == "__main__":
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
     # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
-    env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
+    # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
     # env_name = "Pendulum-v1" # For pendulum (single goal task)
-    # env_name = "BipedalWalker-v3" # For bipedal walker (single goal task)
+    env_name = "BipedalWalker-v3" # For bipedal walker (single goal task)
     # env_name  = "LunarLander-v3" # For lunar lander (single goal task)
 
     if env_name == "Ant-v5":
@@ -862,7 +862,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "TRPO_VFS"
+    exp = "TRPO_normal_training"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('trpo_logs/'+env_name+"/", exp)+1)
     ckp_dir = f'trpo_logs/{DIR}/models'
 
@@ -1015,7 +1015,7 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = False
+    normal_train = True
     use_ANN = False
     ANN_lib = "Annoy"
     online_eval = True
