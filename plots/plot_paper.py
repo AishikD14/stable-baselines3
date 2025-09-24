@@ -15,9 +15,9 @@ args, rest_args = parser.parse_known_args()
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
+env = "Humanoid-v5"
 # env = "Swimmer-v5"
-env = "Pendulum-v1"
+# env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
 # env = "FetchReach-v4"
@@ -163,9 +163,10 @@ elif env == "HalfCheetah-v5":
         ["TRPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
     ]
 
-# plot_list = [
-#     ["SAC_normal_training", "SAC"],
-# ]
+plot_list = [
+    ["SAC_upper_bound", "ExploRLer-S"],
+    ["SAC_normal_training", "SAC"]
+]
 
 
 plot_metrics = []
@@ -233,8 +234,8 @@ plt.yticks(fontsize=20)
 
 # --------------------------------------------------------------------------------------------------
 
-# legend = plt.legend(fontsize=16)
-# legend.get_frame().set_facecolor('#f5f5f5')
+legend = plt.legend(fontsize=16)
+legend.get_frame().set_facecolor('#f5f5f5')
 
 # handles, labels = ax.get_legend_handles_labels()
 
@@ -252,5 +253,5 @@ plt.yticks(fontsize=20)
 for spine in ax.spines.values():
     spine.set_visible(False)
 
-plt.savefig('../paper_plots/'+env+'_combined.pdf', format='pdf', bbox_inches='tight', dpi=300)
-plt.savefig('../paper_plots/'+env+'_combined.png', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_SAC.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_SAC.png', bbox_inches='tight', dpi=300)

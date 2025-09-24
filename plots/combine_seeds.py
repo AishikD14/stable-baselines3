@@ -14,9 +14,9 @@ args, rest_args = parser.parse_known_args()
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
+env = "Humanoid-v5"
 # env = "Swimmer-v5"
-env = "Pendulum-v1"
+# env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
 # env = "FetchReach-v4"
@@ -70,6 +70,7 @@ plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
     # ["PPO_normal_training", "PPO Normal Training"],
     # ["SAC_normal_training", "SAC Normal Training"],
+    ["SAC_upper_bound", "SAC Upper Bound"],
     # ["PPO_upper_bound", "PPO Upper Bound"],
     # ["TRPO_normal_training", "TRPO Normal Training"],
     # ["TRPO_upper_bound", "TRPO Upper Bound"],
@@ -92,7 +93,7 @@ plot_list = [
     # ["TRPO_PBT", "Population Based Training"],
     # ["PPO_NoPretrain", "PPO No-Pretraining"],
     # ["TRPO_NoPretrain", "TRPO No-Pretraining"],
-    ["PPO_GuidedES", "Guided ES"],
+    # ["PPO_GuidedES", "Guided ES"],
     # ["TRPO_GuidedES", "Guided ES"],
     # ["PPO_VFS", "VFS"],
     # ["TRPO_VFS", "VFS"],
