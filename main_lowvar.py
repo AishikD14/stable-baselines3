@@ -25,6 +25,8 @@ import matplotlib.pyplot as plt
 from d3rlpy.torch_utility import TorchMiniBatch, TorchObservation
 import random
 import os
+from stable_baselines3.common.vec_env import DummyVecEnv
+import copy
 
 warnings.filterwarnings("ignore")
 
@@ -888,7 +890,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_CheckpointAvg"
+    exp = "PPO_GuidedES"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -973,13 +975,15 @@ if __name__ == "__main__":
     model = PPO(**ppo_kwargs)
 
     START_ITER = 1 // (args.n_steps_per_rollout*args.n_envs)
-    SEARCH_INTERV = 2 # Since PPO make n_epochs=10 updates with each rollout, we can set this to 1 instead of 10
     if env_name == "BipedalWalker-v3":
         NUM_ITERS = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+        SEARCH_INTERV = 1
     elif env_name == "Pendulum-v1":
         NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs)
+        SEARCH_INTERV = 1
     elif env_name == "LunarLander-v3":
         NUM_ITERS = 800000 // (args.n_steps_per_rollout*args.n_envs)
+        SEARCH_INTERV = 2
     N_EPOCHS = args.n_epochs
 
     # ---------------------------------------------------------------------------------------------------------------
@@ -1040,11 +1044,15 @@ if __name__ == "__main__":
     ANN_lib = "Annoy"
     online_eval = True
 
+    saved_agents = False
+    saved_iter = 5091
+    model_already_learned = False
+
     distanceArray = []
     start_time = time.time()
     timeArray = []
 
-    avg_checkpoint = True
+    avg_checkpoint = False
     use_ptb = False
 
     if exp == "PPO_baseline":
@@ -1066,12 +1074,12 @@ if __name__ == "__main__":
                         )
             
             if not avg_checkpoint and not use_ptb:
-                agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib)
+                # agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib)
                 # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
-                # agents, distance = search_guided_es_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
+                agents, distance = search_guided_es_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
                 # agents, distance = search_vfs_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, saved_agents and model_already_learned)
                 distanceArray.append(distance)
             
