@@ -12,10 +12,10 @@ parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-# env = "HalfCheetah-v5"
+env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
+# env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -163,10 +163,47 @@ elif env == "HalfCheetah-v5":
         ["TRPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
     ]
 
-plot_list = [
-    ["SAC_upper_bound", "ExploRLer-S"],
-    ["SAC_normal_training", "SAC"]
-]
+# plot_list = [
+#     ["SAC_upper_bound", "ExploRLer-S"],
+#     ["SAC_normal_training", "SAC"]
+# ]
+
+if env in ["Ant-v5", "Walker2d-v5", "Humanoid-v5", "Pendulum-v1", "BipedalWalker-v3"]:
+    plot_list = [
+        ["PPO_upper_bound", "ExploRLer-P"],
+        # ["PPO_upper_bound_interpolated", "ExploRLer-P"],
+        ["PPO_NoPretrain", "ExploRLer-P No Pre-training"],
+        # ["PPO_NoPretrain_interpolated", "ExploRLer-P No Pre-training"],
+        # ["PPO_normal_training", "PPO"],
+        # ["PPO_normal_training_interpolated", "PPO"],
+    ]
+
+elif env == "Hopper-v5":
+    plot_list = [
+        # ["PPO_upper_bound", "ExploRLer-P"],
+        ["PPO_upper_bound_interpolated", "ExploRLer-P"],
+        # ["PPO_NoPretrain", "ExploRLer-P No Pre-training"],
+        ["PPO_NoPretrain_interpolated", "ExploRLer-P No Pre-training"],
+        # ["PPO_normal_training", "PPO"],
+        # ["PPO_normal_training_interpolated", "PPO"],
+    ]
+
+elif env == "HalfCheetah-v5":
+    plot_list = [
+        # ["PPO_upper_bound", "ExploRLer-P"],
+        # ["PPO_upper_bound_interpolated", "ExploRLer-P"],
+        # ["PPO_NoPretrain", "ExploRLer-P No Pre-training"],
+        # ["PPO_NoPretrain_interpolated", "ExploRLer-P No Pre-training"],
+        # ["PPO_normal_training", "PPO"],
+        # ["PPO_normal_training_interpolated", "PPO"],
+        # ["SAC_normal_training", "SAC"],
+        # ["TRPO_upper_bound", "ExploRLer-T"],
+        ["TRPO_upper_bound_interpolated", "ExploRLer"],
+        ["TRPO_NoPretrain_interpolated", "ExploRLer No Pre-training"],
+        # ["TRPO_normal_training", "TRPO"],
+        # ["TRPO_normal_training_interpolated", "TRPO"],
+        
+    ]
 
 
 plot_metrics = []
@@ -234,24 +271,26 @@ plt.yticks(fontsize=20)
 
 # --------------------------------------------------------------------------------------------------
 
-legend = plt.legend(fontsize=16)
-legend.get_frame().set_facecolor('#f5f5f5')
+# legend = plt.legend(fontsize=16)
+# legend.get_frame().set_facecolor('#f5f5f5')
 
 # handles, labels = ax.get_legend_handles_labels()
 
 # # Create a new figure just for the legend
 # fig_legend = plt.figure(figsize=(6, 6))  # adjust size as needed
-# leg = fig_legend.legend(handles, labels, loc='center', ncol=len(labels), frameon=False, fontsize=20)
+# leg = fig_legend.legend(handles, labels, loc='center', ncol=1, frameon=False, fontsize=20)
 # leg.get_frame().set_facecolor('#f5f5f5')
 
 # # Save only the legend
 # fig_legend.savefig("../paper_plots/legend.png", bbox_inches='tight', dpi=300)
 # plt.close(fig_legend)
 
+# quit()
+
 # --------------------------------------------------------------------------------------------------
 
 for spine in ax.spines.values():
     spine.set_visible(False)
 
-plt.savefig('../paper_plots/'+env+'_SAC.pdf', format='pdf', bbox_inches='tight', dpi=300)
-plt.savefig('../paper_plots/'+env+'_SAC.png', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_NoPretrain.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_NoPretrain.png', bbox_inches='tight', dpi=300)
