@@ -11,8 +11,8 @@ import re
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-# env = "Ant-v5"
-env = "HalfCheetah-v5"
+env = "Ant-v5"
+# env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
@@ -55,7 +55,7 @@ elif env == "FetchPushDense-v4":
 # start_iteration = 1000000 // args.n_steps_per_rollout*1
 start_iteration = 1
 
-if env in ["Ant-v5", "Walker2d-v5", "Humanoid-v5", "Pendulum-v1", "BipedalWalker-v3"]:
+if env in ["Ant-v5", "Walker2d-v5", "Humanoid-v5"]:
     plot_list = [
         ["PPO_upper_bound", "ExploRLer-P"],
         # ["PPO_upper_bound_interpolated", "ExploRLer-P"],
@@ -163,48 +163,66 @@ elif env == "HalfCheetah-v5":
         ["TRPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
     ]
 
+elif env in ["Pendulum-v1", "BipedalWalker-v3"]:
+    plot_list = [
+        ["PPO_upper_bound", "ExploRLer-P"],
+        # ["PPO_upper_bound_interpolated", "ExploRLer-P"],
+        ["PPO_normal_training", "PPO"],
+        # ["PPO_normal_training_interpolated", "PPO"],
+        # ["TRPO_upper_bound", "ExploRLer-T"],
+        ["TRPO_upper_bound_interpolated", "ExploRLer-T"],
+        ["TRPO_normal_training", "TRPO"],
+        # ["TRPO_normal_training_interpolated", "TRPO"],
+    ]
+# ==================================================================================================
+
+#  For SAC plots
 # plot_list = [
 #     ["SAC_upper_bound", "ExploRLer-S"],
 #     ["SAC_normal_training", "SAC"]
 # ]
 
-if env in ["Ant-v5", "Walker2d-v5", "Humanoid-v5", "Pendulum-v1", "BipedalWalker-v3"]:
-    plot_list = [
-        ["PPO_upper_bound", "ExploRLer-P"],
-        # ["PPO_upper_bound_interpolated", "ExploRLer-P"],
-        ["PPO_NoPretrain", "ExploRLer-P No Pre-training"],
-        # ["PPO_NoPretrain_interpolated", "ExploRLer-P No Pre-training"],
-        # ["PPO_normal_training", "PPO"],
-        # ["PPO_normal_training_interpolated", "PPO"],
-    ]
+# ==================================================================================================
 
-elif env == "Hopper-v5":
-    plot_list = [
-        # ["PPO_upper_bound", "ExploRLer-P"],
-        ["PPO_upper_bound_interpolated", "ExploRLer-P"],
-        # ["PPO_NoPretrain", "ExploRLer-P No Pre-training"],
-        ["PPO_NoPretrain_interpolated", "ExploRLer-P No Pre-training"],
-        # ["PPO_normal_training", "PPO"],
-        # ["PPO_normal_training_interpolated", "PPO"],
-    ]
+# For Ablation study plots (No Pre-training)
+# if env in ["Ant-v5", "Walker2d-v5", "Humanoid-v5", "Pendulum-v1", "BipedalWalker-v3"]:
+#     plot_list = [
+#         ["PPO_upper_bound", "ExploRLer with Pre-training"],
+#         # ["PPO_upper_bound_interpolated", "ExploRLer-P"],
+#         ["PPO_NoPretrain", "ExploRLer without Pre-training"],
+#         # ["PPO_NoPretrain_interpolated", "ExploRLer-P No Pre-training"],
+#         # ["PPO_normal_training", "PPO"],
+#         # ["PPO_normal_training_interpolated", "PPO"],
+#     ]
 
-elif env == "HalfCheetah-v5":
-    plot_list = [
-        # ["PPO_upper_bound", "ExploRLer-P"],
-        # ["PPO_upper_bound_interpolated", "ExploRLer-P"],
-        # ["PPO_NoPretrain", "ExploRLer-P No Pre-training"],
-        # ["PPO_NoPretrain_interpolated", "ExploRLer-P No Pre-training"],
-        # ["PPO_normal_training", "PPO"],
-        # ["PPO_normal_training_interpolated", "PPO"],
-        # ["SAC_normal_training", "SAC"],
-        # ["TRPO_upper_bound", "ExploRLer-T"],
-        ["TRPO_upper_bound_interpolated", "ExploRLer"],
-        ["TRPO_NoPretrain_interpolated", "ExploRLer No Pre-training"],
-        # ["TRPO_normal_training", "TRPO"],
-        # ["TRPO_normal_training_interpolated", "TRPO"],
+# elif env == "Hopper-v5":
+#     plot_list = [
+#         # ["PPO_upper_bound", "ExploRLer-P"],
+#         ["PPO_upper_bound_interpolated", "ExploRLer-P"],
+#         # ["PPO_NoPretrain", "ExploRLer-P No Pre-training"],
+#         ["PPO_NoPretrain_interpolated", "ExploRLer-P No Pre-training"],
+#         # ["PPO_normal_training", "PPO"],
+#         # ["PPO_normal_training_interpolated", "PPO"],
+#     ]
+
+# elif env == "HalfCheetah-v5":
+#     plot_list = [
+#         # ["PPO_upper_bound", "ExploRLer-P"],
+#         # ["PPO_upper_bound_interpolated", "ExploRLer-P"],
+#         # ["PPO_NoPretrain", "ExploRLer-P No Pre-training"],
+#         # ["PPO_NoPretrain_interpolated", "ExploRLer-P No Pre-training"],
+#         # ["PPO_normal_training", "PPO"],
+#         # ["PPO_normal_training_interpolated", "PPO"],
+#         # ["SAC_normal_training", "SAC"],
+#         # ["TRPO_upper_bound", "ExploRLer-T"],
+#         ["TRPO_upper_bound_interpolated", "ExploRLer"],
+#         ["TRPO_NoPretrain_interpolated", "ExploRLer No Pre-training"],
+#         # ["TRPO_normal_training", "TRPO"],
+#         # ["TRPO_normal_training_interpolated", "TRPO"],
         
-    ]
+    # ]
 
+# ==================================================================================================
 
 plot_metrics = []
 
@@ -256,15 +274,15 @@ for i, plot_metric in enumerate(plot_metrics):
 ax = plt.gca()
 ax.set_facecolor('#f5f5f5')
 
-plt.xlabel('Iterations', fontsize=35)
+plt.xlabel('Iterations', fontsize=25)
 if env in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
     plt.ylabel('Average Success Rate', fontsize=20)
 else:
-    plt.ylabel('Average Return', fontsize=35)
+    plt.ylabel('Average Return', fontsize=25)
     if env not in  ["Ant-v5", "BipedalWalker-v3", "Pendulum-v1"]:
         ax.yaxis.label.set_visible(False)
 
-plt.title(env, fontsize=40)
+plt.title(env, fontsize=30)
 plt.grid(True, color='white')
 plt.xticks(fontsize=20)
 plt.yticks(fontsize=20)
@@ -292,5 +310,5 @@ plt.yticks(fontsize=20)
 for spine in ax.spines.values():
     spine.set_visible(False)
 
-plt.savefig('../paper_plots/'+env+'_NoPretrain.pdf', format='pdf', bbox_inches='tight', dpi=300)
-plt.savefig('../paper_plots/'+env+'_NoPretrain.png', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_combined.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_combined.png', bbox_inches='tight', dpi=300)
