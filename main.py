@@ -16,7 +16,7 @@ import pandas as pd
 # from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense
+from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_breakout_no_frameskip
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
 from d3rlpy.dataset import MDPDataset
@@ -29,6 +29,10 @@ import random
 import os
 from stable_baselines3.common.vec_env import DummyVecEnv
 from gymnasium.wrappers import FlattenObservation
+import ale_py
+from stable_baselines3.common.env_util import make_atari_env
+from stable_baselines3.common.vec_env import VecFrameStack
+from stable_baselines3.common.callbacks import EvalCallback
 
 warnings.filterwarnings("ignore")
 
@@ -806,7 +810,9 @@ if __name__ == "__main__":
     # env_name = "FetchReach-v4" # For FetchReach (single goal task) sparse rewards
     # env_name = "FetchReachDense-v4" # For FetchReach (single goal task) dense rewards
     # env_name = "FetchPush-v4" # For FetchPush (single goal task) sparse rewards
-    env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
+    # env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
+
+    env_name = "BreakoutNoFrameskip-v4" # For Breakout Atari (single goal task)
 
     # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -838,6 +844,8 @@ if __name__ == "__main__":
         args = args_fetch_push.get_args(rest_args)
     elif env_name == "FetchPushDense-v4":
         args = args_fetch_push_dense.get_args(rest_args)
+    elif env_name == "BreakoutNoFrameskip-v4":
+        args = args_breakout_no_frameskip.get_args(rest_args)
 
     # ------------------------------------------------------------------------------------------------------------
 
@@ -861,15 +869,33 @@ if __name__ == "__main__":
     
     if hasattr(args, 'n_envs') and args.n_envs > 1:
         print("Creating multiple envs - ", args.n_envs)
-        # Create a list of environment functions
-        env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
-        env = SubprocVecEnv(env_fns)
+        if env_name in ["BreakoutNoFrameskip-v4"]:
+            env = make_atari_env(
+                env_name,            # e.g. "BreakoutNoFrameskip-v4"
+                n_envs=args.n_envs,
+                seed=args.seed,
+                wrapper_kwargs=dict(terminal_on_life_loss=False),
+            )
+        else:
+            # Create a list of environment functions
+            env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
+            env = SubprocVecEnv(env_fns)
     else:
-        env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
-        env.reset(seed=args.seed)
+        if env_name in ["BreakoutNoFrameskip-v4"]:
+            env = make_atari_env(
+                env_name,
+                n_envs=1,
+                seed=args.seed,
+                wrapper_kwargs=dict(terminal_on_life_loss=False),
+            )
+        else:
+            env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+            env.reset(seed=args.seed)
     
     if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
         env = FlattenObservation(env)
+    elif env_name in ["BreakoutNoFrameskip-v4"]:
+        env = VecFrameStack(env, n_stack=4)
 
     # env = make_env(env_name, episodes_per_task=1, seed=0, n_tasks=1) # For AntDir-v0
 
@@ -905,7 +931,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_upper_bound"
+    exp = "PPO_plot"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -988,35 +1014,35 @@ if __name__ == "__main__":
 
     # START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
     START_ITER = 1
-    SEARCH_INTERV = 1 # Make this 2 for n_epochs=5 and keep 1 for n_epochs=10
+    SEARCH_INTERV = 2 # Make this 2 for n_epochs=5 and keep 1 for n_epochs=10
     NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
     # NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs) # For FetchReach-v4
     N_EPOCHS = args.n_epochs
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    # print("Starting Initial training")
-    # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
+    print("Starting Initial training")
+    os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
 
-    # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_fetch_reach_1M"+'_'+str(args.seed))
+    model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
+    model.save("full_exp_on_ppo/models/"+env_name+"/ppo_breakoutNoFrameskip_1M"+'_'+str(args.seed))
 
-    # print("Initial training done") 
+    print("Initial training done") 
 
-    # # print("Saving replay buffer for later use")
-    # # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
+    # print("Saving replay buffer for later use")
+    # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
 
-    # # # Save the replay buffer
-    # # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
-    # #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
-    # #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
-    # #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
-    # #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
-    # # )
+    # # Save the replay buffer
+    # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
+    #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
+    #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
+    #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
+    #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+    # )
     
-    # # print("Replay buffer saved")
+    # print("Replay buffer saved")
 
-    # quit()
+    quit()
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -1051,7 +1077,7 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = False
+    normal_train = True
     use_ANN = False
     ANN_lib = "Annoy"
     online_eval = True

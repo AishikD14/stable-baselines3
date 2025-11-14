@@ -1306,6 +1306,7 @@ if __name__ == "__main__":
                         )
 
             cum_rews = []
+            cum_success = []
 
             if hasattr(args, 'n_envs') and args.n_envs > 1:
                 # print("Creating multiple envs - ", args.n_envs)
@@ -1316,10 +1317,20 @@ if __name__ == "__main__":
                 dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
                 dummy_env.reset(seed=args.seed)
             
-            returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
-            print(f'avg 3 return on policy: {returns_trains}')
-            cum_rews.append(returns_trains)
+            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
+                print(f'avg 3 return on policy: {mean_rew}')
+                print(f'Success rate: {success:.2f}')
+                cum_rews.append(mean_rew)
+                cum_success.append(success)
+            else:
+                returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                print(f'avg 3 return on policy: {returns_trains}')
+                cum_rews.append(returns_trains)
+
             np.save(f'sac_logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                np.save(f'sac_logs/{DIR}/success_{i}_{i + SEARCH_INTERV}.npy', cum_success)
             timeArray.append(time.time() - start_time)
         
         np.save(f'sac_logs/{DIR}/time.npy', timeArray)
