@@ -1,6 +1,6 @@
 import copy
 import gymnasium as gym
-import gymnasium_robotics
+# import gymnasium_robotics
 from stable_baselines3 import PPO
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
@@ -29,7 +29,7 @@ import random
 import os
 from stable_baselines3.common.vec_env import DummyVecEnv
 from gymnasium.wrappers import FlattenObservation
-import ale_py
+# import ale_py
 from stable_baselines3.common.env_util import make_atari_env
 from stable_baselines3.common.vec_env import VecFrameStack
 from stable_baselines3.common.callbacks import EvalCallback
@@ -256,8 +256,10 @@ def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_l
     points = dt[adjs[:, 1:]]
     points = points.mean(axis=1)
 
-    # Choose every second point
-    points = points[::2]
+    # Choose a subset of points
+    points = points[::4] #m=3
+    # points = points[::3] #m=4
+    # points = points[::2] #m=5 (Base Version)
 
     policies = []
     for p in points:
@@ -800,7 +802,7 @@ if __name__ == "__main__":
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
-    # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+    env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
     # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
@@ -812,7 +814,7 @@ if __name__ == "__main__":
     # env_name = "FetchPush-v4" # For FetchPush (single goal task) sparse rewards
     # env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
 
-    env_name = "BreakoutNoFrameskip-v4" # For Breakout Atari (single goal task)
+    # env_name = "BreakoutNoFrameskip-v4" # For Breakout Atari (single goal task)
 
     # env_name = "AntDir-v0" # Part of the Meta-World or Meta-RL (meta-reinforcement learning) benchmarks (used for multi-task learning)
 
@@ -931,7 +933,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_plot"
+    exp = "PPO_hyper_m_3_E_6"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -1012,37 +1014,37 @@ if __name__ == "__main__":
 
     model = PPO(**ppo_kwargs)
 
-    # START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
-    START_ITER = 1
-    SEARCH_INTERV = 2 # Make this 2 for n_epochs=5 and keep 1 for n_epochs=10
+    START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
+    # START_ITER = 1
+    SEARCH_INTERV = 1 # Make this 2 for n_epochs=5 and keep 1 for n_epochs=10
     NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
     # NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs) # For FetchReach-v4
     N_EPOCHS = args.n_epochs
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    print("Starting Initial training")
-    os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
+    # print("Starting Initial training")
+    # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
 
-    model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    model.save("full_exp_on_ppo/models/"+env_name+"/ppo_breakoutNoFrameskip_1M"+'_'+str(args.seed))
+    # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
+    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_breakoutNoFrameskip_1M"+'_'+str(args.seed))
 
-    print("Initial training done") 
+    # print("Initial training done") 
 
-    # print("Saving replay buffer for later use")
-    # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
+    # # print("Saving replay buffer for later use")
+    # # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
 
-    # # Save the replay buffer
-    # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
-    #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
-    #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
-    #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
-    #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
-    # )
+    # # # Save the replay buffer
+    # # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
+    # #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
+    # #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
+    # #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
+    # #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+    # # )
     
-    # print("Replay buffer saved")
+    # # print("Replay buffer saved")
 
-    quit()
+    # quit()
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -1077,7 +1079,7 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = True
+    normal_train = False
     use_ANN = False
     ANN_lib = "Annoy"
     online_eval = True
@@ -1271,8 +1273,8 @@ if __name__ == "__main__":
                     cum_rews.append(mean_rew)
                     cum_success.append(success)
                 else:
-                    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
-                    print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
+                    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=6, deterministic=True)[0]
+                    print(f'avg return on 6 trajectories of agent{j}: {returns_trains}')
                     cum_rews.append(returns_trains)
 
                 # Q-function evaluation
