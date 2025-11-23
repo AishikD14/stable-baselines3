@@ -33,6 +33,7 @@ from gymnasium.wrappers import FlattenObservation
 from stable_baselines3.common.env_util import make_atari_env
 from stable_baselines3.common.vec_env import VecFrameStack
 from stable_baselines3.common.callbacks import EvalCallback
+from multiprocessing import Pool, cpu_count
 
 warnings.filterwarnings("ignore")
 
@@ -257,9 +258,9 @@ def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_l
     points = points.mean(axis=1)
 
     # Choose a subset of points
-    points = points[::4] #m=3
+    # points = points[::4] #m=3
     # points = points[::3] #m=4
-    # points = points[::2] #m=5 (Base Version)
+    points = points[::2] #m=5 (Base Version)
 
     policies = []
     for p in points:
@@ -791,6 +792,46 @@ def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_nu
 
     return agent_list, 0.0
 
+# Evaluation function for a single candidate agent
+def evaluate_candidate(args):
+    idx, agent_state_dict, env_name, device, seed, n_eval = args
+
+    # Load a fresh model instance per process
+    model = PPO(**ppo_kwargs)
+    model.policy.load_state_dict(agent_state_dict)
+    model.policy.to(device)
+
+    dummy_env = gym.make(env_name)
+    dummy_env.reset(seed=seed)
+
+    # Evaluate policy
+    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=n_eval, deterministic=True)[0]
+    print(f"avg return on {n_eval} trajectories of agent{idx}: {returns_trains}")
+    return idx, returns_trains
+
+# Parallel Evaluation of multiple agents
+def parallel_evaluate(agents, env_name, device, seed, n_eval_episodes=3):
+
+    # Prepare job arguments
+    job_args = [
+        (j, agents[j], env_name, device, seed, n_eval_episodes)
+        for j in range(len(agents))
+    ]
+
+    # Number of worker processes
+    n_workers = min(len(agents), cpu_count())
+
+    with Pool(processes=n_workers) as pool:
+        results = pool.map(evaluate_candidate, job_args)
+
+    # Sort by index
+    results = sorted(results, key=lambda x: x[0])
+
+    # Only return returns
+    returns = [r[1] for r in results]
+
+    return returns
+
 # ------------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
@@ -933,7 +974,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_hyper_m_3_E_6"
+    exp = "PPO_parallel"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -1273,8 +1314,8 @@ if __name__ == "__main__":
                     cum_rews.append(mean_rew)
                     cum_success.append(success)
                 else:
-                    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=6, deterministic=True)[0]
-                    print(f'avg return on 6 trajectories of agent{j}: {returns_trains}')
+                    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                    print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
                     cum_rews.append(returns_trains)
 
                 # Q-function evaluation
@@ -1287,6 +1328,16 @@ if __name__ == "__main__":
                     # d3rl FQE evaluation code
                     init_est = d3rl_evaluation(model, f"{'-'.join(DIR.split('/'))}")
                     advantage_rew.append(init_est)
+
+            # cum_rews = parallel_evaluate(
+            #     agents=agents,
+            #     env_name=env_name,
+            #     device=device,
+            #     n_eval_episodes=3,
+            #     seed=args.seed
+            # )
+
+            # -----------------------------------------------------------------------------------
 
             if not online_eval:
                 # print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
