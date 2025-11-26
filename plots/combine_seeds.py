@@ -62,15 +62,16 @@ if not hasattr(args, 'n_envs'):
 start_iteration = 1
 
 # seed_list = [0]
+seed_list = [0, 1]
 # seed_list = [0, 1, 2]
-seed_list = [0, 1, 2, 3]
+# seed_list = [0, 1, 2, 3]
 # file_name = "PPO_normal_training"
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
     # ["PPO_normal_training", "PPO Normal Training"],
     # ["SAC_normal_training", "SAC Normal Training"],
-    ["SAC_upper_bound", "SAC Upper Bound"],
+    # ["SAC_upper_bound", "SAC Upper Bound"],
     # ["PPO_upper_bound", "PPO Upper Bound"],
     # ["TRPO_normal_training", "TRPO Normal Training"],
     # ["TRPO_upper_bound", "TRPO Upper Bound"],
@@ -97,6 +98,14 @@ plot_list = [
     # ["TRPO_GuidedES", "Guided ES"],
     # ["PPO_VFS", "VFS"],
     # ["TRPO_VFS", "VFS"],
+    # ["PPO_hyper_m_3", "PPO Hyperparameter m=3"],
+    # ["PPO_hyper_m_4", "PPO Hyperparameter m=4"],
+    # ["PPO_hyper_E_6", "PPO Hyperparameter E=6"],
+    # ["PPO_hyper_E_10", "PPO Hyperparameter E=10"],
+    # ["PPO_hyper_m_3_E_6", "PPO Hyperparameter m=3, E=6"],
+    ["PPO_hyper_I_20", "PPO Hyperparameter I=20"],
+    ["PPO_hyper_I_30", "PPO Hyperparameter I=30"],
+    ["PPO_hyper_I_40", "PPO Hyperparameter I=40"],
 ]
 
 plot_metrics = []

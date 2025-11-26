@@ -30,17 +30,17 @@ def interpolate_after_fixed(arr, fixed_len, target_len):
     return np.concatenate([fixed_part, interpolated])
 
 # env = "Ant-v5"
-env = "HalfCheetah-v5"
+# env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
+env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
 # env = "LunarLander-v3"
 
 # Load the arrays
-r1 = np.load("../combined_results/"+env+"/TRPO_NoPretrain.npy")
+r1 = np.load("../combined_results/"+env+"/PPO_hyper_I_40.npy")
 # r2 = np.load("../combined_results/Ant-v5/PPO_Ablation4.npy")
 r3 = np.load("../combined_results/"+env+"/PPO_normal_training.npy")
 
@@ -62,5 +62,5 @@ print(r1_interp.shape)
 # print(r2_interp.shape)
 
 # Save the interpolated arrays
-np.save("../combined_results/"+env+"/TRPO_NoPretrain_interpolated.npy", r1_interp)
+np.save("../combined_results/"+env+"/PPO_hyper_I_40_interpolated.npy", r1_interp)
 # np.save("../combined_results/Ant-v5/PPO_Ablation4_interpolated.npy", r2_interp)
