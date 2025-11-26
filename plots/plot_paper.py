@@ -11,11 +11,11 @@ import re
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-env = "Ant-v5"
+# env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-# env = "Humanoid-v5"
+env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -224,6 +224,25 @@ elif env in ["Pendulum-v1", "BipedalWalker-v3"]:
 
 # ==================================================================================================
 
+# For Ablation study plots (m=[3,4,5], E=[3,6,10], I=[10,20,30,40])
+if env in ["Ant-v5", "Walker2d-v5", "Humanoid-v5", "Pendulum-v1", "BipedalWalker-v3"]:
+    plot_list = [
+        # ["PPO_upper_bound", "I=10"],
+        # ["PPO_hyper_I_20_interpolated", "I=20"],
+        # ["PPO_hyper_I_30_interpolated", "I=30"],
+        # ["PPO_hyper_I_40_interpolated", "I=40"],
+        # ["PPO_upper_bound", "m=5"],
+        # ["PPO_hyper_m_4", "m=4"],
+        # ["PPO_hyper_m_3", "m=3"],
+        # ["PPO_upper_bound", "E=3"],
+        # ["PPO_hyper_E_6", "E=6"],
+        # ["PPO_hyper_E_10", "E=10"],
+        ["PPO_upper_bound", "m=5,E=3"],
+        ["PPO_hyper_m_3_E_6", "m=3,E=6"],
+    ]
+
+# ==================================================================================================
+
 plot_metrics = []
 
 # -------------------------------------------------------
@@ -257,7 +276,11 @@ for plot_item in plot_list:
 
 # -------------------------------------------------------
 
-line_styles = ['-', '--', '-', '--', '--', '--', '--', '--']
+# line_styles = ['-', '--', '-', '--', '--', '--', '--', '--'] # Normal
+line_styles = ['-', '--', '--', '--'] # Ablation
+
+# -------------------------------------------------------
+
 plt.figure(figsize=(10, 6))
 # Find the minimum length of x
 min_length = min([len(x) for x, _, _, _ in plot_metrics])
@@ -289,7 +312,7 @@ plt.yticks(fontsize=20)
 
 # --------------------------------------------------------------------------------------------------
 
-# legend = plt.legend(fontsize=16)
+legend = plt.legend(fontsize=16)
 # legend.get_frame().set_facecolor('#f5f5f5')
 
 # handles, labels = ax.get_legend_handles_labels()
@@ -310,5 +333,5 @@ plt.yticks(fontsize=20)
 for spine in ax.spines.values():
     spine.set_visible(False)
 
-plt.savefig('../paper_plots/'+env+'_combined.pdf', format='pdf', bbox_inches='tight', dpi=300)
-plt.savefig('../paper_plots/'+env+'_combined.png', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_m[3,5]_E[6,3].pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_m[3,5]_E[6,3].png', bbox_inches='tight', dpi=300)
