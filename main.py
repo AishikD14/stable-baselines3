@@ -33,7 +33,9 @@ from gymnasium.wrappers import FlattenObservation
 from stable_baselines3.common.env_util import make_atari_env
 from stable_baselines3.common.vec_env import VecFrameStack
 from stable_baselines3.common.callbacks import EvalCallback
+import multiprocessing as mp
 from multiprocessing import Pool, cpu_count
+from stable_baselines3.common.policies import ActorCriticPolicy
 
 warnings.filterwarnings("ignore")
 
@@ -792,29 +794,59 @@ def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_nu
 
     return agent_list, 0.0
 
+# Rollout policy to get average reward
+def rollout_policy(policy, env, n_eval=3, deterministic=True):
+    episode_rewards = []
+
+    for _ in range(n_eval):
+        obs, _ = env.reset()
+        done = False
+        total_reward = 0.0
+
+        while not done:
+            # SB3 uses: policy.predict(obs, deterministic)
+            action, _ = policy.predict(obs, deterministic=deterministic)
+            
+            obs, reward, terminated, truncated, _ = env.step(action)
+            done = terminated or truncated
+
+            total_reward += reward
+
+        episode_rewards.append(total_reward)
+
+    # SB3 returns the mean reward
+    return sum(episode_rewards) / len(episode_rewards)
+
 # Evaluation function for a single candidate agent
 def evaluate_candidate(args):
-    idx, agent_state_dict, env_name, device, seed, n_eval = args
-
-    # Load a fresh model instance per process
-    model = PPO(**ppo_kwargs)
-    model.policy.load_state_dict(agent_state_dict)
-    model.policy.to(device)
+    idx, agent_state_dict, env_name, seed, n_eval = args
 
     dummy_env = gym.make(env_name)
     dummy_env.reset(seed=seed)
+    obs_space = dummy_env.observation_space
+    act_space = dummy_env.action_space
+
+    # Build policy network only (not PPO)
+    policy = ActorCriticPolicy(
+        observation_space=obs_space,
+        action_space=act_space,
+        lr_schedule=lambda _: 0.0
+    )
+    policy.load_state_dict(agent_state_dict)
+
+    avg_return = rollout_policy(policy, dummy_env, n_eval=n_eval, deterministic=True)
 
     # Evaluate policy
-    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=n_eval, deterministic=True)[0]
-    print(f"avg return on {n_eval} trajectories of agent{idx}: {returns_trains}")
-    return idx, returns_trains
+    print(f"avg return on {n_eval} trajectories of agent{idx}: {avg_return}")
+    return idx, avg_return
 
 # Parallel Evaluation of multiple agents
-def parallel_evaluate(agents, env_name, device, seed, n_eval_episodes=3):
+def parallel_evaluate(agents, env_name, seed, n_eval_episodes=3):
+    print("Evaluating", len(agents), "agents in parallel...")
 
     # Prepare job arguments
     job_args = [
-        (j, agents[j], env_name, device, seed, n_eval_episodes)
+        (j, agents[j], env_name, seed, n_eval_episodes)
         for j in range(len(agents))
     ]
 
@@ -835,6 +867,8 @@ def parallel_evaluate(agents, env_name, device, seed, n_eval_episodes=3):
 # ------------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
+
+    mp.set_start_method("spawn", force=True)
 
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
@@ -1291,51 +1325,50 @@ if __name__ == "__main__":
 
             # -----------------------------------------------------------------------------------
 
-            for j, a in enumerate(agents):
-                model.policy.load_state_dict(a)
-                model.policy.to(device)
+            # for j, a in enumerate(agents):
+            #     model.policy.load_state_dict(a)
+            #     model.policy.to(device)
                 
-                # Online evaluation
-                if hasattr(args, 'n_envs') and args.n_envs > 1:
-                    # Create a list of environment functions
-                    dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
-                    dummy_env = SubprocVecEnv(dummy_env_fns)
-                else:
-                    dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+            #     # Online evaluation
+            #     if hasattr(args, 'n_envs') and args.n_envs > 1:
+            #         # Create a list of environment functions
+            #         dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
+            #         dummy_env = SubprocVecEnv(dummy_env_fns)
+            #     else:
+            #         dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
 
-                    if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-                        dummy_env = FlattenObservation(dummy_env)
+            #         if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+            #             dummy_env = FlattenObservation(dummy_env)
 
-                    dummy_env.reset(seed=args.seed)
+            #         dummy_env.reset(seed=args.seed)
 
-                if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-                    mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
-                    print(f'avg 3 return on policy: {mean_rew}, Success rate: {success:.2f}')
-                    cum_rews.append(mean_rew)
-                    cum_success.append(success)
-                else:
-                    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
-                    print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
-                    cum_rews.append(returns_trains)
+            #     if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+            #         mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
+            #         print(f'avg 3 return on policy: {mean_rew}, Success rate: {success:.2f}')
+            #         cum_rews.append(mean_rew)
+            #         cum_success.append(success)
+            #     else:
+            #         returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+            #         print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
+            #         cum_rews.append(returns_trains)
 
-                # Q-function evaluation
-                if not online_eval:
-                    # Advantage estimation code
-                    # q_adv, q_loss = advantage_evaluation(model, args)
-                    # advantage_rew.append(q_adv)
-                    # q_losses.append(q_loss)
+            #     # Q-function evaluation
+            #     if not online_eval:
+            #         # Advantage estimation code
+            #         # q_adv, q_loss = advantage_evaluation(model, args)
+            #         # advantage_rew.append(q_adv)
+            #         # q_losses.append(q_loss)
 
-                    # d3rl FQE evaluation code
-                    init_est = d3rl_evaluation(model, f"{'-'.join(DIR.split('/'))}")
-                    advantage_rew.append(init_est)
+            #         # d3rl FQE evaluation code
+            #         init_est = d3rl_evaluation(model, f"{'-'.join(DIR.split('/'))}")
+            #         advantage_rew.append(init_est)
 
-            # cum_rews = parallel_evaluate(
-            #     agents=agents,
-            #     env_name=env_name,
-            #     device=device,
-            #     n_eval_episodes=3,
-            #     seed=args.seed
-            # )
+            cum_rews = parallel_evaluate(
+                agents=agents,
+                env_name=env_name,
+                n_eval_episodes=3,
+                seed=args.seed
+            )
 
             # -----------------------------------------------------------------------------------
 
