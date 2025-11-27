@@ -230,6 +230,36 @@ def dump_weights(agent_net, es_models):
         policies.append(policy)
     return policies
 
+# Worker function for parallel empty center search
+def empty_center_worker(args):
+    dt, p, neigh, use_ANN, movestep, numiter = args
+    dist, es_pol = empty_center(
+        dt,
+        p.reshape(1, -1),
+        neigh,
+        use_ANN,
+        use_momentum=True,
+        movestep=movestep,
+        numiter=numiter
+    )
+    return es_pol
+
+# Parallel empty center search
+def parallel_empty_centers(points, dt, neigh, use_ANN, movestep=0.001, numiter=60):
+    print("Running parallel empty center searches for", len(points), "points...")
+    job_args = [
+        (dt, p, neigh, use_ANN, movestep, numiter)
+        for p in points
+    ]
+
+    n_workers = min(len(points), cpu_count())
+
+    with Pool(processes=n_workers) as pool:
+        results = pool.map(empty_center_worker, job_args)
+
+    # results is a list of numpy arrays shaped (1, D)
+    return np.concatenate(results, axis=0)
+
 # Nearest neighbor search plus empty space search
 def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_lib, saved_agents, agent_num=10):
     print("---------------------------------")
@@ -264,12 +294,28 @@ def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_l
     # points = points[::3] #m=4
     points = points[::2] #m=5 (Base Version)
 
-    policies = []
-    for p in points:
-        a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=60)
-        policies.append(a[1])
-    policies = np.concatenate(policies)
+    # ---------------------------------------------------------------------------------------------------------
+
+    # Non-parallel empty center search
+    # policies = []
+    # for p in points:
+    #     a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=60)
+    #     policies.append(a[1])
+    # policies = np.concatenate(policies)
+    # print(policies.shape)
+
+    # Parallel empty center search
+    policies = parallel_empty_centers(
+        points=points,
+        dt=dt,
+        neigh=neigh,
+        use_ANN=use_ANN,
+        movestep=0.001,
+        numiter=60
+    )
     print(policies.shape)
+
+    # ---------------------------------------------------------------------------------------------------------
 
     agents = dump_weights(algo.policy.state_dict(), policies)
 
@@ -1325,6 +1371,7 @@ if __name__ == "__main__":
 
             # -----------------------------------------------------------------------------------
 
+            # Non-parallel evaluation (Commented out)
             # for j, a in enumerate(agents):
             #     model.policy.load_state_dict(a)
             #     model.policy.to(device)
@@ -1363,6 +1410,7 @@ if __name__ == "__main__":
             #         init_est = d3rl_evaluation(model, f"{'-'.join(DIR.split('/'))}")
             #         advantage_rew.append(init_est)
 
+            # Parallel evaluation
             cum_rews = parallel_evaluate(
                 agents=agents,
                 env_name=env_name,
