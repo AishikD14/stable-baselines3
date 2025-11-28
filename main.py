@@ -265,6 +265,8 @@ def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_l
     print("---------------------------------")
     print("Searching empty space policies")
 
+    parallel_esa = False
+
     dt = load_weights(range(start, end), directory, env, saved_agents)
     print(dt.shape)
 
@@ -297,23 +299,25 @@ def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_l
     # ---------------------------------------------------------------------------------------------------------
 
     # Non-parallel empty center search
-    # policies = []
-    # for p in points:
-    #     a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=60)
-    #     policies.append(a[1])
-    # policies = np.concatenate(policies)
-    # print(policies.shape)
+    if not parallel_esa:
+        policies = []
+        for p in points:
+            a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN, use_momentum=True, movestep=0.001, numiter=60)
+            policies.append(a[1])
+        policies = np.concatenate(policies)
+        print(policies.shape)
 
     # Parallel empty center search
-    policies = parallel_empty_centers(
-        points=points,
-        dt=dt,
-        neigh=neigh,
-        use_ANN=use_ANN,
-        movestep=0.001,
-        numiter=60
-    )
-    print(policies.shape)
+    else:
+        policies = parallel_empty_centers(
+            points=points,
+            dt=dt,
+            neigh=neigh,
+            use_ANN=use_ANN,
+            movestep=0.001,
+            numiter=60
+        )
+        print(policies.shape)
 
     # ---------------------------------------------------------------------------------------------------------
 
@@ -919,11 +923,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
-    env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
     # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
@@ -1054,7 +1058,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_parallel"
+    exp = "PPO_hyper_E_10"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -1216,6 +1220,8 @@ if __name__ == "__main__":
     avg_checkpoint = False
     use_ptb = False
 
+    parallel_evaluation = False
+
     if exp == "PPO_baseline":
         # START_ITER = 1953
         # NUM_ITERS = 9765
@@ -1372,51 +1378,53 @@ if __name__ == "__main__":
             # -----------------------------------------------------------------------------------
 
             # Non-parallel evaluation (Commented out)
-            # for j, a in enumerate(agents):
-            #     model.policy.load_state_dict(a)
-            #     model.policy.to(device)
-                
-            #     # Online evaluation
-            #     if hasattr(args, 'n_envs') and args.n_envs > 1:
-            #         # Create a list of environment functions
-            #         dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
-            #         dummy_env = SubprocVecEnv(dummy_env_fns)
-            #     else:
-            #         dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+            if not parallel_evaluation:
+                for j, a in enumerate(agents):
+                    model.policy.load_state_dict(a)
+                    model.policy.to(device)
+                    
+                    # Online evaluation
+                    if hasattr(args, 'n_envs') and args.n_envs > 1:
+                        # Create a list of environment functions
+                        dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
+                        dummy_env = SubprocVecEnv(dummy_env_fns)
+                    else:
+                        dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
 
-            #         if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-            #             dummy_env = FlattenObservation(dummy_env)
+                        if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                            dummy_env = FlattenObservation(dummy_env)
 
-            #         dummy_env.reset(seed=args.seed)
+                        dummy_env.reset(seed=args.seed)
 
-            #     if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-            #         mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
-            #         print(f'avg 3 return on policy: {mean_rew}, Success rate: {success:.2f}')
-            #         cum_rews.append(mean_rew)
-            #         cum_success.append(success)
-            #     else:
-            #         returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
-            #         print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
-            #         cum_rews.append(returns_trains)
+                    if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                        mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
+                        print(f'avg 3 return on policy: {mean_rew}, Success rate: {success:.2f}')
+                        cum_rews.append(mean_rew)
+                        cum_success.append(success)
+                    else:
+                        returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=10, deterministic=True)[0]
+                        print(f'avg return on 10 trajectories of agent{j}: {returns_trains}')
+                        cum_rews.append(returns_trains)
 
-            #     # Q-function evaluation
-            #     if not online_eval:
-            #         # Advantage estimation code
-            #         # q_adv, q_loss = advantage_evaluation(model, args)
-            #         # advantage_rew.append(q_adv)
-            #         # q_losses.append(q_loss)
+                    # Q-function evaluation
+                    if not online_eval:
+                        # Advantage estimation code
+                        # q_adv, q_loss = advantage_evaluation(model, args)
+                        # advantage_rew.append(q_adv)
+                        # q_losses.append(q_loss)
 
-            #         # d3rl FQE evaluation code
-            #         init_est = d3rl_evaluation(model, f"{'-'.join(DIR.split('/'))}")
-            #         advantage_rew.append(init_est)
+                        # d3rl FQE evaluation code
+                        init_est = d3rl_evaluation(model, f"{'-'.join(DIR.split('/'))}")
+                        advantage_rew.append(init_est)
 
             # Parallel evaluation
-            cum_rews = parallel_evaluate(
-                agents=agents,
-                env_name=env_name,
-                n_eval_episodes=3,
-                seed=args.seed
-            )
+            else:
+                cum_rews = parallel_evaluate(
+                    agents=agents,
+                    env_name=env_name,
+                    n_eval_episodes=3,
+                    seed=args.seed
+                )
 
             # -----------------------------------------------------------------------------------
 
