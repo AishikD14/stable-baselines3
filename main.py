@@ -36,6 +36,7 @@ from stable_baselines3.common.callbacks import EvalCallback
 import multiprocessing as mp
 from multiprocessing import Pool, cpu_count
 from stable_baselines3.common.policies import ActorCriticPolicy
+import math
 
 warnings.filterwarnings("ignore")
 
@@ -187,7 +188,7 @@ def random_walk(data, coor, neighbor, use_momentum, movestep, numiter):
     # else:
     return np.linalg.norm(coor - orig_coor), np.array(rw_configs)
 
-def load_weights(arng, directory, env, saved_agents):
+def load_weights(arng, directory, env, saved_agents, seed=0):
     policies = []
 
     for i in range(10):
@@ -197,7 +198,7 @@ def load_weights(arng, directory, env, saved_agents):
         # new_model.load(f'logs/{directory}/models/agent{i}.zip', device='cpu')
 
         if saved_agents:
-            ckp = torch.load(f'logs/{directory[:-2]}/models/agent{i+1}.zip', map_location=torch.device('cpu'))
+            ckp = torch.load(f'logs/{directory[:-2]}_{seed+1}/models/agent{i+1}.zip', map_location=torch.device('cpu'))
         else:
             ckp = torch.load(f'logs/{directory}/models/agent{i+1}.zip', map_location=torch.device('cpu'))
 
@@ -261,13 +262,13 @@ def parallel_empty_centers(points, dt, neigh, use_ANN, movestep=0.001, numiter=6
     return np.concatenate(results, axis=0)
 
 # Nearest neighbor search plus empty space search
-def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_lib, saved_agents, agent_num=10):
+def search_empty_space_policies(algo, directory, start, end, env, use_ANN, ANN_lib, saved_agents, agent_num=10, seed=0):
     print("---------------------------------")
     print("Searching empty space policies")
 
     parallel_esa = False
 
-    dt = load_weights(range(start, end), directory, env, saved_agents)
+    dt = load_weights(range(start, end), directory, env, saved_agents, seed=seed)
     print(dt.shape)
 
     if not use_ANN:
@@ -923,11 +924,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
-    # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
+    env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
     # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
@@ -1058,7 +1059,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_hyper_E_10"
+    exp = "PPO_parallel"
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -1210,8 +1211,8 @@ if __name__ == "__main__":
     online_eval = True
 
     saved_agents = False
-    saved_iter = 5091
-    model_already_learned = False
+    saved_iter = 4803
+    model_already_learned = True
 
     distanceArray = []
     start_time = time.time()
@@ -1235,7 +1236,10 @@ if __name__ == "__main__":
         best_agent_index = np.load(f'logs/{env_name}/{exp}_{args.seed+1}/best_agent_{str(saved_iter-SEARCH_INTERV)}_{str(saved_iter)}.npy')
         print("Last Best agent index: ", best_agent_index[0])
 
-        ckp = torch.load(f'logs/{env_name}/{exp}_{str(args.seed+1)}/models/agent{str(best_agent_index[0])}.zip', map_location=torch.device('cpu'))
+        chosen_index = math.ceil((best_agent_index[0]+1) / 4)
+        original_agent_index = 1 + 2*(chosen_index - 1)
+
+        ckp = torch.load(f'logs/{env_name}/{exp}_{str(args.seed+1)}/models/agent{original_agent_index}.zip', map_location=torch.device('cpu'))
         print("Checkpoint loaded")
 
         load_state_dict(model, ckp)
@@ -1265,7 +1269,7 @@ if __name__ == "__main__":
                             )
 
             if not avg_checkpoint and not use_ptb:
-                agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned)
+                agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned, seed=args.seed)
                 # agents, distance = neighbor_search_random_walk(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
                 # agents, distance = random_search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env)
@@ -1402,8 +1406,8 @@ if __name__ == "__main__":
                         cum_rews.append(mean_rew)
                         cum_success.append(success)
                     else:
-                        returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=10, deterministic=True)[0]
-                        print(f'avg return on 10 trajectories of agent{j}: {returns_trains}')
+                        returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                        print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
                         cum_rews.append(returns_trains)
 
                     # Q-function evaluation
