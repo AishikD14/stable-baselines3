@@ -10,11 +10,11 @@ from data_collection_config import args_ant, args_half_cheetah, args_walker2d, a
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-# env = "Ant-v5"
+env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
+# env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -102,11 +102,11 @@ plot_list = [
     # ["PPO_hyper_m_4", "PPO Hyperparameter m=4"],
     # ["PPO_hyper_E_6", "PPO Hyperparameter E=6"],
     # ["PPO_hyper_E_10", "PPO Hyperparameter E=10"],
-    # ["PPO_hyper_m_3_E_6", "PPO Hyperparameter m=3, E=6"],
+    ["PPO_hyper_m_3_E_6", "PPO Hyperparameter m=3, E=6"],
     # ["PPO_hyper_I_20", "PPO Hyperparameter I=20"],
     # ["PPO_hyper_I_30", "PPO Hyperparameter I=30"],
     # ["PPO_hyper_I_40", "PPO Hyperparameter I=40"],
-    ["PPO_parallel", "PPO Parallel Training"],
+    # ["PPO_parallel", "PPO Parallel Training"],
 ]
 
 plot_metrics = []

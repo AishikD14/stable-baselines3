@@ -11,11 +11,11 @@ import re
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-# env = "Ant-v5"
+env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
+# env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -237,10 +237,10 @@ if env in ["Ant-v5", "Walker2d-v5", "Humanoid-v5", "Pendulum-v1", "BipedalWalker
         # ["PPO_upper_bound", "E=3"],
         # ["PPO_hyper_E_6", "E=6"],
         # ["PPO_hyper_E_10", "E=10"],
-        # ["PPO_upper_bound", "m=5,E=3"],
-        # ["PPO_hyper_m_3_E_6", "m=3,E=6"],
-        ["PPO_upper_bound", "PPO Normal Training"],
-        ["PPO_parallel", "PPO Parallel Training"],
+        ["PPO_upper_bound", "m=5,E=3"],
+        ["PPO_hyper_m_3_E_6", "m=3,E=6"],
+        # ["PPO_upper_bound", "PPO Normal Training"],
+        # ["PPO_parallel", "PPO Parallel Training"],
     ]
 
 # ==================================================================================================
@@ -335,5 +335,5 @@ legend = plt.legend(fontsize=16)
 for spine in ax.spines.values():
     spine.set_visible(False)
 
-plt.savefig('../paper_plots/'+env+'_parallel.pdf', format='pdf', bbox_inches='tight', dpi=300)
-plt.savefig('../paper_plots/'+env+'_parallel.png', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_m[3,5]_E[6,3].pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_m[3,5]_E[6,3].png', bbox_inches='tight', dpi=300)
