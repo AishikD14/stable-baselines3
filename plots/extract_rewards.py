@@ -176,12 +176,13 @@ file_name_list = [
     # ["PPO_hyper_m_3_2"],
     # ["PPO_hyper_m_4_1"],
     # ["PPO_hyper_m_4_2"],
-    ["PPO_hyper_I_20_1"],
-    ["PPO_hyper_I_20_2"],
-    ["PPO_hyper_I_30_1"],
-    ["PPO_hyper_I_30_2"],
-    ["PPO_hyper_I_40_1"],
-    ["PPO_hyper_I_40_2"],
+    # ["PPO_hyper_I_20_1"],
+    # ["PPO_hyper_I_20_2"],
+    # ["PPO_hyper_I_30_1"],
+    # ["PPO_hyper_I_30_2"],
+    # ["PPO_hyper_I_40_1"],
+    # ["PPO_hyper_I_40_2"],
+    ["PPO_parallel_1"],
 ]
 
 for file_name in file_name_list:

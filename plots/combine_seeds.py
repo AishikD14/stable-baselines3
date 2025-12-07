@@ -61,8 +61,8 @@ if not hasattr(args, 'n_envs'):
 
 start_iteration = 1
 
-# seed_list = [0]
-seed_list = [0, 1]
+seed_list = [0]
+# seed_list = [0, 1]
 # seed_list = [0, 1, 2]
 # seed_list = [0, 1, 2, 3]
 # file_name = "PPO_normal_training"
@@ -103,9 +103,10 @@ plot_list = [
     # ["PPO_hyper_E_6", "PPO Hyperparameter E=6"],
     # ["PPO_hyper_E_10", "PPO Hyperparameter E=10"],
     # ["PPO_hyper_m_3_E_6", "PPO Hyperparameter m=3, E=6"],
-    ["PPO_hyper_I_20", "PPO Hyperparameter I=20"],
-    ["PPO_hyper_I_30", "PPO Hyperparameter I=30"],
-    ["PPO_hyper_I_40", "PPO Hyperparameter I=40"],
+    # ["PPO_hyper_I_20", "PPO Hyperparameter I=20"],
+    # ["PPO_hyper_I_30", "PPO Hyperparameter I=30"],
+    # ["PPO_hyper_I_40", "PPO Hyperparameter I=40"],
+    ["PPO_parallel", "PPO Parallel Training"],
 ]
 
 plot_metrics = []
