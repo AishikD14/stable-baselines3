@@ -1,0 +1,4 @@
+/var/lib/slurm/slurmd/job08582/slurm_script: line 15: activate: No such file or directory
+/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/glfw/__init__.py:917: GLFWError: (65550) b'X11: The DISPLAY environment variable is missing'
+  warnings.warn(message, GLFWError)
+slurmstepd-tesla1: error: *** JOB 8582 STEPD TERMINATED ON tesla1 AT 2026-01-25T23:51:32 DUE TO JOB NOT ENDING WITH SIGNALS ***
