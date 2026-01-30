@@ -11,10 +11,10 @@ parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-# env = "HalfCheetah-v5"
+env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
-env = "Humanoid-v5"
+# env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
 # env = "BipedalWalker-v3"
@@ -107,7 +107,8 @@ plot_list = [
     # ["PPO_hyper_I_30", "PPO Hyperparameter I=30"],
     # ["PPO_hyper_I_40", "PPO Hyperparameter I=40"],
     # ["PPO_parallel", "PPO Parallel Training"],
-    ["PPO_param_noise", "PPO Param Noise"],
+    # ["PPO_param_noise", "PPO Param Noise"],
+    ["TRPO_param_noise", "TRPO Param Noise"],
 ]
 
 plot_metrics = []
