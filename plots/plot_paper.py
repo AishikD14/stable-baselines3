@@ -7,6 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
 from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense
 import re
+from matplotlib.ticker import MaxNLocator
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
@@ -89,6 +90,7 @@ if env in ["Ant-v5", "Walker2d-v5", "Humanoid-v5"]:
         # ["PPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
         # ["TRPO_CheckpointAvg", "Checkpoint Avg"],
         # ["TRPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
+        ["PPO_param_noise", "Parameter Noise"]
     ]
 
 elif env == "Hopper-v5":
@@ -125,6 +127,7 @@ elif env == "Hopper-v5":
         ["PPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
         # ["TRPO_CheckpointAvg", "Checkpoint Avg"],
         # ["TRPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
+        ["PPO_param_noise_interpolated", "Parameter Noise"]
     ]
 
 elif env == "HalfCheetah-v5":
@@ -161,6 +164,7 @@ elif env == "HalfCheetah-v5":
         # ["PPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
         # ["TRPO_CheckpointAvg", "Checkpoint Avg"],
         ["TRPO_CheckpointAvg_interpolated", "Checkpoint Avg"],
+        ["TRPO_param_noise_interpolated", "Parameter Noise"]
     ]
 
 elif env in ["Pendulum-v1", "BipedalWalker-v3"]:
@@ -187,9 +191,9 @@ elif env in ["Pendulum-v1", "BipedalWalker-v3"]:
 # For Ablation study plots (No Pre-training)
 # if env in ["Ant-v5", "Walker2d-v5", "Humanoid-v5", "Pendulum-v1", "BipedalWalker-v3"]:
 #     plot_list = [
-#         ["PPO_upper_bound", "ExploRLer with Pre-training"],
+#         ["PPO_upper_bound", "Pre-training"],
 #         # ["PPO_upper_bound_interpolated", "ExploRLer-P"],
-#         ["PPO_NoPretrain", "ExploRLer without Pre-training"],
+#         ["PPO_NoPretrain", "No Pre-training"],
 #         # ["PPO_NoPretrain_interpolated", "ExploRLer-P No Pre-training"],
 #         # ["PPO_normal_training", "PPO"],
 #         # ["PPO_normal_training_interpolated", "PPO"],
@@ -198,9 +202,9 @@ elif env in ["Pendulum-v1", "BipedalWalker-v3"]:
 # elif env == "Hopper-v5":
 #     plot_list = [
 #         # ["PPO_upper_bound", "ExploRLer-P"],
-#         ["PPO_upper_bound_interpolated", "ExploRLer-P"],
+#         ["PPO_upper_bound_interpolated", "Pre-training"],
 #         # ["PPO_NoPretrain", "ExploRLer-P No Pre-training"],
-#         ["PPO_NoPretrain_interpolated", "ExploRLer-P No Pre-training"],
+#         ["PPO_NoPretrain_interpolated", "No Pre-training"],
 #         # ["PPO_normal_training", "PPO"],
 #         # ["PPO_normal_training_interpolated", "PPO"],
 #     ]
@@ -215,12 +219,12 @@ elif env in ["Pendulum-v1", "BipedalWalker-v3"]:
 #         # ["PPO_normal_training_interpolated", "PPO"],
 #         # ["SAC_normal_training", "SAC"],
 #         # ["TRPO_upper_bound", "ExploRLer-T"],
-#         ["TRPO_upper_bound_interpolated", "ExploRLer"],
-#         ["TRPO_NoPretrain_interpolated", "ExploRLer No Pre-training"],
+#         ["TRPO_upper_bound_interpolated", "Pre-training"],
+#         ["TRPO_NoPretrain_interpolated", "No Pre-training"],
 #         # ["TRPO_normal_training", "TRPO"],
 #         # ["TRPO_normal_training_interpolated", "TRPO"],
         
-    # ]
+#     ]
 
 # ==================================================================================================
 
@@ -237,12 +241,34 @@ if env in ["Ant-v5", "Walker2d-v5", "Humanoid-v5", "Pendulum-v1", "BipedalWalker
         # ["PPO_upper_bound", "E=3"],
         # ["PPO_hyper_E_6", "E=6"],
         # ["PPO_hyper_E_10", "E=10"],
-        ["PPO_upper_bound", "m=5,E=3"],
-        ["PPO_hyper_m_3_E_6", "m=3,E=6"],
+        # ["PPO_upper_bound", "m=5,E=3"],
+        # ["PPO_hyper_m_3_E_6", "m=3,E=6"],
         # ["PPO_upper_bound", "PPO Normal Training"],
         # ["PPO_parallel", "PPO Parallel Training"],
+        ["PPO_upper_bound", "Empty Space"],
+        ["PPO_neghrand", "Random Search"],
     ]
 
+elif env == "Hopper-v5":
+    plot_list = [
+        # ["PPO_upper_bound_interpolated", "Pre-training"],
+        # ["PPO_NoPretrain_interpolated", "No Pre-training"],
+        # ["PPO_normal_training", "PPO"],
+        # ["PPO_normal_training_interpolated", "PPO"],
+        ["PPO_upper_bound_interpolated", "Empty Space"],
+        ["PPO_neghrand_interpolated", "Random Search"],
+    ]
+
+elif env == "HalfCheetah-v5":
+    plot_list = [
+        # ["TRPO_upper_bound_interpolated", "ExploRLer"],
+        # ["TRPO_NoPretrain_interpolated", "ExploRLer No Pre-training"],
+        # ["TRPO_normal_training", "TRPO"],
+        # ["TRPO_normal_training_interpolated", "TRPO"],
+        ["TRPO_upper_bound_interpolated", "Empty Space"],
+        ["TRPO_neghrand_interpolated", "Random Search"],
+        
+    ]
 # ==================================================================================================
 
 plot_metrics = []
@@ -278,11 +304,12 @@ for plot_item in plot_list:
 
 # -------------------------------------------------------
 
-# line_styles = ['-', '--', '-', '--', '--', '--', '--', '--'] # Normal
-line_styles = ['-', '--', '--', '--'] # Ablation
+line_styles = ['-', '--', '-', '--', '--', '--', '--', '--', '--'] # Normal
+# line_styles = ['-', '--', '--', '--'] # Ablation
 
 # -------------------------------------------------------
 
+# plt.figure(figsize=(6, 4))
 plt.figure(figsize=(10, 6))
 # Find the minimum length of x
 min_length = min([len(x) for x, _, _, _ in plot_metrics])
@@ -299,13 +326,17 @@ for i, plot_metric in enumerate(plot_metrics):
 ax = plt.gca()
 ax.set_facecolor('#f5f5f5')
 
+# ax.xaxis.set_major_locator(MaxNLocator(nbins=3))
+# ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+
 plt.xlabel('Iterations', fontsize=25)
 if env in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
     plt.ylabel('Average Success Rate', fontsize=20)
 else:
     plt.ylabel('Average Return', fontsize=25)
-    if env not in  ["Ant-v5", "BipedalWalker-v3", "Pendulum-v1"]:
-        ax.yaxis.label.set_visible(False)
+    # if env not in  ["Ant-v5", "BipedalWalker-v3", "Pendulum-v1"]:
+    #     ax.yaxis.label.set_visible(False)
+    pass
 
 plt.title(env, fontsize=30)
 plt.grid(True, color='white')
@@ -314,7 +345,7 @@ plt.yticks(fontsize=20)
 
 # --------------------------------------------------------------------------------------------------
 
-legend = plt.legend(fontsize=16)
+legend = plt.legend(fontsize=16, loc="lower right")
 # legend.get_frame().set_facecolor('#f5f5f5')
 
 # handles, labels = ax.get_legend_handles_labels()
@@ -326,6 +357,7 @@ legend = plt.legend(fontsize=16)
 
 # # Save only the legend
 # fig_legend.savefig("../paper_plots/legend.png", bbox_inches='tight', dpi=300)
+# fig_legend.savefig("../paper_plots/legend.svg", bbox_inches='tight', format='svg')
 # plt.close(fig_legend)
 
 # quit()
@@ -335,5 +367,6 @@ legend = plt.legend(fontsize=16)
 for spine in ax.spines.values():
     spine.set_visible(False)
 
-plt.savefig('../paper_plots/'+env+'_m[3,5]_E[6,3].pdf', format='pdf', bbox_inches='tight', dpi=300)
-plt.savefig('../paper_plots/'+env+'_m[3,5]_E[6,3].png', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_NeghRand.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_NeghRand.png', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'_NeghRand.svg', format='svg', bbox_inches='tight')

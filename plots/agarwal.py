@@ -5,6 +5,8 @@ from rliable import plot_utils
 import matplotlib.pyplot as plt
 import os
 import sys
+import seaborn as sns
+
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
@@ -122,6 +124,8 @@ for env, val in zip(env_names, env_improvement):
 
 # -----------------------------------------------------------------------------------
 
+algorithms = ["ExploRLer-P", "PPO", "ExploRLer-T", "TRPO"]
+
 norm_scores = {
   "ExploRLer-P": baseline_normalize(scores["ExploRLer-P"], scores["PPO"]),
   "PPO": baseline_normalize(scores["PPO"], scores["PPO"]),  # should be ~1
@@ -143,17 +147,21 @@ plot_utils.plot_performance_profiles(
     score_distributions,
     tau,
     performance_profile_cis=score_distributions_cis,  # optional but recommended
+    colors=dict(zip(algorithms, sns.color_palette('colorblind'))),
     xlabel="Normalized return threshold",
     ylabel="Fraction of runs",
     ax=ax,
 )
 
 ax.legend(
-    ["PPO", "ExploRLer-P", "TRPO", "ExploRLer-T"],
+    # ["PPO", "ExploRLer-P", "TRPO", "ExploRLer-T"],
     loc="upper right",
-    frameon=False,
-    fontsize=16
+    # frameon=False,
+    fontsize=14
 )
+
+# plt.xlabel("Normalized return threshold", fontsize=20)
+# plt.ylabel("Fraction of runs", fontsize=20)
 
 ax.grid(alpha=0.3)
 fig.tight_layout()
