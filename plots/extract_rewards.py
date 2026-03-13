@@ -92,6 +92,9 @@ file_name_list = [
     # ["TRPO_upper_bound_2"],
     # ["TRPO_upper_bound_3"],
     # ["TRPO_upper_bound_4"],
+    # ["TRPO_upper_bound_5"],
+    # ["TRPO_upper_bound_6"],
+    ["TRPO_upper_bound_7"],
     # ["PPO_Ablation1_1"],
     # ["PPO_Ablation1_2"],
     # ["PPO_Ablation1_3"],
@@ -187,10 +190,10 @@ file_name_list = [
     # ["PPO_param_noise_2"],
     # ["PPO_param_noise_3"],
     # ["PPO_param_noise_4"],
-    ["TRPO_param_noise_1"],
-    ["TRPO_param_noise_2"],
-    ["TRPO_param_noise_3"],
-    ["TRPO_param_noise_4"],
+    # ["TRPO_param_noise_1"],
+    # ["TRPO_param_noise_2"],
+    # ["TRPO_param_noise_3"],
+    # ["TRPO_param_noise_4"],
 ]
 
 for file_name in file_name_list:
