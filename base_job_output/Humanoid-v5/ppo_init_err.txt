@@ -1,3 +1,5 @@
-/var/lib/slurm/slurmd/job14912/slurm_script: line 15: activate: No such file or directory
-/home/aideb/miniconda3/envs/openv/lib/python3.10/site-packages/glfw/__init__.py:917: GLFWError: (65550) b'X11: The DISPLAY environment variable is missing'
-  warnings.warn(message, GLFWError)
+/cm/local/apps/slurm/var/spool/job19582/slurm_script: line 13: activate: No such file or directory
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
