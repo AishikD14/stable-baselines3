@@ -64,7 +64,8 @@ start_iteration = 1
 # seed_list = [0]
 # seed_list = [0, 1]
 # seed_list = [0, 1, 2]
-seed_list = [0, 1, 2, 3]
+# seed_list = [0, 1, 2, 3]
+seed_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 # file_name = "PPO_normal_training"
 
 plot_list = [
@@ -72,7 +73,7 @@ plot_list = [
     # ["PPO_normal_training", "PPO Normal Training"],
     # ["SAC_normal_training", "SAC Normal Training"],
     # ["SAC_upper_bound", "SAC Upper Bound"],
-    # ["PPO_upper_bound", "PPO Upper Bound"],
+    ["PPO_upper_bound", "PPO Upper Bound"],
     # ["TRPO_normal_training", "TRPO Normal Training"],
     # ["TRPO_upper_bound", "TRPO Upper Bound"],
     # ["PPO_Ablation1", "PPO_Ablation1"],
@@ -108,7 +109,7 @@ plot_list = [
     # ["PPO_hyper_I_40", "PPO Hyperparameter I=40"],
     # ["PPO_parallel", "PPO Parallel Training"],
     # ["PPO_param_noise", "PPO Param Noise"],
-    ["TRPO_param_noise", "TRPO Param Noise"],
+    # ["TRPO_param_noise", "TRPO Param Noise"],
 ]
 
 plot_metrics = []
