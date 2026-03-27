@@ -7,6 +7,7 @@ def get_args(rest_args):
     parser.add_argument('--verbose', default=0, type=int, help='Verbosity level')
     parser.add_argument('--seed', default=0, type=int, help='Random seed')
     parser.add_argument('--n-steps-per-rollout', default=512, type=int)
+    # parser.add_argument('--n-steps-per-rollout', default=60512, type=int)
     parser.add_argument('--batch-size', default=32, type=int)
     # parser.add_argument('--n-steps-per-rollout', default=10512, type=int, help='Number of steps per rollout')  #For Baseline calculation search=1
     # parser.add_argument('--batch-size', default=657, type=int, help='Batch size') # For Baseline calculation search=1

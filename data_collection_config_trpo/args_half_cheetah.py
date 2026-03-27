@@ -9,6 +9,7 @@ def get_args(rest_args):
     parser.add_argument('--seed', default=0, type=int, help='Random seed')
     parser.add_argument('--n-envs', default=1, type=int, help='Number of envs')
     parser.add_argument('--n-steps-per-rollout', default=512, type=int, help='Number of steps per rollout')
+    parser.add_argument('--n-steps-per-rollout', default=60512, type=int, help='Number of steps per rollout')
     parser.add_argument('--batch-size', default=32, type=int, help='Batch size')
     parser.add_argument('--gamma', default=0.98, type=float, help='Discount factor')
     parser.add_argument('--learning-rate', default=1.90609e-05, type=float, help='Learning rate')
