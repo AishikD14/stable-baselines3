@@ -11,8 +11,8 @@ parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
-env = "HalfCheetah-v5"
-# env = "Hopper-v5"
+# env = "HalfCheetah-v5"
+env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
@@ -70,10 +70,10 @@ seed_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
-    # ["PPO_normal_training", "PPO Normal Training"],
+    ["PPO_normal_training", "PPO Normal Training"],
     # ["SAC_normal_training", "SAC Normal Training"],
     # ["SAC_upper_bound", "SAC Upper Bound"],
-    ["PPO_upper_bound", "PPO Upper Bound"],
+    # ["PPO_upper_bound", "PPO Upper Bound"],
     # ["TRPO_normal_training", "TRPO Normal Training"],
     # ["TRPO_upper_bound", "TRPO Upper Bound"],
     # ["PPO_Ablation1", "PPO_Ablation1"],
