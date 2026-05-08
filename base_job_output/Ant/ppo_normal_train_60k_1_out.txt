@@ -1,0 +1,6684 @@
+Tue Mar 24 17:30:03 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.45.04              Driver Version: 595.45.04      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Setting seed -  0
+---------------------------------
+Environment created
+Box(-1.0, 1.0, (8,), float32) Box(-inf, inf, (105,), float64)
+Loading Initial saved model
+Model loaded
+Starting evaluation
+1953
+avg return on 3 trajectories: 909.5825901428858
+1954
+avg return on 3 trajectories: 1134.792846833666
+1955
+avg return on 3 trajectories: 991.5576167205969
+1956
+avg return on 3 trajectories: 1214.4354969163735
+1957
+avg return on 3 trajectories: 1182.3010032176971
+1958
+avg return on 3 trajectories: 1068.9340385099251
+1959
+avg return on 3 trajectories: 1062.1665541430314
+1960
+avg return on 3 trajectories: 1017.8544034163157
+1961
+avg return on 3 trajectories: 1133.9457154075305
+1962
+avg return on 3 trajectories: 1042.2356311877568
+1963
+avg return on 3 trajectories: 1047.6210852166016
+1964
+avg return on 3 trajectories: 1074.9579629103343
+1965
+avg return on 3 trajectories: 1324.8657531936963
+1966
+avg return on 3 trajectories: 1344.4532875816028
+1967
+avg return on 3 trajectories: 1287.9044659932454
+1968
+avg return on 3 trajectories: 1344.0659820834796
+1969
+avg return on 3 trajectories: 1494.9800639847915
+1970
+avg return on 3 trajectories: 1419.3124409466982
+1971
+avg return on 3 trajectories: 1560.6328004226089
+1972
+avg return on 3 trajectories: 1591.7345062891643
+1973
+avg return on 3 trajectories: 1617.2025583783786
+1974
+avg return on 3 trajectories: 1704.2417091776927
+1975
+avg return on 3 trajectories: 1786.3142786820729
+1976
+avg return on 3 trajectories: 1789.0922530988853
+1977
+avg return on 3 trajectories: 1638.2097272078197
+1978
+avg return on 3 trajectories: 1729.6098280847073
+1979
+avg return on 3 trajectories: 1786.1519644955795
+1980
+avg return on 3 trajectories: 1858.876102457444
+1981
+avg return on 3 trajectories: 1923.0307109157245
+1982
+avg return on 3 trajectories: 1933.251451075077
+1983
+avg return on 3 trajectories: 1675.613950107557
+1984
+avg return on 3 trajectories: 1932.8477606326342
+1985
+avg return on 3 trajectories: 1573.138478744775
+1986
+avg return on 3 trajectories: 2037.984278952082
+1987
+avg return on 3 trajectories: 1499.5828151781654
+1988
+avg return on 3 trajectories: 2143.2654073139033
+1989
+avg return on 3 trajectories: 2114.6012466549873
+1990
+avg return on 3 trajectories: 1828.4115154445171
+1991
+avg return on 3 trajectories: 2310.9916691482067
+1992
+avg return on 3 trajectories: 2216.333139081796
+1993
+avg return on 3 trajectories: 2253.852828512589
+1994
+avg return on 3 trajectories: 2340.622507682691
+1995
+avg return on 3 trajectories: 2401.3986572027206
+1996
+avg return on 3 trajectories: 2420.0816700458527
+1997
+avg return on 3 trajectories: 2421.6001415352025
+1998
+avg return on 3 trajectories: 1765.3511941308777
+1999
+avg return on 3 trajectories: 2398.2317805687585
+2000
+avg return on 3 trajectories: 2265.0454002221427
+2001
+avg return on 3 trajectories: 2312.024705519279
+2002
+avg return on 3 trajectories: 2685.546845306953
+2003
+avg return on 3 trajectories: 2379.8127799729505
+2004
+avg return on 3 trajectories: 1834.53970588247
+2005
+avg return on 3 trajectories: 2319.7439470986524
+2006
+avg return on 3 trajectories: 2777.999964189405
+2007
+avg return on 3 trajectories: 2818.9282698531947
+2008
+avg return on 3 trajectories: 2822.2692111829915
+2009
+avg return on 3 trajectories: 2660.396577179432
+2010
+avg return on 3 trajectories: 2853.881433556477
+2011
+avg return on 3 trajectories: 2880.28714646399
+2012
+avg return on 3 trajectories: 2070.1997385025024
+2013
+avg return on 3 trajectories: 3007.659951577584
+2014
+avg return on 3 trajectories: 2998.3333496054015
+2015
+avg return on 3 trajectories: 2716.0036113113165
+2016
+avg return on 3 trajectories: 1972.382587293784
+2017
+avg return on 3 trajectories: 3122.242196917534
+2018
+avg return on 3 trajectories: 2303.3001865446568
+2019
+avg return on 3 trajectories: 2986.8352092951536
+2020
+avg return on 3 trajectories: 3050.986587693294
+2021
+avg return on 3 trajectories: 3195.1815607051053
+2022
+avg return on 3 trajectories: 3224.979841604829
+2023
+avg return on 3 trajectories: 1948.4394911527634
+2024
+avg return on 3 trajectories: 3144.354467307528
+2025
+avg return on 3 trajectories: 3034.865292246143
+2026
+avg return on 3 trajectories: 3343.0450145974755
+2027
+avg return on 3 trajectories: 2587.61242929101
+2028
+avg return on 3 trajectories: 2769.5176501870155
+2029
+avg return on 3 trajectories: 2665.478679237732
+2030
+avg return on 3 trajectories: 3378.293436586857
+2031
+avg return on 3 trajectories: 2633.490920277002
+2032
+avg return on 3 trajectories: 2031.2660206854343
+2033
+avg return on 3 trajectories: 3485.2101887563863
+2034
+avg return on 3 trajectories: 3002.254026422898
+2035
+avg return on 3 trajectories: 3504.0790026883283
+2036
+avg return on 3 trajectories: 3552.233666499456
+2037
+avg return on 3 trajectories: 3165.9101688464484
+2038
+avg return on 3 trajectories: 3614.1495391627154
+2039
+avg return on 3 trajectories: 3634.923011749983
+2040
+avg return on 3 trajectories: 3528.4300520320735
+2041
+avg return on 3 trajectories: 3403.3255316615105
+2042
+avg return on 3 trajectories: 3287.873848477999
+2043
+avg return on 3 trajectories: 3158.6205911785364
+2044
+avg return on 3 trajectories: 3719.416616946459
+2045
+avg return on 3 trajectories: 3834.9507621129355
+2046
+avg return on 3 trajectories: 2476.1503800352416
+2047
+avg return on 3 trajectories: 3099.0166640877724
+2048
+avg return on 3 trajectories: 3484.3393375823894
+2049
+avg return on 3 trajectories: 2081.3133750321963
+2050
+avg return on 3 trajectories: 4029.7863943676152
+2051
+avg return on 3 trajectories: 3314.2580585380397
+2052
+avg return on 3 trajectories: 3220.0584956202656
+2053
+avg return on 3 trajectories: 3555.493791113297
+2054
+avg return on 3 trajectories: 3182.1295369048603
+2055
+avg return on 3 trajectories: 3250.0382334937653
+2056
+avg return on 3 trajectories: 4028.977486471335
+2057
+avg return on 3 trajectories: 3725.425525099039
+2058
+avg return on 3 trajectories: 3626.1862364808717
+2059
+avg return on 3 trajectories: 4064.1327654023967
+2060
+avg return on 3 trajectories: 4147.068605614205
+2061
+avg return on 3 trajectories: 4184.451418002446
+2062
+avg return on 3 trajectories: 3015.4362178842225
+2063
+avg return on 3 trajectories: 4147.735284914573
+2064
+avg return on 3 trajectories: 4230.220997562011
+2065
+avg return on 3 trajectories: 4258.419548471768
+2066
+avg return on 3 trajectories: 3680.5407138367495
+2067
+avg return on 3 trajectories: 4265.46449731787
+2068
+avg return on 3 trajectories: 4295.260846614838
+2069
+avg return on 3 trajectories: 4378.581579178572
+2070
+avg return on 3 trajectories: 4443.120619952679
+2071
+avg return on 3 trajectories: 3282.704482038816
+2072
+avg return on 3 trajectories: 4382.524230192105
+2073
+avg return on 3 trajectories: 4446.565189361572
+2074
+avg return on 3 trajectories: 4457.868249624968
+2075
+avg return on 3 trajectories: 4489.603191236655
+2076
+avg return on 3 trajectories: 3797.9005808755755
+2077
+avg return on 3 trajectories: 4577.445397913456
+2078
+avg return on 3 trajectories: 3839.8327320118747
+2079
+avg return on 3 trajectories: 3671.987843448917
+2080
+avg return on 3 trajectories: 3622.085062086582
+2081
+avg return on 3 trajectories: 4536.369744241238
+2082
+avg return on 3 trajectories: 4537.180229117473
+2083
+avg return on 3 trajectories: 3438.8253598312535
+2084
+avg return on 3 trajectories: 3658.3423696955047
+2085
+avg return on 3 trajectories: 4616.342978229125
+2086
+avg return on 3 trajectories: 4581.763586392005
+2087
+avg return on 3 trajectories: 3949.9150426288447
+2088
+avg return on 3 trajectories: 4754.875169277191
+2089
+avg return on 3 trajectories: 4092.042253613472
+2090
+avg return on 3 trajectories: 4785.886554847161
+2091
+avg return on 3 trajectories: 4705.403820673625
+2092
+avg return on 3 trajectories: 4685.728773335616
+2093
+avg return on 3 trajectories: 4823.867074410121
+2094
+avg return on 3 trajectories: 3490.407393179446
+2095
+avg return on 3 trajectories: 4842.223512192567
+2096
+avg return on 3 trajectories: 2791.88669518133
+2097
+avg return on 3 trajectories: 3881.69988467296
+2098
+avg return on 3 trajectories: 4769.610234518846
+2099
+avg return on 3 trajectories: 4170.589512214065
+2100
+avg return on 3 trajectories: 4293.988569483161
+2101
+avg return on 3 trajectories: 4960.010184968512
+2102
+avg return on 3 trajectories: 3629.2508524904647
+2103
+avg return on 3 trajectories: 4057.8627079079547
+2104
+avg return on 3 trajectories: 4935.479933316509
+2105
+avg return on 3 trajectories: 3401.5754056821265
+2106
+avg return on 3 trajectories: 5009.184313610196
+2107
+avg return on 3 trajectories: 5053.350351686279
+2108
+avg return on 3 trajectories: 4951.667524387439
+2109
+avg return on 3 trajectories: 4675.871144880851
+2110
+avg return on 3 trajectories: 3937.129094260434
+2111
+avg return on 3 trajectories: 3968.7131424844265
+2112
+avg return on 3 trajectories: 5071.647486567497
+2113
+avg return on 3 trajectories: 4997.368929222226
+2114
+avg return on 3 trajectories: 4892.007320284843
+2115
+avg return on 3 trajectories: 5092.110090980927
+2116
+avg return on 3 trajectories: 5016.071945488453
+2117
+avg return on 3 trajectories: 5169.785011693835
+2118
+avg return on 3 trajectories: 5115.557734459639
+2119
+avg return on 3 trajectories: 4294.578370148937
+2120
+avg return on 3 trajectories: 5143.645108446479
+2121
+avg return on 3 trajectories: 4468.316421831958
+2122
+avg return on 3 trajectories: 4309.694738740723
+2123
+avg return on 3 trajectories: 5165.952887450655
+2124
+avg return on 3 trajectories: 4220.433445488413
+2125
+avg return on 3 trajectories: 4144.39726067086
+2126
+avg return on 3 trajectories: 5232.917106643319
+2127
+avg return on 3 trajectories: 5271.984887699286
+2128
+avg return on 3 trajectories: 5295.749608024955
+2129
+avg return on 3 trajectories: 5285.061317006747
+2130
+avg return on 3 trajectories: 5302.027870272596
+2131
+avg return on 3 trajectories: 5254.848398298025
+2132
+avg return on 3 trajectories: 4288.7846954415245
+2133
+avg return on 3 trajectories: 4128.295421938102
+2134
+avg return on 3 trajectories: 5244.118715768059
+2135
+avg return on 3 trajectories: 5426.556349734466
+2136
+avg return on 3 trajectories: 5233.7939328153925
+2137
+avg return on 3 trajectories: 5352.977606465419
+2138
+avg return on 3 trajectories: 5463.636054247618
+2139
+avg return on 3 trajectories: 5207.3057433540625
+2140
+avg return on 3 trajectories: 5403.666255578399
+2141
+avg return on 3 trajectories: 3504.1587597777448
+2142
+avg return on 3 trajectories: 5420.5475305815535
+2143
+avg return on 3 trajectories: 4832.840259174506
+2144
+avg return on 3 trajectories: 5484.865935181578
+2145
+avg return on 3 trajectories: 5504.053716262181
+2146
+avg return on 3 trajectories: 5016.809577773015
+2147
+avg return on 3 trajectories: 5558.017070055008
+2148
+avg return on 3 trajectories: 4064.497157762448
+2149
+avg return on 3 trajectories: 2775.3156187733016
+2150
+avg return on 3 trajectories: 5319.702990410228
+2151
+avg return on 3 trajectories: 5538.731534828742
+2152
+avg return on 3 trajectories: 5473.681361436844
+2153
+avg return on 3 trajectories: 5534.060458739598
+2154
+avg return on 3 trajectories: 5415.657315552235
+2155
+avg return on 3 trajectories: 5474.745543171962
+2156
+avg return on 3 trajectories: 5319.063346644242
+2157
+avg return on 3 trajectories: 5547.032789975405
+2158
+avg return on 3 trajectories: 4077.052203774452
+2159
+avg return on 3 trajectories: 5258.812989080946
+2160
+avg return on 3 trajectories: 5587.456215187907
+2161
+avg return on 3 trajectories: 5597.165921106935
+2162
+avg return on 3 trajectories: 5758.434007848303
+2163
+avg return on 3 trajectories: 5576.796676332752
+2164
+avg return on 3 trajectories: 4106.120597064495
+2165
+avg return on 3 trajectories: 5736.339185714722
+2166
+avg return on 3 trajectories: 3431.057430421313
+2167
+avg return on 3 trajectories: 3400.828846409917
+2168
+avg return on 3 trajectories: 4101.617156674464
+2169
+avg return on 3 trajectories: 5687.736696834366
+2170
+avg return on 3 trajectories: 3961.889000982046
+2171
+avg return on 3 trajectories: 2992.439029396201
+2172
+avg return on 3 trajectories: 5720.323253522317
+2173
+avg return on 3 trajectories: 4848.616673514247
+2174
+avg return on 3 trajectories: 5727.399032990138
+2175
+avg return on 3 trajectories: 5747.090297003587
+2176
+avg return on 3 trajectories: 5240.122590005398
+2177
+avg return on 3 trajectories: 5634.38245082895
+2178
+avg return on 3 trajectories: 5882.297631517053
+2179
+avg return on 3 trajectories: 5136.345948174596
+2180
+avg return on 3 trajectories: 5742.801715046167
+2181
+avg return on 3 trajectories: 5705.753328253825
+2182
+avg return on 3 trajectories: 4255.478479603927
+2183
+avg return on 3 trajectories: 5756.119511057933
+2184
+avg return on 3 trajectories: 4735.410358205438
+2185
+avg return on 3 trajectories: 4099.824610821903
+2186
+avg return on 3 trajectories: 6016.661862944563
+2187
+avg return on 3 trajectories: 5768.600787277023
+2188
+avg return on 3 trajectories: 5773.49069583416
+2189
+avg return on 3 trajectories: 5061.351060400407
+2190
+avg return on 3 trajectories: 4472.026934738581
+2191
+avg return on 3 trajectories: 4622.105052798986
+2192
+avg return on 3 trajectories: 5867.667750666539
+2193
+avg return on 3 trajectories: 5702.6259096485255
+2194
+avg return on 3 trajectories: 5886.012975682815
+2195
+avg return on 3 trajectories: 5814.393084372084
+2196
+avg return on 3 trajectories: 5931.958251903455
+2197
+avg return on 3 trajectories: 5600.501384054621
+2198
+avg return on 3 trajectories: 5828.8168646941585
+2199
+avg return on 3 trajectories: 4323.094537367423
+2200
+avg return on 3 trajectories: 3998.7116395384073
+2201
+avg return on 3 trajectories: 5936.167033309738
+2202
+avg return on 3 trajectories: 5955.197988813122
+2203
+avg return on 3 trajectories: 5829.282707954447
+2204
+avg return on 3 trajectories: 5135.436241924763
+2205
+avg return on 3 trajectories: 4630.236779491107
+2206
+avg return on 3 trajectories: 5941.832579215367
+2207
+avg return on 3 trajectories: 5943.502232258518
+2208
+avg return on 3 trajectories: 4830.839367980759
+2209
+avg return on 3 trajectories: 5996.833763907353
+2210
+avg return on 3 trajectories: 5903.85567112267
+2211
+avg return on 3 trajectories: 5923.888035794099
+2212
+avg return on 3 trajectories: 4362.8908898284035
+2213
+avg return on 3 trajectories: 5389.797126894196
+2214
+avg return on 3 trajectories: 5851.070191433032
+2215
+avg return on 3 trajectories: 5881.019327635567
+2216
+avg return on 3 trajectories: 5018.70083535711
+2217
+avg return on 3 trajectories: 5019.365870893002
+2218
+avg return on 3 trajectories: 5983.908959691723
+2219
+avg return on 3 trajectories: 6111.842866291602
+2220
+avg return on 3 trajectories: 4669.903029029568
+2221
+avg return on 3 trajectories: 5296.919908429186
+2222
+avg return on 3 trajectories: 6124.661217888196
+2223
+avg return on 3 trajectories: 5985.318032274644
+2224
+avg return on 3 trajectories: 5719.187365775307
+2225
+avg return on 3 trajectories: 6039.231652016441
+2226
+avg return on 3 trajectories: 4685.944832528631
+2227
+avg return on 3 trajectories: 4637.471433316668
+2228
+avg return on 3 trajectories: 5333.583032220602
+2229
+avg return on 3 trajectories: 4932.914523983995
+2230
+avg return on 3 trajectories: 4739.0961522608995
+2231
+avg return on 3 trajectories: 6096.458303317428
+2232
+avg return on 3 trajectories: 4602.691219627857
+2233
+avg return on 3 trajectories: 6034.7183827497065
+2234
+avg return on 3 trajectories: 6098.066816478968
+2235
+avg return on 3 trajectories: 4601.359350964427
+2236
+avg return on 3 trajectories: 5525.610716020067
+2237
+avg return on 3 trajectories: 4316.645584627986
+2238
+avg return on 3 trajectories: 5068.510420759519
+2239
+avg return on 3 trajectories: 5789.4526968201
+2240
+avg return on 3 trajectories: 5451.654015883803
+2241
+avg return on 3 trajectories: 6293.475297167897
+2242
+avg return on 3 trajectories: 6291.169755841295
+2243
+avg return on 3 trajectories: 6120.714427381754
+2244
+avg return on 3 trajectories: 6153.289786338806
+2245
+avg return on 3 trajectories: 4181.365679549985
+2246
+avg return on 3 trajectories: 6134.928232918183
+2247
+avg return on 3 trajectories: 4405.869029869636
+2248
+avg return on 3 trajectories: 4066.317423671484
+2249
+avg return on 3 trajectories: 6199.213857332866
+2250
+avg return on 3 trajectories: 3292.982807136044
+2251
+avg return on 3 trajectories: 5374.331330130498
+2252
+avg return on 3 trajectories: 6134.033156454563
+2253
+avg return on 3 trajectories: 6313.020283172528
+2254
+avg return on 3 trajectories: 4602.371314153075
+2255
+avg return on 3 trajectories: 5156.421755713721
+2256
+avg return on 3 trajectories: 6237.812864378095
+2257
+avg return on 3 trajectories: 4542.759567096829
+2258
+avg return on 3 trajectories: 5486.440677955747
+2259
+avg return on 3 trajectories: 5510.147417659561
+2260
+avg return on 3 trajectories: 5224.040628364931
+2261
+avg return on 3 trajectories: 4657.546882048559
+2262
+avg return on 3 trajectories: 6211.463688825567
+2263
+avg return on 3 trajectories: 6132.586497426033
+2264
+avg return on 3 trajectories: 5166.729517226418
+2265
+avg return on 3 trajectories: 6310.514433374007
+2266
+avg return on 3 trajectories: 5242.989160940672
+2267
+avg return on 3 trajectories: 6359.117662787437
+2268
+avg return on 3 trajectories: 4246.082584093015
+2269
+avg return on 3 trajectories: 4531.552831300224
+2270
+avg return on 3 trajectories: 6264.975282604496
+2271
+avg return on 3 trajectories: 6157.59823949635
+2272
+avg return on 3 trajectories: 4513.304706821839
+2273
+avg return on 3 trajectories: 5184.30691442887
+2274
+avg return on 3 trajectories: 6231.269750932853
+2275
+avg return on 3 trajectories: 6260.883027916153
+2276
+avg return on 3 trajectories: 6135.04312449197
+2277
+avg return on 3 trajectories: 5363.159335327645
+2278
+avg return on 3 trajectories: 6299.549841038883
+2279
+avg return on 3 trajectories: 6353.893133734663
+2280
+avg return on 3 trajectories: 6272.436219682296
+2281
+avg return on 3 trajectories: 6376.901177580158
+2282
+avg return on 3 trajectories: 4845.112162267168
+2283
+avg return on 3 trajectories: 5690.436678212136
+2284
+avg return on 3 trajectories: 6328.827740902702
+2285
+avg return on 3 trajectories: 6297.603481138746
+2286
+avg return on 3 trajectories: 6002.933696513374
+2287
+avg return on 3 trajectories: 6001.945002357165
+2288
+avg return on 3 trajectories: 6261.779797787468
+2289
+avg return on 3 trajectories: 4605.039162089427
+2290
+avg return on 3 trajectories: 4439.256499762337
+2291
+avg return on 3 trajectories: 5780.948956842224
+2292
+avg return on 3 trajectories: 5617.542090500395
+2293
+avg return on 3 trajectories: 6319.006308056414
+2294
+avg return on 3 trajectories: 4172.334258800994
+2295
+avg return on 3 trajectories: 4525.39645481358
+2296
+avg return on 3 trajectories: 5008.532867933313
+2297
+avg return on 3 trajectories: 6335.094214551151
+2298
+avg return on 3 trajectories: 5206.063483399649
+2299
+avg return on 3 trajectories: 6311.791397015254
+2300
+avg return on 3 trajectories: 4670.202925192813
+2301
+avg return on 3 trajectories: 6384.448530140023
+2302
+avg return on 3 trajectories: 5347.49252915072
+2303
+avg return on 3 trajectories: 6402.554750494659
+2304
+avg return on 3 trajectories: 6267.575381504993
+2305
+avg return on 3 trajectories: 5385.455132596195
+2306
+avg return on 3 trajectories: 5100.684228862326
+2307
+avg return on 3 trajectories: 6331.227152114113
+2308
+avg return on 3 trajectories: 5361.038594558835
+2309
+avg return on 3 trajectories: 6454.096807112296
+2310
+avg return on 3 trajectories: 6309.567368581891
+2311
+avg return on 3 trajectories: 5732.328949779272
+2312
+avg return on 3 trajectories: 5098.323750821252
+2313
+avg return on 3 trajectories: 2784.815440694491
+2314
+avg return on 3 trajectories: 6301.3252481892705
+2315
+avg return on 3 trajectories: 6310.806485116482
+2316
+avg return on 3 trajectories: 4035.826940300564
+2317
+avg return on 3 trajectories: 4812.160502699514
+2318
+avg return on 3 trajectories: 4479.281770884991
+2319
+avg return on 3 trajectories: 6340.671777121723
+2320
+avg return on 3 trajectories: 5092.256834420065
+2321
+avg return on 3 trajectories: 6489.578860121469
+2322
+avg return on 3 trajectories: 5895.866794509813
+2323
+avg return on 3 trajectories: 6474.8429505253835
+2324
+avg return on 3 trajectories: 4571.28582821538
+2325
+avg return on 3 trajectories: 5757.431886779766
+2326
+avg return on 3 trajectories: 5447.899598021681
+2327
+avg return on 3 trajectories: 4647.708670058909
+2328
+avg return on 3 trajectories: 4533.609470151365
+2329
+avg return on 3 trajectories: 4431.289765238762
+2330
+avg return on 3 trajectories: 4982.428296364844
+2331
+avg return on 3 trajectories: 4483.577551630636
+2332
+avg return on 3 trajectories: 5065.4348949398845
+2333
+avg return on 3 trajectories: 6354.629432742794
+2334
+avg return on 3 trajectories: 6325.176069289446
+2335
+avg return on 3 trajectories: 6420.032322945694
+2336
+avg return on 3 trajectories: 5712.374690239628
+2337
+avg return on 3 trajectories: 6465.548181146383
+2338
+avg return on 3 trajectories: 6457.511504093806
+2339
+avg return on 3 trajectories: 5313.151718087494
+2340
+avg return on 3 trajectories: 3963.0045049761734
+2341
+avg return on 3 trajectories: 3161.2965550124645
+2342
+avg return on 3 trajectories: 6015.3099997291965
+2343
+avg return on 3 trajectories: 6367.741504959762
+2344
+avg return on 3 trajectories: 4839.487834811211
+2345
+avg return on 3 trajectories: 6437.752975409229
+2346
+avg return on 3 trajectories: 6536.7375440398855
+2347
+avg return on 3 trajectories: 5138.663746026655
+2348
+avg return on 3 trajectories: 1780.754656975468
+2349
+avg return on 3 trajectories: 6351.0609769150615
+2350
+avg return on 3 trajectories: 6412.225059171517
+2351
+avg return on 3 trajectories: 5158.254406144221
+2352
+avg return on 3 trajectories: 5155.358695688347
+2353
+avg return on 3 trajectories: 4180.637922639648
+2354
+avg return on 3 trajectories: 5296.277846964697
+2355
+avg return on 3 trajectories: 4903.620898937185
+2356
+avg return on 3 trajectories: 5553.603476978838
+2357
+avg return on 3 trajectories: 6403.060845312973
+2358
+avg return on 3 trajectories: 6540.631463177502
+2359
+avg return on 3 trajectories: 5050.387506385644
+2360
+avg return on 3 trajectories: 5181.914901067813
+2361
+avg return on 3 trajectories: 5891.5504119669395
+2362
+avg return on 3 trajectories: 6534.287858662506
+2363
+avg return on 3 trajectories: 6598.292488612235
+2364
+avg return on 3 trajectories: 6523.299259185791
+2365
+avg return on 3 trajectories: 5549.747924521565
+2366
+avg return on 3 trajectories: 4298.526240045826
+2367
+avg return on 3 trajectories: 6567.073390630384
+2368
+avg return on 3 trajectories: 6087.131708805759
+2369
+avg return on 3 trajectories: 6421.893409125507
+2370
+avg return on 3 trajectories: 6569.046124267082
+2371
+avg return on 3 trajectories: 4032.393833993934
+2372
+avg return on 3 trajectories: 6494.8472581158085
+2373
+avg return on 3 trajectories: 6524.824825295557
+2374
+avg return on 3 trajectories: 6395.446724151571
+2375
+avg return on 3 trajectories: 6744.8587687425315
+2376
+avg return on 3 trajectories: 4236.264800931327
+2377
+avg return on 3 trajectories: 6606.397553433974
+2378
+avg return on 3 trajectories: 6332.796827291449
+2379
+avg return on 3 trajectories: 6404.897566985339
+2380
+avg return on 3 trajectories: 5611.144041674833
+2381
+avg return on 3 trajectories: 6600.521638657898
+2382
+avg return on 3 trajectories: 6555.309861768037
+2383
+avg return on 3 trajectories: 5884.188833979269
+2384
+avg return on 3 trajectories: 5760.11960858355
+2385
+avg return on 3 trajectories: 5361.379503759245
+2386
+avg return on 3 trajectories: 5408.932883884758
+2387
+avg return on 3 trajectories: 5808.246672522277
+2388
+avg return on 3 trajectories: 5719.801147002727
+2389
+avg return on 3 trajectories: 4985.692199384172
+2390
+avg return on 3 trajectories: 6509.586612731218
+2391
+avg return on 3 trajectories: 4906.946088009824
+2392
+avg return on 3 trajectories: 4857.7733899441855
+2393
+avg return on 3 trajectories: 4392.3390925092
+2394
+avg return on 3 trajectories: 5128.265088306119
+2395
+avg return on 3 trajectories: 6602.217962874721
+2396
+avg return on 3 trajectories: 6514.684574306011
+2397
+avg return on 3 trajectories: 4146.483691713463
+2398
+avg return on 3 trajectories: 4384.195863834892
+2399
+avg return on 3 trajectories: 6461.1551867636545
+2400
+avg return on 3 trajectories: 6512.307978434488
+2401
+avg return on 3 trajectories: 2910.1232420559973
+2402
+avg return on 3 trajectories: 4814.070505400498
+2403
+avg return on 3 trajectories: 6562.581098581974
+2404
+avg return on 3 trajectories: 6472.311002364692
+2405
+avg return on 3 trajectories: 5863.548273003311
+2406
+avg return on 3 trajectories: 5531.621503757934
+2407
+avg return on 3 trajectories: 4208.194876479606
+2408
+avg return on 3 trajectories: 4982.661316863028
+2409
+avg return on 3 trajectories: 6522.852331225993
+2410
+avg return on 3 trajectories: 5319.51318439491
+2411
+avg return on 3 trajectories: 6676.501303668698
+2412
+avg return on 3 trajectories: 6362.025204145436
+2413
+avg return on 3 trajectories: 6541.583097958665
+2414
+avg return on 3 trajectories: 6600.4595343996
+2415
+avg return on 3 trajectories: 5982.598140877827
+2416
+avg return on 3 trajectories: 5492.809528208338
+2417
+avg return on 3 trajectories: 6570.62236062903
+2418
+avg return on 3 trajectories: 6027.874424728875
+2419
+avg return on 3 trajectories: 5650.523267361646
+2420
+avg return on 3 trajectories: 4918.615626080583
+2421
+avg return on 3 trajectories: 6582.838449205272
+2422
+avg return on 3 trajectories: 6532.948465905462
+2423
+avg return on 3 trajectories: 4881.591215757653
+2424
+avg return on 3 trajectories: 6646.9118523678435
+2425
+avg return on 3 trajectories: 5912.933634137735
+2426
+avg return on 3 trajectories: 5308.367834215208
+2427
+avg return on 3 trajectories: 6577.367892480611
+2428
+avg return on 3 trajectories: 5962.8636118867435
+2429
+avg return on 3 trajectories: 6583.728047154397
+2430
+avg return on 3 trajectories: 6634.195572334032
+2431
+avg return on 3 trajectories: 5063.597805789206
+2432
+avg return on 3 trajectories: 6631.767669121425
+2433
+avg return on 3 trajectories: 6522.6409814292565
+2434
+avg return on 3 trajectories: 3189.513583988572
+2435
+avg return on 3 trajectories: 6605.929474592209
+2436
+avg return on 3 trajectories: 6575.340907145292
+2437
+avg return on 3 trajectories: 6530.335454390694
+2438
+avg return on 3 trajectories: 6404.1445334168775
+2439
+avg return on 3 trajectories: 6663.884204762678
+2440
+avg return on 3 trajectories: 5798.901305953662
+2441
+avg return on 3 trajectories: 4947.992131386262
+2442
+avg return on 3 trajectories: 6598.061233450969
+2443
+avg return on 3 trajectories: 6689.711010559152
+2444
+avg return on 3 trajectories: 4996.844135588035
+2445
+avg return on 3 trajectories: 6527.783806145812
+2446
+avg return on 3 trajectories: 6526.592334092905
+2447
+avg return on 3 trajectories: 5459.321937638723
+2448
+avg return on 3 trajectories: 6663.4965167051805
+2449
+avg return on 3 trajectories: 5695.369528193648
+2450
+avg return on 3 trajectories: 6027.57564753294
+2451
+avg return on 3 trajectories: 4698.393306449056
+2452
+avg return on 3 trajectories: 6488.876190725093
+2453
+avg return on 3 trajectories: 5632.0907603564365
+2454
+avg return on 3 trajectories: 6552.550173103809
+2455
+avg return on 3 trajectories: 5319.361908298607
+2456
+avg return on 3 trajectories: 6551.480105976264
+2457
+avg return on 3 trajectories: 6211.108558091025
+2458
+avg return on 3 trajectories: 3244.1550854677917
+2459
+avg return on 3 trajectories: 5744.672743326053
+2460
+avg return on 3 trajectories: 6696.069792236512
+2461
+avg return on 3 trajectories: 6532.623651484493
+2462
+avg return on 3 trajectories: 6632.404807989951
+2463
+avg return on 3 trajectories: 6713.926208024223
+2464
+avg return on 3 trajectories: 4861.5743067258345
+2465
+avg return on 3 trajectories: 6598.885748252273
+2466
+avg return on 3 trajectories: 6539.048734678887
+2467
+avg return on 3 trajectories: 4250.571392964572
+2468
+avg return on 3 trajectories: 4218.517981051856
+2469
+avg return on 3 trajectories: 4827.520997777581
+2470
+avg return on 3 trajectories: 6210.88196640027
+2471
+avg return on 3 trajectories: 5362.151689228912
+2472
+avg return on 3 trajectories: 5260.215398189302
+2473
+avg return on 3 trajectories: 1757.9307550210506
+2474
+avg return on 3 trajectories: 6734.5951239690185
+2475
+avg return on 3 trajectories: 6677.973301584522
+2476
+avg return on 3 trajectories: 6313.7389214287205
+2477
+avg return on 3 trajectories: 6651.424077144514
+2478
+avg return on 3 trajectories: 6775.239174261689
+2479
+avg return on 3 trajectories: 4899.062902045746
+2480
+avg return on 3 trajectories: 5489.96308814971
+2481
+avg return on 3 trajectories: 6650.777421443413
+2482
+avg return on 3 trajectories: 6492.02372187376
+2483
+avg return on 3 trajectories: 5153.182182643563
+2484
+avg return on 3 trajectories: 6724.948027420789
+2485
+avg return on 3 trajectories: 6360.525912282057
+2486
+avg return on 3 trajectories: 4368.720328801622
+2487
+avg return on 3 trajectories: 6005.173942808567
+2488
+avg return on 3 trajectories: 6755.245212260634
+2489
+avg return on 3 trajectories: 5350.670594273756
+2490
+avg return on 3 trajectories: 4152.054069499175
+2491
+avg return on 3 trajectories: 5189.366811402763
+2492
+avg return on 3 trajectories: 6645.598186419656
+2493
+avg return on 3 trajectories: 5249.691230729222
+2494
+avg return on 3 trajectories: 6149.664759629096
+2495
+avg return on 3 trajectories: 4861.919015509877
+2496
+avg return on 3 trajectories: 6407.486996609718
+2497
+avg return on 3 trajectories: 4589.252092402428
+2498
+avg return on 3 trajectories: 4579.699334109823
+2499
+avg return on 3 trajectories: 5030.618719878296
+2500
+avg return on 3 trajectories: 4912.455514238526
+2501
+avg return on 3 trajectories: 3720.156805355102
+2502
+avg return on 3 trajectories: 5134.331535859655
+2503
+avg return on 3 trajectories: 6735.310447923839
+2504
+avg return on 3 trajectories: 6722.951599162072
+2505
+avg return on 3 trajectories: 3907.5580531569817
+2506
+avg return on 3 trajectories: 6666.025463300447
+2507
+avg return on 3 trajectories: 4629.34579366073
+2508
+avg return on 3 trajectories: 4762.13958261783
+2509
+avg return on 3 trajectories: 4565.471165660769
+2510
+avg return on 3 trajectories: 5665.539559601496
+2511
+avg return on 3 trajectories: 5647.048298619688
+2512
+avg return on 3 trajectories: 6633.289299653222
+2513
+avg return on 3 trajectories: 6803.139739770442
+2514
+avg return on 3 trajectories: 4591.1200949351
+2515
+avg return on 3 trajectories: 6162.302625391632
+2516
+avg return on 3 trajectories: 3610.9370239252844
+2517
+avg return on 3 trajectories: 5612.662988707423
+2518
+avg return on 3 trajectories: 5864.563192262004
+2519
+avg return on 3 trajectories: 6590.508815960337
+2520
+avg return on 3 trajectories: 2505.12366909037
+2521
+avg return on 3 trajectories: 4628.414186961949
+2522
+avg return on 3 trajectories: 3559.3413679453856
+2523
+avg return on 3 trajectories: 6706.73553596437
+2524
+avg return on 3 trajectories: 5794.010536129276
+2525
+avg return on 3 trajectories: 6601.7839132579975
+2526
+avg return on 3 trajectories: 5227.814175562312
+2527
+avg return on 3 trajectories: 6719.220988353093
+2528
+avg return on 3 trajectories: 6560.85275522992
+2529
+avg return on 3 trajectories: 6644.065051986526
+2530
+avg return on 3 trajectories: 6691.0702753178775
+2531
+avg return on 3 trajectories: 6562.714122469227
+2532
+avg return on 3 trajectories: 6653.642246995121
+2533
+avg return on 3 trajectories: 6794.701011942078
+2534
+avg return on 3 trajectories: 6699.903260243435
+2535
+avg return on 3 trajectories: 4564.681994147599
+2536
+avg return on 3 trajectories: 6635.885587292413
+2537
+avg return on 3 trajectories: 4314.27594983733
+2538
+avg return on 3 trajectories: 6708.820471126586
+2539
+avg return on 3 trajectories: 6665.486545429875
+2540
+avg return on 3 trajectories: 4197.384422883391
+2541
+avg return on 3 trajectories: 3868.6324029204748
+2542
+avg return on 3 trajectories: 6751.753049364935
+2543
+avg return on 3 trajectories: 6682.326565648119
+2544
+avg return on 3 trajectories: 6671.833611230056
+2545
+avg return on 3 trajectories: 6643.530472325782
+2546
+avg return on 3 trajectories: 6753.4286650158465
+2547
+avg return on 3 trajectories: 6131.198918007314
+2548
+avg return on 3 trajectories: 6561.100136961788
+2549
+avg return on 3 trajectories: 6715.534289407234
+2550
+avg return on 3 trajectories: 6683.6864875430865
+2551
+avg return on 3 trajectories: 4173.35688411196
+2552
+avg return on 3 trajectories: 3575.697166317453
+2553
+avg return on 3 trajectories: 5036.392464268953
+2554
+avg return on 3 trajectories: 4843.4061136034625
+2555
+avg return on 3 trajectories: 6796.031037403892
+2556
+avg return on 3 trajectories: 6633.954491631438
+2557
+avg return on 3 trajectories: 6363.719457674772
+2558
+avg return on 3 trajectories: 6741.233703698963
+2559
+avg return on 3 trajectories: 6750.932003243516
+2560
+avg return on 3 trajectories: 6801.503430027515
+2561
+avg return on 3 trajectories: 6775.923989412685
+2562
+avg return on 3 trajectories: 5977.159967211385
+2563
+avg return on 3 trajectories: 6812.29214112709
+2564
+avg return on 3 trajectories: 5410.309154479454
+2565
+avg return on 3 trajectories: 5569.5818044828875
+2566
+avg return on 3 trajectories: 6775.434630117069
+2567
+avg return on 3 trajectories: 5115.668590707083
+2568
+avg return on 3 trajectories: 3205.4527458871403
+2569
+avg return on 3 trajectories: 6802.21197548757
+2570
+avg return on 3 trajectories: 5343.1097265991075
+2571
+avg return on 3 trajectories: 5477.21824742093
+2572
+avg return on 3 trajectories: 6257.046724240684
+2573
+avg return on 3 trajectories: 6756.498128932629
+2574
+avg return on 3 trajectories: 4516.242254576956
+2575
+avg return on 3 trajectories: 6618.101987517594
+2576
+avg return on 3 trajectories: 5942.0272656161105
+2577
+avg return on 3 trajectories: 5109.46490169984
+2578
+avg return on 3 trajectories: 6709.3001722410945
+2579
+avg return on 3 trajectories: 4057.0530615045377
+2580
+avg return on 3 trajectories: 6840.547352063935
+2581
+avg return on 3 trajectories: 6122.946209162474
+2582
+avg return on 3 trajectories: 1929.5768885404493
+2583
+avg return on 3 trajectories: 5236.9311872019125
+2584
+avg return on 3 trajectories: 5742.007243222247
+2585
+avg return on 3 trajectories: 4778.041241102852
+2586
+avg return on 3 trajectories: 6644.446298969288
+2587
+avg return on 3 trajectories: 5695.753666847323
+2588
+avg return on 3 trajectories: 4130.150943616095
+2589
+avg return on 3 trajectories: 5300.632112484115
+2590
+avg return on 3 trajectories: 6363.367434717841
+2591
+avg return on 3 trajectories: 4963.160852406174
+2592
+avg return on 3 trajectories: 6260.904793768811
+2593
+avg return on 3 trajectories: 6790.559426591887
+2594
+avg return on 3 trajectories: 6624.034261939426
+2595
+avg return on 3 trajectories: 3226.4187661412484
+2596
+avg return on 3 trajectories: 5206.160035065065
+2597
+avg return on 3 trajectories: 5881.956058298859
+2598
+avg return on 3 trajectories: 6022.821983804305
+2599
+avg return on 3 trajectories: 6852.97169605239
+2600
+avg return on 3 trajectories: 4686.777922286342
+2601
+avg return on 3 trajectories: 5553.653781268746
+2602
+avg return on 3 trajectories: 6747.105539454147
+2603
+avg return on 3 trajectories: 5092.214222684503
+2604
+avg return on 3 trajectories: 5613.298914587746
+2605
+avg return on 3 trajectories: 3297.3054725347706
+2606
+avg return on 3 trajectories: 5018.136207971412
+2607
+avg return on 3 trajectories: 6735.8637568407385
+2608
+avg return on 3 trajectories: 4629.3484968030825
+2609
+avg return on 3 trajectories: 3715.6175521295518
+2610
+avg return on 3 trajectories: 6028.128221755537
+2611
+avg return on 3 trajectories: 5111.422819548597
+2612
+avg return on 3 trajectories: 6240.12023717879
+2613
+avg return on 3 trajectories: 6877.661720203236
+2614
+avg return on 3 trajectories: 6898.557820633675
+2615
+avg return on 3 trajectories: 2901.8543559294194
+2616
+avg return on 3 trajectories: 6837.144953618194
+2617
+avg return on 3 trajectories: 6776.138064605494
+2618
+avg return on 3 trajectories: 6766.070205771907
+2619
+avg return on 3 trajectories: 5999.373395547892
+2620
+avg return on 3 trajectories: 6725.650941044713
+2621
+avg return on 3 trajectories: 6761.3984970518695
+2622
+avg return on 3 trajectories: 4737.6705243649585
+2623
+avg return on 3 trajectories: 5322.373190109928
+2624
+avg return on 3 trajectories: 6848.923904600243
+2625
+avg return on 3 trajectories: 6828.224809343305
+2626
+avg return on 3 trajectories: 3376.496754211063
+2627
+avg return on 3 trajectories: 5345.517015632863
+2628
+avg return on 3 trajectories: 4741.869187447553
+2629
+avg return on 3 trajectories: 3109.9142100143167
+2630
+avg return on 3 trajectories: 6908.474009482966
+2631
+avg return on 3 trajectories: 2422.813248471357
+2632
+avg return on 3 trajectories: 5629.39835738608
+2633
+avg return on 3 trajectories: 6894.064393606347
+2634
+avg return on 3 trajectories: 5583.928575363786
+2635
+avg return on 3 trajectories: 3948.2855081427842
+2636
+avg return on 3 trajectories: 6221.541963897956
+2637
+avg return on 3 trajectories: 4917.647857849176
+2638
+avg return on 3 trajectories: 6182.19787203148
+2639
+avg return on 3 trajectories: 3204.922103756418
+2640
+avg return on 3 trajectories: 6160.081945468672
+2641
+avg return on 3 trajectories: 5332.48292027212
+2642
+avg return on 3 trajectories: 6739.826622080174
+2643
+avg return on 3 trajectories: 4665.527571204661
+2644
+avg return on 3 trajectories: 5184.52275691585
+2645
+avg return on 3 trajectories: 6812.0280301204575
+2646
+avg return on 3 trajectories: 6348.893815691583
+2647
+avg return on 3 trajectories: 6902.12924931664
+2648
+avg return on 3 trajectories: 4332.36074847697
+2649
+avg return on 3 trajectories: 6914.296469361831
+2650
+avg return on 3 trajectories: 6589.856658741832
+2651
+avg return on 3 trajectories: 6766.814635942069
+2652
+avg return on 3 trajectories: 6669.5877470020205
+2653
+avg return on 3 trajectories: 4257.731866054237
+2654
+avg return on 3 trajectories: 4720.545178785415
+2655
+avg return on 3 trajectories: 6789.75785699673
+2656
+avg return on 3 trajectories: 6788.59663747934
+2657
+avg return on 3 trajectories: 6170.350133306037
+2658
+avg return on 3 trajectories: 6871.922142433003
+2659
+avg return on 3 trajectories: 6750.222515644506
+2660
+avg return on 3 trajectories: 6699.450029281278
+2661
+avg return on 3 trajectories: 5454.941760428871
+2662
+avg return on 3 trajectories: 5974.090789488827
+2663
+avg return on 3 trajectories: 6366.226752174397
+2664
+avg return on 3 trajectories: 3313.658905030539
+2665
+avg return on 3 trajectories: 6888.967995475978
+2666
+avg return on 3 trajectories: 6755.0603396799415
+2667
+avg return on 3 trajectories: 6703.744812376176
+2668
+avg return on 3 trajectories: 5681.715721344575
+2669
+avg return on 3 trajectories: 6787.964664150029
+2670
+avg return on 3 trajectories: 5771.1608262819545
+2671
+avg return on 3 trajectories: 5457.987362069388
+2672
+avg return on 3 trajectories: 6465.430865616848
+2673
+avg return on 3 trajectories: 6740.937377212569
+2674
+avg return on 3 trajectories: 6791.8137718737125
+2675
+avg return on 3 trajectories: 5501.5562630545655
+2676
+avg return on 3 trajectories: 6674.103226716009
+2677
+avg return on 3 trajectories: 6891.860891775538
+2678
+avg return on 3 trajectories: 5056.587330025
+2679
+avg return on 3 trajectories: 6176.342082830844
+2680
+avg return on 3 trajectories: 6871.757134450444
+2681
+avg return on 3 trajectories: 3952.1892816188433
+2682
+avg return on 3 trajectories: 5897.172164161379
+2683
+avg return on 3 trajectories: 6823.015238667528
+2684
+avg return on 3 trajectories: 6628.202139845739
+2685
+avg return on 3 trajectories: 5747.599713642771
+2686
+avg return on 3 trajectories: 4956.668979544814
+2687
+avg return on 3 trajectories: 6909.943486864368
+2688
+avg return on 3 trajectories: 5572.06854861478
+2689
+avg return on 3 trajectories: 5421.710822778444
+2690
+avg return on 3 trajectories: 6851.065989079575
+2691
+avg return on 3 trajectories: 5071.1409201057
+2692
+avg return on 3 trajectories: 6746.452415484314
+2693
+avg return on 3 trajectories: 5024.441452835376
+2694
+avg return on 3 trajectories: 4896.078248639514
+2695
+avg return on 3 trajectories: 6815.476008679718
+2696
+avg return on 3 trajectories: 4954.389905090754
+2697
+avg return on 3 trajectories: 5861.449711405362
+2698
+avg return on 3 trajectories: 3000.453504938943
+2699
+avg return on 3 trajectories: 5582.233085892939
+2700
+avg return on 3 trajectories: 5793.688902918249
+2701
+avg return on 3 trajectories: 5203.866409176961
+2702
+avg return on 3 trajectories: 6163.7510268459255
+2703
+avg return on 3 trajectories: 5297.5286851178
+2704
+avg return on 3 trajectories: 4499.131851481274
+2705
+avg return on 3 trajectories: 5239.890933675769
+2706
+avg return on 3 trajectories: 6093.0428524048375
+2707
+avg return on 3 trajectories: 6174.50990479812
+2708
+avg return on 3 trajectories: 5824.8484621346
+2709
+avg return on 3 trajectories: 4925.635641455029
+2710
+avg return on 3 trajectories: 5505.2246222731965
+2711
+avg return on 3 trajectories: 4256.666223368918
+2712
+avg return on 3 trajectories: 5727.537112799783
+2713
+avg return on 3 trajectories: 6782.321963008493
+2714
+avg return on 3 trajectories: 3420.8796936317035
+2715
+avg return on 3 trajectories: 3931.5278573719165
+2716
+avg return on 3 trajectories: 6667.865651921679
+2717
+avg return on 3 trajectories: 4696.558915279806
+2718
+avg return on 3 trajectories: 6651.748521095763
+2719
+avg return on 3 trajectories: 6785.324570688109
+2720
+avg return on 3 trajectories: 6786.390255052596
+2721
+avg return on 3 trajectories: 6238.335669416313
+2722
+avg return on 3 trajectories: 5078.133579981513
+2723
+avg return on 3 trajectories: 5847.762760130067
+2724
+avg return on 3 trajectories: 6086.5682342054015
+2725
+avg return on 3 trajectories: 6583.2771344818175
+2726
+avg return on 3 trajectories: 6102.875444294264
+2727
+avg return on 3 trajectories: 5589.0083728345735
+2728
+avg return on 3 trajectories: 5536.012941885118
+2729
+avg return on 3 trajectories: 5872.243469477941
+2730
+avg return on 3 trajectories: 5242.403320815414
+2731
+avg return on 3 trajectories: 6859.079427105685
+2732
+avg return on 3 trajectories: 6889.948246269177
+2733
+avg return on 3 trajectories: 5432.040675122291
+2734
+avg return on 3 trajectories: 6837.889888311426
+2735
+avg return on 3 trajectories: 6792.275976943473
+2736
+avg return on 3 trajectories: 6834.343868435671
+2737
+avg return on 3 trajectories: 5787.656455981235
+2738
+avg return on 3 trajectories: 6767.848082179825
+2739
+avg return on 3 trajectories: 6901.439098469913
+2740
+avg return on 3 trajectories: 5347.622039634734
+2741
+avg return on 3 trajectories: 4268.5614604211105
+2742
+avg return on 3 trajectories: 5870.520303856581
+2743
+avg return on 3 trajectories: 6818.297422837466
+2744
+avg return on 3 trajectories: 6930.340636083235
+2745
+avg return on 3 trajectories: 4716.107366255889
+2746
+avg return on 3 trajectories: 5581.7652760570245
+2747
+avg return on 3 trajectories: 6417.7755541143315
+2748
+avg return on 3 trajectories: 4713.383412325134
+2749
+avg return on 3 trajectories: 5805.805359534919
+2750
+avg return on 3 trajectories: 5135.902469898264
+2751
+avg return on 3 trajectories: 4687.423954419792
+2752
+avg return on 3 trajectories: 5824.311030746748
+2753
+avg return on 3 trajectories: 6020.62682416911
+2754
+avg return on 3 trajectories: 6797.211016931881
+2755
+avg return on 3 trajectories: 6844.438192936282
+2756
+avg return on 3 trajectories: 6351.800966137399
+2757
+avg return on 3 trajectories: 3600.137297065308
+2758
+avg return on 3 trajectories: 4994.556028285374
+2759
+avg return on 3 trajectories: 4280.63727348422
+2760
+avg return on 3 trajectories: 6348.765688843482
+2761
+avg return on 3 trajectories: 6833.274527773882
+2762
+avg return on 3 trajectories: 6428.987879329671
+2763
+avg return on 3 trajectories: 6985.363871133576
+2764
+avg return on 3 trajectories: 5633.145568159719
+2765
+avg return on 3 trajectories: 4781.687375793855
+2766
+avg return on 3 trajectories: 4728.6352166806655
+2767
+avg return on 3 trajectories: 4658.92928142349
+2768
+avg return on 3 trajectories: 5022.740716439362
+2769
+avg return on 3 trajectories: 5142.829157777131
+2770
+avg return on 3 trajectories: 6805.882128943379
+2771
+avg return on 3 trajectories: 5911.5476318312185
+2772
+avg return on 3 trajectories: 6848.011752552043
+2773
+avg return on 3 trajectories: 5986.209480957438
+2774
+avg return on 3 trajectories: 6565.629405464356
+2775
+avg return on 3 trajectories: 6388.013523833205
+2776
+avg return on 3 trajectories: 6852.277436803405
+2777
+avg return on 3 trajectories: 7050.689025516312
+2778
+avg return on 3 trajectories: 6878.98304397054
+2779
+avg return on 3 trajectories: 5450.500465625276
+2780
+avg return on 3 trajectories: 6095.6050202739425
+2781
+avg return on 3 trajectories: 4799.5007711487515
+2782
+avg return on 3 trajectories: 6881.238389976633
+2783
+avg return on 3 trajectories: 6999.262066346593
+2784
+avg return on 3 trajectories: 6878.843994322233
+2785
+avg return on 3 trajectories: 5178.242924599287
+2786
+avg return on 3 trajectories: 6641.681651626403
+2787
+avg return on 3 trajectories: 6770.565553683788
+2788
+avg return on 3 trajectories: 6946.337888451914
+2789
+avg return on 3 trajectories: 6826.882487300162
+2790
+avg return on 3 trajectories: 6897.734524893885
+2791
+avg return on 3 trajectories: 6554.772761313245
+2792
+avg return on 3 trajectories: 6915.481123415753
+2793
+avg return on 3 trajectories: 6107.203766941403
+2794
+avg return on 3 trajectories: 5621.90431434537
+2795
+avg return on 3 trajectories: 5240.844419068347
+2796
+avg return on 3 trajectories: 6905.524205379809
+2797
+avg return on 3 trajectories: 6520.008610123768
+2798
+avg return on 3 trajectories: 5695.807625083874
+2799
+avg return on 3 trajectories: 6891.543658552691
+2800
+avg return on 3 trajectories: 6927.793258092676
+2801
+avg return on 3 trajectories: 6883.119430045287
+2802
+avg return on 3 trajectories: 6786.79088009273
+2803
+avg return on 3 trajectories: 5599.687817043489
+2804
+avg return on 3 trajectories: 3321.46465605249
+2805
+avg return on 3 trajectories: 6935.25575301152
+2806
+avg return on 3 trajectories: 7012.766340737231
+2807
+avg return on 3 trajectories: 5657.303729754407
+2808
+avg return on 3 trajectories: 6637.735412354115
+2809
+avg return on 3 trajectories: 7016.543309010721
+2810
+avg return on 3 trajectories: 6824.566259717491
+2811
+avg return on 3 trajectories: 6908.19606758918
+2812
+avg return on 3 trajectories: 7033.7680398027105
+2813
+avg return on 3 trajectories: 6973.186616435026
+2814
+avg return on 3 trajectories: 4770.683605790759
+2815
+avg return on 3 trajectories: 6922.727841082339
+2816
+avg return on 3 trajectories: 6553.771662632625
+2817
+avg return on 3 trajectories: 6843.870362664263
+2818
+avg return on 3 trajectories: 6972.675611644983
+2819
+avg return on 3 trajectories: 6841.490570974226
+2820
+avg return on 3 trajectories: 6855.019461248691
+2821
+avg return on 3 trajectories: 4660.05216190281
+2822
+avg return on 3 trajectories: 6891.098507691796
+2823
+avg return on 3 trajectories: 6991.0648948581265
+2824
+avg return on 3 trajectories: 7068.546909111862
+2825
+avg return on 3 trajectories: 6945.534690306832
+2826
+avg return on 3 trajectories: 6897.142591991152
+2827
+avg return on 3 trajectories: 6935.823440159981
+2828
+avg return on 3 trajectories: 7050.668240857621
+2829
+avg return on 3 trajectories: 6959.444864238302
+2830
+avg return on 3 trajectories: 6973.556433937202
+2831
+avg return on 3 trajectories: 5803.212771606942
+2832
+avg return on 3 trajectories: 6031.728478845209
+2833
+avg return on 3 trajectories: 6935.103601107995
+2834
+avg return on 3 trajectories: 5139.855691422398
+2835
+avg return on 3 trajectories: 7001.547303035855
+2836
+avg return on 3 trajectories: 5414.49567201982
+2837
+avg return on 3 trajectories: 6443.365974246214
+2838
+avg return on 3 trajectories: 7008.6293502698345
+2839
+avg return on 3 trajectories: 6987.044501889497
+2840
+avg return on 3 trajectories: 4436.3670286126435
+2841
+avg return on 3 trajectories: 6734.102577539782
+2842
+avg return on 3 trajectories: 5260.349253750096
+2843
+avg return on 3 trajectories: 5055.721730623394
+2844
+avg return on 3 trajectories: 6991.897454454253
+2845
+avg return on 3 trajectories: 5878.782765448093
+2846
+avg return on 3 trajectories: 5775.195130959153
+2847
+avg return on 3 trajectories: 6945.27401438728
+2848
+avg return on 3 trajectories: 6538.964540539931
+2849
+avg return on 3 trajectories: 7027.872091361632
+2850
+avg return on 3 trajectories: 6992.253542453051
+2851
+avg return on 3 trajectories: 6922.734304113935
+2852
+avg return on 3 trajectories: 6864.082367822528
+2853
+avg return on 3 trajectories: 6344.029566086829
+2854
+avg return on 3 trajectories: 6615.757456284948
+2855
+avg return on 3 trajectories: 6937.584598443161
+2856
+avg return on 3 trajectories: 6188.082217993836
+2857
+avg return on 3 trajectories: 6510.110627728204
+2858
+avg return on 3 trajectories: 6220.850879079352
+2859
+avg return on 3 trajectories: 6830.948943516861
+2860
+avg return on 3 trajectories: 6956.818859799455
+2861
+avg return on 3 trajectories: 6991.0250615514815
+2862
+avg return on 3 trajectories: 6961.792324236284
+2863
+avg return on 3 trajectories: 6947.848106888433
+2864
+avg return on 3 trajectories: 6997.3103232259555
+2865
+avg return on 3 trajectories: 6964.93815850839
+2866
+avg return on 3 trajectories: 6977.729662208508
+2867
+avg return on 3 trajectories: 6913.458546638489
+2868
+avg return on 3 trajectories: 5689.512336319934
+2869
+avg return on 3 trajectories: 7008.990525774658
+2870
+avg return on 3 trajectories: 2569.905765339732
+2871
+avg return on 3 trajectories: 6737.125986520201
+2872
+avg return on 3 trajectories: 6570.613877618064
+2873
+avg return on 3 trajectories: 6748.088368856658
+2874
+avg return on 3 trajectories: 6900.469117538382
+2875
+avg return on 3 trajectories: 6981.408731116603
+2876
+avg return on 3 trajectories: 6091.129797315846
+2877
+avg return on 3 trajectories: 6867.725194938481
+2878
+avg return on 3 trajectories: 6938.385228682309
+2879
+avg return on 3 trajectories: 5238.1219893220505
+2880
+avg return on 3 trajectories: 6977.670991164942
+2881
+avg return on 3 trajectories: 6903.843960781892
+2882
+avg return on 3 trajectories: 6924.21460833028
+2883
+avg return on 3 trajectories: 6953.869381035368
+2884
+avg return on 3 trajectories: 7054.91376992936
+2885
+avg return on 3 trajectories: 5207.55733190601
+2886
+avg return on 3 trajectories: 6802.479971304536
+2887
+avg return on 3 trajectories: 6921.289477283756
+2888
+avg return on 3 trajectories: 7025.015613391995
+2889
+avg return on 3 trajectories: 6860.417173324774
+2890
+avg return on 3 trajectories: 7005.814651420961
+2891
+avg return on 3 trajectories: 7035.390061722447
+2892
+avg return on 3 trajectories: 6540.585310089092
+2893
+avg return on 3 trajectories: 6979.879304807633
+2894
+avg return on 3 trajectories: 7048.261044443895
+2895
+avg return on 3 trajectories: 6974.717142858853
+2896
+avg return on 3 trajectories: 6950.94548219132
+2897
+avg return on 3 trajectories: 6874.8058641258
+2898
+avg return on 3 trajectories: 6965.900032769267
+2899
+avg return on 3 trajectories: 6931.368210765533
+2900
+avg return on 3 trajectories: 6999.195842834811
+2901
+avg return on 3 trajectories: 5682.826357084016
+2902
+avg return on 3 trajectories: 6982.176617247363
+2903
+avg return on 3 trajectories: 6961.703879833221
+2904
+avg return on 3 trajectories: 6555.1471829495085
+2905
+avg return on 3 trajectories: 7019.0547582395375
+2906
+avg return on 3 trajectories: 6644.434967216104
+2907
+avg return on 3 trajectories: 6866.07434759289
+2908
+avg return on 3 trajectories: 3916.048225387931
+2909
+avg return on 3 trajectories: 6856.470684651285
+2910
+avg return on 3 trajectories: 5534.671730650589
+2911
+avg return on 3 trajectories: 7054.232535784443
+2912
+avg return on 3 trajectories: 6981.791025822982
+2913
+avg return on 3 trajectories: 5229.845053675895
+2914
+avg return on 3 trajectories: 7036.459232147783
+2915
+avg return on 3 trajectories: 5970.5589817849295
+2916
+avg return on 3 trajectories: 6999.453367798279
+2917
+avg return on 3 trajectories: 6922.616291778783
+2918
+avg return on 3 trajectories: 6940.8780211973935
+2919
+avg return on 3 trajectories: 6933.720052242279
+2920
+avg return on 3 trajectories: 4747.525513783097
+2921
+avg return on 3 trajectories: 6974.5549960285425
+2922
+avg return on 3 trajectories: 6788.999078929424
+2923
+avg return on 3 trajectories: 6992.604219495009
+2924
+avg return on 3 trajectories: 4989.938520248979
+2925
+avg return on 3 trajectories: 7047.827870376408
+2926
+avg return on 3 trajectories: 6981.516849330316
+2927
+avg return on 3 trajectories: 5313.48010086144
+2928
+avg return on 3 trajectories: 7033.965921737254
+2929
+avg return on 3 trajectories: 6974.62571494778
+2930
+avg return on 3 trajectories: 5383.435929569416
+2931
+avg return on 3 trajectories: 7014.344822126131
+2932
+avg return on 3 trajectories: 6084.856785925726
+2933
+avg return on 3 trajectories: 6887.749529751639
+2934
+avg return on 3 trajectories: 7039.88367921859
+2935
+avg return on 3 trajectories: 6984.031756109248
+2936
+avg return on 3 trajectories: 6062.167700080822
+2937
+avg return on 3 trajectories: 5752.171089446793
+2938
+avg return on 3 trajectories: 5359.886506343882
+2939
+avg return on 3 trajectories: 6275.84055354322
+2940
+avg return on 3 trajectories: 5178.590604732434
+2941
+avg return on 3 trajectories: 4978.092952563117
+2942
+avg return on 3 trajectories: 7051.043946832418
+2943
+avg return on 3 trajectories: 6981.624180909246
+2944
+avg return on 3 trajectories: 6935.021983295679
+2945
+avg return on 3 trajectories: 6859.776467678447
+2946
+avg return on 3 trajectories: 7080.769363449265
+2947
+avg return on 3 trajectories: 6841.869673068325
+2948
+avg return on 3 trajectories: 6940.152655856063
+2949
+avg return on 3 trajectories: 6946.230633862317
+2950
+avg return on 3 trajectories: 7037.193788410475
+2951
+avg return on 3 trajectories: 6930.944418985397
+2952
+avg return on 3 trajectories: 7060.278737321496
+2953
+avg return on 3 trajectories: 5053.595417893182
+2954
+avg return on 3 trajectories: 7004.15307586516
+2955
+avg return on 3 trajectories: 5365.6749896891415
+2956
+avg return on 3 trajectories: 6438.8368338470655
+2957
+avg return on 3 trajectories: 3193.2375018770495
+2958
+avg return on 3 trajectories: 6920.186283798267
+2959
+avg return on 3 trajectories: 5815.171055513124
+2960
+avg return on 3 trajectories: 6164.561306764682
+2961
+avg return on 3 trajectories: 6914.717939612766
+2962
+avg return on 3 trajectories: 7026.659377858043
+2963
+avg return on 3 trajectories: 5699.299334872514
+2964
+avg return on 3 trajectories: 6978.68273302416
+2965
+avg return on 3 trajectories: 6063.436362969379
+2966
+avg return on 3 trajectories: 6945.927599287282
+2967
+avg return on 3 trajectories: 7010.131744910032
+2968
+avg return on 3 trajectories: 4961.450007387747
+2969
+avg return on 3 trajectories: 6891.359418598314
+2970
+avg return on 3 trajectories: 4759.483771183838
+2971
+avg return on 3 trajectories: 6865.454730115831
+2972
+avg return on 3 trajectories: 5228.871115467201
+2973
+avg return on 3 trajectories: 4626.304367134969
+2974
+avg return on 3 trajectories: 5801.3841417009635
+2975
+avg return on 3 trajectories: 7014.770956449211
+2976
+avg return on 3 trajectories: 6991.246009483933
+2977
+avg return on 3 trajectories: 7051.307238387565
+2978
+avg return on 3 trajectories: 6931.876271508634
+2979
+avg return on 3 trajectories: 4790.070167382558
+2980
+avg return on 3 trajectories: 6792.04530969883
+2981
+avg return on 3 trajectories: 6958.630756519735
+2982
+avg return on 3 trajectories: 7097.857317846268
+2983
+avg return on 3 trajectories: 6480.179515757908
+2984
+avg return on 3 trajectories: 6654.355565675844
+2985
+avg return on 3 trajectories: 6924.417143358539
+2986
+avg return on 3 trajectories: 5082.273828269293
+2987
+avg return on 3 trajectories: 5095.397734601672
+2988
+avg return on 3 trajectories: 4809.6522497832775
+2989
+avg return on 3 trajectories: 7016.663957888882
+2990
+avg return on 3 trajectories: 7101.838849077622
+2991
+avg return on 3 trajectories: 5932.952289811025
+2992
+avg return on 3 trajectories: 5463.694200803836
+2993
+avg return on 3 trajectories: 5761.611965000629
+2994
+avg return on 3 trajectories: 6707.348860199253
+2995
+avg return on 3 trajectories: 4356.174638723333
+2996
+avg return on 3 trajectories: 5852.475264139473
+2997
+avg return on 3 trajectories: 5604.21107104669
+2998
+avg return on 3 trajectories: 7160.519006085892
+2999
+avg return on 3 trajectories: 6027.071979102989
+3000
+avg return on 3 trajectories: 6895.894050667684
+3001
+avg return on 3 trajectories: 6917.437048287441
+3002
+avg return on 3 trajectories: 7040.597027396162
+3003
+avg return on 3 trajectories: 5207.816383134574
+3004
+avg return on 3 trajectories: 5153.995788322762
+3005
+avg return on 3 trajectories: 6542.185212268184
+3006
+avg return on 3 trajectories: 3460.224138790121
+3007
+avg return on 3 trajectories: 4223.828971511374
+3008
+avg return on 3 trajectories: 6985.503340662767
+3009
+avg return on 3 trajectories: 7045.476075903823
+3010
+avg return on 3 trajectories: 5070.494867352148
+3011
+avg return on 3 trajectories: 6970.619899449249
+3012
+avg return on 3 trajectories: 7058.292409859598
+3013
+avg return on 3 trajectories: 7048.748946032177
+3014
+avg return on 3 trajectories: 6956.899972667296
+3015
+avg return on 3 trajectories: 4849.683320991695
+3016
+avg return on 3 trajectories: 7041.1481791473925
+3017
+avg return on 3 trajectories: 2593.311590169246
+3018
+avg return on 3 trajectories: 7007.502811373522
+3019
+avg return on 3 trajectories: 7004.938814152032
+3020
+avg return on 3 trajectories: 7087.661825689177
+3021
+avg return on 3 trajectories: 7009.729020642738
+3022
+avg return on 3 trajectories: 7062.4169754981995
+3023
+avg return on 3 trajectories: 7095.417599036048
+3024
+avg return on 3 trajectories: 7095.683635142322
+3025
+avg return on 3 trajectories: 7087.118434597428
+3026
+avg return on 3 trajectories: 5616.058951826766
+3027
+avg return on 3 trajectories: 7065.240652584781
+3028
+avg return on 3 trajectories: 7043.58338434808
+3029
+avg return on 3 trajectories: 6970.160685243706
+3030
+avg return on 3 trajectories: 6827.997540640335
+3031
+avg return on 3 trajectories: 6961.609258327012
+3032
+avg return on 3 trajectories: 6960.828177649528
+3033
+avg return on 3 trajectories: 4900.254314540575
+3034
+avg return on 3 trajectories: 7145.5450787469745
+3035
+avg return on 3 trajectories: 6184.686996894578
+3036
+avg return on 3 trajectories: 7105.250040881957
+3037
+avg return on 3 trajectories: 6982.334671947795
+3038
+avg return on 3 trajectories: 5950.644529101749
+3039
+avg return on 3 trajectories: 6968.512905762841
+3040
+avg return on 3 trajectories: 7088.895568542182
+3041
+avg return on 3 trajectories: 7034.586293446521
+3042
+avg return on 3 trajectories: 7034.390051662922
+3043
+avg return on 3 trajectories: 6363.482732700805
+3044
+avg return on 3 trajectories: 6991.897036918749
+3045
+avg return on 3 trajectories: 7021.755651003371
+3046
+avg return on 3 trajectories: 4990.49654454055
+3047
+avg return on 3 trajectories: 7063.352302464346
+3048
+avg return on 3 trajectories: 5286.411904292181
+3049
+avg return on 3 trajectories: 7113.832546928276
+3050
+avg return on 3 trajectories: 7037.688347372226
+3051
+avg return on 3 trajectories: 4087.498576571156
+3052
+avg return on 3 trajectories: 6974.74823008695
+3053
+avg return on 3 trajectories: 7182.269042541583
+3054
+avg return on 3 trajectories: 6851.111025731079
+3055
+avg return on 3 trajectories: 7104.620026297557
+3056
+avg return on 3 trajectories: 4983.09921721175
+3057
+avg return on 3 trajectories: 6505.888701534753
+3058
+avg return on 3 trajectories: 6986.109421714636
+3059
+avg return on 3 trajectories: 7047.062886643999
+3060
+avg return on 3 trajectories: 7095.752556471154
+3061
+avg return on 3 trajectories: 7026.1730958173675
+3062
+avg return on 3 trajectories: 7102.490747995675
+3063
+avg return on 3 trajectories: 4967.952820006137
+3064
+avg return on 3 trajectories: 7129.9168872004375
+3065
+avg return on 3 trajectories: 6991.069530784463
+3066
+avg return on 3 trajectories: 7042.529272995113
+3067
+avg return on 3 trajectories: 7157.345761373484
+3068
+avg return on 3 trajectories: 4851.871845883783
+3069
+avg return on 3 trajectories: 6951.34941943114
+3070
+avg return on 3 trajectories: 6489.494404020409
+3071
+avg return on 3 trajectories: 5965.847929660852
+3072
+avg return on 3 trajectories: 7159.852313617244
+3073
+avg return on 3 trajectories: 7142.335003558546
+3074
+avg return on 3 trajectories: 5874.067684229463
+3075
+avg return on 3 trajectories: 7034.974716323738
+3076
+avg return on 3 trajectories: 7057.99035668249
+3077
+avg return on 3 trajectories: 7096.894161783159
+3078
+avg return on 3 trajectories: 7142.664255311091
+3079
+avg return on 3 trajectories: 7122.123731774588
+3080
+avg return on 3 trajectories: 7044.795585170388
+3081
+avg return on 3 trajectories: 6658.887445833534
+3082
+avg return on 3 trajectories: 5379.559138637657
+3083
+avg return on 3 trajectories: 7071.226079295079
+3084
+avg return on 3 trajectories: 5870.145883075893
+3085
+avg return on 3 trajectories: 6951.536431264132
+3086
+avg return on 3 trajectories: 6933.037632000943
+3087
+avg return on 3 trajectories: 3794.0272700066366
+3088
+avg return on 3 trajectories: 5425.606845763822
+3089
+avg return on 3 trajectories: 7019.8486522647245
+3090
+avg return on 3 trajectories: 7065.9415055550635
+3091
+avg return on 3 trajectories: 3838.360435495774
+3092
+avg return on 3 trajectories: 6767.183988968532
+3093
+avg return on 3 trajectories: 7047.101939827204
+3094
+avg return on 3 trajectories: 7016.419788189232
+3095
+avg return on 3 trajectories: 7137.683684982359
+3096
+avg return on 3 trajectories: 7036.330798238516
+3097
+avg return on 3 trajectories: 6983.506817299873
+3098
+avg return on 3 trajectories: 7162.524035504709
+3099
+avg return on 3 trajectories: 7052.429868213832
+3100
+avg return on 3 trajectories: 7062.172761990379
+3101
+avg return on 3 trajectories: 7160.6501067529125
+3102
+avg return on 3 trajectories: 7019.077402253945
+3103
+avg return on 3 trajectories: 7072.796474045764
+3104
+avg return on 3 trajectories: 5368.414564898859
+3105
+avg return on 3 trajectories: 3565.8500784529992
+3106
+avg return on 3 trajectories: 4541.551122125238
+3107
+avg return on 3 trajectories: 7009.823083610584
+3108
+avg return on 3 trajectories: 7085.690264451007
+3109
+avg return on 3 trajectories: 4839.740949088086
+3110
+avg return on 3 trajectories: 7014.069048862904
+3111
+avg return on 3 trajectories: 4436.811257123249
+3112
+avg return on 3 trajectories: 7082.5049654990435
+3113
+avg return on 3 trajectories: 7092.768489761899
+3114
+avg return on 3 trajectories: 4169.834404330701
+3115
+avg return on 3 trajectories: 3912.615354551623
+3116
+avg return on 3 trajectories: 3427.015063032508
+3117
+avg return on 3 trajectories: 7061.835184360544
+3118
+avg return on 3 trajectories: 6174.506498236209
+3119
+avg return on 3 trajectories: 6068.997617366414
+3120
+avg return on 3 trajectories: 2957.5226308479905
+3121
+avg return on 3 trajectories: 7100.714755674203
+3122
+avg return on 3 trajectories: 7115.1816270624595
+3123
+avg return on 3 trajectories: 6805.591775074601
+3124
+avg return on 3 trajectories: 5073.875891383737
+3125
+avg return on 3 trajectories: 7032.021811770896
+3126
+avg return on 3 trajectories: 6729.9258785918355
+3127
+avg return on 3 trajectories: 4022.5688242278993
+3128
+avg return on 3 trajectories: 4691.111269560953
+3129
+avg return on 3 trajectories: 7114.244402819623
+3130
+avg return on 3 trajectories: 7045.535992523034
+3131
+avg return on 3 trajectories: 3371.5790976596377
+3132
+avg return on 3 trajectories: 6098.583543452124
+3133
+avg return on 3 trajectories: 7107.205430970837
+3134
+avg return on 3 trajectories: 2965.356325933089
+3135
+avg return on 3 trajectories: 7036.467800100644
+3136
+avg return on 3 trajectories: 3559.979132781426
+3137
+avg return on 3 trajectories: 6999.375658200433
+3138
+avg return on 3 trajectories: 5918.35745587945
+3139
+avg return on 3 trajectories: 2531.155166770021
+3140
+avg return on 3 trajectories: 7011.057912420481
+3141
+avg return on 3 trajectories: 6939.9364829051
+3142
+avg return on 3 trajectories: 7144.663206404696
+3143
+avg return on 3 trajectories: 5832.817249956231
+3144
+avg return on 3 trajectories: 7105.337662602465
+3145
+avg return on 3 trajectories: 3025.3005108100674
+3146
+avg return on 3 trajectories: 5362.707602009177
+3147
+avg return on 3 trajectories: 6970.943807302664
+3148
+avg return on 3 trajectories: 7048.246074780822
+3149
+avg return on 3 trajectories: 7061.332758586854
+3150
+avg return on 3 trajectories: 6918.093073315918
+3151
+avg return on 3 trajectories: 3657.459563624114
+3152
+avg return on 3 trajectories: 7066.038636685659
+3153
+avg return on 3 trajectories: 7091.983851971726
+3154
+avg return on 3 trajectories: 7046.662915699184
+3155
+avg return on 3 trajectories: 6104.995901898791
+3156
+avg return on 3 trajectories: 6988.458135793607
+3157
+avg return on 3 trajectories: 6994.1038906822605
+3158
+avg return on 3 trajectories: 7102.727180914332
+3159
+avg return on 3 trajectories: 7038.305393868436
+3160
+avg return on 3 trajectories: 5751.9747857873635
+3161
+avg return on 3 trajectories: 6047.321040301274
+3162
+avg return on 3 trajectories: 3791.787549017618
+3163
+avg return on 3 trajectories: 6384.79714321966
+3164
+avg return on 3 trajectories: 7084.106980002175
+3165
+avg return on 3 trajectories: 7001.264414321631
+3166
+avg return on 3 trajectories: 6042.946735244244
+3167
+avg return on 3 trajectories: 7043.323163739095
+3168
+avg return on 3 trajectories: 7137.308541759849
+3169
+avg return on 3 trajectories: 5190.111098830724
+3170
+avg return on 3 trajectories: 5785.166793023546
+3171
+avg return on 3 trajectories: 7111.322129211078
+3172
+avg return on 3 trajectories: 7119.790312085301
+3173
+avg return on 3 trajectories: 6977.392032102992
+3174
+avg return on 3 trajectories: 5074.681541126221
+3175
+avg return on 3 trajectories: 6659.496672717233
+3176
+avg return on 3 trajectories: 7114.8376362423105
+3177
+avg return on 3 trajectories: 7128.12343140319
+3178
+avg return on 3 trajectories: 5164.452984948953
+3179
+avg return on 3 trajectories: 6410.276544126372
+3180
+avg return on 3 trajectories: 5245.487676206976
+3181
+avg return on 3 trajectories: 7114.699693061411
+3182
+avg return on 3 trajectories: 7135.288325723261
+3183
+avg return on 3 trajectories: 5810.391120365511
+3184
+avg return on 3 trajectories: 4319.640455077092
+3185
+avg return on 3 trajectories: 7026.235188008596
+3186
+avg return on 3 trajectories: 7200.898074608296
+3187
+avg return on 3 trajectories: 7047.306869771332
+3188
+avg return on 3 trajectories: 7093.041379337509
+3189
+avg return on 3 trajectories: 5202.884810569386
+3190
+avg return on 3 trajectories: 7047.5055254946155
+3191
+avg return on 3 trajectories: 7002.823077853148
+3192
+avg return on 3 trajectories: 7062.038269886126
+3193
+avg return on 3 trajectories: 5184.2191220285995
+3194
+avg return on 3 trajectories: 6971.9185820582015
+3195
+avg return on 3 trajectories: 7096.528954486673
+3196
+avg return on 3 trajectories: 4777.68448375538
+3197
+avg return on 3 trajectories: 7051.962093607833
+3198
+avg return on 3 trajectories: 7057.89249277922
+3199
+avg return on 3 trajectories: 5465.320285052371
+3200
+avg return on 3 trajectories: 5687.935639315285
+3201
+avg return on 3 trajectories: 5241.299078243086
+3202
+avg return on 3 trajectories: 6413.402751544413
+3203
+avg return on 3 trajectories: 5918.8073108520475
+3204
+avg return on 3 trajectories: 7075.369629847507
+3205
+avg return on 3 trajectories: 7071.962157464858
+3206
+avg return on 3 trajectories: 5374.292295117669
+3207
+avg return on 3 trajectories: 7243.106276584013
+3208
+avg return on 3 trajectories: 5680.269080095303
+3209
+avg return on 3 trajectories: 7090.997292790485
+3210
+avg return on 3 trajectories: 7116.608520098787
+3211
+avg return on 3 trajectories: 6166.12288234476
+3212
+avg return on 3 trajectories: 7023.065574247856
+3213
+avg return on 3 trajectories: 6098.159741550374
+3214
+avg return on 3 trajectories: 6867.3824295693385
+3215
+avg return on 3 trajectories: 6642.271577459139
+3216
+avg return on 3 trajectories: 6555.379122568294
+3217
+avg return on 3 trajectories: 5840.532898999751
+3218
+avg return on 3 trajectories: 7136.907092583676
+3219
+avg return on 3 trajectories: 7063.565532067791
+3220
+avg return on 3 trajectories: 5625.2099446821185
+3221
+avg return on 3 trajectories: 7069.6767995102955
+3222
+avg return on 3 trajectories: 7257.436746352662
+3223
+avg return on 3 trajectories: 7082.323210065563
+3224
+avg return on 3 trajectories: 7048.986202526838
+3225
+avg return on 3 trajectories: 6540.477961954971
+3226
+avg return on 3 trajectories: 7146.155315453808
+3227
+avg return on 3 trajectories: 7087.08422235772
+3228
+avg return on 3 trajectories: 4751.895642463118
+3229
+avg return on 3 trajectories: 7157.626560127984
+3230
+avg return on 3 trajectories: 6016.107178504269
+3231
+avg return on 3 trajectories: 5376.732809972018
+3232
+avg return on 3 trajectories: 7004.834330196182
+3233
+avg return on 3 trajectories: 7013.754940083872
+3234
+avg return on 3 trajectories: 5364.804028668131
+3235
+avg return on 3 trajectories: 5501.05826162671
+3236
+avg return on 3 trajectories: 7160.843304184576
+3237
+avg return on 3 trajectories: 7150.113032354663
+3238
+avg return on 3 trajectories: 7088.772545419633
+3239
+avg return on 3 trajectories: 7084.839250964423
+3240
+avg return on 3 trajectories: 5192.8949960311875
+3241
+avg return on 3 trajectories: 6465.897939390193
+3242
+avg return on 3 trajectories: 7035.848010204732
+3243
+avg return on 3 trajectories: 7014.46174591283
+3244
+avg return on 3 trajectories: 6984.276379497101
+3245
+avg return on 3 trajectories: 7018.929050835471
+3246
+avg return on 3 trajectories: 7129.2199210139615
+3247
+avg return on 3 trajectories: 7152.330454951773
+3248
+avg return on 3 trajectories: 7119.62117217357
+3249
+avg return on 3 trajectories: 7182.685125529766
+3250
+avg return on 3 trajectories: 6714.777871467173
+3251
+avg return on 3 trajectories: 7059.2392593845725
+3252
+avg return on 3 trajectories: 6218.430745353301
+3253
+avg return on 3 trajectories: 6462.022655992459
+3254
+avg return on 3 trajectories: 4383.014202988396
+3255
+avg return on 3 trajectories: 6099.654236145318
+3256
+avg return on 3 trajectories: 6246.074665353168
+3257
+avg return on 3 trajectories: 5723.538562479119
+3258
+avg return on 3 trajectories: 3285.7817605187497
+3259
+avg return on 3 trajectories: 7147.07930458958
+3260
+avg return on 3 trajectories: 6540.125942364335
+3261
+avg return on 3 trajectories: 5580.345317475498
+3262
+avg return on 3 trajectories: 5715.400018312037
+3263
+avg return on 3 trajectories: 7168.571461953223
+3264
+avg return on 3 trajectories: 6271.014523304999
+3265
+avg return on 3 trajectories: 5183.995809796576
+3266
+avg return on 3 trajectories: 7094.341478885462
+3267
+avg return on 3 trajectories: 7049.702729485929
+3268
+avg return on 3 trajectories: 6830.8285865448415
+3269
+avg return on 3 trajectories: 7172.492136627436
+3270
+avg return on 3 trajectories: 6070.291804879904
+3271
+avg return on 3 trajectories: 7137.212919759254
+3272
+avg return on 3 trajectories: 5322.018683371444
+3273
+avg return on 3 trajectories: 6989.8350498862565
+3274
+avg return on 3 trajectories: 5074.24319705988
+3275
+avg return on 3 trajectories: 6862.845798614745
+3276
+avg return on 3 trajectories: 5605.879619023763
+3277
+avg return on 3 trajectories: 6209.713149871056
+3278
+avg return on 3 trajectories: 4821.86284382067
+3279
+avg return on 3 trajectories: 7123.656542247471
+3280
+avg return on 3 trajectories: 7172.972970934895
+3281
+avg return on 3 trajectories: 5429.281480726476
+3282
+avg return on 3 trajectories: 7203.058390828432
+3283
+avg return on 3 trajectories: 6287.606884510722
+3284
+avg return on 3 trajectories: 7029.398852079874
+3285
+avg return on 3 trajectories: 7069.4328127007075
+3286
+avg return on 3 trajectories: 7106.2864703584155
+3287
+avg return on 3 trajectories: 6385.922148045618
+3288
+avg return on 3 trajectories: 6416.619177509409
+3289
+avg return on 3 trajectories: 7167.208860347669
+3290
+avg return on 3 trajectories: 7211.597860708523
+3291
+avg return on 3 trajectories: 6408.9812685898505
+3292
+avg return on 3 trajectories: 5509.465688978166
+3293
+avg return on 3 trajectories: 7142.900302144
+3294
+avg return on 3 trajectories: 3534.8196498882025
+3295
+avg return on 3 trajectories: 6523.374821093865
+3296
+avg return on 3 trajectories: 7137.253972131449
+3297
+avg return on 3 trajectories: 5678.99802600313
+3298
+avg return on 3 trajectories: 7065.396939580484
+3299
+avg return on 3 trajectories: 7237.39920450716
+3300
+avg return on 3 trajectories: 7280.953596459857
+3301
+avg return on 3 trajectories: 6348.4478355231695
+3302
+avg return on 3 trajectories: 7185.417346423802
+3303
+avg return on 3 trajectories: 7214.637492026358
+3304
+avg return on 3 trajectories: 6295.365137254121
+3305
+avg return on 3 trajectories: 6996.684081832878
+3306
+avg return on 3 trajectories: 7118.523871822283
+3307
+avg return on 3 trajectories: 7106.227080619584
+3308
+avg return on 3 trajectories: 6256.432733967279
+3309
+avg return on 3 trajectories: 6669.076242668864
+3310
+avg return on 3 trajectories: 7102.919706628348
+3311
+avg return on 3 trajectories: 7104.926662112586
+3312
+avg return on 3 trajectories: 7092.36944175791
+3313
+avg return on 3 trajectories: 7162.740596091996
+3314
+avg return on 3 trajectories: 5166.943358118956
+3315
+avg return on 3 trajectories: 4907.1403966175085
+3316
+avg return on 3 trajectories: 7120.416010531131
+3317
+avg return on 3 trajectories: 5886.769179632577
+3318
+avg return on 3 trajectories: 7192.557686920122
+3319
+avg return on 3 trajectories: 7050.211244123678
+3320
+avg return on 3 trajectories: 7092.7386774324505
+3321
+avg return on 3 trajectories: 7089.3492860465
+3322
+avg return on 3 trajectories: 4984.067749214669
+3323
+avg return on 3 trajectories: 7286.332187953095
+3324
+avg return on 3 trajectories: 7162.713328568886
+3325
+avg return on 3 trajectories: 7150.527503247063
+3326
+avg return on 3 trajectories: 4258.501089445005
+3327
+avg return on 3 trajectories: 5582.4745973255485
+3328
+avg return on 3 trajectories: 7002.237000182271
+3329
+avg return on 3 trajectories: 5305.069006744772
+3330
+avg return on 3 trajectories: 7128.651424250255
+3331
+avg return on 3 trajectories: 6336.434074529757
+3332
+avg return on 3 trajectories: 4718.479266068588
+3333
+avg return on 3 trajectories: 6551.875478092581
+3334
+avg return on 3 trajectories: 7142.2614598659175
+3335
+avg return on 3 trajectories: 7150.96355235825
+3336
+avg return on 3 trajectories: 6999.100692041218
+3337
+avg return on 3 trajectories: 5956.715104998711
+3338
+avg return on 3 trajectories: 7125.8251602525515
+3339
+avg return on 3 trajectories: 7129.279332229246
+3340
+avg return on 3 trajectories: 6423.185204101105
+3341
+avg return on 3 trajectories: 5103.5426733319955
+3342
+avg return on 3 trajectories: 7181.109806802124
+3343
+avg return on 3 trajectories: 7201.338424195846
+3344
+avg return on 3 trajectories: 7114.872955974191
+3345
+avg return on 3 trajectories: 7110.354007822772
+3346
+avg return on 3 trajectories: 7087.939404686292
+3347
+avg return on 3 trajectories: 6485.3693352813525
+3348
+avg return on 3 trajectories: 7101.835237351556
+3349
+avg return on 3 trajectories: 6139.758187881361
+3350
+avg return on 3 trajectories: 7219.338972338785
+3351
+avg return on 3 trajectories: 7199.364271897823
+3352
+avg return on 3 trajectories: 6541.654799776773
+3353
+avg return on 3 trajectories: 7070.7043950892985
+3354
+avg return on 3 trajectories: 7150.244769390672
+3355
+avg return on 3 trajectories: 5509.163168811549
+3356
+avg return on 3 trajectories: 6377.245369012157
+3357
+avg return on 3 trajectories: 7116.18621187533
+3358
+avg return on 3 trajectories: 7100.689441824953
+3359
+avg return on 3 trajectories: 7239.303540997207
+3360
+avg return on 3 trajectories: 7241.1044347720845
+3361
+avg return on 3 trajectories: 4888.537595345329
+3362
+avg return on 3 trajectories: 7216.828098473449
+3363
+avg return on 3 trajectories: 7160.288559312622
+3364
+avg return on 3 trajectories: 6940.404880656551
+3365
+avg return on 3 trajectories: 7165.7561537275715
+3366
+avg return on 3 trajectories: 7056.785294674337
+3367
+avg return on 3 trajectories: 7136.323200754821
+3368
+avg return on 3 trajectories: 7118.442209172994
+3369
+avg return on 3 trajectories: 7248.088547819604
+3370
+avg return on 3 trajectories: 6313.18742173786
+3371
+avg return on 3 trajectories: 7190.075083060811
+3372
+avg return on 3 trajectories: 7220.211067923655
+3373
+avg return on 3 trajectories: 4053.3889555968344
+3374
+avg return on 3 trajectories: 7238.749114227791
+3375
+avg return on 3 trajectories: 7178.211517289281
+3376
+avg return on 3 trajectories: 7147.678257447978
+3377
+avg return on 3 trajectories: 4190.112943671644
+3378
+avg return on 3 trajectories: 7068.450396132966
+3379
+avg return on 3 trajectories: 5397.068033698946
+3380
+avg return on 3 trajectories: 7075.79220817859
+3381
+avg return on 3 trajectories: 7132.143346004188
+3382
+avg return on 3 trajectories: 7184.182942437629
+3383
+avg return on 3 trajectories: 7193.111516305556
+3384
+avg return on 3 trajectories: 7085.728932595502
+3385
+avg return on 3 trajectories: 5930.051157088329
+3386
+avg return on 3 trajectories: 7045.9797933201
+3387
+avg return on 3 trajectories: 6083.98055420459
+3388
+avg return on 3 trajectories: 6463.213641747832
+3389
+avg return on 3 trajectories: 5996.335215386003
+3390
+avg return on 3 trajectories: 5265.50012943397
+3391
+avg return on 3 trajectories: 3162.344584289938
+3392
+avg return on 3 trajectories: 7133.624430234234
+3393
+avg return on 3 trajectories: 6690.725307645975
+3394
+avg return on 3 trajectories: 7210.117062711467
+3395
+avg return on 3 trajectories: 6790.114248628418
+3396
+avg return on 3 trajectories: 7125.203788094223
+3397
+avg return on 3 trajectories: 7126.555130358785
+3398
+avg return on 3 trajectories: 7185.707398248215
+3399
+avg return on 3 trajectories: 7153.217828523368
+3400
+avg return on 3 trajectories: 7047.727269361417
+3401
+avg return on 3 trajectories: 7092.776159228136
+3402
+avg return on 3 trajectories: 6657.903128424038
+3403
+avg return on 3 trajectories: 5791.87665946285
+3404
+avg return on 3 trajectories: 6395.319620662679
+3405
+avg return on 3 trajectories: 7096.92080776145
+3406
+avg return on 3 trajectories: 7145.348816134036
+3407
+avg return on 3 trajectories: 5821.755112520109
+3408
+avg return on 3 trajectories: 7090.8103637297945
+3409
+avg return on 3 trajectories: 7215.234955509503
+3410
+avg return on 3 trajectories: 7063.151019115001
+3411
+avg return on 3 trajectories: 7203.75085831061
+3412
+avg return on 3 trajectories: 7244.040257060279
+3413
+avg return on 3 trajectories: 7056.507821327697
+3414
+avg return on 3 trajectories: 7185.513016736756
+3415
+avg return on 3 trajectories: 7191.788223968198
+3416
+avg return on 3 trajectories: 7080.608979056279
+3417
+avg return on 3 trajectories: 7118.689813682188
+3418
+avg return on 3 trajectories: 3998.1967510481677
+3419
+avg return on 3 trajectories: 5178.140365753323
+3420
+avg return on 3 trajectories: 5978.653693379213
+3421
+avg return on 3 trajectories: 7112.468928710868
+3422
+avg return on 3 trajectories: 7228.73080510522
+3423
+avg return on 3 trajectories: 5753.821244315554
+3424
+avg return on 3 trajectories: 7202.602391904841
+3425
+avg return on 3 trajectories: 7224.337119416644
+3426
+avg return on 3 trajectories: 6920.342288528879
+3427
+avg return on 3 trajectories: 7117.714092617233
+3428
+avg return on 3 trajectories: 7302.920385627697
+3429
+avg return on 3 trajectories: 7153.046313263476
+3430
+avg return on 3 trajectories: 7200.798444533099
+3431
+avg return on 3 trajectories: 4857.8466614075005
+3432
+avg return on 3 trajectories: 7066.201812534283
+3433
+avg return on 3 trajectories: 6686.768243577331
+3434
+avg return on 3 trajectories: 7260.74361626928
+3435
+avg return on 3 trajectories: 6782.527286100046
+3436
+avg return on 3 trajectories: 5267.144433931758
+3437
+avg return on 3 trajectories: 7175.972777077307
+3438
+avg return on 3 trajectories: 7193.572419798623
+3439
+avg return on 3 trajectories: 4795.755800722788
+3440
+avg return on 3 trajectories: 7179.291359655559
+3441
+avg return on 3 trajectories: 7200.5001034153
+3442
+avg return on 3 trajectories: 7088.287362615268
+3443
+avg return on 3 trajectories: 5950.421579195808
+3444
+avg return on 3 trajectories: 7120.736308290313
+3445
+avg return on 3 trajectories: 7238.707139100879
+3446
+avg return on 3 trajectories: 4764.975998306026
+3447
+avg return on 3 trajectories: 6538.628570196529
+3448
+avg return on 3 trajectories: 7256.9906794888275
+3449
+avg return on 3 trajectories: 7034.348691120744
+3450
+avg return on 3 trajectories: 7227.8236051475005
+3451
+avg return on 3 trajectories: 5834.940393118464
+3452
+avg return on 3 trajectories: 7193.985477641225
+3453
+avg return on 3 trajectories: 6804.21398743242
+3454
+avg return on 3 trajectories: 6811.554811274012
+3455
+avg return on 3 trajectories: 6236.516498599201
+3456
+avg return on 3 trajectories: 7236.267336864024
+3457
+avg return on 3 trajectories: 7047.9434166401625
+3458
+avg return on 3 trajectories: 6322.862256611387
+3459
+avg return on 3 trajectories: 7206.388729244471
+3460
+avg return on 3 trajectories: 7199.894560504705
+3461
+avg return on 3 trajectories: 6321.09688648954
+3462
+avg return on 3 trajectories: 7276.826936714351
+3463
+avg return on 3 trajectories: 4914.065942284961
+3464
+avg return on 3 trajectories: 7251.076266288757
+3465
+avg return on 3 trajectories: 6126.155440259725
+3466
+avg return on 3 trajectories: 7240.33621365577
+3467
+avg return on 3 trajectories: 6824.679100386798
+3468
+avg return on 3 trajectories: 6606.03143316259
+3469
+avg return on 3 trajectories: 6328.936114224295
+3470
+avg return on 3 trajectories: 7220.576066369812
+3471
+avg return on 3 trajectories: 5544.295288485785
+3472
+avg return on 3 trajectories: 7257.274678101142
+3473
+avg return on 3 trajectories: 7127.048353135586
+3474
+avg return on 3 trajectories: 7080.024593022962
+3475
+avg return on 3 trajectories: 7149.733519308269
+3476
+avg return on 3 trajectories: 6450.303116825719
+3477
+avg return on 3 trajectories: 3922.4168818276376
+3478
+avg return on 3 trajectories: 7159.916285152237
+3479
+avg return on 3 trajectories: 7140.052221695582
+3480
+avg return on 3 trajectories: 3757.9707479166486
+3481
+avg return on 3 trajectories: 5344.932913390298
+3482
+avg return on 3 trajectories: 7087.294436236222
+3483
+avg return on 3 trajectories: 7229.918910888334
+3484
+avg return on 3 trajectories: 7255.519598349929
+3485
+avg return on 3 trajectories: 7171.740373710792
+3486
+avg return on 3 trajectories: 7107.916615353897
+3487
+avg return on 3 trajectories: 4181.9158422326045
+3488
+avg return on 3 trajectories: 5613.328162497531
+3489
+avg return on 3 trajectories: 5487.135741566618
+3490
+avg return on 3 trajectories: 7293.2504252617555
+3491
+avg return on 3 trajectories: 7402.742664337158
+3492
+avg return on 3 trajectories: 7262.762516391774
+3493
+avg return on 3 trajectories: 6806.174380337198
+3494
+avg return on 3 trajectories: 7188.220244204004
+3495
+avg return on 3 trajectories: 5660.18896561116
+3496
+avg return on 3 trajectories: 7228.662117109944
+3497
+avg return on 3 trajectories: 4838.65339962393
+3498
+avg return on 3 trajectories: 7214.81020244956
+3499
+avg return on 3 trajectories: 6566.457076067726
+3500
+avg return on 3 trajectories: 6207.2779308284325
+3501
+avg return on 3 trajectories: 6882.921640938769
+3502
+avg return on 3 trajectories: 7153.543020486832
+3503
+avg return on 3 trajectories: 7251.590976392229
+3504
+avg return on 3 trajectories: 7140.70753091077
+3505
+avg return on 3 trajectories: 6962.857503980398
+3506
+avg return on 3 trajectories: 4845.879556633532
+3507
+avg return on 3 trajectories: 7267.946922630072
+3508
+avg return on 3 trajectories: 5328.65377266705
+3509
+avg return on 3 trajectories: 5948.691857740283
+3510
+avg return on 3 trajectories: 7157.18286293745
+3511
+avg return on 3 trajectories: 7256.4473632151885
+3512
+avg return on 3 trajectories: 7269.618405068914
+3513
+avg return on 3 trajectories: 4995.207982731362
+3514
+avg return on 3 trajectories: 7319.5265344878035
+3515
+avg return on 3 trajectories: 4910.930901353558
+3516
+avg return on 3 trajectories: 7097.180577792227
+3517
+avg return on 3 trajectories: 6747.882965589563
+3518
+avg return on 3 trajectories: 7259.08121838669
+3519
+avg return on 3 trajectories: 6553.845573142171
+3520
+avg return on 3 trajectories: 6189.562737509608
+3521
+avg return on 3 trajectories: 7163.375907974939
+3522
+avg return on 3 trajectories: 6282.219657741487
+3523
+avg return on 3 trajectories: 7268.908427447081
+3524
+avg return on 3 trajectories: 4721.159112416208
+3525
+avg return on 3 trajectories: 7117.158840402961
+3526
+avg return on 3 trajectories: 6367.612889968946
+3527
+avg return on 3 trajectories: 7124.503964068989
+3528
+avg return on 3 trajectories: 7155.216995455325
+3529
+avg return on 3 trajectories: 7160.807582211991
+3530
+avg return on 3 trajectories: 7347.279874918361
+3531
+avg return on 3 trajectories: 5851.399416373421
+3532
+avg return on 3 trajectories: 7250.04406245922
+3533
+avg return on 3 trajectories: 5515.528451883544
+3534
+avg return on 3 trajectories: 5512.544359286626
+3535
+avg return on 3 trajectories: 7131.950827584912
+3536
+avg return on 3 trajectories: 7081.642450944831
+3537
+avg return on 3 trajectories: 6376.391645764311
+3538
+avg return on 3 trajectories: 7000.50916856698
+3539
+avg return on 3 trajectories: 7298.365294580658
+3540
+avg return on 3 trajectories: 5160.708780138288
+3541
+avg return on 3 trajectories: 7074.585637389372
+3542
+avg return on 3 trajectories: 5382.763848491013
+3543
+avg return on 3 trajectories: 5363.475812443222
+3544
+avg return on 3 trajectories: 7235.233419629435
+3545
+avg return on 3 trajectories: 7270.68365367502
+3546
+avg return on 3 trajectories: 7219.656409410139
+3547
+avg return on 3 trajectories: 7146.55475307256
+3548
+avg return on 3 trajectories: 7071.36083387211
+3549
+avg return on 3 trajectories: 7087.378534343094
+3550
+avg return on 3 trajectories: 7216.58326785018
+3551
+avg return on 3 trajectories: 7264.4356632344425
+3552
+avg return on 3 trajectories: 7137.764470907549
+3553
+avg return on 3 trajectories: 7332.0507511558635
+3554
+avg return on 3 trajectories: 7121.87850999708
+3555
+avg return on 3 trajectories: 7202.026050460835
+3556
+avg return on 3 trajectories: 6442.794364087284
+3557
+avg return on 3 trajectories: 7195.208087241898
+3558
+avg return on 3 trajectories: 6718.809514200315
+3559
+avg return on 3 trajectories: 7234.222728013992
+3560
+avg return on 3 trajectories: 7209.851511682074
+3561
+avg return on 3 trajectories: 5820.591543490688
+3562
+avg return on 3 trajectories: 7049.119615375996
+3563
+avg return on 3 trajectories: 7171.793558383982
+3564
+avg return on 3 trajectories: 7157.312638543546
+3565
+avg return on 3 trajectories: 7127.891267776489
+3566
+avg return on 3 trajectories: 5141.562843109171
+3567
+avg return on 3 trajectories: 5895.422466705243
+3568
+avg return on 3 trajectories: 5197.732806816697
+3569
+avg return on 3 trajectories: 4902.785510619481
+3570
+avg return on 3 trajectories: 7050.137741222978
+3571
+avg return on 3 trajectories: 7086.405277038614
+3572
+avg return on 3 trajectories: 6980.179297077159
+3573
+avg return on 3 trajectories: 5891.249955072999
+3574
+avg return on 3 trajectories: 7146.950026604037
+3575
+avg return on 3 trajectories: 7126.186058528721
+3576
+avg return on 3 trajectories: 5912.6340310101705
+3577
+avg return on 3 trajectories: 3298.113898962736
+3578
+avg return on 3 trajectories: 6748.293079204857
+3579
+avg return on 3 trajectories: 7103.877589829266
+3580
+avg return on 3 trajectories: 5368.593679152429
+3581
+avg return on 3 trajectories: 4447.117018826306
+3582
+avg return on 3 trajectories: 6074.66427135095
+3583
+avg return on 3 trajectories: 7178.491154422362
+3584
+avg return on 3 trajectories: 7095.612824584047
+3585
+avg return on 3 trajectories: 6513.3357614427805
+3586
+avg return on 3 trajectories: 6296.512458205223
+3587
+avg return on 3 trajectories: 4896.544913110633
+3588
+avg return on 3 trajectories: 6118.770297641556
+3589
+avg return on 3 trajectories: 7207.6234180604415
+3590
+avg return on 3 trajectories: 6380.729038370152
+3591
+avg return on 3 trajectories: 5198.320618496587
+3592
+avg return on 3 trajectories: 7139.150026614468
+3593
+avg return on 3 trajectories: 6297.144973042344
+3594
+avg return on 3 trajectories: 7239.643824043374
+3595
+avg return on 3 trajectories: 5274.315305906348
+3596
+avg return on 3 trajectories: 5578.838675220807
+3597
+avg return on 3 trajectories: 4688.992869543533
+3598
+avg return on 3 trajectories: 5997.063321106136
+3599
+avg return on 3 trajectories: 7137.2217518563075
+3600
+avg return on 3 trajectories: 7191.30156677713
+3601
+avg return on 3 trajectories: 5337.7950323273735
+3602
+avg return on 3 trajectories: 7186.568586491048
+3603
+avg return on 3 trajectories: 7201.525266597669
+3604
+avg return on 3 trajectories: 5584.725797059636
+3605
+avg return on 3 trajectories: 7198.442589730024
+3606
+avg return on 3 trajectories: 7174.681734621525
+3607
+avg return on 3 trajectories: 7180.001530977587
+3608
+avg return on 3 trajectories: 7315.8379701475305
+3609
+avg return on 3 trajectories: 6706.910313241184
+3610
+avg return on 3 trajectories: 7115.924276659886
+3611
+avg return on 3 trajectories: 6404.533191529413
+3612
+avg return on 3 trajectories: 4932.0876557827
+3613
+avg return on 3 trajectories: 4896.525875722368
+3614
+avg return on 3 trajectories: 4876.074928293626
+3615
+avg return on 3 trajectories: 6477.838807749252
+3616
+avg return on 3 trajectories: 7282.189481208722
+3617
+avg return on 3 trajectories: 7109.773698836565
+3618
+avg return on 3 trajectories: 7269.914146319032
+3619
+avg return on 3 trajectories: 6957.585290404658
+3620
+avg return on 3 trajectories: 3431.3031270628176
+3621
+avg return on 3 trajectories: 7172.420569365223
+3622
+avg return on 3 trajectories: 7105.227388430077
+3623
+avg return on 3 trajectories: 7229.849532256524
+3624
+avg return on 3 trajectories: 7062.223460944991
+3625
+avg return on 3 trajectories: 7079.776321013768
+3626
+avg return on 3 trajectories: 6572.252108568947
+3627
+avg return on 3 trajectories: 5488.320378062625
+3628
+avg return on 3 trajectories: 7112.781067162752
+3629
+avg return on 3 trajectories: 5542.076148405671
+3630
+avg return on 3 trajectories: 7238.103038549423
+3631
+avg return on 3 trajectories: 5531.583199496071
+3632
+avg return on 3 trajectories: 7159.678951715429
+3633
+avg return on 3 trajectories: 7369.372207437952
+3634
+avg return on 3 trajectories: 5557.303020027776
+3635
+avg return on 3 trajectories: 7257.153728524844
+3636
+avg return on 3 trajectories: 7274.583722432454
+3637
+avg return on 3 trajectories: 4836.495939900477
+3638
+avg return on 3 trajectories: 7227.411885455251
+3639
+avg return on 3 trajectories: 7290.967066131532
+3640
+avg return on 3 trajectories: 5869.060951054096
+3641
+avg return on 3 trajectories: 6885.891418380042
+3642
+avg return on 3 trajectories: 4827.785573293765
+3643
+avg return on 3 trajectories: 7249.5027029116945
+3644
+avg return on 3 trajectories: 7248.144755517443
+3645
+avg return on 3 trajectories: 4569.255240187049
+3646
+avg return on 3 trajectories: 7335.88153467824
+3647
+avg return on 3 trajectories: 6794.317043753962
+3648
+avg return on 3 trajectories: 7161.558131915827
+3649
+avg return on 3 trajectories: 7246.405422521134
+3650
+avg return on 3 trajectories: 6287.507946925859
+3651
+avg return on 3 trajectories: 6641.56405202051
+3652
+avg return on 3 trajectories: 7228.374373892943
+3653
+avg return on 3 trajectories: 7207.13056923449
+3654
+avg return on 3 trajectories: 6198.228680498277
+3655
+avg return on 3 trajectories: 6327.328105372687
+3656
+avg return on 3 trajectories: 6420.861978337169
+3657
+avg return on 3 trajectories: 7303.385993671914
+3658
+avg return on 3 trajectories: 6201.651730425656
+3659
+avg return on 3 trajectories: 6040.018283148606
+3660
+avg return on 3 trajectories: 6695.6966199924545
+3661
+avg return on 3 trajectories: 4923.146254954238
+3662
+avg return on 3 trajectories: 7108.261217020452
+3663
+avg return on 3 trajectories: 7296.181351361175
+3664
+avg return on 3 trajectories: 7269.2533621614175
+3665
+avg return on 3 trajectories: 7198.435779099663
+3666
+avg return on 3 trajectories: 7264.684901768963
+3667
+avg return on 3 trajectories: 5960.251254285376
+3668
+avg return on 3 trajectories: 7208.979176228245
+3669
+avg return on 3 trajectories: 7328.256288617849
+3670
+avg return on 3 trajectories: 4151.254496884086
+3671
+avg return on 3 trajectories: 6608.148496111234
+3672
+avg return on 3 trajectories: 5213.659115071098
+3673
+avg return on 3 trajectories: 6511.86754468906
+3674
+avg return on 3 trajectories: 7176.030993665258
+3675
+avg return on 3 trajectories: 7234.525096798937
+3676
+avg return on 3 trajectories: 7089.313805371523
+3677
+avg return on 3 trajectories: 7225.290645385782
+3678
+avg return on 3 trajectories: 7221.645667503278
+3679
+avg return on 3 trajectories: 7180.335352088015
+3680
+avg return on 3 trajectories: 7176.391447191437
+3681
+avg return on 3 trajectories: 5186.871021218598
+3682
+avg return on 3 trajectories: 7299.068541069825
+3683
+avg return on 3 trajectories: 7390.687401468555
+3684
+avg return on 3 trajectories: 7325.6153928637505
+3685
+avg return on 3 trajectories: 7241.351213142276
+3686
+avg return on 3 trajectories: 7179.531680941582
+3687
+avg return on 3 trajectories: 7272.340652053555
+3688
+avg return on 3 trajectories: 6588.836347863078
+3689
+avg return on 3 trajectories: 5480.62067553401
+3690
+avg return on 3 trajectories: 6474.858887260159
+3691
+avg return on 3 trajectories: 7303.800975595911
+3692
+avg return on 3 trajectories: 7197.922051543991
+3693
+avg return on 3 trajectories: 4937.019033893943
+3694
+avg return on 3 trajectories: 7259.811399916808
+3695
+avg return on 3 trajectories: 5857.702654873331
+3696
+avg return on 3 trajectories: 4920.096539845069
+3697
+avg return on 3 trajectories: 7329.333758324385
+3698
+avg return on 3 trajectories: 4814.828670586149
+3699
+avg return on 3 trajectories: 7222.44164847831
+3700
+avg return on 3 trajectories: 7107.591003278892
+3701
+avg return on 3 trajectories: 7300.516119882464
+3702
+avg return on 3 trajectories: 4658.822354124238
+3703
+avg return on 3 trajectories: 5120.528724248211
+3704
+avg return on 3 trajectories: 7406.11172858874
+3705
+avg return on 3 trajectories: 7244.996255412698
+3706
+avg return on 3 trajectories: 6258.6111002117395
+3707
+avg return on 3 trajectories: 7222.282730186979
+3708
+avg return on 3 trajectories: 6060.229993676146
+3709
+avg return on 3 trajectories: 7017.376593276858
+3710
+avg return on 3 trajectories: 7202.53169854482
+3711
+avg return on 3 trajectories: 5803.360584264
+3712
+avg return on 3 trajectories: 7347.993440772097
+3713
+avg return on 3 trajectories: 7225.627495457728
+3714
+avg return on 3 trajectories: 7314.157200122873
+3715
+avg return on 3 trajectories: 7276.745806753635
+3716
+avg return on 3 trajectories: 7298.109479561448
+3717
+avg return on 3 trajectories: 7151.567312126358
+3718
+avg return on 3 trajectories: 7178.256984641154
+3719
+avg return on 3 trajectories: 7314.019296556711
+3720
+avg return on 3 trajectories: 7251.3439967781305
+3721
+avg return on 3 trajectories: 7309.844404891133
+3722
+avg return on 3 trajectories: 6511.507604996364
+3723
+avg return on 3 trajectories: 7266.912831599514
+3724
+avg return on 3 trajectories: 7145.650749593973
+3725
+avg return on 3 trajectories: 5980.55229439338
+3726
+avg return on 3 trajectories: 5050.181548068921
+3727
+avg return on 3 trajectories: 6182.1799061050015
+3728
+avg return on 3 trajectories: 7259.363716011246
+3729
+avg return on 3 trajectories: 7219.9570043633385
+3730
+avg return on 3 trajectories: 7142.093537966411
+3731
+avg return on 3 trajectories: 5334.683860222499
+3732
+avg return on 3 trajectories: 7180.031342888872
+3733
+avg return on 3 trajectories: 7046.058226252596
+3734
+avg return on 3 trajectories: 4859.96029440562
+3735
+avg return on 3 trajectories: 7176.842889090379
+3736
+avg return on 3 trajectories: 7331.496574585636
+3737
+avg return on 3 trajectories: 7185.72411519289
+3738
+avg return on 3 trajectories: 7314.840408608317
+3739
+avg return on 3 trajectories: 7364.341012577216
+3740
+avg return on 3 trajectories: 7261.558303053181
+3741
+avg return on 3 trajectories: 6017.6668242489295
+3742
+avg return on 3 trajectories: 7314.695277735591
+3743
+avg return on 3 trajectories: 5453.596928777794
+3744
+avg return on 3 trajectories: 5442.298846135537
+3745
+avg return on 3 trajectories: 7270.793486093481
+3746
+avg return on 3 trajectories: 5928.600484639406
+3747
+avg return on 3 trajectories: 7356.770247628291
+3748
+avg return on 3 trajectories: 7220.962875659267
+3749
+avg return on 3 trajectories: 7280.509601424138
+3750
+avg return on 3 trajectories: 5741.387761386111
+3751
+avg return on 3 trajectories: 5757.394569750254
+3752
+avg return on 3 trajectories: 3521.779615327716
+3753
+avg return on 3 trajectories: 7184.6107187867165
+3754
+avg return on 3 trajectories: 2816.184940710664
+3755
+avg return on 3 trajectories: 7316.259179155032
+3756
+avg return on 3 trajectories: 4825.467033411066
+3757
+avg return on 3 trajectories: 4840.435145046252
+3758
+avg return on 3 trajectories: 5928.428220341603
+3759
+avg return on 3 trajectories: 4637.426718349258
+3760
+avg return on 3 trajectories: 5105.44801209867
+3761
+avg return on 3 trajectories: 6093.4013339579105
+3762
+avg return on 3 trajectories: 7338.466150547068
+3763
+avg return on 3 trajectories: 7369.391677801807
+3764
+avg return on 3 trajectories: 6823.670361638069
+3765
+avg return on 3 trajectories: 5599.264400944114
+3766
+avg return on 3 trajectories: 5022.596945802371
+3767
+avg return on 3 trajectories: 6108.517670080066
+3768
+avg return on 3 trajectories: 7306.428014680743
+3769
+avg return on 3 trajectories: 3646.051919748386
+3770
+avg return on 3 trajectories: 5433.206674779455
+3771
+avg return on 3 trajectories: 7271.748425895969
+3772
+avg return on 3 trajectories: 7277.182685007651
+3773
+avg return on 3 trajectories: 7221.6780756264925
+3774
+avg return on 3 trajectories: 7320.950618540247
+3775
+avg return on 3 trajectories: 7311.584169665973
+3776
+avg return on 3 trajectories: 7293.04931025207
+3777
+avg return on 3 trajectories: 7301.09573888282
+3778
+avg return on 3 trajectories: 5910.326786635444
+3779
+avg return on 3 trajectories: 7302.8138961941
+3780
+avg return on 3 trajectories: 4914.496143634121
+3781
+avg return on 3 trajectories: 5410.397842849295
+3782
+avg return on 3 trajectories: 7282.227440019448
+3783
+avg return on 3 trajectories: 7288.4059592187405
+3784
+avg return on 3 trajectories: 7220.982259899378
+3785
+avg return on 3 trajectories: 6394.004385227959
+3786
+avg return on 3 trajectories: 7216.430346404512
+3787
+avg return on 3 trajectories: 7344.0150489707785
+3788
+avg return on 3 trajectories: 7238.8067576140165
+3789
+avg return on 3 trajectories: 7191.363986387849
+3790
+avg return on 3 trajectories: 6457.776301617424
+3791
+avg return on 3 trajectories: 7322.024898832043
+3792
+avg return on 3 trajectories: 7295.5678165555
+3793
+avg return on 3 trajectories: 5763.411023957655
+3794
+avg return on 3 trajectories: 5266.648308421175
+3795
+avg return on 3 trajectories: 7303.620874722798
+3796
+avg return on 3 trajectories: 5997.28980651133
+3797
+avg return on 3 trajectories: 7306.556016450127
+3798
+avg return on 3 trajectories: 5662.978467623393
+3799
+avg return on 3 trajectories: 7275.20822588106
+3800
+avg return on 3 trajectories: 7156.830337305863
+3801
+avg return on 3 trajectories: 7160.477815488975
+3802
+avg return on 3 trajectories: 7326.394430105885
+3803
+avg return on 3 trajectories: 5890.220270513247
+3804
+avg return on 3 trajectories: 5441.273329849045
+3805
+avg return on 3 trajectories: 7333.394718120496
+3806
+avg return on 3 trajectories: 7284.4235156526165
+3807
+avg return on 3 trajectories: 7118.466901451349
+3808
+avg return on 3 trajectories: 5359.705608933233
+3809
+avg return on 3 trajectories: 5585.676125476758
+3810
+avg return on 3 trajectories: 7257.306259175141
+3811
+avg return on 3 trajectories: 5755.007174132392
+3812
+avg return on 3 trajectories: 5622.961959329434
+3813
+avg return on 3 trajectories: 7332.703101828694
+3814
+avg return on 3 trajectories: 6864.287952899933
+3815
+avg return on 3 trajectories: 4914.9992013822
+3816
+avg return on 3 trajectories: 7334.794310376048
+3817
+avg return on 3 trajectories: 4575.44409485658
+3818
+avg return on 3 trajectories: 7303.791641240318
+3819
+avg return on 3 trajectories: 7353.61903433005
+3820
+avg return on 3 trajectories: 7275.7682689478
+3821
+avg return on 3 trajectories: 7209.971055502693
+3822
+avg return on 3 trajectories: 7167.606572573383
+3823
+avg return on 3 trajectories: 7356.8602654834585
+3824
+avg return on 3 trajectories: 7371.284924954176
+3825
+avg return on 3 trajectories: 7329.156210795045
+3826
+avg return on 3 trajectories: 5817.507020781438
+3827
+avg return on 3 trajectories: 4163.31106016878
+3828
+avg return on 3 trajectories: 7243.705133805673
+3829
+avg return on 3 trajectories: 4928.941017190616
+3830
+avg return on 3 trajectories: 5445.134872128566
+3831
+avg return on 3 trajectories: 7259.713550095757
+3832
+avg return on 3 trajectories: 7329.712785209219
+3833
+avg return on 3 trajectories: 6022.850360020995
+3834
+avg return on 3 trajectories: 7150.354436899225
+3835
+avg return on 3 trajectories: 5564.896589607
+3836
+avg return on 3 trajectories: 7236.0293944478035
+3837
+avg return on 3 trajectories: 4873.788031667471
+3838
+avg return on 3 trajectories: 4873.138728022575
+3839
+avg return on 3 trajectories: 4918.743485318187
+3840
+avg return on 3 trajectories: 7205.170320952932
+3841
+avg return on 3 trajectories: 7329.157220751047
+3842
+avg return on 3 trajectories: 5776.300540735324
+3843
+avg return on 3 trajectories: 4829.3247994532185
+3844
+avg return on 3 trajectories: 7325.96979988118
+3845
+avg return on 3 trajectories: 6405.716302374999
+3846
+avg return on 3 trajectories: 5995.787368466456
+3847
+avg return on 3 trajectories: 5760.343987752994
+3848
+avg return on 3 trajectories: 7391.238481670618
+3849
+avg return on 3 trajectories: 5558.079814270604
+3850
+avg return on 3 trajectories: 7347.500036463141
+3851
+avg return on 3 trajectories: 7112.382308339079
+3852
+avg return on 3 trajectories: 7222.733830978473
+3853
+avg return on 3 trajectories: 5551.618800068895
+3854
+avg return on 3 trajectories: 6006.7876860623555
+3855
+avg return on 3 trajectories: 7259.8077793171005
+3856
+avg return on 3 trajectories: 7376.343851238489
+3857
+avg return on 3 trajectories: 4880.370857775211
+3858
+avg return on 3 trajectories: 5573.419380600254
+3859
+avg return on 3 trajectories: 7255.915892059605
+3860
+avg return on 3 trajectories: 7291.740153799455
+3861
+avg return on 3 trajectories: 7023.391970947385
+3862
+avg return on 3 trajectories: 5943.319786692659
+3863
+avg return on 3 trajectories: 7286.528506596883
+3864
+avg return on 3 trajectories: 6950.654305179293
+3865
+avg return on 3 trajectories: 5435.98483364284
+3866
+avg return on 3 trajectories: 7361.797426457207
+3867
+avg return on 3 trajectories: 3980.563712373376
+3868
+avg return on 3 trajectories: 7319.740529542168
+3869
+avg return on 3 trajectories: 7386.150773753722
+3870
+avg return on 3 trajectories: 7298.211300844948
+3871
+avg return on 3 trajectories: 6977.353048344453
+3872
+avg return on 3 trajectories: 7333.225793262322
+3873
+avg return on 3 trajectories: 5247.559291613444
+3874
+avg return on 3 trajectories: 6218.2500117868185
+3875
+avg return on 3 trajectories: 5767.271086992696
+3876
+avg return on 3 trajectories: 6611.366802008745
+3877
+avg return on 3 trajectories: 7314.832206254204
+3878
+avg return on 3 trajectories: 7255.770019675295
+3879
+avg return on 3 trajectories: 7280.230788538854
+3880
+avg return on 3 trajectories: 7335.656595836083
+3881
+avg return on 3 trajectories: 5343.0135923177
+3882
+avg return on 3 trajectories: 6512.773367285728
+3883
+avg return on 3 trajectories: 5949.53802942733
+3884
+avg return on 3 trajectories: 2979.6499954859414
+3885
+avg return on 3 trajectories: 7249.741662447651
+3886
+avg return on 3 trajectories: 7238.808905606468
+3887
+avg return on 3 trajectories: 7272.736036424835
+3888
+avg return on 3 trajectories: 6820.016109988093
+3889
+avg return on 3 trajectories: 6248.791791553299
+3890
+avg return on 3 trajectories: 7403.266407902042
+3891
+avg return on 3 trajectories: 6979.597746522476
+3892
+avg return on 3 trajectories: 4767.262498380461
+3893
+avg return on 3 trajectories: 6856.509902134538
+3894
+avg return on 3 trajectories: 7299.8307210356
+3895
+avg return on 3 trajectories: 7275.155800168713
+3896
+avg return on 3 trajectories: 6001.655605442822
+3897
+avg return on 3 trajectories: 7236.936090355118
+3898
+avg return on 3 trajectories: 7360.146667788426
+3899
+avg return on 3 trajectories: 7261.7856537203
+3900
+avg return on 3 trajectories: 7222.63891715308
+3901
+avg return on 3 trajectories: 7315.6314087410765
+3902
+avg return on 3 trajectories: 7249.789712140958
+3903
+avg return on 3 trajectories: 5209.1025571028395
+3904
+avg return on 3 trajectories: 7290.675866216421
+3905
+avg return on 3 trajectories: 7245.915781135361
+3906
+avg return on 3 trajectories: 7135.320416003466
+3907
+avg return on 3 trajectories: 7228.496089532971
+3908
+avg return on 3 trajectories: 5909.014319714159
+3909
+avg return on 3 trajectories: 6275.3580445200205
+3910
+avg return on 3 trajectories: 7179.260420108835
+3911
+avg return on 3 trajectories: 7291.975672528148
+3912
+avg return on 3 trajectories: 7302.984602918227
+3913
+avg return on 3 trajectories: 5679.646260693669
+3914
+avg return on 3 trajectories: 6343.318219551506
+3915
+avg return on 3 trajectories: 7255.917549133301
+3916
+avg return on 3 trajectories: 7274.606234761576
+3917
+avg return on 3 trajectories: 6600.452004229029
+3918
+avg return on 3 trajectories: 6107.024274997413
+3919
+avg return on 3 trajectories: 5236.545351266861
+3920
+avg return on 3 trajectories: 6101.084158827241
+3921
+avg return on 3 trajectories: 4723.140236700575
+3922
+avg return on 3 trajectories: 7401.011883512139
+3923
+avg return on 3 trajectories: 6836.032090341051
+3924
+avg return on 3 trajectories: 5944.328679521878
+3925
+avg return on 3 trajectories: 6976.193670615554
+3926
+avg return on 3 trajectories: 7387.880029961467
+3927
+avg return on 3 trajectories: 7303.934040680528
+3928
+avg return on 3 trajectories: 7343.1882866124315
+3929
+avg return on 3 trajectories: 7258.153191889326
+3930
+avg return on 3 trajectories: 7363.10427806278
+3931
+avg return on 3 trajectories: 3670.849344899257
+3932
+avg return on 3 trajectories: 7385.247087617715
+3933
+avg return on 3 trajectories: 7111.0542226235075
+3934
+avg return on 3 trajectories: 6158.004505731165
+3935
+avg return on 3 trajectories: 7379.196352362633
+3936
+avg return on 3 trajectories: 7231.523599977295
+3937
+avg return on 3 trajectories: 5569.593033462763
+3938
+avg return on 3 trajectories: 6418.34286895891
+3939
+avg return on 3 trajectories: 5595.5390941649675
+3940
+avg return on 3 trajectories: 7193.662485912442
+3941
+avg return on 3 trajectories: 5722.596799083054
+3942
+avg return on 3 trajectories: 7289.188054611285
+3943
+avg return on 3 trajectories: 7368.400786543886
+3944
+avg return on 3 trajectories: 7364.834593012929
+3945
+avg return on 3 trajectories: 7319.678000455101
+3946
+avg return on 3 trajectories: 5872.92647836792
+3947
+avg return on 3 trajectories: 7234.613418512046
+3948
+avg return on 3 trajectories: 4977.6566753486795
+3949
+avg return on 3 trajectories: 7258.742907628417
+3950
+avg return on 3 trajectories: 7354.179270987709
+3951
+avg return on 3 trajectories: 6841.046943808596
+3952
+avg return on 3 trajectories: 5921.688178422551
+3953
+avg return on 3 trajectories: 7299.419458051522
+3954
+avg return on 3 trajectories: 7408.648096526663
+3955
+avg return on 3 trajectories: 7332.030822301905
+3956
+avg return on 3 trajectories: 7355.049429471294
+3957
+avg return on 3 trajectories: 4926.290752455592
+3958
+avg return on 3 trajectories: 7368.568649128079
+3959
+avg return on 3 trajectories: 5642.328395744786
+3960
+avg return on 3 trajectories: 6374.867859865229
+3961
+avg return on 3 trajectories: 7263.112166797121
+3962
+avg return on 3 trajectories: 6915.62909245491
+3963
+avg return on 3 trajectories: 7378.263448109229
+3964
+avg return on 3 trajectories: 7239.677604029576
+3965
+avg return on 3 trajectories: 7216.466405645013
+3966
+avg return on 3 trajectories: 7264.154486502211
+3967
+avg return on 3 trajectories: 5843.568218295773
+3968
+avg return on 3 trajectories: 7277.4659585307045
+3969
+avg return on 3 trajectories: 7222.370568399628
+3970
+avg return on 3 trajectories: 7277.272355948885
+3971
+avg return on 3 trajectories: 7311.948119784395
+3972
+avg return on 3 trajectories: 5558.0444444566965
+3973
+avg return on 3 trajectories: 6475.597345853846
+3974
+avg return on 3 trajectories: 4907.67449290057
+3975
+avg return on 3 trajectories: 7350.347364192207
+3976
+avg return on 3 trajectories: 6893.245786863845
+3977
+avg return on 3 trajectories: 5771.846550221245
+3978
+avg return on 3 trajectories: 7343.290849889318
+3979
+avg return on 3 trajectories: 5136.370924979448
+3980
+avg return on 3 trajectories: 7329.397018273671
+3981
+avg return on 3 trajectories: 7412.674115767081
+3982
+avg return on 3 trajectories: 7342.862299690644
+3983
+avg return on 3 trajectories: 7476.690999274452
+3984
+avg return on 3 trajectories: 7343.966211025913
+3985
+avg return on 3 trajectories: 7362.095071012775
+3986
+avg return on 3 trajectories: 7386.88149189949
+3987
+avg return on 3 trajectories: 7383.539126853148
+3988
+avg return on 3 trajectories: 7318.1616422683
+3989
+avg return on 3 trajectories: 4946.841669822733
+3990
+avg return on 3 trajectories: 6223.357436413567
+3991
+avg return on 3 trajectories: 7230.4025227030115
+3992
+avg return on 3 trajectories: 7375.759537602465
+3993
+avg return on 3 trajectories: 5762.194130187233
+3994
+avg return on 3 trajectories: 7424.569347366691
+3995
+avg return on 3 trajectories: 7377.658561686675
+3996
+avg return on 3 trajectories: 7417.868750701348
+3997
+avg return on 3 trajectories: 5277.512266774972
+3998
+avg return on 3 trajectories: 7284.228468467792
+3999
+avg return on 3 trajectories: 7345.672073408961
+4000
+avg return on 3 trajectories: 7296.969613656402
+4001
+avg return on 3 trajectories: 3624.1392284592926
+4002
+avg return on 3 trajectories: 7267.930778538187
+4003
+avg return on 3 trajectories: 7412.13606757919
+4004
+avg return on 3 trajectories: 6730.383441189925
+4005
+avg return on 3 trajectories: 7307.645136713982
+4006
+avg return on 3 trajectories: 5369.713244597117
+4007
+avg return on 3 trajectories: 7315.964722315471
+4008
+avg return on 3 trajectories: 4971.349766284227
+4009
+avg return on 3 trajectories: 7221.6205885310965
+4010
+avg return on 3 trajectories: 7314.420411864917
+4011
+avg return on 3 trajectories: 7305.935493404667
+4012
+avg return on 3 trajectories: 7430.3317952007055
+4013
+avg return on 3 trajectories: 6007.040907507141
+4014
+avg return on 3 trajectories: 7295.822327246268
+4015
+avg return on 3 trajectories: 7377.710377708077
+4016
+avg return on 3 trajectories: 4474.056201053162
+4017
+avg return on 3 trajectories: 7286.032526920239
+4018
+avg return on 3 trajectories: 7397.484167660276
+4019
+avg return on 3 trajectories: 7372.465712229411
+4020
+avg return on 3 trajectories: 6464.558925872047
+4021
+avg return on 3 trajectories: 3989.691553597649
+4022
+avg return on 3 trajectories: 7312.842100893457
+4023
+avg return on 3 trajectories: 7365.348929777741
+4024
+avg return on 3 trajectories: 7357.561897257964
+4025
+avg return on 3 trajectories: 6869.206568216284
+4026
+avg return on 3 trajectories: 5732.811070079605
+4027
+avg return on 3 trajectories: 7301.592116122444
+4028
+avg return on 3 trajectories: 6619.142179926236
+4029
+avg return on 3 trajectories: 7360.450362101197
+4030
+avg return on 3 trajectories: 7310.0002754728
+4031
+avg return on 3 trajectories: 7339.723932216565
+4032
+avg return on 3 trajectories: 7325.104237387578
+4033
+avg return on 3 trajectories: 7406.678164124489
+4034
+avg return on 3 trajectories: 7403.031379784147
+4035
+avg return on 3 trajectories: 7257.140007423858
+4036
+avg return on 3 trajectories: 7334.658455411593
+4037
+avg return on 3 trajectories: 7398.335033540924
+4038
+avg return on 3 trajectories: 7411.201507026951
+4039
+avg return on 3 trajectories: 7307.478254293402
+4040
+avg return on 3 trajectories: 7459.225107237697
+4041
+avg return on 3 trajectories: 7337.886022547881
+4042
+avg return on 3 trajectories: 5515.506345113118
+4043
+avg return on 3 trajectories: 5710.501356283824
+4044
+avg return on 3 trajectories: 6884.34356054167
+4045
+avg return on 3 trajectories: 7325.634418929617
+4046
+avg return on 3 trajectories: 7331.020452206333
+4047
+avg return on 3 trajectories: 7264.192375063896
+4048
+avg return on 3 trajectories: 7438.245232025783
+4049
+avg return on 3 trajectories: 7291.319645747542
+4050
+avg return on 3 trajectories: 5330.728709136446
+4051
+avg return on 3 trajectories: 7306.122308100264
+4052
+avg return on 3 trajectories: 7337.611224452655
+4053
+avg return on 3 trajectories: 6795.013617873192
+4054
+avg return on 3 trajectories: 7359.248495484392
+4055
+avg return on 3 trajectories: 7388.624723985791
+4056
+avg return on 3 trajectories: 7374.5676869700355
+4057
+avg return on 3 trajectories: 6441.971425026655
+4058
+avg return on 3 trajectories: 7394.239246641596
+4059
+avg return on 3 trajectories: 7352.33594935139
+4060
+avg return on 3 trajectories: 7414.173843001326
+4061
+avg return on 3 trajectories: 6634.583378387149
+4062
+avg return on 3 trajectories: 6024.041400586565
+4063
+avg return on 3 trajectories: 7239.916169141729
+4064
+avg return on 3 trajectories: 7410.179540783167
+4065
+avg return on 3 trajectories: 5199.474095677336
+4066
+avg return on 3 trajectories: 7323.399930755298
+4067
+avg return on 3 trajectories: 7322.6150268912315
+4068
+avg return on 3 trajectories: 4962.271441698074
+4069
+avg return on 3 trajectories: 7261.109498967727
+4070
+avg return on 3 trajectories: 6156.007444565495
+4071
+avg return on 3 trajectories: 7316.341071267922
+4072
+avg return on 3 trajectories: 7342.909009188414
+4073
+avg return on 3 trajectories: 4097.642474492391
+4074
+avg return on 3 trajectories: 7353.544731209676
+4075
+avg return on 3 trajectories: 7435.8032294511795
+4076
+avg return on 3 trajectories: 4166.670067255695
+4077
+avg return on 3 trajectories: 7426.646794319153
+4078
+avg return on 3 trajectories: 7358.236677045624
+4079
+avg return on 3 trajectories: 6857.673066635926
+4080
+avg return on 3 trajectories: 7277.738190745314
+4081
+avg return on 3 trajectories: 5744.259414921825
+4082
+avg return on 3 trajectories: 7347.520188649495
+4083
+avg return on 3 trajectories: 7335.500413874785
+4084
+avg return on 3 trajectories: 7225.062592836718
+4085
+avg return on 3 trajectories: 7411.453485496342
+4086
+avg return on 3 trajectories: 6041.299424563845
+4087
+avg return on 3 trajectories: 7287.890320012967
+4088
+avg return on 3 trajectories: 4851.6280977502465
+4089
+avg return on 3 trajectories: 7451.8195009628935
+4090
+avg return on 3 trajectories: 7468.948619529605
+4091
+avg return on 3 trajectories: 7388.5668461124105
+4092
+avg return on 3 trajectories: 7456.696668888132
+4093
+avg return on 3 trajectories: 7451.007115632296
+4094
+avg return on 3 trajectories: 6808.005023385088
+4095
+avg return on 3 trajectories: 7322.949482296904
+4096
+avg return on 3 trajectories: 5286.929815101127
+4097
+avg return on 3 trajectories: 7326.971471796433
+4098
+avg return on 3 trajectories: 7321.287579004963
+4099
+avg return on 3 trajectories: 6934.635034690301
+4100
+avg return on 3 trajectories: 5245.748634586732
+4101
+avg return on 3 trajectories: 7349.4558521956205
+4102
+avg return on 3 trajectories: 7342.382783646385
+4103
+avg return on 3 trajectories: 7209.733818605542
+4104
+avg return on 3 trajectories: 7386.670437658827
+4105
+avg return on 3 trajectories: 6597.724936937292
+4106
+avg return on 3 trajectories: 7391.2581498424215
+4107
+avg return on 3 trajectories: 7481.065522198875
+4108
+avg return on 3 trajectories: 7432.755470563968
+4109
+avg return on 3 trajectories: 6863.07578343153
+4110
+avg return on 3 trajectories: 7409.575668990612
+4111
+avg return on 3 trajectories: 5250.002655691157
+4112
+avg return on 3 trajectories: 7442.036371504267
+4113
+avg return on 3 trajectories: 7500.147265861432
+4114
+avg return on 3 trajectories: 7440.808677991231
+4115
+avg return on 3 trajectories: 7291.440173581243
+4116
+avg return on 3 trajectories: 6135.52680952847
+4117
+avg return on 3 trajectories: 7455.594048122565
+4118
+avg return on 3 trajectories: 7388.672061572473
+4119
+avg return on 3 trajectories: 6711.456801779568
+4120
+avg return on 3 trajectories: 5203.37099160254
+4121
+avg return on 3 trajectories: 7407.110554719965
+4122
+avg return on 3 trajectories: 7300.861812308431
+4123
+avg return on 3 trajectories: 7420.558754622936
+4124
+avg return on 3 trajectories: 7285.152913207809
+4125
+avg return on 3 trajectories: 7417.751220514377
+4126
+avg return on 3 trajectories: 7353.8484417796135
+4127
+avg return on 3 trajectories: 7417.4086360782385
+4128
+avg return on 3 trajectories: 7342.986779381831
+4129
+avg return on 3 trajectories: 6793.022285441558
+4130
+avg return on 3 trajectories: 7248.9761073589325
+4131
+avg return on 3 trajectories: 6656.704122373213
+4132
+avg return on 3 trajectories: 7360.214634736379
+4133
+avg return on 3 trajectories: 7402.361827914913
+4134
+avg return on 3 trajectories: 7458.439219534397
+4135
+avg return on 3 trajectories: 7402.534870351355
+4136
+avg return on 3 trajectories: 6108.315341606736
+4137
+avg return on 3 trajectories: 7383.894868989785
+4138
+avg return on 3 trajectories: 7431.075965881348
+4139
+avg return on 3 trajectories: 7392.597827504079
+4140
+avg return on 3 trajectories: 7442.348205978672
+4141
+avg return on 3 trajectories: 7400.45592340827
+4142
+avg return on 3 trajectories: 7308.9065404981375
+4143
+avg return on 3 trajectories: 7425.244423871239
+4144
+avg return on 3 trajectories: 7066.506930440664
+4145
+avg return on 3 trajectories: 7430.963125956555
+4146
+avg return on 3 trajectories: 7342.863683824738
+4147
+avg return on 3 trajectories: 5930.058519603142
+4148
+avg return on 3 trajectories: 7371.96620816489
+4149
+avg return on 3 trajectories: 6765.256926352779
+4150
+avg return on 3 trajectories: 7400.804800560077
+4151
+avg return on 3 trajectories: 7478.921367784341
+4152
+avg return on 3 trajectories: 6599.01400406162
+4153
+avg return on 3 trajectories: 5140.547222738464
+4154
+avg return on 3 trajectories: 7371.778958447278
+4155
+avg return on 3 trajectories: 7410.110740825534
+4156
+avg return on 3 trajectories: 5010.1618390580015
+4157
+avg return on 3 trajectories: 7274.021669166784
+4158
+avg return on 3 trajectories: 7353.5156226456165
+4159
+avg return on 3 trajectories: 7444.356303403775
+4160
+avg return on 3 trajectories: 7397.160575841864
+4161
+avg return on 3 trajectories: 7360.445712904136
+4162
+avg return on 3 trajectories: 7417.828075940411
+4163
+avg return on 3 trajectories: 6503.102499564488
+4164
+avg return on 3 trajectories: 7376.687984123826
+4165
+avg return on 3 trajectories: 7396.005686228474
+4166
+avg return on 3 trajectories: 7461.567822088798
+4167
+avg return on 3 trajectories: 5426.383821775516
+4168
+avg return on 3 trajectories: 7406.752432947357
+4169
+avg return on 3 trajectories: 7442.04551230371
+4170
+avg return on 3 trajectories: 6622.362624570727
+4171
+avg return on 3 trajectories: 7420.065449898441
+4172
+avg return on 3 trajectories: 7410.755732754867
+4173
+avg return on 3 trajectories: 7097.907492389281
+4174
+avg return on 3 trajectories: 7453.5335382123785
+4175
+avg return on 3 trajectories: 7031.3624891291065
+4176
+avg return on 3 trajectories: 7021.520944193316
+4177
+avg return on 3 trajectories: 7433.355820978682
+4178
+avg return on 3 trajectories: 6932.92834238708
+4179
+avg return on 3 trajectories: 7447.572235867381
+4180
+avg return on 3 trajectories: 7384.71380272011
+4181
+avg return on 3 trajectories: 7441.681993131836
+4182
+avg return on 3 trajectories: 5464.757323980331
+4183
+avg return on 3 trajectories: 7369.393803134561
+4184
+avg return on 3 trajectories: 7441.072645157576
+4185
+avg return on 3 trajectories: 2851.215123568972
+4186
+avg return on 3 trajectories: 7310.978758434455
+4187
+avg return on 3 trajectories: 7346.50122376283
+4188
+avg return on 3 trajectories: 7366.150210425258
+4189
+avg return on 3 trajectories: 7240.082210282485
+4190
+avg return on 3 trajectories: 6101.905265266697
+4191
+avg return on 3 trajectories: 4975.394903783997
+4192
+avg return on 3 trajectories: 7422.645110671719
+4193
+avg return on 3 trajectories: 7329.506189902623
+4194
+avg return on 3 trajectories: 5366.304416812956
+4195
+avg return on 3 trajectories: 7290.784571543336
+4196
+avg return on 3 trajectories: 7400.635813107093
+4197
+avg return on 3 trajectories: 5743.4975823313
+4198
+avg return on 3 trajectories: 5811.073187279205
+4199
+avg return on 3 trajectories: 3619.0004344681897
+4200
+avg return on 3 trajectories: 4924.305830232799
+4201
+avg return on 3 trajectories: 6845.0735986282425
+4202
+avg return on 3 trajectories: 7396.619940832257
+4203
+avg return on 3 trajectories: 7411.059518073996
+4204
+avg return on 3 trajectories: 2369.8435813287892
+4205
+avg return on 3 trajectories: 7013.049376837909
+4206
+avg return on 3 trajectories: 4896.195087850094
+4207
+avg return on 3 trajectories: 7514.708075431486
+4208
+avg return on 3 trajectories: 7444.513846457005
+4209
+avg return on 3 trajectories: 7445.400242241721
+4210
+avg return on 3 trajectories: 7155.863382250071
+4211
+avg return on 3 trajectories: 5751.961393177509
+4212
+avg return on 3 trajectories: 4962.0466140608
+4213
+avg return on 3 trajectories: 7468.094957093398
+4214
+avg return on 3 trajectories: 7437.169407874346
+4215
+avg return on 3 trajectories: 7493.47339566052
+4216
+avg return on 3 trajectories: 7347.456162800391
+4217
+avg return on 3 trajectories: 7410.364517753323
+4218
+avg return on 3 trajectories: 7288.395992480218
+4219
+avg return on 3 trajectories: 7465.192359338204
+4220
+avg return on 3 trajectories: 7406.197809112568
+4221
+avg return on 3 trajectories: 7358.347269549966
+4222
+avg return on 3 trajectories: 6222.575737468898
+4223
+avg return on 3 trajectories: 7455.850234267612
+4224
+avg return on 3 trajectories: 7395.067134084801
+4225
+avg return on 3 trajectories: 7303.622581203778
+4226
+avg return on 3 trajectories: 5556.253018190463
+4227
+avg return on 3 trajectories: 7580.267901365955
+4228
+avg return on 3 trajectories: 7503.366806074977
+4229
+avg return on 3 trajectories: 7421.987016096711
+4230
+avg return on 3 trajectories: 7407.885783915718
+4231
+avg return on 3 trajectories: 7306.965755328536
+4232
+avg return on 3 trajectories: 7376.239826373756
+4233
+avg return on 3 trajectories: 7457.685082942247
+4234
+avg return on 3 trajectories: 5668.0183327073855
+4235
+avg return on 3 trajectories: 7404.829452817638
+4236
+avg return on 3 trajectories: 2901.8559513067207
+4237
+avg return on 3 trajectories: 7328.023964186509
+4238
+avg return on 3 trajectories: 6930.247650062044
+4239
+avg return on 3 trajectories: 7357.1783233905835
+4240
+avg return on 3 trajectories: 5792.542395547032
+4241
+avg return on 3 trajectories: 7368.269185628742
+4242
+avg return on 3 trajectories: 4760.520683825016
+4243
+avg return on 3 trajectories: 7294.183844732742
+4244
+avg return on 3 trajectories: 4934.092096373439
+4245
+avg return on 3 trajectories: 4993.069611668587
+4246
+avg return on 3 trajectories: 7391.560857618849
+4247
+avg return on 3 trajectories: 5709.391113410394
+4248
+avg return on 3 trajectories: 7304.369866366188
+4249
+avg return on 3 trajectories: 7369.799810359876
+4250
+avg return on 3 trajectories: 7547.853514462709
+4251
+avg return on 3 trajectories: 7355.427214672168
+4252
+avg return on 3 trajectories: 7350.805976768334
+4253
+avg return on 3 trajectories: 6987.563565363486
+4254
+avg return on 3 trajectories: 7393.813396319475
+4255
+avg return on 3 trajectories: 7506.794206742509
+4256
+avg return on 3 trajectories: 7533.96524686801
+4257
+avg return on 3 trajectories: 7328.510201941554
+4258
+avg return on 3 trajectories: 7454.255280525967
+4259
+avg return on 3 trajectories: 7444.122557440249
+4260
+avg return on 3 trajectories: 7346.4404638698325
+4261
+avg return on 3 trajectories: 7346.593821242296
+4262
+avg return on 3 trajectories: 5473.0045568913365
+4263
+avg return on 3 trajectories: 7274.642901276548
+4264
+avg return on 3 trajectories: 7317.285110091169
+4265
+avg return on 3 trajectories: 7451.92330352962
+4266
+avg return on 3 trajectories: 7419.208194002509
+4267
+avg return on 3 trajectories: 7325.699084709088
+4268
+avg return on 3 trajectories: 7269.746195574601
+4269
+avg return on 3 trajectories: 7239.348309641083
+4270
+avg return on 3 trajectories: 7298.491363058488
+4271
+avg return on 3 trajectories: 7385.247355197866
+4272
+avg return on 3 trajectories: 7438.434042404096
+4273
+avg return on 3 trajectories: 5696.9259076192975
+4274
+avg return on 3 trajectories: 7482.804238006473
+4275
+avg return on 3 trajectories: 7436.974599868059
+4276
+avg return on 3 trajectories: 5047.359898966427
+4277
+avg return on 3 trajectories: 7390.407236059506
+4278
+avg return on 3 trajectories: 7410.975805451472
+4279
+avg return on 3 trajectories: 7419.331082574713
+4280
+avg return on 3 trajectories: 7441.2017193983
+4281
+avg return on 3 trajectories: 7395.423511231939
+4282
+avg return on 3 trajectories: 7407.177321587999
+4283
+avg return on 3 trajectories: 7398.487886954099
+4284
+avg return on 3 trajectories: 7208.436486034344
+4285
+avg return on 3 trajectories: 7380.667058958672
+4286
+avg return on 3 trajectories: 4968.215783288392
+4287
+avg return on 3 trajectories: 6444.039753325128
+4288
+avg return on 3 trajectories: 5326.786976656255
+4289
+avg return on 3 trajectories: 7244.692192117373
+4290
+avg return on 3 trajectories: 6634.055938381392
+4291
+avg return on 3 trajectories: 4955.1893468863955
+4292
+avg return on 3 trajectories: 5690.842625141823
+4293
+avg return on 3 trajectories: 4395.680250665173
+4294
+avg return on 3 trajectories: 5440.594226449262
+4295
+avg return on 3 trajectories: 7418.475670055176
+4296
+avg return on 3 trajectories: 7387.5382546236115
+4297
+avg return on 3 trajectories: 5752.617735950897
+4298
+avg return on 3 trajectories: 7417.574074904124
+4299
+avg return on 3 trajectories: 7436.818849598368
+4300
+avg return on 3 trajectories: 7489.037328427036
+4301
+avg return on 3 trajectories: 4885.218909526865
+4302
+avg return on 3 trajectories: 7429.4699440126615
+4303
+avg return on 3 trajectories: 7047.491554727157
+4304
+avg return on 3 trajectories: 4917.948872983456
+4305
+avg return on 3 trajectories: 4984.756434850395
+4306
+avg return on 3 trajectories: 7308.564543684323
+4307
+avg return on 3 trajectories: 5000.420734800398
+4308
+avg return on 3 trajectories: 7367.372704272469
+4309
+avg return on 3 trajectories: 5558.932932173212
+4310
+avg return on 3 trajectories: 7437.572419101994
+4311
+avg return on 3 trajectories: 4933.022817899783
+4312
+avg return on 3 trajectories: 5039.003299714997
+4313
+avg return on 3 trajectories: 6213.060395671055
+4314
+avg return on 3 trajectories: 7407.432629833619
+4315
+avg return on 3 trajectories: 7499.092341768245
+4316
+avg return on 3 trajectories: 7429.0352556879325
+4317
+avg return on 3 trajectories: 7282.0202249536915
+4318
+avg return on 3 trajectories: 7275.0458976477385
+4319
+avg return on 3 trajectories: 7444.436354438464
+4320
+avg return on 3 trajectories: 5250.800706207752
+4321
+avg return on 3 trajectories: 5345.377147217591
+4322
+avg return on 3 trajectories: 5947.641415784757
+4323
+avg return on 3 trajectories: 7479.452779789765
+4324
+avg return on 3 trajectories: 7473.390995298822
+4325
+avg return on 3 trajectories: 5564.2422029649215
+4326
+avg return on 3 trajectories: 7532.180427864194
+4327
+avg return on 3 trajectories: 4221.095608703792
+4328
+avg return on 3 trajectories: 7291.7553627491
+4329
+avg return on 3 trajectories: 5601.43518732426
+4330
+avg return on 3 trajectories: 5180.637539676701
+4331
+avg return on 3 trajectories: 7356.802650711189
+4332
+avg return on 3 trajectories: 7426.789618026465
+4333
+avg return on 3 trajectories: 5630.88687688997
+4334
+avg return on 3 trajectories: 7478.1755175444605
+4335
+avg return on 3 trajectories: 7047.260079347839
+4336
+avg return on 3 trajectories: 7030.811854311575
+4337
+avg return on 3 trajectories: 5636.550784824416
+4338
+avg return on 3 trajectories: 7523.659809342275
+4339
+avg return on 3 trajectories: 5822.733730720977
+4340
+avg return on 3 trajectories: 7444.715272090088
+4341
+avg return on 3 trajectories: 7477.64693382134
+4342
+avg return on 3 trajectories: 7367.502048014973
+4343
+avg return on 3 trajectories: 7436.867396029954
+4344
+avg return on 3 trajectories: 7456.66271162654
+4345
+avg return on 3 trajectories: 7383.326889535412
+4346
+avg return on 3 trajectories: 6548.416869867593
+4347
+avg return on 3 trajectories: 7398.639921758324
+4348
+avg return on 3 trajectories: 5625.70538402535
+4349
+avg return on 3 trajectories: 7467.928718082607
+4350
+avg return on 3 trajectories: 5972.354139196376
+4351
+avg return on 3 trajectories: 5106.74117172882
+4352
+avg return on 3 trajectories: 5144.43905028825
+4353
+avg return on 3 trajectories: 7522.519104627271
+4354
+avg return on 3 trajectories: 7375.015029675017
+4355
+avg return on 3 trajectories: 7535.275452750425
+4356
+avg return on 3 trajectories: 5843.57776682948
+4357
+avg return on 3 trajectories: 7425.1988570429385
+4358
+avg return on 3 trajectories: 7501.53448465839
+4359
+avg return on 3 trajectories: 4730.863933924586
+4360
+avg return on 3 trajectories: 7446.1861547927065
+4361
+avg return on 3 trajectories: 7441.035974291463
+4362
+avg return on 3 trajectories: 7496.082907022287
+4363
+avg return on 3 trajectories: 7472.960718795657
+4364
+avg return on 3 trajectories: 7362.700270947069
+4365
+avg return on 3 trajectories: 6979.189198253055
+4366
+avg return on 3 trajectories: 6841.770393614967
+4367
+avg return on 3 trajectories: 7459.902221351862
+4368
+avg return on 3 trajectories: 5996.936851306508
+4369
+avg return on 3 trajectories: 7253.671470371385
+4370
+avg return on 3 trajectories: 7359.288916981469
+4371
+avg return on 3 trajectories: 6524.572676507135
+4372
+avg return on 3 trajectories: 7238.807378405084
+4373
+avg return on 3 trajectories: 5578.310337892423
+4374
+avg return on 3 trajectories: 6992.216392889619
+4375
+avg return on 3 trajectories: 6888.850255396217
+4376
+avg return on 3 trajectories: 7425.260719817132
+4377
+avg return on 3 trajectories: 7264.233946949244
+4378
+avg return on 3 trajectories: 5493.973116710782
+4379
+avg return on 3 trajectories: 7389.481750498216
+4380
+avg return on 3 trajectories: 7310.35516613846
+4381
+avg return on 3 trajectories: 7454.891941205909
+4382
+avg return on 3 trajectories: 7385.755819628636
+4383
+avg return on 3 trajectories: 7483.886664991577
+4384
+avg return on 3 trajectories: 6535.810057478647
+4385
+avg return on 3 trajectories: 5522.954020534952
+4386
+avg return on 3 trajectories: 7389.322620178263
+4387
+avg return on 3 trajectories: 7362.499197597305
+4388
+avg return on 3 trajectories: 5091.223165228963
+4389
+avg return on 3 trajectories: 7515.357136835654
+4390
+avg return on 3 trajectories: 7314.932150527835
+4391
+avg return on 3 trajectories: 7514.431587556998
+4392
+avg return on 3 trajectories: 7278.02691059808
+4393
+avg return on 3 trajectories: 6280.490136725207
+4394
+avg return on 3 trajectories: 7465.903004308541
+4395
+avg return on 3 trajectories: 7340.852170926829
+4396
+avg return on 3 trajectories: 6665.417799340251
+4397
+avg return on 3 trajectories: 7240.469525632759
+4398
+avg return on 3 trajectories: 4878.4378801037865
+4399
+avg return on 3 trajectories: 7410.9105809951825
+4400
+avg return on 3 trajectories: 5013.996494313081
+4401
+avg return on 3 trajectories: 7384.587269586821
+4402
+avg return on 3 trajectories: 4918.445751622319
+4403
+avg return on 3 trajectories: 7374.037704889973
+4404
+avg return on 3 trajectories: 7449.209596994023
+4405
+avg return on 3 trajectories: 4429.1355021590525
+4406
+avg return on 3 trajectories: 7460.454965427518
+4407
+avg return on 3 trajectories: 7352.03534476459
+4408
+avg return on 3 trajectories: 7465.35781981051
+4409
+avg return on 3 trajectories: 7482.835273792346
+4410
+avg return on 3 trajectories: 7407.156176586946
+4411
+avg return on 3 trajectories: 7219.610808516542
+4412
+avg return on 3 trajectories: 7481.008680263534
+4413
+avg return on 3 trajectories: 7461.349897347391
+4414
+avg return on 3 trajectories: 5364.302428211861
+4415
+avg return on 3 trajectories: 5917.545338338862
+4416
+avg return on 3 trajectories: 7419.73386193874
+4417
+avg return on 3 trajectories: 7360.844179846346
+4418
+avg return on 3 trajectories: 6040.887329626828
+4419
+avg return on 3 trajectories: 5716.629308752716
+4420
+avg return on 3 trajectories: 7314.193192416181
+4421
+avg return on 3 trajectories: 7229.559115181367
+4422
+avg return on 3 trajectories: 7421.401809160908
+4423
+avg return on 3 trajectories: 6169.966585488214
+4424
+avg return on 3 trajectories: 7307.908459059894
+4425
+avg return on 3 trajectories: 7492.683864290516
+4426
+avg return on 3 trajectories: 7286.601610898972
+4427
+avg return on 3 trajectories: 7097.745947621763
+4428
+avg return on 3 trajectories: 7360.427702700098
+4429
+avg return on 3 trajectories: 5446.31369780004
+4430
+avg return on 3 trajectories: 7493.583196992365
+4431
+avg return on 3 trajectories: 6710.464650204095
+4432
+avg return on 3 trajectories: 3930.6352834043405
+4433
+avg return on 3 trajectories: 7320.193224542774
+4434
+avg return on 3 trajectories: 5592.068301264197
+4435
+avg return on 3 trajectories: 7229.3816525929915
+4436
+avg return on 3 trajectories: 7436.380578293775
+4437
+avg return on 3 trajectories: 6025.747915487115
+4438
+avg return on 3 trajectories: 7441.741202329596
+4439
+avg return on 3 trajectories: 7235.609228781114
+4440
+avg return on 3 trajectories: 7141.582668871309
+4441
+avg return on 3 trajectories: 6242.613795782129
+4442
+avg return on 3 trajectories: 6056.268950388146
+4443
+avg return on 3 trajectories: 5887.784375593066
+4444
+avg return on 3 trajectories: 6643.264394246663
+4445
+avg return on 3 trajectories: 5308.941812284912
+4446
+avg return on 3 trajectories: 7363.419724033524
+4447
+avg return on 3 trajectories: 7387.8331447572755
+4448
+avg return on 3 trajectories: 7497.160880384346
+4449
+avg return on 3 trajectories: 5311.453785305222
+4450
+avg return on 3 trajectories: 4250.801003531553
+4451
+avg return on 3 trajectories: 5474.210264741133
+4452
+avg return on 3 trajectories: 7438.231960196048
+4453
+avg return on 3 trajectories: 7460.416979659349
+4454
+avg return on 3 trajectories: 7469.367715584735
+4455
+avg return on 3 trajectories: 4975.944002931316
+4456
+avg return on 3 trajectories: 7330.899862946321
+4457
+avg return on 3 trajectories: 6445.875103508432
+4458
+avg return on 3 trajectories: 7250.173386238515
+4459
+avg return on 3 trajectories: 7327.943547738095
+4460
+avg return on 3 trajectories: 6804.820442361136
+4461
+avg return on 3 trajectories: 6604.831736210734
+4462
+avg return on 3 trajectories: 7437.0513090609265
+4463
+avg return on 3 trajectories: 7227.09881585588
+4464
+avg return on 3 trajectories: 2259.8560546733593
+4465
+avg return on 3 trajectories: 5426.220525383949
+4466
+avg return on 3 trajectories: 7457.588722895831
+4467
+avg return on 3 trajectories: 7419.100227278967
+4468
+avg return on 3 trajectories: 4987.227867238224
+4469
+avg return on 3 trajectories: 5152.546355828643
+4470
+avg return on 3 trajectories: 6333.935360959421
+4471
+avg return on 3 trajectories: 4840.945665257673
+4472
+avg return on 3 trajectories: 7402.363832532118
+4473
+avg return on 3 trajectories: 7109.81052562346
+4474
+avg return on 3 trajectories: 6115.119862395029
+4475
+avg return on 3 trajectories: 7551.000078024964
+4476
+avg return on 3 trajectories: 5218.0088679380715
+4477
+avg return on 3 trajectories: 7483.369906816632
+4478
+avg return on 3 trajectories: 7415.592776294798
+4479
+avg return on 3 trajectories: 7517.800801568975
+4480
+avg return on 3 trajectories: 5523.097271161775
+4481
+avg return on 3 trajectories: 7499.658539414406
+4482
+avg return on 3 trajectories: 5723.569997179012
+4483
+avg return on 3 trajectories: 6981.24044367671
+4484
+avg return on 3 trajectories: 7363.622059168915
+4485
+avg return on 3 trajectories: 7508.8606234019
+4486
+avg return on 3 trajectories: 6217.339684178277
+4487
+avg return on 3 trajectories: 7443.800346905987
+4488
+avg return on 3 trajectories: 7355.1402470842
+4489
+avg return on 3 trajectories: 3779.4767764781914
+4490
+avg return on 3 trajectories: 3171.365211509168
+4491
+avg return on 3 trajectories: 7506.498278352122
+4492
+avg return on 3 trajectories: 7399.684010493259
+4493
+avg return on 3 trajectories: 7314.47771166265
+4494
+avg return on 3 trajectories: 5623.656114158531
+4495
+avg return on 3 trajectories: 7429.207986534883
+4496
+avg return on 3 trajectories: 7529.7697523497045
+4497
+avg return on 3 trajectories: 7495.60046261549
+4498
+avg return on 3 trajectories: 7381.785296371828
+4499
+avg return on 3 trajectories: 6883.68801535666
+4500
+avg return on 3 trajectories: 7514.998147855203
+4501
+avg return on 3 trajectories: 4948.606455738346
+4502
+avg return on 3 trajectories: 7431.05634149909
+4503
+avg return on 3 trajectories: 7407.798709884286
+4504
+avg return on 3 trajectories: 7443.3900426626205
+4505
+avg return on 3 trajectories: 7430.318765729666
+4506
+avg return on 3 trajectories: 5032.269705861807
+4507
+avg return on 3 trajectories: 5428.427236894767
+4508
+avg return on 3 trajectories: 7453.67088171343
+4509
+avg return on 3 trajectories: 7516.881377503276
+4510
+avg return on 3 trajectories: 7427.16748979191
+4511
+avg return on 3 trajectories: 7318.725876942277
+4512
+avg return on 3 trajectories: 7426.625516042113
+4513
+avg return on 3 trajectories: 7438.06523899734
+4514
+avg return on 3 trajectories: 7326.268473068873
+4515
+avg return on 3 trajectories: 6249.008670618758
+4516
+avg return on 3 trajectories: 5723.191392198205
+4517
+avg return on 3 trajectories: 7536.745101138949
+4518
+avg return on 3 trajectories: 7504.618766859174
+4519
+avg return on 3 trajectories: 5092.66882392019
+4520
+avg return on 3 trajectories: 7460.223733812571
+4521
+avg return on 3 trajectories: 5742.283380081256
+4522
+avg return on 3 trajectories: 6547.914759859443
+4523
+avg return on 3 trajectories: 7523.48666280508
+4524
+avg return on 3 trajectories: 7134.47781470418
+4525
+avg return on 3 trajectories: 5788.727470239003
+4526
+avg return on 3 trajectories: 4677.790022348364
+4527
+avg return on 3 trajectories: 6675.113266672939
+4528
+avg return on 3 trajectories: 5628.805411708851
+4529
+avg return on 3 trajectories: 7491.921316785117
+4530
+avg return on 3 trajectories: 6703.360762779911
+4531
+avg return on 3 trajectories: 6357.695612405737
+4532
+avg return on 3 trajectories: 5556.710414962222
+4533
+avg return on 3 trajectories: 6568.258248445888
+4534
+avg return on 3 trajectories: 7372.0070015316205
+4535
+avg return on 3 trajectories: 7451.844485625625
+4536
+avg return on 3 trajectories: 7573.4832356671495
+4537
+avg return on 3 trajectories: 7474.295490364234
+4538
+avg return on 3 trajectories: 7426.049876968066
+4539
+avg return on 3 trajectories: 5096.467940449715
+4540
+avg return on 3 trajectories: 7392.068327690165
+4541
+avg return on 3 trajectories: 7407.722727350891
+4542
+avg return on 3 trajectories: 7072.007364417116
+4543
+avg return on 3 trajectories: 7502.711728175481
+4544
+avg return on 3 trajectories: 7457.622716774543
+4545
+avg return on 3 trajectories: 5481.202037070878
+4546
+avg return on 3 trajectories: 4662.738528139889
+4547
+avg return on 3 trajectories: 7504.272769025837
+4548
+avg return on 3 trajectories: 5658.9936805873485
+4549
+avg return on 3 trajectories: 6903.746671922505
+4550
+avg return on 3 trajectories: 3274.5323952411613
+4551
+avg return on 3 trajectories: 4205.999052887472
+4552
+avg return on 3 trajectories: 4994.486589563389
+4553
+avg return on 3 trajectories: 7443.835277356207
+4554
+avg return on 3 trajectories: 5158.214833699788
+4555
+avg return on 3 trajectories: 4966.996509308617
+4556
+avg return on 3 trajectories: 7484.051980001231
+4557
+avg return on 3 trajectories: 5255.288692494233
+4558
+avg return on 3 trajectories: 7489.638146581749
+4559
+avg return on 3 trajectories: 7611.816553180416
+4560
+avg return on 3 trajectories: 7381.5143040679395
+4561
+avg return on 3 trajectories: 7597.051390831049
+4562
+avg return on 3 trajectories: 6231.97552503397
+4563
+avg return on 3 trajectories: 7409.7265053913
+4564
+avg return on 3 trajectories: 7442.2095370615525
+4565
+avg return on 3 trajectories: 7397.858396408458
+4566
+avg return on 3 trajectories: 7534.632600257794
+4567
+avg return on 3 trajectories: 7536.839203387499
+4568
+avg return on 3 trajectories: 7491.606803826988
+4569
+avg return on 3 trajectories: 7543.385206249853
+4570
+avg return on 3 trajectories: 7470.13971457382
+4571
+avg return on 3 trajectories: 7320.73046421508
+4572
+avg return on 3 trajectories: 7412.720035545528
+4573
+avg return on 3 trajectories: 7486.732122200231
+4574
+avg return on 3 trajectories: 7271.429440381627
+4575
+avg return on 3 trajectories: 5400.7872316042585
+4576
+avg return on 3 trajectories: 7498.846768766642
+4577
+avg return on 3 trajectories: 5995.495208994485
+4578
+avg return on 3 trajectories: 7569.674798471232
+4579
+avg return on 3 trajectories: 6699.1926816602545
+4580
+avg return on 3 trajectories: 7359.972558011611
+4581
+avg return on 3 trajectories: 5087.562452090283
+4582
+avg return on 3 trajectories: 7474.1287632746
+4583
+avg return on 3 trajectories: 7605.01922895511
+4584
+avg return on 3 trajectories: 7426.214390220742
+4585
+avg return on 3 trajectories: 5751.099052439134
+4586
+avg return on 3 trajectories: 7499.8653450757265
+4587
+avg return on 3 trajectories: 7370.115918551882
+4588
+avg return on 3 trajectories: 7397.728477920095
+4589
+avg return on 3 trajectories: 5121.4312294150395
+4590
+avg return on 3 trajectories: 5264.582512217264
+4591
+avg return on 3 trajectories: 7521.851197729508
+4592
+avg return on 3 trajectories: 7585.335073853533
+4593
+avg return on 3 trajectories: 7554.455821511646
+4594
+avg return on 3 trajectories: 7406.936161932846
+4595
+avg return on 3 trajectories: 7386.67662212501
+4596
+avg return on 3 trajectories: 7439.6035427078605
+4597
+avg return on 3 trajectories: 5264.708390879135
+4598
+avg return on 3 trajectories: 7280.788112613062
+4599
+avg return on 3 trajectories: 5613.939861851434
+4600
+avg return on 3 trajectories: 7644.894705201189
+4601
+avg return on 3 trajectories: 5901.191461056471
+4602
+avg return on 3 trajectories: 6283.7864391381545
+4603
+avg return on 3 trajectories: 5041.878212501605
+4604
+avg return on 3 trajectories: 7356.878632237514
+4605
+avg return on 3 trajectories: 7476.711800614993
+4606
+avg return on 3 trajectories: 4700.523548021913
+4607
+avg return on 3 trajectories: 7543.004879169166
+4608
+avg return on 3 trajectories: 7326.705521178742
+4609
+avg return on 3 trajectories: 7529.545751688381
+4610
+avg return on 3 trajectories: 5127.925112294654
+4611
+avg return on 3 trajectories: 7368.005856427674
+4612
+avg return on 3 trajectories: 6343.266800289352
+4613
+avg return on 3 trajectories: 4986.757130288829
+4614
+avg return on 3 trajectories: 5842.340003053348
+4615
+avg return on 3 trajectories: 7480.322992039223
+4616
+avg return on 3 trajectories: 5103.887162817021
+4617
+avg return on 3 trajectories: 7505.946884212394
+4618
+avg return on 3 trajectories: 5040.851995351414
+4619
+avg return on 3 trajectories: 7505.391557501008
+4620
+avg return on 3 trajectories: 5135.084044621636
+4621
+avg return on 3 trajectories: 7557.8050746197505
+4622
+avg return on 3 trajectories: 7553.937872921427
+4623
+avg return on 3 trajectories: 7577.139146675666
+4624
+avg return on 3 trajectories: 6199.307814420511
+4625
+avg return on 3 trajectories: 1163.8985506606598
+4626
+avg return on 3 trajectories: 7542.622809062402
+4627
+avg return on 3 trajectories: 5701.9304515433805
+4628
+avg return on 3 trajectories: 7474.025107424706
+4629
+avg return on 3 trajectories: 7404.440604841958
+4630
+avg return on 3 trajectories: 7544.74709612752
+4631
+avg return on 3 trajectories: 7419.966270362337
+4632
+avg return on 3 trajectories: 5341.451414134353
+4633
+avg return on 3 trajectories: 7601.128575367232
+4634
+avg return on 3 trajectories: 3328.9041001262763
+4635
+avg return on 3 trajectories: 7467.493182842775
+4636
+avg return on 3 trajectories: 2976.2775653818003
+4637
+avg return on 3 trajectories: 6036.474862733235
+4638
+avg return on 3 trajectories: 5841.572913898776
+4639
+avg return on 3 trajectories: 7250.3507610432425
+4640
+avg return on 3 trajectories: 7086.826790070782
+4641
+avg return on 3 trajectories: 7435.421959115192
+4642
+avg return on 3 trajectories: 6230.724979576034
+4643
+avg return on 3 trajectories: 7345.177249583571
+4644
+avg return on 3 trajectories: 7564.723521585886
+4645
+avg return on 3 trajectories: 7389.701244581181
+4646
+avg return on 3 trajectories: 7471.85704308531
+4647
+avg return on 3 trajectories: 7372.626539210789
+4648
+avg return on 3 trajectories: 7453.932977353223
+4649
+avg return on 3 trajectories: 5806.143096420293
+4650
+avg return on 3 trajectories: 6358.4735830537975
+4651
+avg return on 3 trajectories: 7417.086758455572
+4652
+avg return on 3 trajectories: 7505.280797508235
+4653
+avg return on 3 trajectories: 7406.746117362131
+4654
+avg return on 3 trajectories: 7413.36688548699
+4655
+avg return on 3 trajectories: 5478.1736164459335
+4656
+avg return on 3 trajectories: 7279.8014386159675
+4657
+avg return on 3 trajectories: 7523.852631709228
+4658
+avg return on 3 trajectories: 7374.58936230621
+4659
+avg return on 3 trajectories: 7551.554280987631
+4660
+avg return on 3 trajectories: 5521.2900805842755
+4661
+avg return on 3 trajectories: 7338.723492295791
+4662
+avg return on 3 trajectories: 3920.6279438622296
+4663
+avg return on 3 trajectories: 7559.435123116399
+4664
+avg return on 3 trajectories: 7185.789739886299
+4665
+avg return on 3 trajectories: 7293.237713223323
+4666
+avg return on 3 trajectories: 7433.034019622952
+4667
+avg return on 3 trajectories: 7186.780869652827
+4668
+avg return on 3 trajectories: 7487.812120248874
+4669
+avg return on 3 trajectories: 7486.574119821191
+4670
+avg return on 3 trajectories: 7544.344172172248
+4671
+avg return on 3 trajectories: 7470.346364412457
+4672
+avg return on 3 trajectories: 7434.536139773826
+4673
+avg return on 3 trajectories: 7601.528275298576
+4674
+avg return on 3 trajectories: 5588.248185584943
+4675
+avg return on 3 trajectories: 5985.372671167056
+4676
+avg return on 3 trajectories: 6403.51648297285
+4677
+avg return on 3 trajectories: 7551.560110010207
+4678
+avg return on 3 trajectories: 6723.3129904146
+4679
+avg return on 3 trajectories: 7299.975178269048
+4680
+avg return on 3 trajectories: 7360.832500308752
+4681
+avg return on 3 trajectories: 5805.422810181975
+4682
+avg return on 3 trajectories: 7521.800793724756
+4683
+avg return on 3 trajectories: 7096.156336093943
+4684
+avg return on 3 trajectories: 7144.10018677994
+4685
+avg return on 3 trajectories: 5504.083188479145
+4686
+avg return on 3 trajectories: 7526.048215933144
+4687
+avg return on 3 trajectories: 7572.300620898604
+4688
+avg return on 3 trajectories: 7522.490674083431
+4689
+avg return on 3 trajectories: 7661.78027485311
+4690
+avg return on 3 trajectories: 6812.462752399345
+4691
+avg return on 3 trajectories: 6698.052135216693
+4692
+avg return on 3 trajectories: 7556.2377631862955
+4693
+avg return on 3 trajectories: 7644.984575567146
+4694
+avg return on 3 trajectories: 7265.538778103888
+4695
+avg return on 3 trajectories: 5409.707395069301
+4696
+avg return on 3 trajectories: 7084.901450412969
+4697
+avg return on 3 trajectories: 7396.33465635404
+4698
+avg return on 3 trajectories: 7582.4179169560475
+4699
+avg return on 3 trajectories: 6967.690194780628
+4700
+avg return on 3 trajectories: 7488.598854136963
+4701
+avg return on 3 trajectories: 7393.286118496209
+4702
+avg return on 3 trajectories: 7468.871506913255
+4703
+avg return on 3 trajectories: 7407.322670126955
+4704
+avg return on 3 trajectories: 7482.843183071663
+4705
+avg return on 3 trajectories: 7576.871950784698
+4706
+avg return on 3 trajectories: 7357.353858693193
+4707
+avg return on 3 trajectories: 6657.0242817948265
+4708
+avg return on 3 trajectories: 7498.098539464176
+4709
+avg return on 3 trajectories: 7390.963484776516
+4710
+avg return on 3 trajectories: 6374.115279530485
+4711
+avg return on 3 trajectories: 5297.797845306496
+4712
+avg return on 3 trajectories: 4991.469342146069
+4713
+avg return on 3 trajectories: 7525.711485539873
+4714
+avg return on 3 trajectories: 7576.4813302407665
+4715
+avg return on 3 trajectories: 7507.458807053666
+4716
+avg return on 3 trajectories: 7399.72280504927
+4717
+avg return on 3 trajectories: 6714.516498231639
+4718
+avg return on 3 trajectories: 5383.723086799185
+4719
+avg return on 3 trajectories: 5475.029171484212
+4720
+avg return on 3 trajectories: 7542.381008205314
+4721
+avg return on 3 trajectories: 7504.091639806827
+4722
+avg return on 3 trajectories: 7526.564605104427
+4723
+avg return on 3 trajectories: 6147.710076575478
+4724
+avg return on 3 trajectories: 5652.974039052923
+4725
+avg return on 3 trajectories: 7642.763894359271
+4726
+avg return on 3 trajectories: 7624.943289448817
+4727
+avg return on 3 trajectories: 7447.565027527511
+4728
+avg return on 3 trajectories: 5390.581264436245
+4729
+avg return on 3 trajectories: 6696.418891089658
+4730
+avg return on 3 trajectories: 7513.218647744507
+4731
+avg return on 3 trajectories: 5504.665577782939
+4732
+avg return on 3 trajectories: 7534.838815499097
+4733
+avg return on 3 trajectories: 7572.406066806366
+4734
+avg return on 3 trajectories: 7587.335537093381
+4735
+avg return on 3 trajectories: 7558.458374348779
+4736
+avg return on 3 trajectories: 7451.677859532957
+4737
+avg return on 3 trajectories: 7499.326893050224
+4738
+avg return on 3 trajectories: 3849.277627858644
+4739
+avg return on 3 trajectories: 4114.668869619258
+4740
+avg return on 3 trajectories: 4355.610923031966
+4741
+avg return on 3 trajectories: 7480.005134092644
+4742
+avg return on 3 trajectories: 7574.385829329491
+4743
+avg return on 3 trajectories: 7546.264266515772
+4744
+avg return on 3 trajectories: 5194.38593006134
+4745
+avg return on 3 trajectories: 7516.9366410672665
+4746
+avg return on 3 trajectories: 6492.8011176163955
+4747
+avg return on 3 trajectories: 7541.20917383333
+4748
+avg return on 3 trajectories: 5453.1368366455035
+4749
+avg return on 3 trajectories: 7572.61335934947
+4750
+avg return on 3 trajectories: 7513.933326274157
+4751
+avg return on 3 trajectories: 7534.777234174311
+4752
+avg return on 3 trajectories: 7363.134366283814
+4753
+avg return on 3 trajectories: 7496.203007203837
+4754
+avg return on 3 trajectories: 7318.860443922381
+4755
+avg return on 3 trajectories: 7531.54866446058
+4756
+avg return on 3 trajectories: 6220.284961558878
+4757
+avg return on 3 trajectories: 7555.52632488807
+4758
+avg return on 3 trajectories: 7525.934799897174
+4759
+avg return on 3 trajectories: 7536.027987010777
+4760
+avg return on 3 trajectories: 7507.218925168117
+4761
+avg return on 3 trajectories: 5676.429000124335
+4762
+avg return on 3 trajectories: 7480.9025785724325
+4763
+avg return on 3 trajectories: 4899.491290782888
+4764
+avg return on 3 trajectories: 7380.493607064088
+4765
+avg return on 3 trajectories: 7608.340888765951
+4766
+avg return on 3 trajectories: 7547.85785386463
+4767
+avg return on 3 trajectories: 5575.988530432184
+4768
+avg return on 3 trajectories: 7487.266074781616
+4769
+avg return on 3 trajectories: 7462.221941595276
+4770
+avg return on 3 trajectories: 7601.388907149434
+4771
+avg return on 3 trajectories: 7519.543013130625
+4772
+avg return on 3 trajectories: 7554.3069065362215
+4773
+avg return on 3 trajectories: 6780.306687697768
+4774
+avg return on 3 trajectories: 6843.9640892197685
+4775
+avg return on 3 trajectories: 7584.4535455008345
+4776
+avg return on 3 trajectories: 5109.267675419648
+4777
+avg return on 3 trajectories: 6885.960147495071
+4778
+avg return on 3 trajectories: 7559.734968254964
+4779
+avg return on 3 trajectories: 7562.378549168508
+4780
+avg return on 3 trajectories: 5414.222175180912
+4781
+avg return on 3 trajectories: 7611.913804287712
+4782
+avg return on 3 trajectories: 7547.872897605102
+4783
+avg return on 3 trajectories: 6135.68441401422
+4784
+avg return on 3 trajectories: 5454.0604247575
+4785
+avg return on 3 trajectories: 7511.372846345107
+4786
+avg return on 3 trajectories: 5303.985641131799
+4787
+avg return on 3 trajectories: 7623.245687780281
+4788
+avg return on 3 trajectories: 7521.727837018669
+4789
+avg return on 3 trajectories: 7447.745348371565
+4790
+avg return on 3 trajectories: 7158.260182335973
+4791
+avg return on 3 trajectories: 7515.919613242149
+4792
+avg return on 3 trajectories: 7461.801811814308
+4793
+avg return on 3 trajectories: 7506.129132981102
+4794
+avg return on 3 trajectories: 7702.078806037704
+4795
+avg return on 3 trajectories: 7641.65879591306
+4796
+avg return on 3 trajectories: 7639.36913134406
+4797
+avg return on 3 trajectories: 7499.818855235974
+4798
+avg return on 3 trajectories: 7418.260802085201
+4799
+avg return on 3 trajectories: 5280.143998190761
+4800
+avg return on 3 trajectories: 5456.559922417005
+4801
+avg return on 3 trajectories: 7372.664031326771
+4802
+avg return on 3 trajectories: 4633.267451519768
+4803
+avg return on 3 trajectories: 7457.015472471714
+4804
+avg return on 3 trajectories: 7482.241285781066
+4805
+avg return on 3 trajectories: 7575.370036482811
+4806
+avg return on 3 trajectories: 7447.9128161718445
+4807
+avg return on 3 trajectories: 7507.4077539692325
+4808
+avg return on 3 trajectories: 7517.1668854306145
+4809
+avg return on 3 trajectories: 5123.940752332409
+4810
+avg return on 3 trajectories: 7522.527558743954
+4811
+avg return on 3 trajectories: 7193.490779325366
+4812
+avg return on 3 trajectories: 7548.605759595831
+4813
+avg return on 3 trajectories: 5351.340332239866
+4814
+avg return on 3 trajectories: 7637.270867695411
+4815
+avg return on 3 trajectories: 7330.693342407544
+4816
+avg return on 3 trajectories: 6249.932626942173
+4817
+avg return on 3 trajectories: 7543.6518099109335
+4818
+avg return on 3 trajectories: 7509.918184570968
+4819
+avg return on 3 trajectories: 7613.998154327273
+4820
+avg return on 3 trajectories: 7562.62197347482
+4821
+avg return on 3 trajectories: 7604.4632935201125
+4822
+avg return on 3 trajectories: 7627.90933757772
+4823
+avg return on 3 trajectories: 7571.986669580142
+4824
+avg return on 3 trajectories: 7431.262007651229
+4825
+avg return on 3 trajectories: 7524.593261167407
+4826
+avg return on 3 trajectories: 7539.573334132631
+4827
+avg return on 3 trajectories: 7544.6238704025745
+4828
+avg return on 3 trajectories: 5544.817016407847
+4829
+avg return on 3 trajectories: 7585.0610198875265
+4830
+avg return on 3 trajectories: 7633.943490833044
+4831
+avg return on 3 trajectories: 7621.319846726954
+4832
+avg return on 3 trajectories: 7518.392826624215
+4833
+avg return on 3 trajectories: 7557.918932932119
+4834
+avg return on 3 trajectories: 7551.5643994386
+4835
+avg return on 3 trajectories: 7581.075623884797
+4836
+avg return on 3 trajectories: 7610.065364323556
+4837
+avg return on 3 trajectories: 7497.555157162249
+4838
+avg return on 3 trajectories: 5517.76649300009
+4839
+avg return on 3 trajectories: 7272.459856502712
+4840
+avg return on 3 trajectories: 4962.68308720241
+4841
+avg return on 3 trajectories: 7618.1848971570535
+4842
+avg return on 3 trajectories: 7230.819519833662
+4843
+avg return on 3 trajectories: 7561.307414939006
+4844
+avg return on 3 trajectories: 7531.524762521188
+4845
+avg return on 3 trajectories: 5479.2747996374965
+4846
+avg return on 3 trajectories: 7541.047429020827
+4847
+avg return on 3 trajectories: 6291.5080797337
+4848
+avg return on 3 trajectories: 5077.268500141799
+4849
+avg return on 3 trajectories: 5108.344387243192
+4850
+avg return on 3 trajectories: 7585.224719651665
+4851
+avg return on 3 trajectories: 7604.752025056009
+4852
+avg return on 3 trajectories: 7527.357547348986
+4853
+avg return on 3 trajectories: 7633.653818006317
+4854
+avg return on 3 trajectories: 7510.630148686469
+4855
+avg return on 3 trajectories: 7519.652902821079
+4856
+avg return on 3 trajectories: 7403.637341432273
+4857
+avg return on 3 trajectories: 7030.384253036231
+4858
+avg return on 3 trajectories: 7497.469350804885
+4859
+avg return on 3 trajectories: 5215.737569257617
+4860
+avg return on 3 trajectories: 7547.223426189274
+4861
+avg return on 3 trajectories: 7539.577109164248
+4862
+avg return on 3 trajectories: 5671.598748861502
+4863
+avg return on 3 trajectories: 5089.384863351782
+4864
+avg return on 3 trajectories: 7469.536281605561
+4865
+avg return on 3 trajectories: 7571.758729849011
+4866
+avg return on 3 trajectories: 7491.294911637902
+4867
+avg return on 3 trajectories: 7496.75196056813
+4868
+avg return on 3 trajectories: 7658.3927585793035
+4869
+avg return on 3 trajectories: 7608.975423388183
+4870
+avg return on 3 trajectories: 7561.847624061008
+4871
+avg return on 3 trajectories: 6469.932149310596
+4872
+avg return on 3 trajectories: 7528.280746954183
+4873
+avg return on 3 trajectories: 6125.283827766776
+4874
+avg return on 3 trajectories: 7566.158301495016
+4875
+avg return on 3 trajectories: 7702.033766711752
+4876
+avg return on 3 trajectories: 7550.003043865164
+4877
+avg return on 3 trajectories: 7518.794921348493
+4878
+avg return on 3 trajectories: 7607.930651453634
+4879
+avg return on 3 trajectories: 7615.0685226768255
+4880
+avg return on 3 trajectories: 7200.624788781628
+4881
+avg return on 3 trajectories: 7581.442485337456
+4882
+avg return on 3 trajectories: 7541.812301081915
+4883
+avg return on 3 trajectories: 7597.823960908999
+4884
+avg return on 3 trajectories: 7247.331876279165
+4885
+avg return on 3 trajectories: 7575.616538109879
+4886
+avg return on 3 trajectories: 7613.5617678798735
+4887
+avg return on 3 trajectories: 7641.514565885067
+4888
+avg return on 3 trajectories: 6628.426591768861
+4889
+avg return on 3 trajectories: 7589.6747172226505
+4890
+avg return on 3 trajectories: 7495.799796092014
+4891
+avg return on 3 trajectories: 6556.099605702485
+4892
+avg return on 3 trajectories: 7574.362627837807
+4893
+avg return on 3 trajectories: 7591.16789706548
+4894
+avg return on 3 trajectories: 5350.057668807606
+4895
+avg return on 3 trajectories: 7484.428102463484
+4896
+avg return on 3 trajectories: 4891.7179629430175
+4897
+avg return on 3 trajectories: 7546.826129695401
+4898
+avg return on 3 trajectories: 7521.9862609605
+4899
+avg return on 3 trajectories: 7635.58337689067
+4900
+avg return on 3 trajectories: 5573.195686787367
+4901
+avg return on 3 trajectories: 7396.931107293814
+4902
+avg return on 3 trajectories: 7510.747496757656
+4903
+avg return on 3 trajectories: 7517.962735568483
+4904
+avg return on 3 trajectories: 5138.0720820787055
+4905
+avg return on 3 trajectories: 7524.6534117559595
+4906
+avg return on 3 trajectories: 7601.996923098962
+4907
+avg return on 3 trajectories: 7611.738979308556
+4908
+avg return on 3 trajectories: 3115.362708029648
+4909
+avg return on 3 trajectories: 5388.304215706885
+4910
+avg return on 3 trajectories: 7515.580813679844
+4911
+avg return on 3 trajectories: 5104.718275542061
+4912
+avg return on 3 trajectories: 7574.956639978103
+4913
+avg return on 3 trajectories: 7107.20589051644
+4914
+avg return on 3 trajectories: 6260.9599648627145
+4915
+avg return on 3 trajectories: 7486.782084641357
+4916
+avg return on 3 trajectories: 6761.473437121759
+4917
+avg return on 3 trajectories: 7615.510088475421
+4918
+avg return on 3 trajectories: 7447.700014610465
+4919
+avg return on 3 trajectories: 7583.3380911046015
+4920
+avg return on 3 trajectories: 5149.219025423129
+4921
+avg return on 3 trajectories: 7628.067454436173
+4922
+avg return on 3 trajectories: 5213.8325645203395
+4923
+avg return on 3 trajectories: 7606.765784688294
+4924
+avg return on 3 trajectories: 5877.440108089398
+4925
+avg return on 3 trajectories: 7612.924103929351
+4926
+avg return on 3 trajectories: 7544.741110074024
+4927
+avg return on 3 trajectories: 5636.844149202108
+4928
+avg return on 3 trajectories: 6069.820063550025
+4929
+avg return on 3 trajectories: 7567.981925693651
+4930
+avg return on 3 trajectories: 5203.708883448194
+4931
+avg return on 3 trajectories: 7516.645215776439
+4932
+avg return on 3 trajectories: 7601.505920395255
+4933
+avg return on 3 trajectories: 7202.949941355735
+4934
+avg return on 3 trajectories: 7678.737175233662
+4935
+avg return on 3 trajectories: 4404.072039167087
+4936
+avg return on 3 trajectories: 7580.297833959262
+4937
+avg return on 3 trajectories: 7571.433221630752
+4938
+avg return on 3 trajectories: 7635.169444385916
+4939
+avg return on 3 trajectories: 7482.706751241039
+4940
+avg return on 3 trajectories: 7589.404127787799
+4941
+avg return on 3 trajectories: 7545.748334704588
+4942
+avg return on 3 trajectories: 7577.063788632552
+4943
+avg return on 3 trajectories: 6138.995526746537
+4944
+avg return on 3 trajectories: 7528.972061851993
+4945
+avg return on 3 trajectories: 6064.179707467556
+4946
+avg return on 3 trajectories: 7657.568569102635
+4947
+avg return on 3 trajectories: 7643.633192397654
+4948
+avg return on 3 trajectories: 7592.0499591430025
+4949
+avg return on 3 trajectories: 7560.799056400235
+4950
+avg return on 3 trajectories: 6447.298333821197
+4951
+avg return on 3 trajectories: 7516.0285719422
+4952
+avg return on 3 trajectories: 6327.609439256291
+4953
+avg return on 3 trajectories: 5100.107760953407
+4954
+avg return on 3 trajectories: 7595.063825639586
+4955
+avg return on 3 trajectories: 7551.659871878724
+4956
+avg return on 3 trajectories: 6548.649527912338
+4957
+avg return on 3 trajectories: 6910.835832419495
+4958
+avg return on 3 trajectories: 6661.160016180326
+4959
+avg return on 3 trajectories: 7626.374971116583
+4960
+avg return on 3 trajectories: 6751.1342414058745
+4961
+avg return on 3 trajectories: 7578.397953132789
+4962
+avg return on 3 trajectories: 7690.962981959184
+4963
+avg return on 3 trajectories: 7555.928096049775
+4964
+avg return on 3 trajectories: 3359.509170246621
+4965
+avg return on 3 trajectories: 7415.782754741299
+4966
+avg return on 3 trajectories: 5161.568916469812
+4967
+avg return on 3 trajectories: 5637.840958739321
+4968
+avg return on 3 trajectories: 5062.0774977356195
+4969
+avg return on 3 trajectories: 7460.871688162287
+4970
+avg return on 3 trajectories: 5596.744898078342
+4971
+avg return on 3 trajectories: 7563.702794057627
+4972
+avg return on 3 trajectories: 7684.909823094805
+4973
+avg return on 3 trajectories: 7582.586984510223
+4974
+avg return on 3 trajectories: 7637.0053807844715
+4975
+avg return on 3 trajectories: 5870.901349529624
+4976
+avg return on 3 trajectories: 7601.343781923254
+4977
+avg return on 3 trajectories: 5280.741567596793
+4978
+avg return on 3 trajectories: 7444.713399728139
+4979
+avg return on 3 trajectories: 7526.90679986154
+4980
+avg return on 3 trajectories: 7688.282633244991
+4981
+avg return on 3 trajectories: 7482.000400672357
+4982
+avg return on 3 trajectories: 5070.819272950292
+4983
+avg return on 3 trajectories: 7503.910907541712
+4984
+avg return on 3 trajectories: 7519.402567471067
+4985
+avg return on 3 trajectories: 5887.389680517216
+4986
+avg return on 3 trajectories: 5650.551206504305
+4987
+avg return on 3 trajectories: 5491.9828776915865
+4988
+avg return on 3 trajectories: 7573.39926917851
+4989
+avg return on 3 trajectories: 7485.6465088278055
+4990
+avg return on 3 trajectories: 7535.798548974097
+4991
+avg return on 3 trajectories: 7544.286608243982
+4992
+avg return on 3 trajectories: 7573.103640812139
+4993
+avg return on 3 trajectories: 7579.407749240597
+4994
+avg return on 3 trajectories: 7534.553037653367
+4995
+avg return on 3 trajectories: 7550.3798874852555
+4996
+avg return on 3 trajectories: 7531.714886876444
+4997
+avg return on 3 trajectories: 7507.2715788036585
+4998
+avg return on 3 trajectories: 5008.5048861429095
+4999
+avg return on 3 trajectories: 6191.30074930191
+5000
+avg return on 3 trajectories: 7698.2681915601715
+5001
+avg return on 3 trajectories: 5095.831005255382
+5002
+avg return on 3 trajectories: 7521.857392812769
+5003
+avg return on 3 trajectories: 7682.105486820142
+5004
+avg return on 3 trajectories: 7594.29425735275
+5005
+avg return on 3 trajectories: 7604.579223697384
+5006
+avg return on 3 trajectories: 4469.275542957087
+5007
+avg return on 3 trajectories: 7644.001620016992
+5008
+avg return on 3 trajectories: 7550.634908693532
+5009
+avg return on 3 trajectories: 7492.520720305542
+5010
+avg return on 3 trajectories: 6326.366026548048
+5011
+avg return on 3 trajectories: 7645.442146226764
+5012
+avg return on 3 trajectories: 7634.278253994882
+5013
+avg return on 3 trajectories: 7587.105245833595
+5014
+avg return on 3 trajectories: 7522.607542661329
+5015
+avg return on 3 trajectories: 7674.048299327493
+5016
+avg return on 3 trajectories: 5825.203817109267
+5017
+avg return on 3 trajectories: 7609.201995583872
+5018
+avg return on 3 trajectories: 7594.1878657632815
+5019
+avg return on 3 trajectories: 7574.759385898709
+5020
+avg return on 3 trajectories: 7550.517928190529
+5021
+avg return on 3 trajectories: 7537.562781708936
+5022
+avg return on 3 trajectories: 7565.848597377539
+5023
+avg return on 3 trajectories: 7679.417134595414
+5024
+avg return on 3 trajectories: 7637.964525226504
+5025
+avg return on 3 trajectories: 7528.574779063463
+5026
+avg return on 3 trajectories: 5137.307344953219
+5027
+avg return on 3 trajectories: 7484.994536494215
+5028
+avg return on 3 trajectories: 7504.280088226001
+5029
+avg return on 3 trajectories: 6550.2742019792395
+5030
+avg return on 3 trajectories: 7452.857682257891
+5031
+avg return on 3 trajectories: 4010.793962524583
+5032
+avg return on 3 trajectories: 7625.53458404541
+5033
+avg return on 3 trajectories: 7558.392698615789
+5034
+avg return on 3 trajectories: 5086.765353371699
+5035
+avg return on 3 trajectories: 7545.9941111803055
+5036
+avg return on 3 trajectories: 7585.49260789901
+5037
+avg return on 3 trajectories: 7576.295696551601
+5038
+avg return on 3 trajectories: 7551.514550104737
+5039
+avg return on 3 trajectories: 7681.292124691109
+5040
+avg return on 3 trajectories: 5695.317676814894
+5041
+avg return on 3 trajectories: 7606.2279121826095
+5042
+avg return on 3 trajectories: 6430.91324662293
+5043
+avg return on 3 trajectories: 7710.186717034628
+5044
+avg return on 3 trajectories: 7645.923744165028
+5045
+avg return on 3 trajectories: 7692.461083859205
+5046
+avg return on 3 trajectories: 7606.822366689642
+5047
+avg return on 3 trajectories: 7605.494687259197
+5048
+avg return on 3 trajectories: 7689.202448621392
+5049
+avg return on 3 trajectories: 7625.767713362972
+5050
+avg return on 3 trajectories: 6107.176776058972
+5051
+avg return on 3 trajectories: 7544.041463290651
+5052
+avg return on 3 trajectories: 7572.9758066535
+5053
+avg return on 3 trajectories: 6857.334853882591
+5054
+avg return on 3 trajectories: 6242.941912929217
+5055
+avg return on 3 trajectories: 7563.4901501437025
+5056
+avg return on 3 trajectories: 7645.840861782432
+5057
+avg return on 3 trajectories: 5257.234589656194
+5058
+avg return on 3 trajectories: 7747.763164828221
+5059
+avg return on 3 trajectories: 7648.384108910958
+5060
+avg return on 3 trajectories: 7471.819579263528
+5061
+avg return on 3 trajectories: 7629.248904908697
+5062
+avg return on 3 trajectories: 7615.035631964604
+5063
+avg return on 3 trajectories: 3098.763189976414
+5064
+avg return on 3 trajectories: 5596.898196190596
+5065
+avg return on 3 trajectories: 6129.100382265945
+5066
+avg return on 3 trajectories: 7480.489408046007
+5067
+avg return on 3 trajectories: 7535.657552678138
+5068
+avg return on 3 trajectories: 7642.17408733194
+5069
+avg return on 3 trajectories: 7514.828954352687
+5070
+avg return on 3 trajectories: 5591.747060164809
+5071
+avg return on 3 trajectories: 7690.830768351753
+5072
+avg return on 3 trajectories: 6393.424248387416
+5073
+avg return on 3 trajectories: 7518.416888316472
+5074
+avg return on 3 trajectories: 7542.007166629036
+5075
+avg return on 3 trajectories: 7693.68861151735
+5076
+avg return on 3 trajectories: 5405.847105577588
+5077
+avg return on 3 trajectories: 6400.74585742255
+5078
+avg return on 3 trajectories: 7566.141484667857
+5079
+avg return on 3 trajectories: 5093.776999458671
+5080
+avg return on 3 trajectories: 5073.032605111599
+5081
+avg return on 3 trajectories: 7624.788685475786
+5082
+avg return on 3 trajectories: 5455.188218353937
+5083
+avg return on 3 trajectories: 6198.781107177337
+5084
+avg return on 3 trajectories: 7652.5871203740435
+5085
+avg return on 3 trajectories: 5127.833791365226
+5086
+avg return on 3 trajectories: 7504.758277739088
+5087
+avg return on 3 trajectories: 7663.235691316426
+5088
+avg return on 3 trajectories: 7573.882639661431
+5089
+avg return on 3 trajectories: 7464.3947340250015
+5090
+avg return on 3 trajectories: 3121.0553451130786
+5091
+avg return on 3 trajectories: 6870.719411477447
+5092
+avg return on 3 trajectories: 7765.994357764721
+5093
+avg return on 3 trajectories: 6441.533967783053
+5094
+avg return on 3 trajectories: 7608.684859367709
+5095
+avg return on 3 trajectories: 7670.759204059839
+5096
+avg return on 3 trajectories: 5228.257167031367
+5097
+avg return on 3 trajectories: 7677.157396147649
+5098
+avg return on 3 trajectories: 6480.792226145665
+5099
+avg return on 3 trajectories: 7618.42597215126
+5100
+avg return on 3 trajectories: 7610.59885922571
+5101
+avg return on 3 trajectories: 7628.794136007627
+5102
+avg return on 3 trajectories: 7570.448707473774
+5103
+avg return on 3 trajectories: 7361.789997500678
+5104
+avg return on 3 trajectories: 5624.9100726336865
+5105
+avg return on 3 trajectories: 5133.036730406185
+5106
+avg return on 3 trajectories: 7555.204154058049
+5107
+avg return on 3 trajectories: 7635.746455848217
+5108
+avg return on 3 trajectories: 7598.156673744321
+5109
+avg return on 3 trajectories: 7662.661379819115
+5110
+avg return on 3 trajectories: 7541.432094988723
+5111
+avg return on 3 trajectories: 5007.520606838167
+5112
+avg return on 3 trajectories: 7609.45430676934
+5113
+avg return on 3 trajectories: 7555.986160226166
+5114
+avg return on 3 trajectories: 7598.382647370298
+5115
+avg return on 3 trajectories: 7736.8140289286775
+5116
+avg return on 3 trajectories: 7595.149041394393
+5117
+avg return on 3 trajectories: 7616.322044558513
+5118
+avg return on 3 trajectories: 7660.185955079894
+5119
+avg return on 3 trajectories: 6182.873368700345
+5120
+avg return on 3 trajectories: 7661.333291473488
+5121
+avg return on 3 trajectories: 6358.574085955818
+5122
+avg return on 3 trajectories: 7619.436209877332
+5123
+avg return on 3 trajectories: 5014.00739643909
+5124
+avg return on 3 trajectories: 7664.376303717494
+5125
+avg return on 3 trajectories: 7675.963233908017
+5126
+avg return on 3 trajectories: 7543.766696974635
+5127
+avg return on 3 trajectories: 7613.811915541689
+5128
+avg return on 3 trajectories: 7647.826191743215
+5129
+avg return on 3 trajectories: 7570.583155994614
+5130
+avg return on 3 trajectories: 5636.983315383394
+5131
+avg return on 3 trajectories: 7534.398361787821
+5132
+avg return on 3 trajectories: 7516.134315992395
+5133
+avg return on 3 trajectories: 7410.843921800454
+5134
+avg return on 3 trajectories: 6438.730253323913
+5135
+avg return on 3 trajectories: 5386.261323774855
+5136
+avg return on 3 trajectories: 7659.601567231119
+5137
+avg return on 3 trajectories: 7506.766597462197
+5138
+avg return on 3 trajectories: 7705.852282218635
+5139
+avg return on 3 trajectories: 7670.572310249011
+5140
+avg return on 3 trajectories: 7619.203052207828
+5141
+avg return on 3 trajectories: 7765.233185313642
+5142
+avg return on 3 trajectories: 5539.8100704699755
+5143
+avg return on 3 trajectories: 6005.824388346635
+5144
+avg return on 3 trajectories: 7677.949321726958
+5145
+avg return on 3 trajectories: 7498.366577054064
+5146
+avg return on 3 trajectories: 7513.051042084892
+5147
+avg return on 3 trajectories: 7169.0383975754185
+5148
+avg return on 3 trajectories: 5967.027755050764
+5149
+avg return on 3 trajectories: 7609.166936690609
+5150
+avg return on 3 trajectories: 5072.193658679724
+5151
+avg return on 3 trajectories: 7664.5274683435755
+5152
+avg return on 3 trajectories: 7662.575829252601
+5153
+avg return on 3 trajectories: 7618.217656900485
+5154
+avg return on 3 trajectories: 7621.002051194509
+5155
+avg return on 3 trajectories: 5641.283536995451
+5156
+avg return on 3 trajectories: 7563.526313684881
+5157
+avg return on 3 trajectories: 7596.525452324499
+5158
+avg return on 3 trajectories: 7602.342058466126
+5159
+avg return on 3 trajectories: 7575.941459237288
+5160
+avg return on 3 trajectories: 7010.4213661725325
+5161
+avg return on 3 trajectories: 7606.605842322111
+5162
+avg return on 3 trajectories: 7545.210803167273
+5163
+avg return on 3 trajectories: 7647.4182593754185
+5164
+avg return on 3 trajectories: 7615.542499275257
+5165
+avg return on 3 trajectories: 5365.215813525021
+5166
+avg return on 3 trajectories: 7647.577686846256
+5167
+avg return on 3 trajectories: 7629.296936872105
+5168
+avg return on 3 trajectories: 7627.511755901699
+5169
+avg return on 3 trajectories: 7409.705517179643
+5170
+avg return on 3 trajectories: 7615.935352727771
+5171
+avg return on 3 trajectories: 5775.36841276288
+5172
+avg return on 3 trajectories: 6641.470267464717
+5173
+avg return on 3 trajectories: 7613.4880500423415
+5174
+avg return on 3 trajectories: 7627.365184778969
+5175
+avg return on 3 trajectories: 7590.2559224839015
+5176
+avg return on 3 trajectories: 7206.8394925147295
+5177
+avg return on 3 trajectories: 7649.343997259934
+5178
+avg return on 3 trajectories: 5412.077173180878
+5179
+avg return on 3 trajectories: 7708.7136416820185
+5180
+avg return on 3 trajectories: 6778.6329495459795
+5181
+avg return on 3 trajectories: 6887.041528181483
+5182
+avg return on 3 trajectories: 7640.116786391784
+5183
+avg return on 3 trajectories: 5141.700891652455
+5184
+avg return on 3 trajectories: 7141.133212953806
+5185
+avg return on 3 trajectories: 7670.731554036339
+5186
+avg return on 3 trajectories: 7715.1579047391815
+5187
+avg return on 3 trajectories: 5542.968680359423
+5188
+avg return on 3 trajectories: 6218.014514591545
+5189
+avg return on 3 trajectories: 7571.775538545102
+5190
+avg return on 3 trajectories: 7696.867350827903
+5191
+avg return on 3 trajectories: 7654.066488551597
+5192
+avg return on 3 trajectories: 7680.30350338171
+5193
+avg return on 3 trajectories: 7702.030755537252
+5194
+avg return on 3 trajectories: 7506.607637306054
+5195
+avg return on 3 trajectories: 7672.843561743696
+5196
+avg return on 3 trajectories: 5184.987569642563
+5197
+avg return on 3 trajectories: 7606.5000596443815
+5198
+avg return on 3 trajectories: 7571.619746673852
+5199
+avg return on 3 trajectories: 7689.413413822651
+5200
+avg return on 3 trajectories: 7605.516975942999
+5201
+avg return on 3 trajectories: 7714.369973964989
+5202
+avg return on 3 trajectories: 7637.740532906105
+5203
+avg return on 3 trajectories: 5366.106236624221
+5204
+avg return on 3 trajectories: 7805.194543103377
+5205
+avg return on 3 trajectories: 7396.180281944573
+5206
+avg return on 3 trajectories: 7697.749929239352
+5207
+avg return on 3 trajectories: 7728.420023923119
+5208
+avg return on 3 trajectories: 7647.950507899125
+5209
+avg return on 3 trajectories: 7735.366320497046
+5210
+avg return on 3 trajectories: 7645.6217698765295
+5211
+avg return on 3 trajectories: 7614.756917160004
+5212
+avg return on 3 trajectories: 6398.22294370085
+5213
+avg return on 3 trajectories: 7574.9767513386905
+5214
+avg return on 3 trajectories: 7592.077978242189
+5215
+avg return on 3 trajectories: 7637.778739013399
+5216
+avg return on 3 trajectories: 7578.886782719754
+5217
+avg return on 3 trajectories: 7576.491835812262
+5218
+avg return on 3 trajectories: 7624.014208042373
+5219
+avg return on 3 trajectories: 7744.820316726963
+5220
+avg return on 3 trajectories: 7655.845758038263
+5221
+avg return on 3 trajectories: 7602.515134792775
+5222
+avg return on 3 trajectories: 7657.82541130359
+5223
+avg return on 3 trajectories: 6424.555169689159
+5224
+avg return on 3 trajectories: 5222.750991541271
+5225
+avg return on 3 trajectories: 7685.976834733349
+5226
+avg return on 3 trajectories: 7565.894650816452
+5227
+avg return on 3 trajectories: 7733.8527337524965
+5228
+avg return on 3 trajectories: 7690.082568525337
+5229
+avg return on 3 trajectories: 5270.068084339301
+5230
+avg return on 3 trajectories: 7209.305032785361
+5231
+avg return on 3 trajectories: 7317.991681562115
+5232
+avg return on 3 trajectories: 7678.93723167479
+5233
+avg return on 3 trajectories: 7696.825459241246
+5234
+avg return on 3 trajectories: 7714.78629933546
+5235
+avg return on 3 trajectories: 5664.327524836175
+5236
+avg return on 3 trajectories: 7131.100220755208
+5237
+avg return on 3 trajectories: 7032.000595891538
+5238
+avg return on 3 trajectories: 7752.138618131789
+5239
+avg return on 3 trajectories: 5021.57802214101
+5240
+avg return on 3 trajectories: 7428.171958828073
+5241
+avg return on 3 trajectories: 6172.931393949238
+5242
+avg return on 3 trajectories: 7698.7034768012045
+5243
+avg return on 3 trajectories: 5190.923557163526
+5244
+avg return on 3 trajectories: 7630.997330920461
+5245
+avg return on 3 trajectories: 7769.59411057954
+5246
+avg return on 3 trajectories: 7652.899772179623
+5247
+avg return on 3 trajectories: 7715.174221918918
+5248
+avg return on 3 trajectories: 7740.332844710288
+5249
+avg return on 3 trajectories: 7752.874112011244
+5250
+avg return on 3 trajectories: 5211.603335224751
+5251
+avg return on 3 trajectories: 7650.919499402866
+5252
+avg return on 3 trajectories: 7593.665790664653
+5253
+avg return on 3 trajectories: 7545.194597497582
+5254
+avg return on 3 trajectories: 7717.972938614587
+5255
+avg return on 3 trajectories: 7618.719982566933
+5256
+avg return on 3 trajectories: 5105.375830519944
+5257
+avg return on 3 trajectories: 7683.998109580328
+5258
+avg return on 3 trajectories: 7725.922529006377
+5259
+avg return on 3 trajectories: 5017.233820809673
+5260
+avg return on 3 trajectories: 7808.530348549287
+5261
+avg return on 3 trajectories: 7689.314875160654
+5262
+avg return on 3 trajectories: 7663.178924558063
+5263
+avg return on 3 trajectories: 7697.973029740155
+5264
+avg return on 3 trajectories: 7717.37156863759
+5265
+avg return on 3 trajectories: 7675.444645424684
+5266
+avg return on 3 trajectories: 5825.579661079372
+5267
+avg return on 3 trajectories: 7675.528687552859
+5268
+avg return on 3 trajectories: 7537.724338516593
+5269
+avg return on 3 trajectories: 7638.236033619692
+5270
+avg return on 3 trajectories: 7655.392178509384
+5271
+avg return on 3 trajectories: 7692.370910377552
+5272
+avg return on 3 trajectories: 7666.848961170763
+5273
+avg return on 3 trajectories: 7641.983489900827
+5274
+avg return on 3 trajectories: 7695.469164197643
+5275
+avg return on 3 trajectories: 4768.264719029267
+5276
+avg return on 3 trajectories: 5203.756280263265
+5277
+avg return on 3 trajectories: 6578.271228032808
+5278
+avg return on 3 trajectories: 4181.793180594842
+5279
+avg return on 3 trajectories: 7794.40897364666
+5280
+avg return on 3 trajectories: 7615.605498169859
+5281
+avg return on 3 trajectories: 5482.469866849482
+5282
+avg return on 3 trajectories: 7759.485581937556
+5283
