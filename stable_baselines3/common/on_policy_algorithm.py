@@ -174,6 +174,51 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 UserWarning,
             )
 
+    def _actor_param_names(self):
+        """
+        Actor-only parameter name patterns for SB3 ActorCriticPolicy.
+        We exclude value-function parameters to keep the baseline clean.
+        """
+        return {
+            "mlp_extractor.policy_net",
+            "action_net",
+            "log_std",
+        }
+
+
+    def _apply_param_noise(self, std):
+        """
+        Apply Gaussian noise to actor parameters only.
+        Returns a backup dict: param_name -> original tensor.
+        """
+        if std <= 0:
+            return {}
+
+        backup = {}
+        actor_keys = self._actor_param_names()
+
+        with th.no_grad():
+            for name, p in self.policy.named_parameters():
+                if not p.requires_grad:
+                    continue
+                if any(k in name for k in actor_keys) and ("value" not in name):
+                    backup[name] = p.data.clone()
+                    p.add_(th.randn_like(p) * std)
+
+        return backup
+
+
+    def _restore_param_noise(self, backup):
+        """Restore parameters saved by _apply_param_noise."""
+        if not backup:
+            return
+
+        with th.no_grad():
+            for name, p in self.policy.named_parameters():
+                if name in backup:
+                    p.data.copy_(backup[name])
+
+
     def collect_rollouts(
         self,
         env: VecEnv,
@@ -199,6 +244,12 @@ class OnPolicyAlgorithm(BaseAlgorithm):
         # Switch to eval mode (this affects batch norm / dropout)
         self.policy.set_training_mode(False)
 
+        # backup_params = {}
+        # if getattr(self, "use_param_noise", False):
+        #     std = float(getattr(self, "param_noise_std", 0.0))
+        #     backup_params = self._apply_param_noise(std)
+
+
         n_steps = 0
         rollout_buffer.reset()
         # Sample new weights for the state dependent exploration
@@ -206,6 +257,8 @@ class OnPolicyAlgorithm(BaseAlgorithm):
             self.policy.reset_noise(env.num_envs)
 
         callback.on_rollout_start()
+
+        # try:
 
         while n_steps < n_rollout_steps:
             if self.use_sde and self.sde_sample_freq > 0 and n_steps % self.sde_sample_freq == 0:
@@ -291,6 +344,10 @@ class OnPolicyAlgorithm(BaseAlgorithm):
 
             if isinstance(env, VariBadWrapper) and np.all(dones):
                 self._last_obs = env.reset(seed=self.seed)
+            
+        # finally:
+        #     if backup_params:
+        #         self._restore_param_noise(backup_params)
 
         with th.no_grad():
             # Compute value for the last timestep

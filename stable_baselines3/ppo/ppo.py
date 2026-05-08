@@ -107,6 +107,8 @@ class PPO(OnPolicyAlgorithm):
         seed: Optional[int] = None,
         device: Union[th.device, str] = "auto",
         _init_setup_model: bool = True,
+        use_param_noise: bool = False,
+        param_noise_std: float = 0.02,
         **kwargs
     ):
         super().__init__(
@@ -182,6 +184,11 @@ class PPO(OnPolicyAlgorithm):
             self.env_name = env.spec.id
 
         self.current_iteration = 1
+
+        # --- Parameter space noise baseline (Plappert et al., 2017 style) ---
+        # Applied at rollout-time inside collect_rollouts() and restored afterwards.
+        self.use_param_noise = use_param_noise
+        self.param_noise_std = float(param_noise_std)
 
     def _setup_model(self) -> None:
         super()._setup_model()
