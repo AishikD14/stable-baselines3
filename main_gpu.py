@@ -51,6 +51,36 @@ warnings.filterwarnings("ignore")
 # remains on CPU, while PPO and the high-dimensional empty-space search can execute on the GPU.
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+# -------------------------------------------------------------------------------------------------
+# FQE runtime configuration
+# -------------------------------------------------------------------------------------------------
+# Defaults intentionally preserve the current experiment. Override these only
+# for explicit speed/quality ablations.
+FQE_N_STEPS = int(os.environ.get("FQE_N_STEPS", "10000"))
+FQE_N_STEPS_PER_EPOCH = int(os.environ.get("FQE_N_STEPS_PER_EPOCH", "1000"))
+FQE_BATCH_SIZE = int(os.environ.get("FQE_BATCH_SIZE", "100"))
+
+# Presentation/file-I/O switches only; these do not alter the FQE Bellman objective.
+FQE_SHOW_PROGRESS = os.environ.get("FQE_SHOW_PROGRESS", "0") == "1"
+FQE_USE_FILE_LOGGER = os.environ.get("FQE_USE_FILE_LOGGER", "0") == "1"
+
+# d3rlpy trains floor(n_steps / n_steps_per_epoch) complete epochs. Reject
+# invalid/non-divisible overrides so a requested FQE update budget is never
+# silently shortened (e.g. 2500 with 1000 would otherwise run only 2000 steps).
+if FQE_N_STEPS <= 0:
+    raise ValueError("FQE_N_STEPS must be > 0.")
+if FQE_N_STEPS_PER_EPOCH <= 0:
+    raise ValueError("FQE_N_STEPS_PER_EPOCH must be > 0.")
+if FQE_BATCH_SIZE <= 0:
+    raise ValueError("FQE_BATCH_SIZE must be > 0.")
+if FQE_N_STEPS % FQE_N_STEPS_PER_EPOCH != 0:
+    raise ValueError(
+        "FQE_N_STEPS must be exactly divisible by FQE_N_STEPS_PER_EPOCH "
+        "because d3rlpy otherwise truncates the requested training budget. "
+        f"Got FQE_N_STEPS={FQE_N_STEPS}, "
+        f"FQE_N_STEPS_PER_EPOCH={FQE_N_STEPS_PER_EPOCH}."
+    )
+
 
 def print_device_info():
     print("---------------------------------")
@@ -858,6 +888,13 @@ def advantage_evaluation(model, args, horizon=1000):
     return q_pred, q_loss
 
 # PPO Warppaer to wrap our empty space agent for calculating FQE
+# NOTE ON EXACT TARGET-ACTION CACHING:
+# pi(s') is fixed for each candidate and is mathematically cacheable. However,
+# d3rlpy's public FQE path calls predict_best_action(next_observations) without
+# exposing the sampled dataset indices. Exact indexed caching would require
+# modifying/subclassing d3rlpy FQE internals. To preserve the estimator itself,
+# this optimized version uses direct batched GPU inference instead of a brittle
+# observation-hash cache or a custom replacement FQE implementation.
 class PPOQWrapper(QLearningAlgoBase):
     def __init__(self, ppo_policy):
         super().__init__(config=LearnableConfig(), device=str(ppo_policy.device), enable_ddp=False)
@@ -872,16 +909,48 @@ class PPOQWrapper(QLearningAlgoBase):
     # --- Critical Overrides ---
     @torch.no_grad()
     def predict_best_action(self, x: TorchObservation) -> torch.Tensor:
-        """Directly use PPO's policy without relying on _impl."""
-        if isinstance(x, (list, tuple)):  # Handle complex observations
-            x = [xi.to(self.device) for xi in x]
-        else:
-            x = x.to(self.device)
-        
-        # Convert to numpy for SB3 compatibility
-        x_np = x.cpu().numpy() if isinstance(x, torch.Tensor) else x
-        actions, _ = self.ppo.predict(x_np, deterministic=True)
-        return torch.as_tensor(actions, device=self.device)
+        """Evaluate the fixed PPO target policy directly in PyTorch.
+
+        This removes the previous CUDA -> CPU/NumPy -> SB3.predict -> CUDA
+        round trip from every FQE Bellman update while keeping the same
+        deterministic PPO policy and Box-action post-processing.
+        """
+        # Continuous-control experiments in this file use tensor observations.
+        # Keep a compatibility fallback for structured observations.
+        if isinstance(x, (list, tuple)):
+            x_np = [
+                xi.detach().cpu().numpy() if torch.is_tensor(xi) else xi
+                for xi in x
+            ]
+            actions, _ = self.ppo.predict(x_np, deterministic=True)
+            return torch.as_tensor(
+                actions, dtype=torch.float32, device=self.ppo.device
+            )
+
+        x = x.to(device=self.ppo.device, dtype=torch.float32)
+
+        # SB3 BasePolicy.predict switches the policy to evaluation mode first.
+        # Preserve that behavior for exact deterministic inference.
+        self.ppo.policy.set_training_mode(False)
+        actions = self.ppo.policy._predict(x, deterministic=True)
+
+        action_space = self.ppo.action_space
+        if isinstance(action_space, gym.spaces.Box):
+            low = torch.as_tensor(
+                action_space.low, dtype=actions.dtype, device=actions.device
+            )
+            high = torch.as_tensor(
+                action_space.high, dtype=actions.dtype, device=actions.device
+            )
+
+            if self.ppo.policy.squash_output:
+                # Same mapping as SB3 BasePolicy.unscale_action, kept on GPU.
+                actions = low + 0.5 * (actions + 1.0) * (high - low)
+            else:
+                # Same clipping performed by SB3 BasePolicy.predict.
+                actions = torch.maximum(torch.minimum(actions, high), low)
+
+        return actions
 
     @torch.no_grad()
     def predict_value(self, x: TorchObservation, action: torch.Tensor) -> torch.Tensor:
@@ -1229,8 +1298,6 @@ def d3rl_evaluation(model, exp_name, dataset=None):
 
     try:
         ppo_wrapper = PPOQWrapper(model)
-
-        # 4. Build the wrapper internals using dataset info
         ppo_wrapper.build_with_dataset(dataset)
 
     except Exception as e:
@@ -1241,45 +1308,65 @@ def d3rl_evaluation(model, exp_name, dataset=None):
 
     try:
         fqe = d3rlpy.ope.FQE(
-            algo=ppo_wrapper, # Pass the wrapper instance
+            algo=ppo_wrapper,
             config=d3rlpy.ope.FQEConfig(
-                learning_rate=3e-4,         # Learning rate for FQE's internal Q-network
-                target_update_interval=100, # How often to update FQE's target network
-                gamma=ppo_wrapper.ppo.gamma, # Discount factor
+                learning_rate=3e-4,
+                target_update_interval=100,
+                gamma=ppo_wrapper.ppo.gamma,
+                # 100 is the current/default value in the working experiment.
+                # Keeping it explicit makes speed ablations reproducible.
+                batch_size=FQE_BATCH_SIZE,
             ),
-            # Keep FQE tensors on the same device as the wrapped PPO policy.
-            # This is analysis-only and does not change PPO/ESA/oracle behavior.
             device=str(device),
         )
 
         print("--------------------------------------------------------------------------------")
         print("Fitting d3rlpy FQE...")
-
-        # Consider using a smaller number of steps for initial testing
-        N_STEPS = 10000 # 10000
-        N_STEPS_PER_EPOCH = 1000 # 1000
-
-        output = fqe.fit(
-            dataset,
-            n_steps=N_STEPS,
-            n_steps_per_epoch=N_STEPS_PER_EPOCH,
-            evaluators={
-                # Estimates the expected value of the initial states according to FQE's learned Q-function
-                'init_value': d3rlpy.metrics.InitialStateValueEstimationEvaluator(),
-                # Soft Off-Policy Classification: Measures if the policy achieves a certain return threshold
-                # 'soft_opc': d3rlpy.metrics.SoftOPCEvaluator(return_threshold=1000), # Adjust threshold based on env/task
-            },
-            show_progress=True,
-            save_interval=N_STEPS//N_STEPS_PER_EPOCH,
-            experiment_name=exp_name
+        print(
+            "FQE runtime config: "
+            f"steps={FQE_N_STEPS}, "
+            f"steps_per_epoch={FQE_N_STEPS_PER_EPOCH}, "
+            f"batch_size={FQE_BATCH_SIZE}, "
+            f"progress={FQE_SHOW_PROGRESS}, "
+            f"file_logging={FQE_USE_FILE_LOGGER}"
         )
 
-        print("\nFQE Fitting completed.")
+        # Default d3rlpy FileAdapter writes metrics/checkpoints for every fit.
+        # The rank study needs only the final scalar score, so use a no-op
+        # adapter by default. This changes I/O only, not FQE optimization.
+        if FQE_USE_FILE_LOGGER:
+            logger_adapter = d3rlpy.logging.FileAdapterFactory()
+        else:
+            logger_adapter = d3rlpy.logging.NoopAdapterFactory()
 
-        # The primary result is often the initial state value estimate
-        initial_state_value = output[-1][1]['init_value'] # Get from the last epoch's results
+        fit_start = time.time()
+
+        # Preserve the same number of gradient updates and the same epoch length.
+        # The expensive InitialStateValue evaluator is no longer run after every
+        # epoch because only its final value was ever consumed.
+        fqe.fit(
+            dataset,
+            n_steps=FQE_N_STEPS,
+            n_steps_per_epoch=FQE_N_STEPS_PER_EPOCH,
+            evaluators=None,
+            show_progress=FQE_SHOW_PROGRESS,
+            logger_adapter=logger_adapter,
+            # With NoopAdapter this performs no disk write. Keeping a valid
+            # positive interval maintains compatibility across d3rlpy versions.
+            save_interval=max(1, FQE_N_STEPS // FQE_N_STEPS_PER_EPOCH),
+            experiment_name=exp_name,
+        )
+
+        fit_seconds = time.time() - fit_start
+        print(f"FQE fitting time: {fit_seconds:.3f} s")
+        print()
+        print("FQE Fitting completed.")
+
+        # Compute the same reported metric once after the final update.
+        init_evaluator = d3rlpy.metrics.InitialStateValueEstimationEvaluator()
+        initial_state_value = init_evaluator(fqe, dataset)
+
         print(f"Estimated Initial State Value: {initial_state_value}")
-
         return initial_state_value
 
     except Exception as e:
@@ -1742,7 +1829,7 @@ if __name__ == "__main__":
     SEARCH_INTERV = 1 # Make this 2 for n_epochs=5 and keep 1 for n_epochs=10
     # NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
     # TEST RUN: execute exactly one outer iteration
-    NUM_ITERS = START_ITER + SEARCH_INTERV
+    NUM_ITERS = START_ITER + SEARCH_INTERV*10
     # NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs) # For FetchReach-v4
     N_EPOCHS = args.n_epochs
 
