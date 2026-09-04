@@ -901,33 +901,331 @@ class PPOQWrapper(QLearningAlgoBase):
         """No-op since PPO isn't being trained."""
         return {}
 
-# Method for evaluating the FQE using d3rlpy
-def d3rl_evaluation(model, exp_name):
-    # terminals = model.replay_buffer.dones
 
-    # print("[INFO] Forcing terminal flags every", args.n_steps_per_rollout, "steps.")
-    # terminals = np.zeros_like(model.replay_buffer.rewards, dtype=bool)
-    # terminals[args.n_steps_per_rollout - 1 :: args.n_steps_per_rollout] = True
+def save_replay_buffer_npz(model, path):
+    """Save the complete SB3 ReplayBuffer state needed for exact restoration."""
+    rb = model.replay_buffer
+    path = str(path)
+    parent = os.path.dirname(path)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
 
-    # Flatten the replay buffer data
-    observations = model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1])
-    actions = model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1])
-    rewards = model.replay_buffer.rewards.reshape(-1, 1)
-    terminals = model.replay_buffer.dones.reshape(-1, 1)
-    # terminals =terminals.reshape(-1, terminals.shape[-1])
+    payload = {
+        "observations": np.asarray(rb.observations),
+        "actions": np.asarray(rb.actions),
+        "rewards": np.asarray(rb.rewards),
+        "dones": np.asarray(rb.dones),
+        "timeouts": np.asarray(rb.timeouts),
+        "pos": np.asarray(rb.pos, dtype=np.int64),
+        "full": np.asarray(rb.full, dtype=np.bool_),
+        "buffer_size": np.asarray(rb.buffer_size, dtype=np.int64),
+        "n_envs": np.asarray(rb.n_envs, dtype=np.int64),
+        "optimize_memory_usage": np.asarray(
+            getattr(rb, "optimize_memory_usage", False), dtype=np.bool_
+        ),
+        "handle_timeout_termination": np.asarray(
+            getattr(rb, "handle_timeout_termination", True), dtype=np.bool_
+        ),
+    }
 
-    # print("Observations shape:", observations.shape)
-    # print("Actions shape:", actions.shape)
-    # print("Rewards shape:", rewards.shape)
-    # print("Terminals shape:", terminals.shape)
+    if hasattr(rb, "next_observations"):
+        payload["next_observations"] = np.asarray(rb.next_observations)
 
-    # Build and return the MDPDataset
-    dataset = MDPDataset(
+    np.savez(path, **payload)
+
+    print("Replay buffer saved")
+    print("  path:", path)
+    print("  pos:", rb.pos)
+    print("  full:", rb.full)
+    print("  size:", rb.size())
+    print("  dones:", int(np.sum(rb.dones)))
+    print("  timeouts:", int(np.sum(rb.timeouts)))
+
+
+def load_replay_buffer_npz(model, path):
+    """Restore a replay buffer saved by save_replay_buffer_npz exactly.
+
+    Old flattened files are intentionally rejected because they are missing
+    timeout and circular-buffer metadata needed for reliable FQE.
+    """
+    rb = model.replay_buffer
+    path = str(path)
+
+    required = {
+        "observations",
+        "actions",
+        "rewards",
+        "dones",
+        "timeouts",
+        "pos",
+        "full",
+        "buffer_size",
+        "n_envs",
+    }
+
+    with np.load(path, allow_pickle=False) as saved:
+        missing = sorted(required.difference(saved.files))
+        if missing:
+            raise RuntimeError(
+                "Replay buffer file is in the old/incomplete format and cannot be "
+                "restored exactly for FQE. Missing fields: "
+                f"{missing}. Regenerate the initial replay buffer with "
+                "save_replay_buffer_npz()."
+            )
+
+        saved_buffer_size = int(np.asarray(saved["buffer_size"]).item())
+        saved_n_envs = int(np.asarray(saved["n_envs"]).item())
+
+        if saved_buffer_size != rb.buffer_size:
+            raise RuntimeError(
+                "Replay-buffer size mismatch: "
+                f"file={saved_buffer_size}, model={rb.buffer_size}"
+            )
+        if saved_n_envs != rb.n_envs:
+            raise RuntimeError(
+                "Replay-buffer n_envs mismatch: "
+                f"file={saved_n_envs}, model={rb.n_envs}"
+            )
+
+        def restore_array(name, target):
+            source = np.asarray(saved[name])
+            if source.shape != target.shape:
+                raise RuntimeError(
+                    f"Replay-buffer {name} shape mismatch: "
+                    f"file={source.shape}, model={target.shape}"
+                )
+            target[...] = source
+
+        # Preserve SB3's original [buffer_size, n_envs, ...] array layout.
+        restore_array("observations", rb.observations)
+        restore_array("actions", rb.actions)
+        restore_array("rewards", rb.rewards)
+        restore_array("dones", rb.dones)
+        restore_array("timeouts", rb.timeouts)
+
+        saved_optimize = bool(
+            np.asarray(saved["optimize_memory_usage"]).item()
+        ) if "optimize_memory_usage" in saved.files else False
+        current_optimize = bool(getattr(rb, "optimize_memory_usage", False))
+        if saved_optimize != current_optimize:
+            raise RuntimeError(
+                "Replay-buffer optimize_memory_usage mismatch: "
+                f"file={saved_optimize}, model={current_optimize}"
+            )
+
+        if hasattr(rb, "next_observations"):
+            if "next_observations" not in saved.files:
+                raise RuntimeError(
+                    "Replay buffer file is missing next_observations."
+                )
+            restore_array("next_observations", rb.next_observations)
+
+        if "handle_timeout_termination" in saved.files:
+            rb.handle_timeout_termination = bool(
+                np.asarray(saved["handle_timeout_termination"]).item()
+            )
+
+        rb.pos = int(np.asarray(saved["pos"]).item())
+        rb.full = bool(np.asarray(saved["full"]).item())
+
+    if not (0 <= rb.pos < rb.buffer_size):
+        raise RuntimeError(
+            f"Invalid restored replay-buffer position {rb.pos} "
+            f"for buffer_size={rb.buffer_size}."
+        )
+
+    print("Replay buffer loaded")
+    print("  path:", path)
+    print("  pos:", rb.pos)
+    print("  full:", rb.full)
+    print("  size:", rb.size())
+    print("  observations:", rb.observations.shape)
+    print("  actions:", rb.actions.shape)
+    print("  rewards:", rb.rewards.shape)
+    print("  dones:", int(np.sum(rb.dones)))
+    print("  timeouts:", int(np.sum(rb.timeouts)))
+
+
+def build_fqe_dataset(model):
+    """Build a frozen d3rlpy dataset from valid replay-buffer episodes.
+
+    The replay buffer is circular. Chronological order is restored with pos/full.
+    Real TimeLimit truncations come from ReplayBuffer.timeouts. No artificial
+    terminal or timeout flags are created.
+
+    For a full circular buffer, the oldest retained sample may begin mid-episode.
+    The leading partial episode is discarded. The newest incomplete episode is
+    also discarded. Only complete trajectories are given to d3rlpy.
+    """
+    rb = model.replay_buffer
+
+    if rb.size() == 0:
+        raise RuntimeError("Cannot build FQE dataset from an empty PPO replay buffer.")
+
+    print("Replay buffer:")
+    print("  pos:", rb.pos)
+    print("  full:", rb.full)
+    print("  size:", rb.size())
+    print("  dones:", int(np.sum(rb.dones)))
+    print("  timeouts:", int(np.sum(rb.timeouts)))
+
+    if rb.full:
+        time_indices = np.concatenate(
+            (
+                np.arange(rb.pos, rb.buffer_size, dtype=np.int64),
+                np.arange(0, rb.pos, dtype=np.int64),
+            )
+        )
+    else:
+        time_indices = np.arange(0, rb.pos, dtype=np.int64)
+
+    obs_raw = np.asarray(rb.observations)[time_indices]
+    actions_raw = np.asarray(rb.actions)[time_indices]
+    rewards_raw = np.asarray(rb.rewards)[time_indices]
+    dones_raw = np.asarray(rb.dones)[time_indices]
+    timeouts_raw = np.asarray(rb.timeouts)[time_indices]
+
+    observations_parts = []
+    actions_parts = []
+    rewards_parts = []
+    terminals_parts = []
+    timeouts_parts = []
+
+    for env_idx in range(rb.n_envs):
+        obs_env = np.asarray(obs_raw[:, env_idx]).copy()
+        actions_env = np.asarray(actions_raw[:, env_idx]).copy()
+        rewards_env = np.asarray(rewards_raw[:, env_idx]).reshape(-1, 1).copy()
+        dones_env = np.asarray(dones_raw[:, env_idx]).reshape(-1, 1).astype(
+            np.float32, copy=True
+        )
+        timeouts_env = np.asarray(timeouts_raw[:, env_idx]).reshape(-1, 1).astype(
+            np.float32, copy=True
+        )
+
+        # Match SB3 ReplayBuffer sampling semantics: TimeLimit truncation is
+        # an episode boundary but not an environmental terminal.
+        terminals_env = dones_env * (1.0 - timeouts_env)
+
+        boundaries = np.flatnonzero(
+            (terminals_env[:, 0] > 0.5) | (timeouts_env[:, 0] > 0.5)
+        )
+        if len(boundaries) == 0:
+            raise RuntimeError(
+                f"No complete episode boundary was found in replay-buffer env {env_idx}. "
+                "FQE requires stored terminal/timeout metadata."
+            )
+
+        # If full, the first retained transition can be in the middle of an
+        # overwritten episode, so begin immediately after the first boundary.
+        start = int(boundaries[0] + 1) if rb.full else 0
+
+        # Stop at the last real boundary so no incomplete newest trajectory is
+        # presented to d3rlpy as a complete episode.
+        end = int(boundaries[-1] + 1)
+
+        if start >= end:
+            raise RuntimeError(
+                f"Replay-buffer env {env_idx} contains no complete episode after "
+                "removing partial circular-buffer trajectories."
+            )
+
+        observations_parts.append(obs_env[start:end])
+        actions_parts.append(actions_env[start:end])
+        rewards_parts.append(rewards_env[start:end])
+        terminals_parts.append(terminals_env[start:end])
+        timeouts_parts.append(timeouts_env[start:end])
+
+    observations = np.concatenate(observations_parts, axis=0)
+    actions = np.concatenate(actions_parts, axis=0)
+    rewards = np.concatenate(rewards_parts, axis=0).astype(np.float32, copy=False)
+    # d3rlpy expects terminal/timeout flags as one value per transition.
+    # Passing both as 1-D also avoids a broadcasting bug in EpisodeGenerator,
+    # which flattens terminals internally but does not flatten timeouts.
+    terminals = np.concatenate(
+        terminals_parts, axis=0
+    ).reshape(-1).astype(
+        np.float32, copy=False
+    )
+
+    timeouts = np.concatenate(
+        timeouts_parts, axis=0
+    ).reshape(-1).astype(
+        np.float32, copy=False
+    )
+
+    # Verify that our reconstructed dataset is semantically valid
+    if np.any(
+        np.logical_and(
+            terminals > 0.5,
+            timeouts > 0.5
+        )
+    ):
+        raise RuntimeError(
+            "Internal FQE dataset error: at least one transition "
+            "is marked as both terminal and timeout."
+        )
+
+    n_episodes = int(
+        np.sum(
+            (terminals > 0.5)
+            | (timeouts > 0.5)
+        )
+    )
+
+    print(
+        "FQE dataset: "
+        f"{len(terminals)} complete-episode transitions, "
+        f"{int(np.sum(terminals))} true terminals, "
+        f"{int(np.sum(timeouts))} timeouts, "
+        f"{n_episodes} episodes"
+    )
+
+    return MDPDataset(
         observations=observations,
         actions=actions,
         rewards=rewards,
-        terminals=terminals
+        terminals=terminals,
+        timeouts=timeouts,
     )
+
+
+
+def replay_buffer_signature(replay_buffer):
+    """Small invariant used to detect accidental candidate-evaluation data leakage."""
+    return (
+        getattr(replay_buffer, "pos", None),
+        getattr(replay_buffer, "full", None),
+        tuple(replay_buffer.observations.shape),
+        tuple(replay_buffer.actions.shape),
+        tuple(replay_buffer.rewards.shape),
+        tuple(replay_buffer.dones.shape),
+        tuple(replay_buffer.timeouts.shape),
+    )
+
+
+def d3rl_evaluation_preserving_rng(model, exp_name, dataset):
+    """Run analysis-only FQE without perturbing the online oracle's RNG trajectory."""
+    python_rng_state = random.getstate()
+    numpy_rng_state = np.random.get_state()
+    torch_rng_state = torch.random.get_rng_state()
+    cuda_rng_states = torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None
+
+    try:
+        return d3rl_evaluation(model, exp_name, dataset=dataset)
+    finally:
+        random.setstate(python_rng_state)
+        np.random.set_state(numpy_rng_state)
+        torch.random.set_rng_state(torch_rng_state)
+        if cuda_rng_states is not None:
+            torch.cuda.set_rng_state_all(cuda_rng_states)
+
+
+# Method for evaluating the FQE using d3rlpy
+def d3rl_evaluation(model, exp_name, dataset=None):
+    # When dataset is supplied by the rank-correlation study, all candidates in the current
+    # iteration use one frozen offline dataset. Without it, retain the original behavior.
+    if dataset is None:
+        dataset = build_fqe_dataset(model)
 
     try:
         ppo_wrapper = PPOQWrapper(model)
@@ -948,7 +1246,10 @@ def d3rl_evaluation(model, exp_name):
                 learning_rate=3e-4,         # Learning rate for FQE's internal Q-network
                 target_update_interval=100, # How often to update FQE's target network
                 gamma=ppo_wrapper.ppo.gamma, # Discount factor
-            )
+            ),
+            # Keep FQE tensors on the same device as the wrapped PPO policy.
+            # This is analysis-only and does not change PPO/ESA/oracle behavior.
+            device=str(device),
         )
 
         print("--------------------------------------------------------------------------------")
@@ -1355,7 +1656,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_gpu_test" # For standard PPO training (single goal tasks)
+    exp = "PPO_gpu_fqe_rank" # For standard PPO training (single goal tasks)
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -1439,9 +1740,9 @@ if __name__ == "__main__":
     START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
     # START_ITER = 1
     SEARCH_INTERV = 1 # Make this 2 for n_epochs=5 and keep 1 for n_epochs=10
-    NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
+    # NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
     # TEST RUN: execute exactly one outer iteration
-    # NUM_ITERS = START_ITER + SEARCH_INTERV
+    NUM_ITERS = START_ITER + SEARCH_INTERV
     # NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs) # For FetchReach-v4
     N_EPOCHS = args.n_epochs
 
@@ -1454,25 +1755,23 @@ if __name__ == "__main__":
     # ---------------------------------------------------------------------------------------------------------------
 
     # print("Starting Initial training")
-    # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
+    # os.makedirs(f'full_exp_on_ppo1/models/'+env_name, exist_ok=True)
+    # os.makedirs(f'full_exp_on_ppo1/replay_buffers/'+env_name, exist_ok=True)
 
     # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_1M"+'_'+str(args.seed))
+    # model.save("full_exp_on_ppo1/models/"+env_name+"/ppo_ant_1M"+'_'+str(args.seed))
 
-    # print("Initial training done") 
+    # print("Initial training done")
 
-    # # print("Saving replay buffer for later use")
-    # # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
-
-    # # # Save the replay buffer
-    # # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
-    # #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
-    # #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
-    # #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
-    # #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
-    # # )
-    
-    # # print("Replay buffer saved")
+    # # Correct replay-buffer save format for later FQE/rank-correlation runs.
+    # # This remains commented exactly like the original initial-training block.
+    # # Uncomment these lines only when regenerating the initial 1M replay buffer.
+    # print("Saving replay buffer for later use")
+    # replay_buffer_path = (
+    #     f'full_exp_on_ppo1/replay_buffers/{env_name}/'
+    #     f'replay_buffer_{args.seed}.npz'
+    # )
+    # save_replay_buffer_npz(model, replay_buffer_path)
 
     # quit()
 
@@ -1491,16 +1790,13 @@ if __name__ == "__main__":
 
     # -------------------------------------------------------------------------------------------------------------
 
-    # print("Loading replay buffer")
+    print("Loading replay buffer")
 
-    # # Load the replay buffer
-    # replay_buffer = np.load(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz')
-    # model.replay_buffer.observations = replay_buffer['observations'] if args.n_envs == 1 else replay_buffer['observations'].reshape(-1, args.n_envs, replay_buffer['observations'].shape[-1])
-    # model.replay_buffer.actions = replay_buffer['actions'] if args.n_envs == 1 else replay_buffer['actions'].reshape(-1, args.n_envs, replay_buffer['actions'].shape[-1])
-    # model.replay_buffer.rewards = replay_buffer['rewards'] if args.n_envs == 1 else replay_buffer['rewards'].reshape(-1, args.n_envs)
-    # model.replay_buffer.dones = replay_buffer['terminals'] if args.n_envs == 1 else replay_buffer['terminals'].reshape(-1, args.n_envs)
-    # print("Replay buffer loaded")
-    # print("Replay buffer shape: ", model.replay_buffer.observations.shape, model.replay_buffer.actions.shape, model.replay_buffer.rewards.shape, model.replay_buffer.dones.shape)
+    replay_buffer_path = (
+        f'full_exp_on_ppo1/replay_buffers/{env_name}/'
+        f'replay_buffer_{args.seed}.npz'
+    )
+    load_replay_buffer_npz(model, replay_buffer_path)
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -1512,7 +1808,19 @@ if __name__ == "__main__":
     normal_train = False
     use_ANN = False
     ANN_lib = "Annoy"
+
+    # Keep the original online evaluation as the selector/oracle.
     online_eval = True
+
+    # Rank-correlation study: additionally score the exact same candidates with FQE, but do
+    # NOT use FQE to choose the next policy. The original online-selection trajectory remains
+    # unchanged.
+    rank_correlation_study = True
+    if rank_correlation_study and not online_eval:
+        raise ValueError(
+            "rank_correlation_study requires online_eval=True because online returns are "
+            "the ground truth and remain the selector during this study."
+        )
 
     saved_agents = False
     saved_iter = 4803
@@ -1521,6 +1829,11 @@ if __name__ == "__main__":
     distanceArray = []
     start_time = time.time()
     timeArray = []
+
+    # Accumulates one row of rank-study metrics per outer iteration. This is analysis-only and
+    # never participates in policy selection.
+    rankStudyMetrics = []
+    rankStudyCandidateRows = []
 
     avg_checkpoint = False
     use_ptb = False
@@ -1687,6 +2000,21 @@ if __name__ == "__main__":
 
             # -----------------------------------------------------------------------------------
 
+            # For the rank-correlation study, freeze the PPO replay-buffer data once per outer
+            # iteration, after the candidate set has been constructed. Every candidate FQE fit
+            # below receives this same dataset. Candidate online-evaluation trajectories must
+            # never enter this buffer.
+            if rank_correlation_study:
+                fqe_dataset = build_fqe_dataset(model)
+                replay_buffer_before_candidate_eval = replay_buffer_signature(model.replay_buffer)
+                print(
+                    "Rank-correlation study enabled: frozen one FQE dataset for all "
+                    f"{len(agents)} candidates in iteration {i}."
+                )
+            else:
+                fqe_dataset = None
+                replay_buffer_before_candidate_eval = None
+
             # Non-parallel evaluation (Commented out)
             if not parallel_evaluation:
                 for j, a in enumerate(agents):
@@ -1718,16 +2046,38 @@ if __name__ == "__main__":
 
                     close_env_safely(dummy_env)
 
-                    # Q-function evaluation
-                    if not online_eval:
+                    # Q-function / FQE evaluation. In rank_correlation_study mode this is
+                    # analysis-only: online returns still choose the next agent below.
+                    if rank_correlation_study or not online_eval:
                         # Advantage estimation code
                         # q_adv, q_loss = advantage_evaluation(model, args)
                         # advantage_rew.append(q_adv)
                         # q_losses.append(q_loss)
 
-                        # d3rl FQE evaluation code
-                        init_est = d3rl_evaluation(model, f"{'-'.join(DIR.split('/'))}")
+                        fqe_exp_name = (
+                            f"{'-'.join(DIR.split('/'))}-rank-iter{i}-agent{j}"
+                            if rank_correlation_study
+                            else f"{'-'.join(DIR.split('/'))}"
+                        )
+                        if rank_correlation_study:
+                            init_est = d3rl_evaluation_preserving_rng(
+                                model, fqe_exp_name, fqe_dataset
+                            )
+                        else:
+                            init_est = d3rl_evaluation(model, fqe_exp_name)
+                        if init_est is None:
+                            raise RuntimeError(
+                                f"FQE failed for iteration {i}, agent {j}; "
+                                "rank-correlation metrics cannot be computed."
+                            )
+                        init_est = float(np.asarray(init_est).reshape(-1)[0])
                         advantage_rew.append(init_est)
+
+                        if rank_correlation_study:
+                            print(
+                                f"agent{j}: online_return={float(cum_rews[-1]):.6f}, "
+                                f"FQE={init_est:.6f}"
+                            )
 
             # Parallel evaluation
             else:
@@ -1737,6 +2087,41 @@ if __name__ == "__main__":
                     n_eval_episodes=3,
                     seed=args.seed
                 )
+
+                # parallel_evaluate performs only the online ground-truth rollouts. FQE itself
+                # is run sequentially here against the same frozen dataset so it can use the
+                # main GPU/model safely without changing the online selector.
+                if rank_correlation_study:
+                    for j, a in enumerate(agents):
+                        model.policy.load_state_dict(a)
+                        model.policy.to(device)
+                        init_est = d3rl_evaluation_preserving_rng(
+                            model,
+                            f"{'-'.join(DIR.split('/'))}-rank-iter{i}-agent{j}",
+                            fqe_dataset,
+                        )
+                        if init_est is None:
+                            raise RuntimeError(
+                                f"FQE failed for iteration {i}, agent {j}; "
+                                "rank-correlation metrics cannot be computed."
+                            )
+                        init_est = float(np.asarray(init_est).reshape(-1)[0])
+                        advantage_rew.append(init_est)
+                        print(
+                            f"agent{j}: online_return={float(cum_rews[j]):.6f}, "
+                            f"FQE={init_est:.6f}"
+                        )
+
+            # Candidate evaluation/FQE must not alter the PPO replay buffer. This check guards
+            # against accidentally giving FQE access to the online ground-truth trajectories.
+            if rank_correlation_study:
+                replay_buffer_after_candidate_eval = replay_buffer_signature(model.replay_buffer)
+                if replay_buffer_after_candidate_eval != replay_buffer_before_candidate_eval:
+                    raise RuntimeError(
+                        "Replay buffer changed during candidate evaluation/FQE. This would leak "
+                        "online candidate interactions into the offline rank-correlation study."
+                    )
+                print("Replay-buffer leakage check: PASSED")
 
             # -----------------------------------------------------------------------------------
 
@@ -1760,7 +2145,94 @@ if __name__ == "__main__":
                 np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
             timeArray.append(time.time() - start_time)
 
-            # Correlation calculation
+            # Rank-correlation study: compare FQE ranking against the online oracle without
+            # affecting the original online selection below. Metrics are computed per iteration
+            # because the absolute FQE scale may drift as the offline dataset changes.
+            if rank_correlation_study:
+                online_scores = np.asarray(cum_rews, dtype=np.float64)
+                fqe_scores = np.asarray(advantage_rew, dtype=np.float64)
+
+                if len(online_scores) != len(fqe_scores):
+                    raise RuntimeError(
+                        f"Rank-study length mismatch: {len(online_scores)} online returns vs "
+                        f"{len(fqe_scores)} FQE scores."
+                    )
+
+                rank_df = pd.DataFrame({
+                    'fqe': fqe_scores,
+                    'online': online_scores,
+                })
+                pearson = float(rank_df.corr(method='pearson').loc['fqe', 'online'])
+                spearman = float(rank_df.corr(method='spearman').loc['fqe', 'online'])
+                kendall = float(rank_df.corr(method='kendall').loc['fqe', 'online'])
+
+                oracle_idx = int(np.argmax(online_scores))
+                fqe_idx = int(np.argmax(fqe_scores))
+                oracle_return = float(online_scores[oracle_idx])
+                fqe_selected_true_return = float(online_scores[fqe_idx])
+                selection_regret = float(oracle_return - fqe_selected_true_return)
+                online_order = np.argsort(online_scores)[::-1]
+                top1_agreement = bool(fqe_idx == oracle_idx)
+                top3_hit = bool(fqe_idx in online_order[:min(3, len(online_order))])
+                top5_hit = bool(fqe_idx in online_order[:min(5, len(online_order))])
+
+                rank_metrics = {
+                    'iteration': int(i),
+                    'pearson': pearson,
+                    'spearman': spearman,
+                    'kendall': kendall,
+                    'oracle_idx': oracle_idx,
+                    'fqe_idx': fqe_idx,
+                    'oracle_return': oracle_return,
+                    'fqe_selected_true_return': fqe_selected_true_return,
+                    'selection_regret': selection_regret,
+                    'top1_agreement': top1_agreement,
+                    'top3_hit': top3_hit,
+                    'top5_hit': top5_hit,
+                }
+                rankStudyMetrics.append(rank_metrics)
+                for candidate_idx, (fqe_score, online_score) in enumerate(
+                    zip(fqe_scores, online_scores)
+                ):
+                    rankStudyCandidateRows.append({
+                        'iteration': int(i),
+                        'candidate': int(candidate_idx),
+                        'fqe': float(fqe_score),
+                        'online': float(online_score),
+                    })
+
+                print("---------------------------------")
+                print("FQE / ONLINE RANKING STUDY")
+                print(f"Pearson correlation:  {pearson:.4f}")
+                print(f"Spearman correlation: {spearman:.4f}")
+                print(f"Kendall tau:          {kendall:.4f}")
+                print(f"Online best agent:    {oracle_idx}")
+                print(f"FQE best agent:       {fqe_idx}")
+                print(f"Online best return:   {oracle_return:.4f}")
+                print(
+                    "FQE-selected agent true return: "
+                    f"{fqe_selected_true_return:.4f}"
+                )
+                print(f"Selection regret:     {selection_regret:.4f}")
+                print(f"Exact top-1 agreement:       {top1_agreement}")
+                print(f"FQE choice in online top-3:  {top3_hit}")
+                print(f"FQE choice in online top-5:  {top5_hit}")
+
+                # Save raw paired scores and per-iteration metrics for later analysis.
+                np.save(
+                    f'logs/{DIR}/fqe_results_{i}_{i + SEARCH_INTERV}.npy',
+                    fqe_scores
+                )
+                np.save(
+                    f'logs/{DIR}/online_all_results_{i}_{i + SEARCH_INTERV}.npy',
+                    online_scores
+                )
+                np.save(
+                    f'logs/{DIR}/rank_metrics_{i}_{i + SEARCH_INTERV}.npy',
+                    rank_metrics
+                )
+
+            # Correlation calculation used by the original offline-selection path.
             if not online_eval:
                 df = pd.DataFrame({
                     'advantage': advantage_rew,
@@ -1830,6 +2302,49 @@ if __name__ == "__main__":
                 best_agent_index.append(best_idx)
                 np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
                 load_state_dict(model, best_agent)
+
+        if rank_correlation_study and rankStudyMetrics:
+            rank_summary_df = pd.DataFrame(rankStudyMetrics)
+            rank_summary_df.to_csv(f'logs/{DIR}/rank_study_summary.csv', index=False)
+            pd.DataFrame(rankStudyCandidateRows).to_csv(
+                f'logs/{DIR}/rank_study_candidates.csv', index=False
+            )
+            np.save(
+                f'logs/{DIR}/rank_study_summary.npy',
+                np.array(rankStudyMetrics, dtype=object),
+                allow_pickle=True
+            )
+
+            print("---------------------------------")
+            print("FQE / ONLINE RANKING STUDY SUMMARY")
+            print(
+                f"Mean Pearson:  {rank_summary_df['pearson'].mean():.4f} "
+                f"+/- {rank_summary_df['pearson'].std(ddof=0):.4f}"
+            )
+            print(
+                f"Mean Spearman: {rank_summary_df['spearman'].mean():.4f} "
+                f"+/- {rank_summary_df['spearman'].std(ddof=0):.4f}"
+            )
+            print(
+                f"Mean Kendall:  {rank_summary_df['kendall'].mean():.4f} "
+                f"+/- {rank_summary_df['kendall'].std(ddof=0):.4f}"
+            )
+            print(
+                f"Top-1 agreement rate: "
+                f"{rank_summary_df['top1_agreement'].mean():.3f}"
+            )
+            print(
+                f"Top-3 hit rate: "
+                f"{rank_summary_df['top3_hit'].mean():.3f}"
+            )
+            print(
+                f"Top-5 hit rate: "
+                f"{rank_summary_df['top5_hit'].mean():.3f}"
+            )
+            print(
+                f"Mean selection regret: "
+                f"{rank_summary_df['selection_regret'].mean():.4f}"
+            )
 
         np.save(f'logs/{DIR}/distance.npy', distanceArray)
         np.save(f'logs/{DIR}/time.npy', timeArray)
