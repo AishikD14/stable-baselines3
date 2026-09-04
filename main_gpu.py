@@ -64,6 +64,27 @@ FQE_BATCH_SIZE = int(os.environ.get("FQE_BATCH_SIZE", "100"))
 FQE_SHOW_PROGRESS = os.environ.get("FQE_SHOW_PROGRESS", "0") == "1"
 FQE_USE_FILE_LOGGER = os.environ.get("FQE_USE_FILE_LOGGER", "0") == "1"
 
+# FQE backend used by the rank-correlation study.
+# "native_batched" evaluates all empty-space candidates together with one
+# vectorized PyTorch FQE workload. "d3rlpy" keeps the previous implementation
+# available as a validation/fallback path.
+FQE_BACKEND = os.environ.get("FQE_BACKEND", "native_batched").strip().lower()
+if FQE_BACKEND not in {"native_batched", "d3rlpy"}:
+    raise ValueError(
+        "FQE_BACKEND must be either 'native_batched' or 'd3rlpy'. "
+        f"Got {FQE_BACKEND!r}."
+    )
+
+# d3rlpy's default continuous vector critic is:
+# concat(observation, action) -> 256 ReLU -> 256 ReLU -> scalar Q.
+# Keep these fixed so native FQE matches the existing d3rlpy configuration.
+NATIVE_FQE_HIDDEN_UNITS = (256, 256)
+NATIVE_FQE_ACTION_CHUNK_SIZE = int(
+    os.environ.get("NATIVE_FQE_ACTION_CHUNK_SIZE", "8192")
+)
+if NATIVE_FQE_ACTION_CHUNK_SIZE <= 0:
+    raise ValueError("NATIVE_FQE_ACTION_CHUNK_SIZE must be > 0.")
+
 # d3rlpy trains floor(n_steps / n_steps_per_epoch) complete epochs. Reject
 # invalid/non-divisible overrides so a requested FQE update budget is never
 # silently shortened (e.g. 2500 with 1000 would otherwise run only 2000 steps).
@@ -969,6 +990,563 @@ class PPOQWrapper(QLearningAlgoBase):
     def update(self, batch: TorchMiniBatch) -> dict:
         """No-op since PPO isn't being trained."""
         return {}
+
+
+
+class BatchedFQECritic(nn.Module):
+    """Vectorized bank of independent continuous-action FQE critics.
+
+    Each candidate owns independent parameters, but all candidates are evaluated
+    in a single batched PyTorch graph. The architecture mirrors d3rlpy 2.8.1's
+    default vector continuous MeanQFunction:
+        concat(obs, action) -> 256 ReLU -> 256 ReLU -> 1
+
+    All candidate critics start from identical weights. This intentionally
+    mirrors the previous rank-study behavior where
+    d3rl_evaluation_preserving_rng() restored the RNG before every candidate,
+    causing every candidate's d3rlpy FQE fit to begin from the same random
+    initialization and see the same random minibatch sequence.
+    """
+
+    def __init__(
+        self,
+        n_candidates,
+        observation_dim,
+        action_dim,
+        hidden_units=(256, 256),
+        compute_device=None,
+    ):
+        super().__init__()
+        if len(hidden_units) != 2:
+            raise ValueError("Native batched FQE currently expects exactly two hidden layers.")
+
+        self.n_candidates = int(n_candidates)
+        self.observation_dim = int(observation_dim)
+        self.action_dim = int(action_dim)
+        self.hidden_units = tuple(int(v) for v in hidden_units)
+        self.compute_device = compute_device if compute_device is not None else device
+
+        h1, h2 = self.hidden_units
+        input_dim = self.observation_dim + self.action_dim
+
+        # Match d3rlpy / torch.nn.Linear default initialization using CPU RNG.
+        # d3rlpy constructs its encoder on CPU, calls compute_output_size()
+        # (which draws random observation/action tensors), then constructs the
+        # final scalar-Q layer before moving the module to CUDA.
+        template_fc1 = nn.Linear(input_dim, h1)
+        template_fc2 = nn.Linear(h1, h2)
+
+        with torch.no_grad():
+            dummy_obs = torch.rand(2, self.observation_dim)
+            dummy_action = torch.rand(2, self.action_dim)
+            dummy = torch.cat((dummy_obs, dummy_action), dim=-1)
+            dummy = torch.relu(template_fc1(dummy))
+            dummy = torch.relu(template_fc2(dummy))
+            del dummy
+
+        template_out = nn.Linear(h2, 1)
+
+        def repeated_parameter(tensor):
+            return nn.Parameter(
+                tensor.detach()
+                .unsqueeze(0)
+                .repeat(self.n_candidates, *([1] * tensor.ndim))
+                .to(self.compute_device)
+                .clone()
+            )
+
+        # Shapes:
+        # weights: [candidate, out_features, in_features]
+        # biases:  [candidate, out_features]
+        self.w1 = repeated_parameter(template_fc1.weight)
+        self.b1 = repeated_parameter(template_fc1.bias)
+        self.w2 = repeated_parameter(template_fc2.weight)
+        self.b2 = repeated_parameter(template_fc2.bias)
+        self.w3 = repeated_parameter(template_out.weight)
+        self.b3 = repeated_parameter(template_out.bias)
+
+    def forward(self, observations, actions):
+        """Return Q values with shape [n_candidates, batch, 1].
+
+        observations can be either:
+          [batch, obs_dim]                    (shared across candidates), or
+          [n_candidates, batch, obs_dim].
+
+        actions can be either:
+          [batch, action_dim]                 (shared dataset actions), or
+          [n_candidates, batch, action_dim]   (candidate-policy actions).
+        """
+        if observations.ndim == 2:
+            observations = observations.unsqueeze(0).expand(
+                self.n_candidates, -1, -1
+            )
+        if actions.ndim == 2:
+            actions = actions.unsqueeze(0).expand(
+                self.n_candidates, -1, -1
+            )
+
+        if observations.shape[0] != self.n_candidates:
+            raise ValueError(
+                "Observation candidate dimension mismatch: "
+                f"{observations.shape[0]} vs {self.n_candidates}"
+            )
+        if actions.shape[0] != self.n_candidates:
+            raise ValueError(
+                "Action candidate dimension mismatch: "
+                f"{actions.shape[0]} vs {self.n_candidates}"
+            )
+
+        x = torch.cat((observations, actions), dim=-1)
+        x = torch.bmm(x, self.w1.transpose(1, 2)) + self.b1.unsqueeze(1)
+        x = torch.relu(x)
+        x = torch.bmm(x, self.w2.transpose(1, 2)) + self.b2.unsqueeze(1)
+        x = torch.relu(x)
+        return torch.bmm(x, self.w3.transpose(1, 2)) + self.b3.unsqueeze(1)
+
+
+def _policy_actions_current_model(model, observations, chunk_size=None):
+    """Compute deterministic SB3 PPO actions entirely in PyTorch.
+
+    This reproduces BasePolicy.predict's deterministic Box-action postprocessing
+    while avoiding CPU/NumPy transfers.
+    """
+    if chunk_size is None:
+        chunk_size = NATIVE_FQE_ACTION_CHUNK_SIZE
+
+    if not torch.is_tensor(observations):
+        observations = torch.as_tensor(
+            observations, dtype=torch.float32, device=device
+        )
+    else:
+        observations = observations.to(device=device, dtype=torch.float32)
+
+    model.policy.set_training_mode(False)
+    action_space = model.action_space
+
+    outputs = []
+    with torch.no_grad():
+        for start in range(0, observations.shape[0], chunk_size):
+            obs_batch = observations[start : start + chunk_size]
+            actions = model.policy._predict(obs_batch, deterministic=True)
+
+            if isinstance(action_space, gym.spaces.Box):
+                low = torch.as_tensor(
+                    action_space.low,
+                    dtype=actions.dtype,
+                    device=actions.device,
+                )
+                high = torch.as_tensor(
+                    action_space.high,
+                    dtype=actions.dtype,
+                    device=actions.device,
+                )
+
+                if model.policy.squash_output:
+                    actions = low + 0.5 * (actions + 1.0) * (high - low)
+                else:
+                    actions = torch.maximum(torch.minimum(actions, high), low)
+
+            outputs.append(actions)
+
+    return torch.cat(outputs, dim=0)
+
+
+def build_native_fqe_data(dataset):
+    """Materialize exactly the transitions exposed by the d3rlpy MDPDataset.
+
+    This intentionally goes through dataset.buffer + dataset.transition_picker
+    instead of reconstructing a second interpretation of episode boundaries.
+    Therefore the native FQE sees the same transition population that d3rlpy's
+    sample_transition_batch() sees.
+
+    It also reproduces InitialStateValueEstimationEvaluator's initial-state
+    selection: the first transition of every 1024-transition evaluation window.
+    Ant episodes are normally shorter than 1024, so this is one initial state
+    per complete episode.
+    """
+    transition_count = int(dataset.transition_count)
+    if transition_count <= 0:
+        raise RuntimeError("Native FQE received an empty d3rlpy dataset.")
+
+    observations = []
+    actions = []
+    rewards = []
+    next_observations = []
+    terminals = []
+    intervals = []
+
+    # ReplayBuffer.sample_transition() selects an integer in
+    # [0, transition_count) and looks up dataset.buffer[index]. Keeping this
+    # exact ordering allows one shared integer-index minibatch to reproduce
+    # d3rlpy's transition population for all candidate critics.
+    for index in range(transition_count):
+        episode, transition_index = dataset.buffer[index]
+        transition = dataset.transition_picker(episode, transition_index)
+
+        if not isinstance(transition.observation, np.ndarray):
+            raise NotImplementedError(
+                "Native batched FQE currently supports flat NumPy observations "
+                "(the active Ant-v5 setup)."
+            )
+        if not isinstance(transition.next_observation, np.ndarray):
+            raise NotImplementedError(
+                "Native batched FQE currently supports flat NumPy observations."
+            )
+
+        observations.append(np.asarray(transition.observation))
+        actions.append(np.asarray(transition.action))
+        rewards.append(np.asarray(transition.reward).reshape(-1))
+        next_observations.append(np.asarray(transition.next_observation))
+        terminals.append(float(transition.terminal))
+        intervals.append(int(transition.interval))
+
+    observations = np.asarray(observations, dtype=np.float32)
+    actions = np.asarray(actions, dtype=np.float32)
+    rewards = np.asarray(rewards, dtype=np.float32).reshape(-1, 1)
+    next_observations = np.asarray(next_observations, dtype=np.float32)
+    terminals = np.asarray(terminals, dtype=np.float32).reshape(-1, 1)
+    intervals = np.asarray(intervals, dtype=np.float32).reshape(-1, 1)
+
+    # Mirror d3rlpy.metrics.InitialStateValueEstimationEvaluator exactly.
+    initial_observations = []
+    evaluator_window_size = 1024
+    for episode in dataset.episodes:
+        # d3rlpy make_batches() computes the number of windows from len(episode)
+        # and clips each window by episode.transition_count.
+        n_batches = len(episode) // evaluator_window_size
+        if len(episode) % evaluator_window_size != 0:
+            n_batches += 1
+
+        for batch_index in range(n_batches):
+            head_index = batch_index * evaluator_window_size
+            last_index = min(
+                head_index + evaluator_window_size,
+                int(episode.transition_count),
+            )
+            # A valid d3rlpy evaluation batch must contain at least one transition.
+            if head_index >= last_index:
+                continue
+
+            transition = dataset.transition_picker(episode, head_index)
+            if not isinstance(transition.observation, np.ndarray):
+                raise NotImplementedError(
+                    "Native batched FQE currently supports flat NumPy observations."
+                )
+            initial_observations.append(
+                np.asarray(transition.observation, dtype=np.float32)
+            )
+
+    if not initial_observations:
+        raise RuntimeError("No initial states were found for native FQE evaluation.")
+
+    initial_observations = np.asarray(initial_observations, dtype=np.float32)
+
+    return {
+        "observations": observations,
+        "actions": actions,
+        "rewards": rewards,
+        "next_observations": next_observations,
+        "terminals": terminals,
+        "intervals": intervals,
+        "initial_observations": initial_observations,
+    }
+
+
+def native_batched_fqe(model, agents, dataset):
+    """Fit independent FQE critics for all candidates in one GPU workload.
+
+    Mathematical behavior mirrors the existing d3rlpy configuration:
+      * one critic per candidate
+      * same frozen d3rlpy transition dataset
+      * batch size FQE_BATCH_SIZE (default 100)
+      * Adam(lr=3e-4, betas=(0.9,0.999), eps=1e-8)
+      * scalar Mean-Q MSE Bellman loss
+      * gamma = PPO gamma
+      * hard target update every 100 gradient steps
+      * FQE_N_STEPS gradient updates (default 10,000)
+      * final score = mean Q(s0, pi(s0)) over the same initial-state windows
+
+    The candidate dimension is vectorized. A single shared transition minibatch
+    is used for every candidate at each gradient step, matching the previous
+    preserving-RNG setup in which every sequential d3rlpy candidate saw the
+    same RNG state and therefore the same minibatch sequence.
+    """
+    if len(agents) == 0:
+        return []
+
+    if not isinstance(model.action_space, gym.spaces.Box):
+        raise NotImplementedError(
+            "Native batched FQE currently supports continuous Box actions only."
+        )
+
+    print("--------------------------------------------------------------------------------")
+    print(
+        f"Fitting native batched PyTorch FQE for {len(agents)} candidates..."
+    )
+    print(
+        "Native FQE runtime config: "
+        f"steps={FQE_N_STEPS}, "
+        f"batch_size={FQE_BATCH_SIZE}, "
+        f"target_update_interval=100, "
+        f"hidden_units={NATIVE_FQE_HIDDEN_UNITS}"
+    )
+
+    preparation_start = time.time()
+    native_data = build_native_fqe_data(dataset)
+
+    obs_cpu = native_data["observations"]
+    action_cpu = native_data["actions"]
+    reward_cpu = native_data["rewards"]
+    next_obs_cpu = native_data["next_observations"]
+    terminal_cpu = native_data["terminals"]
+    interval_cpu = native_data["intervals"]
+    initial_obs_cpu = native_data["initial_observations"]
+
+    observation_dim = int(obs_cpu.shape[1])
+    action_dim = int(action_cpu.shape[1])
+    transition_count = int(obs_cpu.shape[0])
+    n_candidates = len(agents)
+
+    # Transfer the frozen dataset to the GPU once.
+    observations = torch.as_tensor(obs_cpu, dtype=torch.float32, device=device)
+    dataset_actions = torch.as_tensor(
+        action_cpu, dtype=torch.float32, device=device
+    )
+    rewards = torch.as_tensor(reward_cpu, dtype=torch.float32, device=device)
+    next_observations = torch.as_tensor(
+        next_obs_cpu, dtype=torch.float32, device=device
+    )
+    terminals = torch.as_tensor(
+        terminal_cpu, dtype=torch.float32, device=device
+    )
+    intervals = torch.as_tensor(
+        interval_cpu, dtype=torch.float32, device=device
+    )
+    initial_observations = torch.as_tensor(
+        initial_obs_cpu, dtype=torch.float32, device=device
+    )
+
+    # Precompute pi_j(s') and pi_j(s0) exactly once per fixed candidate policy.
+    # These actions never change during FQE.
+    cached_next_actions = []
+    cached_initial_actions = []
+
+    for candidate_index, agent in enumerate(agents):
+        model.policy.load_state_dict(agent)
+        model.policy.to(device)
+
+        next_actions = _policy_actions_current_model(
+            model, next_observations
+        )
+        init_actions = _policy_actions_current_model(
+            model, initial_observations
+        )
+
+        cached_next_actions.append(next_actions)
+        cached_initial_actions.append(init_actions)
+
+    cached_next_actions = torch.stack(cached_next_actions, dim=0)
+    cached_initial_actions = torch.stack(cached_initial_actions, dim=0)
+
+    # The previous sequential d3rlpy path consumes two random transition
+    # samples before the first training minibatch:
+    #   1) PPOQWrapper.build_with_dataset(dataset)
+    #   2) FQE.fitter(...) while inferring observation shape
+    #
+    # Both calls are inside d3rl_evaluation_preserving_rng(), so every
+    # candidate sees the same two preliminary draws. Reproduce them here so
+    # the subsequent shared native minibatch schedule starts from the same
+    # NumPy RNG state as the old d3rlpy evaluator.
+    _ = dataset.sample_transition()
+    _ = dataset.sample_transition()
+
+    # One batched critic parameter bank. Identical candidate initialization
+    # preserves the previous per-candidate RNG-reset behavior.
+    critic = BatchedFQECritic(
+        n_candidates=n_candidates,
+        observation_dim=observation_dim,
+        action_dim=action_dim,
+        hidden_units=NATIVE_FQE_HIDDEN_UNITS,
+        compute_device=device,
+    )
+    target_critic = copy.deepcopy(critic)
+    target_critic.requires_grad_(False)
+
+    optimizer = torch.optim.Adam(
+        critic.parameters(),
+        lr=3e-4,
+        betas=(0.9, 0.999),
+        eps=1e-8,
+        weight_decay=0.0,
+        amsgrad=False,
+    )
+
+    # d3rlpy ReplayBuffer.sample_transition uses np.random.randint for each
+    # sampled transition. Generate one common index schedule for every
+    # candidate, matching the previous preserving-RNG semantics.
+    sampled_indices_np = np.random.randint(
+        0,
+        transition_count,
+        size=(FQE_N_STEPS, FQE_BATCH_SIZE),
+    )
+    sampled_indices = torch.as_tensor(
+        sampled_indices_np, dtype=torch.long, device=device
+    )
+    del sampled_indices_np
+
+    gamma = float(model.gamma)
+    gamma_tensor = torch.as_tensor(
+        gamma, dtype=torch.float32, device=device
+    )
+    discounts = torch.pow(gamma_tensor, intervals)
+    target_update_interval = 100
+
+    if device.type == "cuda":
+        torch.cuda.synchronize(device)
+    preparation_seconds = time.time() - preparation_start
+    fit_start = time.time()
+
+    last_losses = None
+    for grad_step in range(FQE_N_STEPS):
+        batch_index = sampled_indices[grad_step]
+
+        obs_batch = observations[batch_index]
+        action_batch = dataset_actions[batch_index]
+        reward_batch = rewards[batch_index]
+        next_obs_batch = next_observations[batch_index]
+        terminal_batch = terminals[batch_index]
+        # Gather cached policy actions: [candidate, batch, action_dim].
+        next_action_batch = cached_next_actions[:, batch_index, :]
+
+        with torch.no_grad():
+            target_q = target_critic(next_obs_batch, next_action_batch)
+            discount = discounts[batch_index].unsqueeze(0)
+            bellman_target = (
+                reward_batch.unsqueeze(0)
+                + discount
+                * target_q
+                * (1.0 - terminal_batch.unsqueeze(0))
+            )
+
+        predicted_q = critic(obs_batch, action_batch)
+
+        # d3rlpy's ContinuousMeanQFunction uses elementwise MSE and mean
+        # reduction. Sum the independent per-candidate means rather than taking
+        # one global mean; this keeps each candidate's gradient magnitude equal
+        # to what an independent optimizer would receive.
+        squared_error = (predicted_q - bellman_target).pow(2)
+        loss_per_candidate = squared_error.mean(dim=(1, 2))
+        loss = loss_per_candidate.sum()
+
+        if not torch.isfinite(loss):
+            raise RuntimeError(
+                f"Native batched FQE produced a non-finite loss at "
+                f"gradient step {grad_step}."
+            )
+
+        optimizer.zero_grad(set_to_none=False)
+        loss.backward()
+        optimizer.step()
+
+        # Match d3rlpy FQEImpl: target update happens after optimizer.step(),
+        # including grad_step == 0.
+        if grad_step % target_update_interval == 0:
+            target_critic.load_state_dict(critic.state_dict())
+
+        last_losses = loss_per_candidate.detach()
+
+    if device.type == "cuda":
+        torch.cuda.synchronize(device)
+    fit_seconds = time.time() - fit_start
+
+    with torch.no_grad():
+        initial_q = critic(
+            initial_observations,
+            cached_initial_actions,
+        ).squeeze(-1)
+        initial_values = initial_q.mean(dim=1)
+
+    if not torch.all(torch.isfinite(initial_values)):
+        raise RuntimeError(
+            "Native batched FQE produced a non-finite initial-state value."
+        )
+
+    scores = initial_values.detach().cpu().numpy().astype(np.float64).tolist()
+
+    print(
+        f"Native batched FQE preparation time: {preparation_seconds:.3f} s"
+    )
+    print(
+        f"Native batched FQE fitting time for all {n_candidates} candidates: "
+        f"{fit_seconds:.3f} s"
+    )
+    if last_losses is not None:
+        print(
+            "Final per-candidate FQE loss: "
+            + np.array2string(
+                last_losses.detach().cpu().numpy(),
+                precision=4,
+                separator=", ",
+                max_line_width=160,
+            )
+        )
+    print(
+        "Estimated Initial State Values: "
+        + np.array2string(
+            np.asarray(scores),
+            precision=6,
+            separator=", ",
+            max_line_width=160,
+        )
+    )
+
+    return scores
+
+
+def native_batched_fqe_preserving_rng(model, agents, dataset):
+    """Run native batched FQE without changing the online oracle RNG trajectory."""
+    python_rng_state = random.getstate()
+    numpy_rng_state = np.random.get_state()
+    torch_rng_state = torch.random.get_rng_state()
+    cuda_rng_states = (
+        torch.cuda.get_rng_state_all()
+        if torch.cuda.is_available()
+        else None
+    )
+
+    try:
+        return native_batched_fqe(model, agents, dataset)
+    finally:
+        random.setstate(python_rng_state)
+        np.random.set_state(numpy_rng_state)
+        torch.random.set_rng_state(torch_rng_state)
+        if cuda_rng_states is not None:
+            torch.cuda.set_rng_state_all(cuda_rng_states)
+
+
+def sequential_d3rlpy_fqe_scores_preserving_rng(
+    model, agents, dataset, dir_name, iteration
+):
+    """Validation/fallback path matching the previous sequential d3rlpy study."""
+    scores = []
+    for candidate_index, agent in enumerate(agents):
+        model.policy.load_state_dict(agent)
+        model.policy.to(device)
+        estimate = d3rl_evaluation_preserving_rng(
+            model,
+            (
+                f"{'-'.join(dir_name.split('/'))}"
+                f"-rank-iter{iteration}-agent{candidate_index}"
+            ),
+            dataset,
+        )
+        if estimate is None:
+            raise RuntimeError(
+                f"d3rlpy FQE failed for iteration {iteration}, "
+                f"agent {candidate_index}."
+            )
+        scores.append(float(np.asarray(estimate).reshape(-1)[0]))
+    return scores
 
 
 def save_replay_buffer_npz(model, path):
@@ -2096,7 +2674,8 @@ if __name__ == "__main__":
                 replay_buffer_before_candidate_eval = replay_buffer_signature(model.replay_buffer)
                 print(
                     "Rank-correlation study enabled: frozen one FQE dataset for all "
-                    f"{len(agents)} candidates in iteration {i}."
+                    f"{len(agents)} candidates in iteration {i}. "
+                    f"FQE backend: {FQE_BACKEND}"
                 )
             else:
                 fqe_dataset = None
@@ -2133,38 +2712,25 @@ if __name__ == "__main__":
 
                     close_env_safely(dummy_env)
 
-                    # Q-function / FQE evaluation. In rank_correlation_study mode this is
-                    # analysis-only: online returns still choose the next agent below.
-                    if rank_correlation_study or not online_eval:
-                        # Advantage estimation code
-                        # q_adv, q_loss = advantage_evaluation(model, args)
-                        # advantage_rew.append(q_adv)
-                        # q_losses.append(q_loss)
-
-                        fqe_exp_name = (
-                            f"{'-'.join(DIR.split('/'))}-rank-iter{i}-agent{j}"
-                            if rank_correlation_study
-                            else f"{'-'.join(DIR.split('/'))}"
-                        )
-                        if rank_correlation_study:
-                            init_est = d3rl_evaluation_preserving_rng(
-                                model, fqe_exp_name, fqe_dataset
-                            )
-                        else:
-                            init_est = d3rl_evaluation(model, fqe_exp_name)
+                    # Q-function / FQE evaluation.
+                    #
+                    # In rank_correlation_study mode, defer FQE until ALL
+                    # candidates have completed the exact same online evaluation.
+                    # The previous per-candidate FQE call preserved/restored RNG
+                    # and never mutated the replay buffer, so moving all shadow
+                    # FQE work after the online loop leaves the online oracle
+                    # trajectory unchanged while enabling one batched GPU fit.
+                    #
+                    # Keep the legacy offline-selection path unchanged.
+                    if not rank_correlation_study and not online_eval:
+                        fqe_exp_name = f"{'-'.join(DIR.split('/'))}"
+                        init_est = d3rl_evaluation(model, fqe_exp_name)
                         if init_est is None:
                             raise RuntimeError(
-                                f"FQE failed for iteration {i}, agent {j}; "
-                                "rank-correlation metrics cannot be computed."
+                                f"FQE failed for iteration {i}, agent {j}."
                             )
                         init_est = float(np.asarray(init_est).reshape(-1)[0])
                         advantage_rew.append(init_est)
-
-                        if rank_correlation_study:
-                            print(
-                                f"agent{j}: online_return={float(cum_rews[-1]):.6f}, "
-                                f"FQE={init_est:.6f}"
-                            )
 
             # Parallel evaluation
             else:
@@ -2175,29 +2741,41 @@ if __name__ == "__main__":
                     seed=args.seed
                 )
 
-                # parallel_evaluate performs only the online ground-truth rollouts. FQE itself
-                # is run sequentially here against the same frozen dataset so it can use the
-                # main GPU/model safely without changing the online selector.
-                if rank_correlation_study:
-                    for j, a in enumerate(agents):
-                        model.policy.load_state_dict(a)
-                        model.policy.to(device)
-                        init_est = d3rl_evaluation_preserving_rng(
-                            model,
-                            f"{'-'.join(DIR.split('/'))}-rank-iter{i}-agent{j}",
-                            fqe_dataset,
-                        )
-                        if init_est is None:
-                            raise RuntimeError(
-                                f"FQE failed for iteration {i}, agent {j}; "
-                                "rank-correlation metrics cannot be computed."
-                            )
-                        init_est = float(np.asarray(init_est).reshape(-1)[0])
-                        advantage_rew.append(init_est)
-                        print(
-                            f"agent{j}: online_return={float(cum_rews[j]):.6f}, "
-                            f"FQE={init_est:.6f}"
-                        )
+                # parallel_evaluate performs only the online ground-truth
+                # rollouts. Rank-study FQE is intentionally deferred to the
+                # common batched block below.
+
+            # Rank-correlation FQE is analysis-only and is evaluated after all
+            # online candidate returns are already fixed. This preserves the
+            # original online oracle while allowing all critics to train
+            # together on the GPU.
+            if rank_correlation_study:
+                if FQE_BACKEND == "native_batched":
+                    advantage_rew = native_batched_fqe_preserving_rng(
+                        model,
+                        agents,
+                        fqe_dataset,
+                    )
+                else:
+                    advantage_rew = sequential_d3rlpy_fqe_scores_preserving_rng(
+                        model,
+                        agents,
+                        fqe_dataset,
+                        DIR,
+                        i,
+                    )
+
+                if len(advantage_rew) != len(agents):
+                    raise RuntimeError(
+                        "FQE score count mismatch: "
+                        f"{len(advantage_rew)} scores for {len(agents)} agents."
+                    )
+
+                for j, init_est in enumerate(advantage_rew):
+                    print(
+                        f"agent{j}: online_return={float(cum_rews[j]):.6f}, "
+                        f"FQE={float(init_est):.6f}"
+                    )
 
             # Candidate evaluation/FQE must not alter the PPO replay buffer. This check guards
             # against accidentally giving FQE access to the online ground-truth trajectories.
