@@ -1151,6 +1151,209 @@ def _policy_actions_current_model(model, observations, chunk_size=None):
     return torch.cat(outputs, dim=0)
 
 
+
+def build_native_fqe_replay_data(model):
+    """Freeze scientifically correct replay transitions for native batched FQE.
+
+    Unlike d3rlpy's MDPDataset/Episode representation, this path can retain the
+    FINAL transition of TimeLimit-truncated episodes because ReplayBuffer stores
+    an explicit next_observation for every transition.
+
+    This function therefore uses the corrected replay semantics directly:
+      * executed environment action
+      * raw environment reward
+      * true terminal/truncated next observation
+      * true terminal mask (timeouts bootstrap)
+      * one-step transition interval
+
+    Circular-buffer chronology and complete-episode trimming intentionally match
+    build_fqe_dataset().
+    """
+    rb = model.replay_buffer
+
+    semantics_version = getattr(
+        rb, "_fqe_replay_semantics_version", None
+    )
+    if semantics_version != FQE_REPLAY_SEMANTICS_VERSION:
+        raise RuntimeError(
+            "Native FQE requires replay semantics version "
+            f"{FQE_REPLAY_SEMANTICS_VERSION}, got {semantics_version}. "
+            "Install the replay-semantics patch and regenerate/load a corrected "
+            "initial replay buffer."
+        )
+
+    if rb.size() == 0:
+        raise RuntimeError(
+            "Cannot build native FQE data from an empty replay buffer."
+        )
+
+    if not hasattr(rb, "next_observations"):
+        raise RuntimeError(
+            "Native FQE replay-data path requires explicit "
+            "ReplayBuffer.next_observations."
+        )
+
+    if rb.full:
+        time_indices = np.concatenate(
+            (
+                np.arange(rb.pos, rb.buffer_size, dtype=np.int64),
+                np.arange(0, rb.pos, dtype=np.int64),
+            )
+        )
+    else:
+        time_indices = np.arange(0, rb.pos, dtype=np.int64)
+
+    obs_raw = np.asarray(rb.observations)[time_indices]
+    next_obs_raw = np.asarray(rb.next_observations)[time_indices]
+    actions_raw = np.asarray(rb.actions)[time_indices]
+    rewards_raw = np.asarray(rb.rewards)[time_indices]
+    dones_raw = np.asarray(rb.dones)[time_indices]
+    timeouts_raw = np.asarray(rb.timeouts)[time_indices]
+
+    observations_parts = []
+    next_observations_parts = []
+    actions_parts = []
+    rewards_parts = []
+    terminals_parts = []
+    timeouts_parts = []
+    initial_observation_parts = []
+
+    for env_idx in range(rb.n_envs):
+        obs_env = np.asarray(obs_raw[:, env_idx]).copy()
+        next_obs_env = np.asarray(next_obs_raw[:, env_idx]).copy()
+        actions_env = np.asarray(actions_raw[:, env_idx]).copy()
+        rewards_env = np.asarray(
+            rewards_raw[:, env_idx]
+        ).reshape(-1, 1).astype(np.float32, copy=True)
+        dones_env = np.asarray(
+            dones_raw[:, env_idx]
+        ).reshape(-1, 1).astype(np.float32, copy=True)
+        timeouts_env = np.asarray(
+            timeouts_raw[:, env_idx]
+        ).reshape(-1, 1).astype(np.float32, copy=True)
+
+        terminals_env = dones_env * (1.0 - timeouts_env)
+        boundary_flags = (
+            (terminals_env[:, 0] > 0.5)
+            | (timeouts_env[:, 0] > 0.5)
+        )
+        boundaries = np.flatnonzero(boundary_flags)
+
+        if len(boundaries) == 0:
+            raise RuntimeError(
+                f"No complete episode boundary was found in replay-buffer "
+                f"env {env_idx}."
+            )
+
+        # Same complete-episode trimming policy as build_fqe_dataset().
+        start = int(boundaries[0] + 1) if rb.full else 0
+        end = int(boundaries[-1] + 1)
+
+        if start >= end:
+            raise RuntimeError(
+                f"Replay-buffer env {env_idx} contains no complete episode "
+                "after removing partial circular-buffer trajectories."
+            )
+
+        obs_keep = obs_env[start:end]
+        next_obs_keep = next_obs_env[start:end]
+        actions_keep = actions_env[start:end]
+        rewards_keep = rewards_env[start:end]
+        terminals_keep = terminals_env[start:end]
+        timeouts_keep = timeouts_env[start:end]
+
+        kept_boundary_flags = (
+            (terminals_keep[:, 0] > 0.5)
+            | (timeouts_keep[:, 0] > 0.5)
+        )
+        kept_boundaries = np.flatnonzero(kept_boundary_flags)
+
+        # Every retained segment is a concatenation of complete episodes.
+        # Episode starts are transition 0 and immediately after each boundary
+        # except the final boundary.
+        episode_starts = [0]
+        episode_starts.extend(
+            int(idx + 1)
+            for idx in kept_boundaries[:-1]
+        )
+
+        initial_observation_parts.append(
+            obs_keep[np.asarray(episode_starts, dtype=np.int64)]
+        )
+
+        observations_parts.append(obs_keep)
+        next_observations_parts.append(next_obs_keep)
+        actions_parts.append(actions_keep)
+        rewards_parts.append(rewards_keep)
+        terminals_parts.append(terminals_keep)
+        timeouts_parts.append(timeouts_keep)
+
+    observations = np.concatenate(
+        observations_parts, axis=0
+    ).astype(np.float32, copy=False)
+    next_observations = np.concatenate(
+        next_observations_parts, axis=0
+    ).astype(np.float32, copy=False)
+    actions = np.concatenate(
+        actions_parts, axis=0
+    ).astype(np.float32, copy=False)
+    rewards = np.concatenate(
+        rewards_parts, axis=0
+    ).astype(np.float32, copy=False)
+    terminals = np.concatenate(
+        terminals_parts, axis=0
+    ).astype(np.float32, copy=False)
+    timeouts = np.concatenate(
+        timeouts_parts, axis=0
+    ).astype(np.float32, copy=False)
+    initial_observations = np.concatenate(
+        initial_observation_parts, axis=0
+    ).astype(np.float32, copy=False)
+
+    if np.any(
+        np.logical_and(
+            terminals[:, 0] > 0.5,
+            timeouts[:, 0] > 0.5,
+        )
+    ):
+        raise RuntimeError(
+            "Internal native FQE data error: a transition is marked as both "
+            "terminal and timeout."
+        )
+
+    # Every stored transition is one environment step in this PPO replay buffer.
+    intervals = np.ones_like(
+        rewards, dtype=np.float32
+    )
+
+    n_episodes = int(
+        np.sum(
+            (terminals[:, 0] > 0.5)
+            | (timeouts[:, 0] > 0.5)
+        )
+    )
+
+    print(
+        "Native FQE replay data: "
+        f"{len(rewards)} complete-episode transitions, "
+        f"{int(np.sum(terminals))} true terminals, "
+        f"{int(np.sum(timeouts))} timeouts, "
+        f"{n_episodes} episodes, "
+        f"{len(initial_observations)} initial states"
+    )
+
+    return {
+        "observations": observations,
+        "actions": actions,
+        "rewards": rewards,
+        "next_observations": next_observations,
+        "terminals": terminals,
+        "timeouts": timeouts,
+        "intervals": intervals,
+        "initial_observations": initial_observations,
+    }
+
+
 def build_native_fqe_data(dataset):
     """Materialize exactly the transitions exposed by the d3rlpy MDPDataset.
 
@@ -1252,12 +1455,12 @@ def build_native_fqe_data(dataset):
     }
 
 
-def native_batched_fqe(model, agents, dataset):
+def native_batched_fqe(model, agents, dataset, native_data=None):
     """Fit independent FQE critics for all candidates in one GPU workload.
 
     Mathematical behavior mirrors the existing d3rlpy configuration:
       * one critic per candidate
-      * same frozen d3rlpy transition dataset
+      * same frozen corrected replay transition dataset
       * batch size FQE_BATCH_SIZE (default 100)
       * Adam(lr=3e-4, betas=(0.9,0.999), eps=1e-8)
       * scalar Mean-Q MSE Bellman loss
@@ -1292,7 +1495,10 @@ def native_batched_fqe(model, agents, dataset):
     )
 
     preparation_start = time.time()
-    native_data = build_native_fqe_data(dataset)
+    if native_data is None:
+        # Compatibility fallback for callers outside the active rank-study
+        # path. The active native backend passes corrected replay data directly.
+        native_data = build_native_fqe_data(dataset)
 
     obs_cpu = native_data["observations"]
     action_cpu = native_data["actions"]
@@ -1503,7 +1709,9 @@ def native_batched_fqe(model, agents, dataset):
     return scores
 
 
-def native_batched_fqe_preserving_rng(model, agents, dataset):
+def native_batched_fqe_preserving_rng(
+    model, agents, dataset, native_data=None
+):
     """Run native batched FQE without changing the online oracle RNG trajectory."""
     python_rng_state = random.getstate()
     numpy_rng_state = np.random.get_state()
@@ -1515,7 +1723,12 @@ def native_batched_fqe_preserving_rng(model, agents, dataset):
     )
 
     try:
-        return native_batched_fqe(model, agents, dataset)
+        return native_batched_fqe(
+            model,
+            agents,
+            dataset,
+            native_data=native_data,
+        )
     finally:
         random.setstate(python_rng_state)
         np.random.set_state(numpy_rng_state)
@@ -1549,9 +1762,234 @@ def sequential_d3rlpy_fqe_scores_preserving_rng(
     return scores
 
 
+
+# -------------------------------------------------------------------------------------------------
+# FQE replay-collection semantics
+# -------------------------------------------------------------------------------------------------
+# Version 2 means the replay buffer stores the transition that was actually experienced by the
+# environment:
+#   observation      = state before env.step
+#   action           = action actually sent to env.step
+#   reward           = raw reward returned by env.step (before PPO TimeLimit bootstrap correction)
+#   next_observation = true terminal/truncated observation when an episode ends
+#   done/timeout     = original environment boundary flags
+#
+# PPO's rollout buffer and PPO training logic are intentionally left unchanged.
+FQE_REPLAY_SEMANTICS_VERSION = 2
+
+
+def _copy_vec_observation(observation):
+    """Copy a VecEnv observation without changing its structure."""
+    if isinstance(observation, dict):
+        return {
+            key: np.array(value, copy=True)
+            for key, value in observation.items()
+        }
+    return np.array(observation, copy=True)
+
+
+def _set_vec_observation_at(observation, env_index, value):
+    """Replace one environment slot in a copied VecEnv observation."""
+    if isinstance(observation, dict):
+        if not isinstance(value, dict):
+            raise TypeError(
+                "terminal_observation structure does not match Dict observation."
+            )
+        for key in observation:
+            observation[key][env_index] = value[key]
+    else:
+        observation[env_index] = value
+
+
+def install_fqe_replay_semantics_patch(model):
+    """Patch only ReplayBuffer.add so FQE receives scientifically correct transitions.
+
+    The custom PPO collector used by this project performs PPO-specific TimeLimit handling:
+      1) the environment is stepped with clipped/unscaled actions,
+      2) TimeLimit rewards are augmented with gamma * V(terminal_observation),
+      3) replay_buffer.add(...) is called with PPO-facing actions/rewards/new_obs.
+
+    Those PPO-facing values are correct for PPO training, but they are not the raw transition
+    tuple required by offline policy evaluation. This patch intercepts only the replay-buffer
+    write and reconstructs the raw environment transition. It does NOT modify:
+      * env.step(...)
+      * rewards used by PPO's rollout buffer
+      * actions used by PPO's rollout buffer
+      * PPO advantages/returns
+      * callbacks, timesteps, or _last_obs
+      * ESA candidate generation or online candidate selection
+    """
+    rb = model.replay_buffer
+
+    if getattr(rb, "_fqe_replay_semantics_patch_installed", False):
+        return
+
+    original_add = rb.add
+    action_space = model.action_space
+
+    # Diagnostic counters only; they never participate in training or selection.
+    stats = {
+        "transitions_written": 0,
+        "actions_changed_for_replay": 0,
+        "timeout_rewards_restored": 0,
+        "terminal_next_obs_restored": 0,
+    }
+
+    def corrected_replay_add(obs, next_obs, action, reward, done, infos):
+        # Work exclusively on copies so PPO-facing variables owned by collect_rollouts()
+        # remain bit-for-bit untouched.
+        replay_obs = _copy_vec_observation(obs)
+        replay_next_obs = _copy_vec_observation(next_obs)
+        replay_actions = np.array(action, copy=True)
+        replay_rewards = np.array(reward, copy=True)
+        replay_dones = np.array(done, copy=True)
+
+        # ------------------------------------------------------------------
+        # 1) Store the action that was ACTUALLY sent to env.step().
+        # ------------------------------------------------------------------
+        if isinstance(action_space, gym.spaces.Box):
+            original_replay_actions = replay_actions.copy()
+
+            if model.policy.squash_output:
+                # Matches SB3 collect_rollouts(): env.step(policy.unscale_action(actions))
+                replay_actions = model.policy.unscale_action(replay_actions)
+            else:
+                # Matches SB3 collect_rollouts(): env.step(np.clip(actions, low, high))
+                replay_actions = np.clip(
+                    replay_actions,
+                    action_space.low,
+                    action_space.high,
+                )
+
+            stats["actions_changed_for_replay"] += int(
+                np.count_nonzero(
+                    np.any(
+                        np.not_equal(
+                            replay_actions,
+                            original_replay_actions,
+                        ),
+                        axis=-1,
+                    )
+                )
+            )
+
+        # ------------------------------------------------------------------
+        # 2) Restore true next observations at episode boundaries.
+        #
+        # VecEnv auto-resets environments, so `next_obs[idx]` is normally the
+        # RESET observation when done=True. The environment transition itself
+        # ended at infos[idx]["terminal_observation"].
+        # ------------------------------------------------------------------
+        done_flags = np.asarray(replay_dones).reshape(-1)
+        for idx, done_flag in enumerate(done_flags):
+            if not bool(done_flag):
+                continue
+
+            info = infos[idx]
+            terminal_observation = info.get("terminal_observation")
+            if terminal_observation is not None:
+                _set_vec_observation_at(
+                    replay_next_obs,
+                    idx,
+                    terminal_observation,
+                )
+                stats["terminal_next_obs_restored"] += 1
+
+            # --------------------------------------------------------------
+            # 3) Restore the RAW environment reward at TimeLimit truncation.
+            #
+            # The custom PPO collector adds:
+            #     gamma * V(terminal_observation)
+            # to PPO's reward before replay_buffer.add(...).
+            #
+            # Recompute exactly that bootstrap term and subtract it from the
+            # replay-only copy. PPO continues using its corrected reward.
+            # --------------------------------------------------------------
+            if (
+                terminal_observation is not None
+                and info.get("TimeLimit.truncated", False)
+            ):
+                terminal_obs_tensor = model.policy.obs_to_tensor(
+                    terminal_observation
+                )[0]
+
+                with torch.no_grad():
+                    terminal_value = model.policy.predict_values(
+                        terminal_obs_tensor
+                    )[0]
+
+                bootstrap_value = (
+                    float(model.gamma)
+                    * float(terminal_value.detach().cpu().item())
+                )
+
+                # rewards is [n_envs] in the active collector. Handle a
+                # possible trailing singleton dimension defensively.
+                if replay_rewards.ndim == 1:
+                    replay_rewards[idx] -= bootstrap_value
+                else:
+                    replay_rewards[idx, ...] -= bootstrap_value
+
+                stats["timeout_rewards_restored"] += 1
+
+        stats["transitions_written"] += int(len(done_flags))
+
+        # Preserve the original ReplayBuffer.add implementation and therefore
+        # its ring-buffer position/full logic and timeout extraction from infos.
+        return original_add(
+            replay_obs,
+            replay_next_obs,
+            replay_actions,
+            replay_rewards,
+            replay_dones,
+            infos,
+        )
+
+    rb.add = corrected_replay_add
+    rb._fqe_replay_semantics_patch_installed = True
+    rb._fqe_replay_semantics_version = FQE_REPLAY_SEMANTICS_VERSION
+    rb._fqe_replay_semantics_stats = stats
+
+    print(
+        "Installed FQE replay-semantics patch: "
+        "executed actions + raw rewards + true terminal next observations."
+    )
+
+
+def print_fqe_replay_semantics_stats(model):
+    """Print replay-only correction counts for debugging/validation."""
+    rb = model.replay_buffer
+    stats = getattr(rb, "_fqe_replay_semantics_stats", None)
+    if stats is None:
+        print("FQE replay-semantics patch statistics unavailable.")
+        return
+
+    print(
+        "FQE replay semantics stats: "
+        f"written={stats['transitions_written']}, "
+        f"action_corrections={stats['actions_changed_for_replay']}, "
+        f"timeout_reward_corrections={stats['timeout_rewards_restored']}, "
+        f"terminal_next_obs_corrections={stats['terminal_next_obs_restored']}"
+    )
+
+
 def save_replay_buffer_npz(model, path):
     """Save the complete SB3 ReplayBuffer state needed for exact restoration."""
     rb = model.replay_buffer
+
+    # Do not allow an unpatched/legacy replay buffer to be mislabeled as
+    # corrected FQE data merely because this newer save helper is being used.
+    semantics_version = getattr(
+        rb, "_fqe_replay_semantics_version", None
+    )
+    if semantics_version != FQE_REPLAY_SEMANTICS_VERSION:
+        raise RuntimeError(
+            "Refusing to save replay buffer as corrected FQE data because "
+            f"its semantics version is {semantics_version!r}, expected "
+            f"{FQE_REPLAY_SEMANTICS_VERSION}. Install the replay-semantics "
+            "patch before collecting this buffer."
+        )
+
     path = str(path)
     parent = os.path.dirname(path)
     if parent:
@@ -1572,6 +2010,9 @@ def save_replay_buffer_npz(model, path):
         ),
         "handle_timeout_termination": np.asarray(
             getattr(rb, "handle_timeout_termination", True), dtype=np.bool_
+        ),
+        "fqe_replay_semantics_version": np.asarray(
+            FQE_REPLAY_SEMANTICS_VERSION, dtype=np.int64
         ),
     }
 
@@ -1608,6 +2049,7 @@ def load_replay_buffer_npz(model, path):
         "full",
         "buffer_size",
         "n_envs",
+        "fqe_replay_semantics_version",
     }
 
     with np.load(path, allow_pickle=False) as saved:
@@ -1616,12 +2058,26 @@ def load_replay_buffer_npz(model, path):
             raise RuntimeError(
                 "Replay buffer file is in the old/incomplete format and cannot be "
                 "restored exactly for FQE. Missing fields: "
-                f"{missing}. Regenerate the initial replay buffer with "
-                "save_replay_buffer_npz()."
+                f"{missing}. Regenerate the initial replay buffer with the "
+                "corrected replay collector and save_replay_buffer_npz(). "
+                "Existing buffers created before the replay-semantics fix "
+                "cannot be repaired reliably after the fact."
             )
 
         saved_buffer_size = int(np.asarray(saved["buffer_size"]).item())
         saved_n_envs = int(np.asarray(saved["n_envs"]).item())
+        saved_semantics_version = int(
+            np.asarray(saved["fqe_replay_semantics_version"]).item()
+        )
+
+        if saved_semantics_version != FQE_REPLAY_SEMANTICS_VERSION:
+            raise RuntimeError(
+                "Replay-buffer FQE semantics mismatch: "
+                f"file={saved_semantics_version}, "
+                f"required={FQE_REPLAY_SEMANTICS_VERSION}. "
+                "Regenerate the initial replay buffer with the corrected "
+                "replay-collection semantics before running FQE."
+            )
 
         if saved_buffer_size != rb.buffer_size:
             raise RuntimeError(
@@ -1675,6 +2131,10 @@ def load_replay_buffer_npz(model, path):
         rb.pos = int(np.asarray(saved["pos"]).item())
         rb.full = bool(np.asarray(saved["full"]).item())
 
+        # The file version has already been validated above. Restore it onto
+        # the live replay object instead of relying only on patch-install order.
+        rb._fqe_replay_semantics_version = saved_semantics_version
+
     if not (0 <= rb.pos < rb.buffer_size):
         raise RuntimeError(
             f"Invalid restored replay-buffer position {rb.pos} "
@@ -1691,6 +2151,7 @@ def load_replay_buffer_npz(model, path):
     print("  rewards:", rb.rewards.shape)
     print("  dones:", int(np.sum(rb.dones)))
     print("  timeouts:", int(np.sum(rb.timeouts)))
+    print("  FQE replay semantics version:", FQE_REPLAY_SEMANTICS_VERSION)
 
 
 def build_fqe_dataset(model):
@@ -2321,7 +2782,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_gpu_fqe_rank" # For standard PPO training (single goal tasks)
+    exp = "PPO_gpu_init_fqe" # For standard PPO training (single goal tasks)
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -2402,11 +2863,16 @@ if __name__ == "__main__":
 
     model = PPO(**ppo_kwargs)
 
+    # Replay-only semantics correction for FQE/OPE. This is installed before
+    # every model.learn() call, including the optional initial 1M regeneration
+    # block below. PPO rollout/training behavior is unchanged.
+    install_fqe_replay_semantics_patch(model)
+
     START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
     # START_ITER = 1
     SEARCH_INTERV = 1 # Make this 2 for n_epochs=5 and keep 1 for n_epochs=10
     # NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
-    # TEST RUN: execute exactly one outer iteration
+    # TEST RUN: execute exactly 10 outer iterations
     NUM_ITERS = START_ITER + SEARCH_INTERV*10
     # NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs) # For FetchReach-v4
     N_EPOCHS = args.n_epochs
@@ -2420,20 +2886,21 @@ if __name__ == "__main__":
     # ---------------------------------------------------------------------------------------------------------------
 
     # print("Starting Initial training")
-    # os.makedirs(f'full_exp_on_ppo1/models/'+env_name, exist_ok=True)
-    # os.makedirs(f'full_exp_on_ppo1/replay_buffers/'+env_name, exist_ok=True)
+    # os.makedirs(f'full_exp_on_ppo2/models/'+env_name, exist_ok=True)
+    # os.makedirs(f'full_exp_on_ppo2/replay_buffers/'+env_name, exist_ok=True)
 
     # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_ppo1/models/"+env_name+"/ppo_ant_1M"+'_'+str(args.seed))
+    # model.save("full_exp_on_ppo2/models/"+env_name+"/ppo_ant_1M"+'_'+str(args.seed))
 
     # print("Initial training done")
 
-    # # Correct replay-buffer save format for later FQE/rank-correlation runs.
-    # # This remains commented exactly like the original initial-training block.
-    # # Uncomment these lines only when regenerating the initial 1M replay buffer.
+    # # Correct replay-buffer save format + corrected replay semantics for later FQE.
+    # # IMPORTANT: buffers created before FQE_REPLAY_SEMANTICS_VERSION=2 must be
+    # # regenerated once. Uncomment the initial-training block and this save block
+    # # together so the saved PPO model and its replay buffer come from the same run.
     # print("Saving replay buffer for later use")
     # replay_buffer_path = (
-    #     f'full_exp_on_ppo1/replay_buffers/{env_name}/'
+    #     f'full_exp_on_ppo2/replay_buffers/{env_name}/'
     #     f'replay_buffer_{args.seed}.npz'
     # )
     # save_replay_buffer_npz(model, replay_buffer_path)
@@ -2458,7 +2925,7 @@ if __name__ == "__main__":
     print("Loading replay buffer")
 
     replay_buffer_path = (
-        f'full_exp_on_ppo1/replay_buffers/{env_name}/'
+        f'full_exp_on_ppo2/replay_buffers/{env_name}/'
         f'replay_buffer_{args.seed}.npz'
     )
     load_replay_buffer_npz(model, replay_buffer_path)
@@ -2549,6 +3016,10 @@ if __name__ == "__main__":
                             reset_num_timesteps=True if i == START_ITER else False, 
                             first_iteration=True if i == START_ITER else False,
                             )
+
+            # Diagnostics only: confirms that replay-only corrections are being
+            # applied while PPO itself continues through the same learn() path.
+            print_fqe_replay_semantics_stats(model)
 
             if not avg_checkpoint and not use_ptb:
                 agents, distance = search_empty_space_policies(model, DIR, i + 1, i + SEARCH_INTERV + 1, env, use_ANN, ANN_lib, saved_agents and model_already_learned, seed=args.seed)
@@ -2671,6 +3142,17 @@ if __name__ == "__main__":
             # never enter this buffer.
             if rank_correlation_study:
                 fqe_dataset = build_fqe_dataset(model)
+
+                # Freeze the corrected native transition view at the same point
+                # in time. This includes timeout-final transitions and explicit
+                # true next observations, which d3rlpy's Episode representation
+                # cannot retain.
+                native_fqe_data = (
+                    build_native_fqe_replay_data(model)
+                    if FQE_BACKEND == "native_batched"
+                    else None
+                )
+
                 replay_buffer_before_candidate_eval = replay_buffer_signature(model.replay_buffer)
                 print(
                     "Rank-correlation study enabled: frozen one FQE dataset for all "
@@ -2679,6 +3161,7 @@ if __name__ == "__main__":
                 )
             else:
                 fqe_dataset = None
+                native_fqe_data = None
                 replay_buffer_before_candidate_eval = None
 
             # Non-parallel evaluation (Commented out)
@@ -2755,6 +3238,7 @@ if __name__ == "__main__":
                         model,
                         agents,
                         fqe_dataset,
+                        native_data=native_fqe_data,
                     )
                 else:
                     advantage_rew = sequential_d3rlpy_fqe_scores_preserving_rng(
@@ -3025,6 +3509,8 @@ if __name__ == "__main__":
                         reset_num_timesteps=True if i == START_ITER else False, 
                         first_iteration=True if i == START_ITER else False,
                         )
+
+            print_fqe_replay_semantics_stats(model)
 
             cum_rews = []
             cum_success = []
