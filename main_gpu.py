@@ -64,6 +64,74 @@ FQE_BATCH_SIZE = int(os.environ.get("FQE_BATCH_SIZE", "100"))
 FQE_SHOW_PROGRESS = os.environ.get("FQE_SHOW_PROGRESS", "0") == "1"
 FQE_USE_FILE_LOGGER = os.environ.get("FQE_USE_FILE_LOGGER", "0") == "1"
 
+# Replay-coverage ablation (analysis only).
+# The online oracle, PPO trajectory, candidate generation, and canonical rank-study
+# result remain based on the FULL corrected replay buffer. Additional recent windows
+# are evaluated only to diagnose replay coverage / distribution shift.
+REPLAY_COVERAGE_ABLATION = os.environ.get("REPLAY_COVERAGE_ABLATION", "1") == "1"
+_REPLAY_COVERAGE_SPEC = os.environ.get(
+    "REPLAY_COVERAGE_WINDOWS",
+    "35000,50000,65000,80000,full",
+)
+REPLAY_COVERAGE_WINDOWS = []
+for _coverage_token in _REPLAY_COVERAGE_SPEC.split(","):
+    _coverage_token = _coverage_token.strip().lower()
+    if not _coverage_token:
+        continue
+    if _coverage_token == "full":
+        REPLAY_COVERAGE_WINDOWS.append(None)
+    else:
+        _coverage_value = int(_coverage_token)
+        if _coverage_value <= 0:
+            raise ValueError(
+                "Replay coverage windows must be positive integers or 'full'."
+            )
+        REPLAY_COVERAGE_WINDOWS.append(_coverage_value)
+
+if REPLAY_COVERAGE_ABLATION:
+    if not REPLAY_COVERAGE_WINDOWS:
+        raise ValueError("REPLAY_COVERAGE_WINDOWS must contain at least one window.")
+    if None not in REPLAY_COVERAGE_WINDOWS:
+        raise ValueError(
+            "Replay coverage ablation must include 'full' so the original "
+            "full-buffer FQE result remains canonical."
+        )
+
+    _coverage_labels = [
+        "full" if window is None else str(int(window))
+        for window in REPLAY_COVERAGE_WINDOWS
+    ]
+    if len(_coverage_labels) != len(set(_coverage_labels)):
+        raise ValueError(
+            "REPLAY_COVERAGE_WINDOWS contains duplicate coverage windows: "
+            f"{_coverage_labels}"
+        )
+
+# Hybrid shortlist metrics (analysis only).
+# For a future hybrid selector, FQE ranks all candidates, then only the top-k
+# are evaluated online. These metrics measure whether the oracle-best policy
+# survives that shortlist and what regret remains after choosing the best
+# online return inside the shortlist.
+_HYBRID_TOPK_SPEC = os.environ.get("HYBRID_TOPK_VALUES", "3,5,10")
+HYBRID_TOPK_VALUES = []
+for _hybrid_token in _HYBRID_TOPK_SPEC.split(","):
+    _hybrid_token = _hybrid_token.strip()
+    if not _hybrid_token:
+        continue
+    _hybrid_k = int(_hybrid_token)
+    if _hybrid_k <= 0:
+        raise ValueError("HYBRID_TOPK_VALUES must contain positive integers.")
+    HYBRID_TOPK_VALUES.append(_hybrid_k)
+
+if not HYBRID_TOPK_VALUES:
+    raise ValueError("HYBRID_TOPK_VALUES must contain at least one k value.")
+if len(HYBRID_TOPK_VALUES) != len(set(HYBRID_TOPK_VALUES)):
+    raise ValueError(
+        "HYBRID_TOPK_VALUES contains duplicate values: "
+        f"{HYBRID_TOPK_VALUES}"
+    )
+HYBRID_TOPK_VALUES = sorted(HYBRID_TOPK_VALUES)
+
 # FQE backend used by the rank-correlation study.
 # "native_batched" evaluates all empty-space candidates together with one
 # vectorized PyTorch FQE workload. "d3rlpy" keeps the previous implementation
@@ -1152,7 +1220,7 @@ def _policy_actions_current_model(model, observations, chunk_size=None):
 
 
 
-def build_native_fqe_replay_data(model):
+def build_native_fqe_replay_data(model, max_transitions=None):
     """Freeze scientifically correct replay transitions for native batched FQE.
 
     Unlike d3rlpy's MDPDataset/Episode representation, this path can retain the
@@ -1166,8 +1234,10 @@ def build_native_fqe_replay_data(model):
       * true terminal mask (timeouts bootstrap)
       * one-step transition interval
 
-    Circular-buffer chronology and complete-episode trimming intentionally match
-    build_fqe_dataset().
+    If max_transitions is not None, select the most recent portion of the
+    chronological replay ring first, then discard leading/trailing partial
+    episodes. Therefore the returned number of transitions can be smaller than
+    the requested limit. max_transitions=None preserves full-buffer behavior.
     """
     rb = model.replay_buffer
 
@@ -1202,6 +1272,42 @@ def build_native_fqe_replay_data(model):
         )
     else:
         time_indices = np.arange(0, rb.pos, dtype=np.int64)
+
+    total_available_transitions = int(len(time_indices) * rb.n_envs)
+    window_was_truncated = False
+    leading_partial_by_env = None
+
+    if max_transitions is not None:
+        max_transitions = int(max_transitions)
+        if max_transitions <= 0:
+            raise ValueError("max_transitions must be > 0 or None.")
+
+        # One replay position contains one transition per vectorized environment.
+        # Keep only the newest complete set of VecEnv positions and never exceed
+        # the requested total transition budget.
+        positions_to_keep = max_transitions // rb.n_envs
+        if positions_to_keep <= 0:
+            raise ValueError(
+                f"Replay window {max_transitions} is smaller than n_envs={rb.n_envs}."
+            )
+        if positions_to_keep < len(time_indices):
+            # Because this finite window is cut from an already reconstructed
+            # chronological history, we can inspect its immediate predecessor.
+            # If that predecessor is an episode boundary, the first selected
+            # transition is a genuine episode start and should NOT be discarded.
+            predecessor_index = time_indices[-positions_to_keep - 1]
+            predecessor_dones = np.asarray(rb.dones)[predecessor_index]
+            predecessor_timeouts = np.asarray(rb.timeouts)[predecessor_index]
+            predecessor_boundaries = (
+                (np.asarray(predecessor_dones).reshape(-1) > 0.5)
+                | (np.asarray(predecessor_timeouts).reshape(-1) > 0.5)
+            )
+            leading_partial_by_env = ~predecessor_boundaries
+
+            time_indices = time_indices[-positions_to_keep:]
+            window_was_truncated = True
+
+    selected_raw_transitions = int(len(time_indices) * rb.n_envs)
 
     obs_raw = np.asarray(rb.observations)[time_indices]
     next_obs_raw = np.asarray(rb.next_observations)[time_indices]
@@ -1246,7 +1352,16 @@ def build_native_fqe_replay_data(model):
             )
 
         # Same complete-episode trimming policy as build_fqe_dataset().
-        start = int(boundaries[0] + 1) if rb.full else 0
+        # For the full circular replay we conservatively discard the leading
+        # segment because its predecessor has been overwritten. For a finite
+        # recent window, the predecessor is still available and tells us
+        # exactly whether the first selected transition begins a new episode.
+        if window_was_truncated:
+            leading_partial = bool(leading_partial_by_env[env_idx])
+        else:
+            leading_partial = bool(rb.full)
+
+        start = int(boundaries[0] + 1) if leading_partial else 0
         end = int(boundaries[-1] + 1)
 
         if start >= end:
@@ -1333,8 +1448,11 @@ def build_native_fqe_replay_data(model):
         )
     )
 
+    coverage_label = "full" if max_transitions is None else str(int(max_transitions))
+
     print(
-        "Native FQE replay data: "
+        "Native FQE replay data "
+        f"[coverage={coverage_label}]: "
         f"{len(rewards)} complete-episode transitions, "
         f"{int(np.sum(terminals))} true terminals, "
         f"{int(np.sum(timeouts))} timeouts, "
@@ -1351,6 +1469,12 @@ def build_native_fqe_replay_data(model):
         "timeouts": timeouts,
         "intervals": intervals,
         "initial_observations": initial_observations,
+        "coverage_label": coverage_label,
+        "requested_max_transitions": max_transitions,
+        "selected_raw_transitions": selected_raw_transitions,
+        "actual_transitions": int(len(rewards)),
+        "n_episodes": n_episodes,
+        "total_available_transitions": total_available_transitions,
     }
 
 
@@ -2298,6 +2422,114 @@ def build_fqe_dataset(model):
 
 
 
+
+def compute_replay_coverage_rank_metrics(
+    online_scores,
+    fqe_scores,
+    iteration,
+    coverage_label,
+    native_data,
+):
+    """Compute direct-ranking and hybrid-shortlist metrics for one replay window.
+
+    Hybrid metrics answer the intended deployment question: after FQE ranks all
+    candidates, if only its top-k are evaluated online, does that shortlist
+    contain the true oracle-best candidate and what regret remains after taking
+    the best online return within that shortlist?
+    """
+    online_scores = np.asarray(online_scores, dtype=np.float64)
+    fqe_scores = np.asarray(fqe_scores, dtype=np.float64)
+
+    if len(online_scores) != len(fqe_scores):
+        raise RuntimeError(
+            "Replay-coverage rank length mismatch: "
+            f"{len(online_scores)} online vs {len(fqe_scores)} FQE."
+        )
+    if len(online_scores) == 0:
+        raise RuntimeError("Replay-coverage metrics received zero candidates.")
+
+    rank_df = pd.DataFrame({"fqe": fqe_scores, "online": online_scores})
+    pearson = float(rank_df.corr(method="pearson").loc["fqe", "online"])
+    spearman = float(rank_df.corr(method="spearman").loc["fqe", "online"])
+    kendall = float(rank_df.corr(method="kendall").loc["fqe", "online"])
+
+    n_candidates = len(online_scores)
+    oracle_idx = int(np.argmax(online_scores))
+    fqe_idx = int(np.argmax(fqe_scores))
+    oracle_return = float(online_scores[oracle_idx])
+    selected_return = float(online_scores[fqe_idx])
+    online_order = np.argsort(online_scores)[::-1]
+    fqe_order = np.argsort(fqe_scores)[::-1]
+
+    # There can be more than one oracle-optimal candidate when online returns
+    # tie exactly. Keep oracle_idx for backward-compatible reporting, but make
+    # hybrid recall tie-safe: retaining ANY candidate with the oracle return is
+    # sufficient for a hybrid shortlist to achieve zero oracle regret.
+    oracle_best_mask = online_scores == oracle_return
+
+    metrics = {
+        "iteration": int(iteration),
+        "coverage": str(coverage_label),
+        "requested_max_transitions": (
+            -1 if native_data["requested_max_transitions"] is None
+            else int(native_data["requested_max_transitions"])
+        ),
+        "selected_raw_transitions": int(native_data["selected_raw_transitions"]),
+        "actual_transitions": int(native_data["actual_transitions"]),
+        "n_episodes": int(native_data["n_episodes"]),
+        "training_initial_states": int(
+            native_data.get(
+                "training_initial_states",
+                len(native_data["initial_observations"]),
+            )
+        ),
+        "score_initial_states": int(
+            native_data.get(
+                "score_initial_states",
+                len(native_data["initial_observations"]),
+            )
+        ),
+        "pearson": pearson,
+        "spearman": spearman,
+        "kendall": kendall,
+        "oracle_idx": oracle_idx,
+        "fqe_idx": fqe_idx,
+        "oracle_return": oracle_return,
+        "fqe_selected_true_return": selected_return,
+        "selection_regret": float(oracle_return - selected_return),
+        "top1_agreement": bool(fqe_idx == oracle_idx),
+        # Backward-compatible direct-choice metrics from the previous study.
+        "top3_hit": bool(fqe_idx in online_order[:min(3, n_candidates)]),
+        "top5_hit": bool(fqe_idx in online_order[:min(5, n_candidates)]),
+    }
+
+    for requested_k in HYBRID_TOPK_VALUES:
+        k = min(int(requested_k), n_candidates)
+        shortlist = fqe_order[:k]
+        oracle_recalled = bool(np.any(oracle_best_mask[shortlist]))
+
+        shortlist_online = online_scores[shortlist]
+        best_shortlist_pos = int(np.argmax(shortlist_online))
+        hybrid_best_idx = int(shortlist[best_shortlist_pos])
+        hybrid_best_return = float(online_scores[hybrid_best_idx])
+
+        metrics[f"oracle_recall_at_{requested_k}"] = oracle_recalled
+        metrics[f"hybrid_effective_k_at_{requested_k}"] = int(k)
+        metrics[f"hybrid_best_idx_at_{requested_k}"] = hybrid_best_idx
+        metrics[f"hybrid_best_true_return_at_{requested_k}"] = hybrid_best_return
+        metrics[f"hybrid_regret_at_{requested_k}"] = float(
+            oracle_return - hybrid_best_return
+        )
+        metrics[f"hybrid_online_fraction_at_{requested_k}"] = float(
+            k / n_candidates
+        )
+        metrics[f"hybrid_online_reduction_at_{requested_k}"] = float(
+            1.0 - (k / n_candidates)
+        )
+
+    return metrics
+
+
 def replay_buffer_signature(replay_buffer):
     """Small invariant used to detect accidental candidate-evaluation data leakage."""
     return (
@@ -2782,7 +3014,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_gpu_init_fqe" # For standard PPO training (single goal tasks)
+    exp = "PPO_gpu_rank_fqe" # For standard PPO training (single goal tasks)
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -2871,17 +3103,28 @@ if __name__ == "__main__":
     START_ITER = 1000000 // (args.n_steps_per_rollout*args.n_envs)
     # START_ITER = 1
     SEARCH_INTERV = 1 # Make this 2 for n_epochs=5 and keep 1 for n_epochs=10
+
+    if env_name == "Hopper-v5":
+        SEARCH_INTERV = 2
+
     # NUM_ITERS = 3000000 // (args.n_steps_per_rollout*args.n_envs)
-    # TEST RUN: execute exactly 10 outer iterations
-    NUM_ITERS = START_ITER + SEARCH_INTERV*10
+    # Replay sweet-spot study horizon. Compute NUM_ITERS only AFTER any
+    # environment-specific SEARCH_INTERV override so the requested count is
+    # truly the number of outer-loop observations for every environment.
+    REPLAY_COVERAGE_NUM_OUTER_ITERS = int(
+        os.environ.get("REPLAY_COVERAGE_NUM_OUTER_ITERS", "30")
+    )
+    if REPLAY_COVERAGE_NUM_OUTER_ITERS <= 0:
+        raise ValueError("REPLAY_COVERAGE_NUM_OUTER_ITERS must be > 0.")
+    NUM_ITERS = (
+        START_ITER
+        + SEARCH_INTERV * REPLAY_COVERAGE_NUM_OUTER_ITERS
+    )
     # NUM_ITERS = 200000 // (args.n_steps_per_rollout*args.n_envs) # For FetchReach-v4
     N_EPOCHS = args.n_epochs
 
     # START_ITER = 1953
     # NUM_ITERS = 5858
-
-    if env_name == "Hopper-v5":
-        SEARCH_INTERV = 2
 
     # ---------------------------------------------------------------------------------------------------------------
 
@@ -2967,6 +3210,10 @@ if __name__ == "__main__":
     rankStudyMetrics = []
     rankStudyCandidateRows = []
 
+    # Analysis-only replay coverage ablation. Never used for PPO/ESA selection.
+    replayCoverageMetrics = []
+    replayCoverageCandidateRows = []
+
     avg_checkpoint = False
     use_ptb = False
 
@@ -2995,6 +3242,15 @@ if __name__ == "__main__":
         print("Model loaded")
 
         START_ITER = saved_iter
+
+        # This study defines its horizon as a number of outer iterations.
+        # Re-anchor the endpoint when resuming from saved_agents; otherwise
+        # NUM_ITERS would still be tied to the pre-resume START_ITER and the
+        # continuation loop could be shortened or empty.
+        NUM_ITERS = (
+            START_ITER
+            + SEARCH_INTERV * REPLAY_COVERAGE_NUM_OUTER_ITERS
+        )
 
     if not normal_train:
         for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
@@ -3143,15 +3399,60 @@ if __name__ == "__main__":
             if rank_correlation_study:
                 fqe_dataset = build_fqe_dataset(model)
 
-                # Freeze the corrected native transition view at the same point
-                # in time. This includes timeout-final transitions and explicit
-                # true next observations, which d3rlpy's Episode representation
-                # cannot retain.
-                native_fqe_data = (
-                    build_native_fqe_replay_data(model)
-                    if FQE_BACKEND == "native_batched"
-                    else None
-                )
+                # Freeze corrected native transition views at the same point in time,
+                # BEFORE online candidate evaluation. Candidate rollouts therefore cannot
+                # enter any replay-coverage window.
+                replay_coverage_data = None
+                if FQE_BACKEND == "native_batched":
+                    if REPLAY_COVERAGE_ABLATION:
+                        replay_coverage_data = OrderedDict()
+                        for coverage_window in REPLAY_COVERAGE_WINDOWS:
+                            coverage_label = (
+                                "full" if coverage_window is None
+                                else str(int(coverage_window))
+                            )
+                            replay_coverage_data[coverage_label] = (
+                                build_native_fqe_replay_data(
+                                    model,
+                                    max_transitions=coverage_window,
+                                )
+                            )
+
+                        # Replay-coverage ablation must vary only the FQE
+                        # TRAINING replay. Use one common frozen start-state
+                        # reference set for scoring every window; otherwise the
+                        # experiment changes both replay coverage and the s0
+                        # distribution used by E[Q(s0, pi(s0))].
+                        coverage_reference_initial_observations = np.array(
+                            replay_coverage_data["full"]["initial_observations"],
+                            dtype=np.float32,
+                            copy=True,
+                        )
+
+                        for coverage_data in replay_coverage_data.values():
+                            coverage_data["training_initial_states"] = int(
+                                len(coverage_data["initial_observations"])
+                            )
+                            coverage_data["initial_observations"] = (
+                                coverage_reference_initial_observations.copy()
+                            )
+                            coverage_data["score_initial_states"] = int(
+                                len(coverage_reference_initial_observations)
+                            )
+
+                        print(
+                            "Replay coverage scoring reference: "
+                            f"{len(coverage_reference_initial_observations)} "
+                            "common full-buffer initial states."
+                        )
+
+                        # Preserve original/canonical behavior: the existing rank study
+                        # remains defined by the full corrected replay buffer.
+                        native_fqe_data = replay_coverage_data["full"]
+                    else:
+                        native_fqe_data = build_native_fqe_replay_data(model)
+                else:
+                    native_fqe_data = None
 
                 replay_buffer_before_candidate_eval = replay_buffer_signature(model.replay_buffer)
                 print(
@@ -3162,6 +3463,7 @@ if __name__ == "__main__":
             else:
                 fqe_dataset = None
                 native_fqe_data = None
+                replay_coverage_data = None
                 replay_buffer_before_candidate_eval = None
 
             # Non-parallel evaluation (Commented out)
@@ -3234,13 +3536,48 @@ if __name__ == "__main__":
             # together on the GPU.
             if rank_correlation_study:
                 if FQE_BACKEND == "native_batched":
-                    advantage_rew = native_batched_fqe_preserving_rng(
-                        model,
-                        agents,
-                        fqe_dataset,
-                        native_data=native_fqe_data,
-                    )
+                    replay_coverage_scores = None
+
+                    if REPLAY_COVERAGE_ABLATION:
+                        replay_coverage_scores = OrderedDict()
+
+                        print("---------------------------------")
+                        print("REPLAY COVERAGE ABLATION")
+                        print(
+                            "Windows: "
+                            + ", ".join(replay_coverage_data.keys())
+                        )
+
+                        for coverage_label, coverage_data in replay_coverage_data.items():
+                            print("---------------------------------")
+                            print(
+                                "Running FQE replay coverage window: "
+                                f"{coverage_label} "
+                                f"(actual complete transitions="
+                                f"{coverage_data['actual_transitions']}, "
+                                f"episodes={coverage_data['n_episodes']})"
+                            )
+                            replay_coverage_scores[coverage_label] = (
+                                native_batched_fqe_preserving_rng(
+                                    model,
+                                    agents,
+                                    fqe_dataset,
+                                    native_data=coverage_data,
+                                )
+                            )
+
+                        # CRITICAL: preserve original/canonical rank-study semantics.
+                        # All existing downstream variables and metrics use FULL replay FQE.
+                        advantage_rew = replay_coverage_scores["full"]
+                    else:
+                        advantage_rew = native_batched_fqe_preserving_rng(
+                            model,
+                            agents,
+                            fqe_dataset,
+                            native_data=native_fqe_data,
+                        )
                 else:
+                    replay_coverage_scores = None
                     advantage_rew = sequential_d3rlpy_fqe_scores_preserving_rng(
                         model,
                         agents,
@@ -3381,6 +3718,100 @@ if __name__ == "__main__":
                     rank_metrics
                 )
 
+            # Replay-coverage ablation metrics are analysis-only. The canonical
+            # rankStudyMetrics above remain the FULL-buffer scores exactly as before.
+            if (
+                rank_correlation_study
+                and FQE_BACKEND == "native_batched"
+                and REPLAY_COVERAGE_ABLATION
+            ):
+                online_scores_for_coverage = np.asarray(
+                    cum_rews, dtype=np.float64
+                )
+
+                print("---------------------------------")
+                print("REPLAY COVERAGE ABLATION RESULTS")
+
+                for coverage_label, coverage_scores in replay_coverage_scores.items():
+                    coverage_data = replay_coverage_data[coverage_label]
+                    coverage_metrics = compute_replay_coverage_rank_metrics(
+                        online_scores=online_scores_for_coverage,
+                        fqe_scores=coverage_scores,
+                        iteration=i,
+                        coverage_label=coverage_label,
+                        native_data=coverage_data,
+                    )
+                    replayCoverageMetrics.append(coverage_metrics)
+
+                    coverage_scores_np = np.asarray(
+                        coverage_scores, dtype=np.float64
+                    )
+                    for candidate_idx, (coverage_fqe_score, online_score) in enumerate(
+                        zip(coverage_scores_np, online_scores_for_coverage)
+                    ):
+                        replayCoverageCandidateRows.append({
+                            "iteration": int(i),
+                            "coverage": str(coverage_label),
+                            "requested_max_transitions": (
+                                -1
+                                if coverage_data["requested_max_transitions"] is None
+                                else int(coverage_data["requested_max_transitions"])
+                            ),
+                            "actual_transitions": int(coverage_data["actual_transitions"]),
+                            "n_episodes": int(coverage_data["n_episodes"]),
+                            "training_initial_states": int(
+                                coverage_data.get(
+                                    "training_initial_states",
+                                    len(coverage_data["initial_observations"]),
+                                )
+                            ),
+                            "score_initial_states": int(
+                                coverage_data.get(
+                                    "score_initial_states",
+                                    len(coverage_data["initial_observations"]),
+                                )
+                            ),
+                            "candidate": int(candidate_idx),
+                            "fqe": float(coverage_fqe_score),
+                            "online": float(online_score),
+                        })
+
+                    direct_summary = (
+                        f"coverage={coverage_label:>5} | "
+                        f"actual={coverage_metrics['actual_transitions']:>6} | "
+                        f"episodes={coverage_metrics['n_episodes']:>3} | "
+                        f"score_s0={coverage_metrics['score_initial_states']:>3} | "
+                        f"Pearson={coverage_metrics['pearson']:+.4f} | "
+                        f"Spearman={coverage_metrics['spearman']:+.4f} | "
+                        f"Kendall={coverage_metrics['kendall']:+.4f} | "
+                        f"direct_top1={int(coverage_metrics['top1_agreement'])} | "
+                        f"direct_regret={coverage_metrics['selection_regret']:.4f}"
+                    )
+
+                    hybrid_parts = []
+                    for requested_k in HYBRID_TOPK_VALUES:
+                        hybrid_parts.append(
+                            f"Recall@{requested_k}="
+                            f"{int(coverage_metrics[f'oracle_recall_at_{requested_k}'])}, "
+                            f"HReg@{requested_k}="
+                            f"{coverage_metrics[f'hybrid_regret_at_{requested_k}']:.4f}"
+                        )
+
+                    print(
+                        direct_summary
+                        + " | "
+                        + " | ".join(hybrid_parts)
+                    )
+
+                np.savez(
+                    f'logs/{DIR}/replay_coverage_scores_{i}_{i + SEARCH_INTERV}.npz',
+                    online=online_scores_for_coverage,
+                    **{
+                        f"fqe_{coverage_label}": np.asarray(scores, dtype=np.float64)
+                        for coverage_label, scores in replay_coverage_scores.items()
+                    },
+                )
+
             # Correlation calculation used by the original offline-selection path.
             if not online_eval:
                 df = pd.DataFrame({
@@ -3494,6 +3925,110 @@ if __name__ == "__main__":
                 f"Mean selection regret: "
                 f"{rank_summary_df['selection_regret'].mean():.4f}"
             )
+
+        if REPLAY_COVERAGE_ABLATION and replayCoverageMetrics:
+            coverage_summary_df = pd.DataFrame(replayCoverageMetrics)
+            coverage_candidates_df = pd.DataFrame(replayCoverageCandidateRows)
+
+            coverage_summary_df.to_csv(
+                f'logs/{DIR}/replay_coverage_ablation.csv',
+                index=False,
+            )
+            coverage_candidates_df.to_csv(
+                f'logs/{DIR}/replay_coverage_candidates.csv',
+                index=False,
+            )
+
+            coverage_order = [
+                "full" if w is None else str(int(w))
+                for w in REPLAY_COVERAGE_WINDOWS
+            ]
+
+            # Compact one-row-per-window summary focused on the hybrid selector.
+            hybrid_summary_rows = []
+            for coverage_label in coverage_order:
+                group = coverage_summary_df[
+                    coverage_summary_df["coverage"] == coverage_label
+                ]
+                if group.empty:
+                    continue
+
+                row = {
+                    "coverage": coverage_label,
+                    "mean_actual_transitions": float(
+                        group["actual_transitions"].mean()
+                    ),
+                    "mean_episodes": float(group["n_episodes"].mean()),
+                    "mean_pearson": float(group["pearson"].mean()),
+                    "mean_spearman": float(group["spearman"].mean()),
+                    "mean_kendall": float(group["kendall"].mean()),
+                    "direct_top1_rate": float(
+                        group["top1_agreement"].mean()
+                    ),
+                    "direct_mean_regret": float(
+                        group["selection_regret"].mean()
+                    ),
+                }
+                for requested_k in HYBRID_TOPK_VALUES:
+                    row[f"oracle_recall_at_{requested_k}"] = float(
+                        group[f"oracle_recall_at_{requested_k}"].mean()
+                    )
+                    row[f"hybrid_mean_regret_at_{requested_k}"] = float(
+                        group[f"hybrid_regret_at_{requested_k}"].mean()
+                    )
+                    row[f"online_reduction_at_{requested_k}"] = float(
+                        group[
+                            f"hybrid_online_reduction_at_{requested_k}"
+                        ].mean()
+                    )
+                hybrid_summary_rows.append(row)
+
+            pd.DataFrame(hybrid_summary_rows).to_csv(
+                f'logs/{DIR}/replay_coverage_hybrid_summary.csv',
+                index=False,
+            )
+
+            print("---------------------------------")
+            print("REPLAY COVERAGE ABLATION SUMMARY")
+
+            for coverage_label in coverage_order:
+                group = coverage_summary_df[
+                    coverage_summary_df["coverage"] == coverage_label
+                ]
+                if group.empty:
+                    continue
+
+                direct_summary = (
+                    f"coverage={coverage_label:>5} | "
+                    f"mean actual transitions={group['actual_transitions'].mean():.1f} | "
+                    f"mean episodes={group['n_episodes'].mean():.1f} | "
+                    f"score_s0={group['score_initial_states'].mean():.1f} | "
+                    f"Pearson={group['pearson'].mean():+.4f} "
+                    f"+/- {group['pearson'].std(ddof=0):.4f} | "
+                    f"Spearman={group['spearman'].mean():+.4f} "
+                    f"+/- {group['spearman'].std(ddof=0):.4f} | "
+                    f"Kendall={group['kendall'].mean():+.4f} "
+                    f"+/- {group['kendall'].std(ddof=0):.4f} | "
+                    f"direct_top1={group['top1_agreement'].mean():.3f} | "
+                    f"direct_mean_regret={group['selection_regret'].mean():.4f}"
+                )
+
+                hybrid_parts = []
+                for requested_k in HYBRID_TOPK_VALUES:
+                    hybrid_parts.append(
+                        f"Recall@{requested_k}="
+                        f"{group[f'oracle_recall_at_{requested_k}'].mean():.3f}, "
+                        f"HReg@{requested_k}="
+                        f"{group[f'hybrid_regret_at_{requested_k}'].mean():.4f}, "
+                        f"online_reduction="
+                        f"{group[f'hybrid_online_reduction_at_{requested_k}'].mean():.3f}"
+                    )
+
+                print(
+                    direct_summary
+                    + " | "
+                    + " | ".join(hybrid_parts)
+                )
 
         np.save(f'logs/{DIR}/distance.npy', distanceArray)
         np.save(f'logs/{DIR}/time.npy', timeArray)
