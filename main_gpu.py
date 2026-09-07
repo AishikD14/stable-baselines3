@@ -153,22 +153,39 @@ NATIVE_FQE_ACTION_CHUNK_SIZE = int(
 if NATIVE_FQE_ACTION_CHUNK_SIZE <= 0:
     raise ValueError("NATIVE_FQE_ACTION_CHUNK_SIZE must be > 0.")
 
-# Ensemble Lower Confidence Bound FQE (LCB-FQE).
+# Support-penalized FQE scoring.
 #
-# Every candidate policy is evaluated by B independently initialized FQE
-# critics trained on the exact same frozen replay data. Candidate ranking uses
-# the pessimistic score:
-#   E_s0[ mean_b Q_b(s0, pi(s0)) - beta * std_b Q_b(s0, pi(s0)) ].
+# The LCB experiment is disabled by default (B=1, beta=0), restoring ordinary
+# native FQE as the value estimator. Candidate ranking is then augmented with
+# an explicit behavioral-support penalty computed on frozen replay data:
 #
-# B=1 and beta=0 recover the previous single-critic native FQE ranking exactly
-# (including the original critic initialization/minibatch behavior).
-FQE_ENSEMBLE_SIZE = int(os.environ.get("FQE_ENSEMBLE_SIZE", "5"))
-FQE_LCB_BETA = float(os.environ.get("FQE_LCB_BETA", "1.0"))
+#   Score_pen(pi) = V_FQE(pi)
+#                   - lambda * E_(s,a)~D[ ||pi(s) - a||_2^2 ]
+#
+# The squared L2 norm is summed over action dimensions exactly as written above
+# (it is NOT divided by action_dim). The replay action is the corrected,
+# actually-executed environment action stored by FQE replay semantics version 2.
+#
+# FQE_ENSEMBLE_SIZE and FQE_LCB_BETA are kept only for reproducibility/backward
+# compatibility. The support-penalized ranking always uses the ordinary FQE
+# value (ensemble mean if B>1), never the LCB value.
+FQE_ENSEMBLE_SIZE = int(os.environ.get("FQE_ENSEMBLE_SIZE", "1"))
+FQE_LCB_BETA = float(os.environ.get("FQE_LCB_BETA", "0.0"))
+FQE_SUPPORT_PENALTY_LAMBDA = float(
+    os.environ.get("FQE_SUPPORT_PENALTY_LAMBDA", "1.0")
+)
 
 if FQE_ENSEMBLE_SIZE <= 0:
     raise ValueError("FQE_ENSEMBLE_SIZE must be > 0.")
 if not np.isfinite(FQE_LCB_BETA) or FQE_LCB_BETA < 0.0:
     raise ValueError("FQE_LCB_BETA must be finite and >= 0.")
+if (
+    not np.isfinite(FQE_SUPPORT_PENALTY_LAMBDA)
+    or FQE_SUPPORT_PENALTY_LAMBDA < 0.0
+):
+    raise ValueError(
+        "FQE_SUPPORT_PENALTY_LAMBDA must be finite and >= 0."
+    )
 
 # d3rlpy trains floor(n_steps / n_steps_per_epoch) complete epochs. Reject
 # invalid/non-divisible overrides so a requested FQE update budget is never
@@ -1676,6 +1693,198 @@ class LCBFQEScores(list):
         self.ensemble_size = int(ensemble_size)
 
 
+class SupportPenalizedFQEScores(list):
+    """List-compatible support-penalized FQE scores with diagnostics.
+
+    ``mean_q`` is the ordinary FQE value estimate used as the base score. For
+    B>1 it is the ensemble-mean FQE value; LCB is intentionally not used for
+    ranking in this experiment.
+    """
+
+    def __init__(
+        self,
+        scores,
+        mean_q,
+        action_divergence,
+        support_penalty,
+        penalty_lambda,
+        support_reference_label,
+        support_reference_transitions,
+        mean_sigma=None,
+        ensemble_member_values=None,
+        ensemble_size=1,
+    ):
+        super().__init__(float(v) for v in scores)
+        self.mean_q = np.asarray(mean_q, dtype=np.float64)
+        self.action_divergence = np.asarray(
+            action_divergence, dtype=np.float64
+        )
+        self.support_penalty = np.asarray(
+            support_penalty, dtype=np.float64
+        )
+        self.penalty_lambda = float(penalty_lambda)
+        self.support_reference_label = str(support_reference_label)
+        self.support_reference_transitions = int(
+            support_reference_transitions
+        )
+        if mean_sigma is None:
+            mean_sigma = np.zeros_like(self.mean_q)
+        self.mean_sigma = np.asarray(mean_sigma, dtype=np.float64)
+        if ensemble_member_values is None:
+            ensemble_member_values = self.mean_q.reshape(-1, 1)
+        self.ensemble_member_values = np.asarray(
+            ensemble_member_values, dtype=np.float64
+        )
+        self.ensemble_size = int(ensemble_size)
+        # Compatibility attributes for older downstream diagnostics.
+        self.beta = 0.0
+
+
+def compute_behavior_action_divergence(model, agents, support_data):
+    """Compute E_D[||pi(s)-a_buffer||_2^2] for every candidate policy.
+
+    The support reference is frozen replay data built before online candidate
+    evaluation. ``support_data['actions']`` therefore contains the corrected
+    action actually executed in the environment, not PPO's pre-clipped action.
+
+    This function is analysis-only. It restores the model policy weights after
+    evaluating all candidates so it cannot affect PPO/ESA/online selection.
+    """
+    if len(agents) == 0:
+        return np.empty(0, dtype=np.float64)
+
+    support_obs_cpu = np.asarray(support_data["observations"], dtype=np.float32)
+    support_actions_cpu = np.asarray(support_data["actions"], dtype=np.float32)
+
+    if support_obs_cpu.shape[0] != support_actions_cpu.shape[0]:
+        raise RuntimeError(
+            "Support-reference observation/action length mismatch: "
+            f"{support_obs_cpu.shape[0]} vs {support_actions_cpu.shape[0]}."
+        )
+    if support_obs_cpu.shape[0] == 0:
+        raise RuntimeError("Support-reference replay data is empty.")
+
+    support_observations = torch.as_tensor(
+        support_obs_cpu, dtype=torch.float32, device=device
+    )
+    support_actions = torch.as_tensor(
+        support_actions_cpu, dtype=torch.float32, device=device
+    )
+
+    original_policy_state = state_dict_to_cpu(model.policy.state_dict())
+    divergences = []
+
+    try:
+        for candidate_index, agent in enumerate(agents):
+            model.policy.load_state_dict(agent)
+            model.policy.to(device)
+
+            candidate_actions = _policy_actions_current_model(
+                model, support_observations
+            )
+            if candidate_actions.shape != support_actions.shape:
+                raise RuntimeError(
+                    "Candidate/buffer action shape mismatch for support penalty "
+                    f"at candidate {candidate_index}: "
+                    f"candidate={tuple(candidate_actions.shape)}, "
+                    f"buffer={tuple(support_actions.shape)}."
+                )
+
+            # Literal squared L2 norm: sum across action dimensions, then
+            # expectation across frozen replay transitions.
+            squared_l2 = (candidate_actions - support_actions).pow(2).sum(dim=-1)
+            divergence = squared_l2.mean()
+
+            if not torch.isfinite(divergence):
+                raise RuntimeError(
+                    "Support penalty produced a non-finite action divergence "
+                    f"for candidate {candidate_index}."
+                )
+
+            divergences.append(float(divergence.detach().cpu().item()))
+    finally:
+        model.policy.load_state_dict(original_policy_state)
+        model.policy.to(device)
+
+    return np.asarray(divergences, dtype=np.float64)
+
+
+def compute_behavior_action_divergence_preserving_rng(
+    model, agents, support_data
+):
+    """Compute support divergence without perturbing experiment RNG state."""
+    python_rng_state = random.getstate()
+    numpy_rng_state = np.random.get_state()
+    torch_rng_state = torch.random.get_rng_state()
+    cuda_rng_states = (
+        torch.cuda.get_rng_state_all()
+        if torch.cuda.is_available()
+        else None
+    )
+
+    try:
+        return compute_behavior_action_divergence(
+            model, agents, support_data
+        )
+    finally:
+        random.setstate(python_rng_state)
+        np.random.set_state(numpy_rng_state)
+        torch.random.set_rng_state(torch_rng_state)
+        if cuda_rng_states is not None:
+            torch.cuda.set_rng_state_all(cuda_rng_states)
+
+
+def build_support_penalized_scores(
+    base_fqe_scores,
+    action_divergence,
+    support_reference_label,
+    support_reference_transitions,
+):
+    """Combine ordinary FQE value with the explicit behavior-support penalty."""
+    if isinstance(base_fqe_scores, LCBFQEScores):
+        # Do NOT use the LCB list values here. The new experiment is defined by
+        # ordinary FQE value minus explicit behavioral divergence.
+        mean_q = np.asarray(base_fqe_scores.mean_q, dtype=np.float64)
+        mean_sigma = np.asarray(base_fqe_scores.mean_sigma, dtype=np.float64)
+        ensemble_member_values = np.asarray(
+            base_fqe_scores.ensemble_member_values, dtype=np.float64
+        )
+        ensemble_size = int(base_fqe_scores.ensemble_size)
+    else:
+        mean_q = np.asarray(base_fqe_scores, dtype=np.float64)
+        mean_sigma = np.zeros_like(mean_q)
+        ensemble_member_values = mean_q.reshape(-1, 1)
+        ensemble_size = 1
+
+    action_divergence = np.asarray(action_divergence, dtype=np.float64)
+    if mean_q.shape != action_divergence.shape:
+        raise RuntimeError(
+            "Support-penalized score length mismatch: "
+            f"FQE={mean_q.shape}, divergence={action_divergence.shape}."
+        )
+
+    support_penalty = FQE_SUPPORT_PENALTY_LAMBDA * action_divergence
+    penalized_scores = mean_q - support_penalty
+
+    if not np.all(np.isfinite(penalized_scores)):
+        raise RuntimeError(
+            "Support-penalized FQE produced a non-finite ranking score."
+        )
+
+    return SupportPenalizedFQEScores(
+        scores=penalized_scores,
+        mean_q=mean_q,
+        action_divergence=action_divergence,
+        support_penalty=support_penalty,
+        penalty_lambda=FQE_SUPPORT_PENALTY_LAMBDA,
+        support_reference_label=support_reference_label,
+        support_reference_transitions=support_reference_transitions,
+        mean_sigma=mean_sigma,
+        ensemble_member_values=ensemble_member_values,
+        ensemble_size=ensemble_size,
+    )
+
+
 def native_batched_fqe(model, agents, dataset, native_data=None):
     """Fit Ensemble Lower Confidence Bound FQE for all candidates on the GPU.
 
@@ -1709,11 +1918,11 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
 
     print("--------------------------------------------------------------------------------")
     print(
-        "Fitting native batched Ensemble LCB-FQE for "
+        "Fitting native batched FQE base estimator for "
         f"{len(agents)} candidates x {FQE_ENSEMBLE_SIZE} critics..."
     )
     print(
-        "Native LCB-FQE runtime config: "
+        "Native FQE base-estimator runtime config: "
         f"steps={FQE_N_STEPS}, "
         f"batch_size={FQE_BATCH_SIZE}, "
         f"target_update_interval=100, "
@@ -1944,10 +2153,10 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
     )
 
     print(
-        f"Native batched LCB-FQE preparation time: {preparation_seconds:.3f} s"
+        f"Native batched FQE preparation time: {preparation_seconds:.3f} s"
     )
     print(
-        "Native batched LCB-FQE fitting time for all "
+        "Native batched FQE fitting time for all "
         f"{n_candidates * n_ensemble} critics: {fit_seconds:.3f} s"
     )
     if last_losses is not None:
@@ -1978,15 +2187,17 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
             max_line_width=160,
         )
     )
-    print(
-        f"LCB-FQE scores (beta={FQE_LCB_BETA:g}): "
-        + np.array2string(
-            scores_np,
-            precision=6,
-            separator=", ",
-            max_line_width=160,
+    if FQE_ENSEMBLE_SIZE > 1 or FQE_LCB_BETA > 0.0:
+        print(
+            f"Legacy LCB diagnostic (NOT used by support-penalized ranking; "
+            f"beta={FQE_LCB_BETA:g}): "
+            + np.array2string(
+                scores_np,
+                precision=6,
+                separator=", ",
+                max_line_width=160,
+            )
         )
-    )
 
     return scores
 
@@ -2594,11 +2805,20 @@ def compute_replay_coverage_rank_metrics(
     contain the true oracle-best candidate and what regret remains after taking
     the best online return within that shortlist?
     """
+    is_support_penalized = isinstance(
+        fqe_scores, SupportPenalizedFQEScores
+    )
     fqe_ensemble_size = int(
         getattr(fqe_scores, "ensemble_size", 1)
     )
-    fqe_lcb_beta = float(
-        getattr(fqe_scores, "beta", 0.0)
+    support_lambda = float(
+        getattr(fqe_scores, "penalty_lambda", 0.0)
+    )
+    support_reference_label = str(
+        getattr(fqe_scores, "support_reference_label", "none")
+    )
+    support_reference_transitions = int(
+        getattr(fqe_scores, "support_reference_transitions", 0)
     )
     online_scores = np.asarray(online_scores, dtype=np.float64)
     fqe_scores = np.asarray(fqe_scores, dtype=np.float64)
@@ -2653,10 +2873,12 @@ def compute_replay_coverage_rank_metrics(
             )
         ),
         "fqe_score_type": (
-            "lcb" if fqe_ensemble_size > 1 or fqe_lcb_beta > 0.0 else "mean"
+            "support_penalized" if is_support_penalized else "mean"
         ),
         "fqe_ensemble_size": fqe_ensemble_size,
-        "fqe_lcb_beta": fqe_lcb_beta,
+        "support_penalty_lambda": support_lambda,
+        "support_reference": support_reference_label,
+        "support_reference_transitions": support_reference_transitions,
         "pearson": pearson,
         "spearman": spearman,
         "kendall": kendall,
@@ -3619,8 +3841,18 @@ if __name__ == "__main__":
                         native_fqe_data = replay_coverage_data["full"]
                     else:
                         native_fqe_data = build_native_fqe_replay_data(model)
+
+                    # The behavioral trust-region penalty uses one COMMON full
+                    # corrected replay reference for all coverage windows. This
+                    # keeps the coverage ablation scientifically clean: only FQE
+                    # training coverage changes across windows, not the support
+                    # metric itself.
+                    support_reference_data = native_fqe_data
                 else:
                     native_fqe_data = None
+                    # d3rlpy still receives the same explicit behavior-support
+                    # penalty, built from the corrected replay semantics.
+                    support_reference_data = build_native_fqe_replay_data(model)
 
                 replay_buffer_before_candidate_eval = replay_buffer_signature(model.replay_buffer)
                 print(
@@ -3632,6 +3864,7 @@ if __name__ == "__main__":
                 fqe_dataset = None
                 native_fqe_data = None
                 replay_coverage_data = None
+                support_reference_data = None
                 replay_buffer_before_candidate_eval = None
 
             # Non-parallel evaluation (Commented out)
@@ -3698,11 +3931,50 @@ if __name__ == "__main__":
                 # rollouts. Rank-study FQE is intentionally deferred to the
                 # common batched block below.
 
-            # Rank-correlation FQE is analysis-only and is evaluated after all
+            # Rank-correlation OPE is analysis-only and is evaluated after all
             # online candidate returns are already fixed. This preserves the
-            # original online oracle while allowing all critics to train
-            # together on the GPU.
+            # original online oracle. The new ranking score is:
+            #   ordinary FQE value - lambda * replay action divergence.
             if rank_correlation_study:
+                # Compute the behavioral trust-region term ONCE per outer
+                # iteration from the common frozen full-buffer support reference.
+                # Candidate online rollouts have already completed, but they are
+                # not stored in this replay buffer, and the leakage invariant below
+                # verifies that fact.
+                support_action_divergence = (
+                    compute_behavior_action_divergence_preserving_rng(
+                        model,
+                        agents,
+                        support_reference_data,
+                    )
+                )
+                support_reference_label = str(
+                    support_reference_data.get("coverage_label", "full")
+                )
+                support_reference_transitions = int(
+                    support_reference_data.get(
+                        "actual_transitions",
+                        len(support_reference_data["observations"]),
+                    )
+                )
+
+                print("---------------------------------")
+                print("BEHAVIOR SUPPORT PENALTY")
+                print(
+                    f"lambda={FQE_SUPPORT_PENALTY_LAMBDA:g}, "
+                    f"reference={support_reference_label}, "
+                    f"transitions={support_reference_transitions}"
+                )
+                print(
+                    "Mean squared-L2 action divergence per candidate: "
+                    + np.array2string(
+                        support_action_divergence,
+                        precision=6,
+                        separator=", ",
+                        max_line_width=160,
+                    )
+                )
+
                 if FQE_BACKEND == "native_batched":
                     replay_coverage_scores = None
 
@@ -3725,33 +3997,58 @@ if __name__ == "__main__":
                                 f"{coverage_data['actual_transitions']}, "
                                 f"episodes={coverage_data['n_episodes']})"
                             )
+                            base_fqe_scores = native_batched_fqe_preserving_rng(
+                                model,
+                                agents,
+                                fqe_dataset,
+                                native_data=coverage_data,
+                            )
                             replay_coverage_scores[coverage_label] = (
-                                native_batched_fqe_preserving_rng(
-                                    model,
-                                    agents,
-                                    fqe_dataset,
-                                    native_data=coverage_data,
+                                build_support_penalized_scores(
+                                    base_fqe_scores=base_fqe_scores,
+                                    action_divergence=support_action_divergence,
+                                    support_reference_label=support_reference_label,
+                                    support_reference_transitions=(
+                                        support_reference_transitions
+                                    ),
                                 )
                             )
 
                         # CRITICAL: preserve original/canonical rank-study semantics.
-                        # All existing downstream variables and metrics use FULL replay FQE.
+                        # Downstream rank metrics still use the FULL replay FQE
+                        # estimate, now augmented only by the explicit support term.
                         advantage_rew = replay_coverage_scores["full"]
                     else:
-                        advantage_rew = native_batched_fqe_preserving_rng(
+                        base_fqe_scores = native_batched_fqe_preserving_rng(
                             model,
                             agents,
                             fqe_dataset,
                             native_data=native_fqe_data,
                         )
+                        advantage_rew = build_support_penalized_scores(
+                            base_fqe_scores=base_fqe_scores,
+                            action_divergence=support_action_divergence,
+                            support_reference_label=support_reference_label,
+                            support_reference_transitions=(
+                                support_reference_transitions
+                            ),
+                        )
                 else:
                     replay_coverage_scores = None
-                    advantage_rew = sequential_d3rlpy_fqe_scores_preserving_rng(
-                        model,
-                        agents,
-                        fqe_dataset,
-                        DIR,
-                        i,
+                    base_fqe_scores = (
+                        sequential_d3rlpy_fqe_scores_preserving_rng(
+                            model,
+                            agents,
+                            fqe_dataset,
+                            DIR,
+                            i,
+                        )
+                    )
+                    advantage_rew = build_support_penalized_scores(
+                        base_fqe_scores=base_fqe_scores,
+                        action_divergence=support_action_divergence,
+                        support_reference_label=support_reference_label,
+                        support_reference_transitions=support_reference_transitions,
                     )
 
                 if len(advantage_rew) != len(agents):
@@ -3761,12 +4058,13 @@ if __name__ == "__main__":
                     )
 
                 for j, init_est in enumerate(advantage_rew):
-                    if isinstance(advantage_rew, LCBFQEScores):
+                    if isinstance(advantage_rew, SupportPenalizedFQEScores):
                         print(
                             f"agent{j}: online_return={float(cum_rews[j]):.6f}, "
-                            f"FQE_mean={float(advantage_rew.mean_q[j]):.6f}, "
-                            f"FQE_sigma={float(advantage_rew.mean_sigma[j]):.6f}, "
-                            f"LCB_FQE={float(init_est):.6f}"
+                            f"FQE={float(advantage_rew.mean_q[j]):.6f}, "
+                            f"action_div={float(advantage_rew.action_divergence[j]):.6f}, "
+                            f"support_penalty={float(advantage_rew.support_penalty[j]):.6f}, "
+                            f"SupportPen_FQE={float(init_est):.6f}"
                         )
                     else:
                         print(
@@ -3824,6 +4122,22 @@ if __name__ == "__main__":
                     ),
                     dtype=np.float64,
                 )
+                action_divergence_scores = np.asarray(
+                    getattr(
+                        advantage_rew,
+                        "action_divergence",
+                        np.zeros(len(advantage_rew), dtype=np.float64),
+                    ),
+                    dtype=np.float64,
+                )
+                support_penalty_scores = np.asarray(
+                    getattr(
+                        advantage_rew,
+                        "support_penalty",
+                        np.zeros(len(advantage_rew), dtype=np.float64),
+                    ),
+                    dtype=np.float64,
+                )
                 fqe_scores = np.asarray(advantage_rew, dtype=np.float64)
 
                 if len(online_scores) != len(fqe_scores):
@@ -3850,25 +4164,41 @@ if __name__ == "__main__":
                 top3_hit = bool(fqe_idx in online_order[:min(3, len(online_order))])
                 top5_hit = bool(fqe_idx in online_order[:min(5, len(online_order))])
 
-                is_lcb_scoring = (
-                    isinstance(advantage_rew, LCBFQEScores)
-                    and (
-                        advantage_rew.ensemble_size > 1
-                        or advantage_rew.beta > 0.0
-                    )
+                is_support_penalized = isinstance(
+                    advantage_rew, SupportPenalizedFQEScores
                 )
-                score_label = "LCB-FQE" if is_lcb_scoring else "FQE"
+                score_label = (
+                    "Support-Penalized FQE"
+                    if is_support_penalized
+                    else "FQE"
+                )
 
                 rank_metrics = {
                     'iteration': int(i),
                     'fqe_score_type': (
-                        'lcb' if is_lcb_scoring else 'mean'
+                        'support_penalized'
+                        if is_support_penalized
+                        else 'mean'
                     ),
                     'fqe_ensemble_size': int(
                         getattr(advantage_rew, 'ensemble_size', 1)
                     ),
-                    'fqe_lcb_beta': float(
-                        getattr(advantage_rew, 'beta', 0.0)
+                    'support_penalty_lambda': float(
+                        getattr(advantage_rew, 'penalty_lambda', 0.0)
+                    ),
+                    'support_reference': str(
+                        getattr(
+                            advantage_rew,
+                            'support_reference_label',
+                            'none',
+                        )
+                    ),
+                    'support_reference_transitions': int(
+                        getattr(
+                            advantage_rew,
+                            'support_reference_transitions',
+                            0,
+                        )
                     ),
                     'pearson': pearson,
                     'spearman': spearman,
@@ -3890,9 +4220,15 @@ if __name__ == "__main__":
                         'iteration': int(i),
                         'candidate': int(candidate_idx),
                         # Backward-compatible 'fqe' column is the actual ranking
-                        # score; under native Ensemble LCB-FQE this is the LCB.
+                        # score: FQE - lambda * behavioral action divergence.
                         'fqe': float(fqe_score),
                         'fqe_mean_q': float(fqe_mean_q_scores[candidate_idx]),
+                        'action_divergence': float(
+                            action_divergence_scores[candidate_idx]
+                        ),
+                        'support_penalty': float(
+                            support_penalty_scores[candidate_idx]
+                        ),
                         'fqe_mean_sigma': float(fqe_sigma_scores[candidate_idx]),
                         'online': float(online_score),
                     })
@@ -3919,17 +4255,27 @@ if __name__ == "__main__":
                     f'logs/{DIR}/fqe_results_{i}_{i + SEARCH_INTERV}.npy',
                     fqe_scores
                 )
-                # New LCB diagnostics. Existing fqe_results_* remains the
-                # ranking score for backward compatibility.
+                # Save the raw components so lambda can be swept post-hoc
+                # without rerunning FQE or online candidate evaluation. Existing
+                # fqe_results_* remains the actual ranking score for backward
+                # compatibility.
                 np.save(
                     f'logs/{DIR}/fqe_mean_q_results_{i}_{i + SEARCH_INTERV}.npy',
                     fqe_mean_q_scores
                 )
                 np.save(
+                    f'logs/{DIR}/fqe_action_divergence_results_{i}_{i + SEARCH_INTERV}.npy',
+                    action_divergence_scores
+                )
+                np.save(
+                    f'logs/{DIR}/fqe_support_penalty_results_{i}_{i + SEARCH_INTERV}.npy',
+                    support_penalty_scores
+                )
+                np.save(
                     f'logs/{DIR}/fqe_sigma_results_{i}_{i + SEARCH_INTERV}.npy',
                     fqe_sigma_scores
                 )
-                if isinstance(advantage_rew, LCBFQEScores):
+                if hasattr(advantage_rew, 'ensemble_member_values'):
                     np.save(
                         f'logs/{DIR}/fqe_ensemble_member_values_{i}_{i + SEARCH_INTERV}.npy',
                         advantage_rew.ensemble_member_values
@@ -3983,6 +4329,22 @@ if __name__ == "__main__":
                         ),
                         dtype=np.float64,
                     )
+                    coverage_action_div_np = np.asarray(
+                        getattr(
+                            coverage_scores,
+                            "action_divergence",
+                            np.zeros_like(coverage_scores_np),
+                        ),
+                        dtype=np.float64,
+                    )
+                    coverage_support_penalty_np = np.asarray(
+                        getattr(
+                            coverage_scores,
+                            "support_penalty",
+                            np.zeros_like(coverage_scores_np),
+                        ),
+                        dtype=np.float64,
+                    )
                     for candidate_idx, (coverage_fqe_score, online_score) in enumerate(
                         zip(coverage_scores_np, online_scores_for_coverage)
                     ):
@@ -4009,11 +4371,17 @@ if __name__ == "__main__":
                                 )
                             ),
                             "candidate": int(candidate_idx),
-                            # 'fqe' remains the ranking score; for the native
-                            # ensemble backend this is the LCB-FQE score.
+                            # 'fqe' remains the actual support-penalized
+                            # ranking score for backward compatibility.
                             "fqe": float(coverage_fqe_score),
                             "fqe_mean_q": float(
                                 coverage_mean_q_np[candidate_idx]
+                            ),
+                            "action_divergence": float(
+                                coverage_action_div_np[candidate_idx]
+                            ),
+                            "support_penalty": float(
+                                coverage_support_penalty_np[candidate_idx]
                             ),
                             "fqe_mean_sigma": float(
                                 coverage_sigma_np[candidate_idx]
@@ -4021,8 +4389,26 @@ if __name__ == "__main__":
                             "fqe_ensemble_size": int(
                                 getattr(coverage_scores, "ensemble_size", 1)
                             ),
-                            "fqe_lcb_beta": float(
-                                getattr(coverage_scores, "beta", 0.0)
+                            "support_penalty_lambda": float(
+                                getattr(
+                                    coverage_scores,
+                                    "penalty_lambda",
+                                    0.0,
+                                )
+                            ),
+                            "support_reference": str(
+                                getattr(
+                                    coverage_scores,
+                                    "support_reference_label",
+                                    "none",
+                                )
+                            ),
+                            "support_reference_transitions": int(
+                                getattr(
+                                    coverage_scores,
+                                    "support_reference_transitions",
+                                    0,
+                                )
                             ),
                             "online": float(online_score),
                         })
@@ -4059,7 +4445,8 @@ if __name__ == "__main__":
                 }
                 for coverage_label, scores in replay_coverage_scores.items():
                     # Backward-compatible key: fqe_<window> is the actual
-                    # ranking score, i.e. LCB under the ensemble backend.
+                    # support-penalized ranking score. Save both raw components
+                    # so lambda can be swept post-hoc.
                     replay_coverage_npz_payload[
                         f"fqe_{coverage_label}"
                     ] = np.asarray(scores, dtype=np.float64)
@@ -4067,6 +4454,26 @@ if __name__ == "__main__":
                         f"fqe_mean_q_{coverage_label}"
                     ] = np.asarray(
                         getattr(scores, "mean_q", scores),
+                        dtype=np.float64,
+                    )
+                    replay_coverage_npz_payload[
+                        f"action_divergence_{coverage_label}"
+                    ] = np.asarray(
+                        getattr(
+                            scores,
+                            "action_divergence",
+                            np.zeros(len(scores), dtype=np.float64),
+                        ),
+                        dtype=np.float64,
+                    )
+                    replay_coverage_npz_payload[
+                        f"support_penalty_{coverage_label}"
+                    ] = np.asarray(
+                        getattr(
+                            scores,
+                            "support_penalty",
+                            np.zeros(len(scores), dtype=np.float64),
+                        ),
                         dtype=np.float64,
                     )
                     replay_coverage_npz_payload[
@@ -4170,8 +4577,11 @@ if __name__ == "__main__":
 
             print("---------------------------------")
             summary_score_label = (
-                "LCB-FQE"
-                if (rank_summary_df["fqe_score_type"] == "lcb").all()
+                "Support-Penalized FQE"
+                if (
+                    rank_summary_df["fqe_score_type"]
+                    == "support_penalized"
+                ).all()
                 else "FQE"
             )
             print(f"{summary_score_label} / ONLINE RANKING STUDY SUMMARY")
