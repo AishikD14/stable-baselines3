@@ -153,6 +153,23 @@ NATIVE_FQE_ACTION_CHUNK_SIZE = int(
 if NATIVE_FQE_ACTION_CHUNK_SIZE <= 0:
     raise ValueError("NATIVE_FQE_ACTION_CHUNK_SIZE must be > 0.")
 
+# Ensemble Lower Confidence Bound FQE (LCB-FQE).
+#
+# Every candidate policy is evaluated by B independently initialized FQE
+# critics trained on the exact same frozen replay data. Candidate ranking uses
+# the pessimistic score:
+#   E_s0[ mean_b Q_b(s0, pi(s0)) - beta * std_b Q_b(s0, pi(s0)) ].
+#
+# B=1 and beta=0 recover the previous single-critic native FQE ranking exactly
+# (including the original critic initialization/minibatch behavior).
+FQE_ENSEMBLE_SIZE = int(os.environ.get("FQE_ENSEMBLE_SIZE", "5"))
+FQE_LCB_BETA = float(os.environ.get("FQE_LCB_BETA", "1.0"))
+
+if FQE_ENSEMBLE_SIZE <= 0:
+    raise ValueError("FQE_ENSEMBLE_SIZE must be > 0.")
+if not np.isfinite(FQE_LCB_BETA) or FQE_LCB_BETA < 0.0:
+    raise ValueError("FQE_LCB_BETA must be finite and >= 0.")
+
 # d3rlpy trains floor(n_steps / n_steps_per_epoch) complete epochs. Reject
 # invalid/non-divisible overrides so a requested FQE update budget is never
 # silently shortened (e.g. 2500 with 1000 would otherwise run only 2000 steps).
@@ -1062,18 +1079,20 @@ class PPOQWrapper(QLearningAlgoBase):
 
 
 class BatchedFQECritic(nn.Module):
-    """Vectorized bank of independent continuous-action FQE critics.
+    """Vectorized bank of candidate-by-ensemble continuous-action FQE critics.
 
-    Each candidate owns independent parameters, but all candidates are evaluated
-    in a single batched PyTorch graph. The architecture mirrors d3rlpy 2.8.1's
-    default vector continuous MeanQFunction:
+    The architecture mirrors d3rlpy 2.8.1's default vector continuous
+    MeanQFunction:
         concat(obs, action) -> 256 ReLU -> 256 ReLU -> 1
 
-    All candidate critics start from identical weights. This intentionally
-    mirrors the previous rank-study behavior where
-    d3rl_evaluation_preserving_rng() restored the RNG before every candidate,
-    causing every candidate's d3rlpy FQE fit to begin from the same random
-    initialization and see the same random minibatch sequence.
+    For LCB-FQE each candidate owns ``n_ensemble`` independent critics. The
+    ensemble member initializations differ from one another, but the same set
+    of member initializations is reused for every candidate. This common-random-
+    numbers design prevents candidate ranking from being confounded by giving
+    different candidates different initialization luck.
+
+    When n_ensemble == 1, member 0 follows the exact initialization sequence
+    used by the previous BatchedFQECritic implementation.
     """
 
     def __init__(
@@ -1082,95 +1101,151 @@ class BatchedFQECritic(nn.Module):
         observation_dim,
         action_dim,
         hidden_units=(256, 256),
+        n_ensemble=1,
         compute_device=None,
     ):
         super().__init__()
         if len(hidden_units) != 2:
-            raise ValueError("Native batched FQE currently expects exactly two hidden layers.")
+            raise ValueError(
+                "Native batched FQE currently expects exactly two hidden layers."
+            )
 
         self.n_candidates = int(n_candidates)
+        self.n_ensemble = int(n_ensemble)
+        if self.n_candidates <= 0:
+            raise ValueError("n_candidates must be > 0.")
+        if self.n_ensemble <= 0:
+            raise ValueError("n_ensemble must be > 0.")
+
+        self.n_critics = self.n_candidates * self.n_ensemble
         self.observation_dim = int(observation_dim)
         self.action_dim = int(action_dim)
         self.hidden_units = tuple(int(v) for v in hidden_units)
-        self.compute_device = compute_device if compute_device is not None else device
+        self.compute_device = (
+            compute_device if compute_device is not None else device
+        )
 
         h1, h2 = self.hidden_units
         input_dim = self.observation_dim + self.action_dim
 
-        # Match d3rlpy / torch.nn.Linear default initialization using CPU RNG.
-        # d3rlpy constructs its encoder on CPU, calls compute_output_size()
-        # (which draws random observation/action tensors), then constructs the
-        # final scalar-Q layer before moving the module to CUDA.
-        template_fc1 = nn.Linear(input_dim, h1)
-        template_fc2 = nn.Linear(h1, h2)
+        # Build B independent templates on CPU using torch.nn.Linear's default
+        # initialization. The first member intentionally consumes RNG in exactly
+        # the same order as the old single-critic implementation:
+        # fc1 -> fc2 -> dummy encoder-size draw -> output layer.
+        ensemble_templates = []
+        for _ in range(self.n_ensemble):
+            template_fc1 = nn.Linear(input_dim, h1)
+            template_fc2 = nn.Linear(h1, h2)
 
-        with torch.no_grad():
-            dummy_obs = torch.rand(2, self.observation_dim)
-            dummy_action = torch.rand(2, self.action_dim)
-            dummy = torch.cat((dummy_obs, dummy_action), dim=-1)
-            dummy = torch.relu(template_fc1(dummy))
-            dummy = torch.relu(template_fc2(dummy))
-            del dummy
+            with torch.no_grad():
+                dummy_obs = torch.rand(2, self.observation_dim)
+                dummy_action = torch.rand(2, self.action_dim)
+                dummy = torch.cat((dummy_obs, dummy_action), dim=-1)
+                dummy = torch.relu(template_fc1(dummy))
+                dummy = torch.relu(template_fc2(dummy))
+                del dummy
 
-        template_out = nn.Linear(h2, 1)
+            template_out = nn.Linear(h2, 1)
+            ensemble_templates.append(
+                (
+                    template_fc1.weight.detach().clone(),
+                    template_fc1.bias.detach().clone(),
+                    template_fc2.weight.detach().clone(),
+                    template_fc2.bias.detach().clone(),
+                    template_out.weight.detach().clone(),
+                    template_out.bias.detach().clone(),
+                )
+            )
 
-        def repeated_parameter(tensor):
-            return nn.Parameter(
-                tensor.detach()
-                .unsqueeze(0)
-                .repeat(self.n_candidates, *([1] * tensor.ndim))
+        def candidate_repeated_parameter(template_index):
+            # First stack distinct ensemble members:
+            #   [ensemble, ...]
+            # then reuse that same ordered ensemble for every candidate:
+            #   [candidate, ensemble, ...] -> [candidate * ensemble, ...].
+            per_ensemble = torch.stack(
+                [templates[template_index] for templates in ensemble_templates],
+                dim=0,
+            )
+            expanded = (
+                per_ensemble.unsqueeze(0)
+                .repeat(
+                    self.n_candidates,
+                    1,
+                    *([1] * (per_ensemble.ndim - 1)),
+                )
+                .reshape(self.n_critics, *per_ensemble.shape[1:])
                 .to(self.compute_device)
                 .clone()
             )
+            return nn.Parameter(expanded)
 
-        # Shapes:
-        # weights: [candidate, out_features, in_features]
-        # biases:  [candidate, out_features]
-        self.w1 = repeated_parameter(template_fc1.weight)
-        self.b1 = repeated_parameter(template_fc1.bias)
-        self.w2 = repeated_parameter(template_fc2.weight)
-        self.b2 = repeated_parameter(template_fc2.bias)
-        self.w3 = repeated_parameter(template_out.weight)
-        self.b3 = repeated_parameter(template_out.bias)
+        # Flatten candidate x ensemble into one critic-bank dimension for the
+        # batched matrix multiplies.
+        self.w1 = candidate_repeated_parameter(0)
+        self.b1 = candidate_repeated_parameter(1)
+        self.w2 = candidate_repeated_parameter(2)
+        self.b2 = candidate_repeated_parameter(3)
+        self.w3 = candidate_repeated_parameter(4)
+        self.b3 = candidate_repeated_parameter(5)
+
+    def _expand_to_critic_bank(self, tensor, feature_name):
+        """Map shared/candidate inputs to [candidate*ensemble, batch, dim]."""
+        if tensor.ndim == 2:
+            return tensor.unsqueeze(0).expand(self.n_critics, -1, -1)
+
+        if tensor.ndim != 3:
+            raise ValueError(
+                f"{feature_name} must have rank 2 or 3, got shape "
+                f"{tuple(tensor.shape)}."
+            )
+
+        if tensor.shape[0] == self.n_critics:
+            return tensor
+
+        if tensor.shape[0] == self.n_candidates:
+            return (
+                tensor.unsqueeze(1)
+                .expand(-1, self.n_ensemble, -1, -1)
+                .reshape(self.n_critics, tensor.shape[1], tensor.shape[2])
+            )
+
+        raise ValueError(
+            f"{feature_name} leading dimension must be n_candidates="
+            f"{self.n_candidates} or n_critics={self.n_critics}; got "
+            f"{tensor.shape[0]}."
+        )
 
     def forward(self, observations, actions):
-        """Return Q values with shape [n_candidates, batch, 1].
+        """Return Q values shaped [candidate, ensemble, batch, 1].
 
-        observations can be either:
-          [batch, obs_dim]                    (shared across candidates), or
-          [n_candidates, batch, obs_dim].
+        observations can be:
+          [batch, obs_dim]                         shared replay observations
+          [candidate, batch, obs_dim]             candidate-specific observations
+          [candidate*ensemble, batch, obs_dim]    fully expanded observations
 
-        actions can be either:
-          [batch, action_dim]                 (shared dataset actions), or
-          [n_candidates, batch, action_dim]   (candidate-policy actions).
+        actions can be:
+          [batch, action_dim]                      shared replay actions
+          [candidate, batch, action_dim]          candidate-policy actions
+          [candidate*ensemble, batch, action_dim] fully expanded actions
         """
-        if observations.ndim == 2:
-            observations = observations.unsqueeze(0).expand(
-                self.n_candidates, -1, -1
-            )
-        if actions.ndim == 2:
-            actions = actions.unsqueeze(0).expand(
-                self.n_candidates, -1, -1
-            )
-
-        if observations.shape[0] != self.n_candidates:
-            raise ValueError(
-                "Observation candidate dimension mismatch: "
-                f"{observations.shape[0]} vs {self.n_candidates}"
-            )
-        if actions.shape[0] != self.n_candidates:
-            raise ValueError(
-                "Action candidate dimension mismatch: "
-                f"{actions.shape[0]} vs {self.n_candidates}"
-            )
+        observations = self._expand_to_critic_bank(
+            observations, "observations"
+        )
+        actions = self._expand_to_critic_bank(actions, "actions")
 
         x = torch.cat((observations, actions), dim=-1)
         x = torch.bmm(x, self.w1.transpose(1, 2)) + self.b1.unsqueeze(1)
         x = torch.relu(x)
         x = torch.bmm(x, self.w2.transpose(1, 2)) + self.b2.unsqueeze(1)
         x = torch.relu(x)
-        return torch.bmm(x, self.w3.transpose(1, 2)) + self.b3.unsqueeze(1)
+        q = torch.bmm(x, self.w3.transpose(1, 2)) + self.b3.unsqueeze(1)
 
+        return q.reshape(
+            self.n_candidates,
+            self.n_ensemble,
+            q.shape[1],
+            q.shape[2],
+        )
 
 def _policy_actions_current_model(model, observations, chunk_size=None):
     """Compute deterministic SB3 PPO actions entirely in PyTorch.
@@ -1579,27 +1654,53 @@ def build_native_fqe_data(dataset):
     }
 
 
+class LCBFQEScores(list):
+    """List-compatible LCB scores with analysis-only uncertainty diagnostics."""
+
+    def __init__(
+        self,
+        scores,
+        mean_q,
+        mean_sigma,
+        ensemble_member_values,
+        beta,
+        ensemble_size,
+    ):
+        super().__init__(float(v) for v in scores)
+        self.mean_q = np.asarray(mean_q, dtype=np.float64)
+        self.mean_sigma = np.asarray(mean_sigma, dtype=np.float64)
+        self.ensemble_member_values = np.asarray(
+            ensemble_member_values, dtype=np.float64
+        )
+        self.beta = float(beta)
+        self.ensemble_size = int(ensemble_size)
+
+
 def native_batched_fqe(model, agents, dataset, native_data=None):
-    """Fit independent FQE critics for all candidates in one GPU workload.
+    """Fit Ensemble Lower Confidence Bound FQE for all candidates on the GPU.
 
-    Mathematical behavior mirrors the existing d3rlpy configuration:
-      * one critic per candidate
-      * same frozen corrected replay transition dataset
-      * batch size FQE_BATCH_SIZE (default 100)
-      * Adam(lr=3e-4, betas=(0.9,0.999), eps=1e-8)
-      * scalar Mean-Q MSE Bellman loss
-      * gamma = PPO gamma
-      * hard target update every 100 gradient steps
-      * FQE_N_STEPS gradient updates (default 10,000)
-      * final score = mean Q(s0, pi(s0)) over the same initial-state windows
+    Everything outside the evaluator remains unchanged. Each candidate policy is
+    paired with ``FQE_ENSEMBLE_SIZE`` independently initialized FQE critics,
+    trained on the same frozen corrected replay transitions, same candidate
+    actions, same transition minibatches, optimizer, target-update schedule, and
+    Bellman objective used by the previous native FQE.
 
-    The candidate dimension is vectorized. A single shared transition minibatch
-    is used for every candidate at each gradient step, matching the previous
-    preserving-RNG setup in which every sequential d3rlpy candidate saw the
-    same RNG state and therefore the same minibatch sequence.
+    Ranking score for candidate pi is computed exactly over the frozen initial
+    state reference set:
+        mean_s0[
+            mean_b Q_b(s0, pi(s0))
+            - FQE_LCB_BETA * std_b Q_b(s0, pi(s0))
+        ]
+
+    ``std_b`` uses population standard deviation (correction=0 / unbiased=False),
+    which is well-defined for B=1. Setting FQE_ENSEMBLE_SIZE=1 and
+    FQE_LCB_BETA=0 restores the previous single-critic score.
     """
     if len(agents) == 0:
-        return []
+        return LCBFQEScores(
+            [], [], [], np.empty((0, FQE_ENSEMBLE_SIZE)),
+            FQE_LCB_BETA, FQE_ENSEMBLE_SIZE
+        )
 
     if not isinstance(model.action_space, gym.spaces.Box):
         raise NotImplementedError(
@@ -1608,14 +1709,17 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
 
     print("--------------------------------------------------------------------------------")
     print(
-        f"Fitting native batched PyTorch FQE for {len(agents)} candidates..."
+        "Fitting native batched Ensemble LCB-FQE for "
+        f"{len(agents)} candidates x {FQE_ENSEMBLE_SIZE} critics..."
     )
     print(
-        "Native FQE runtime config: "
+        "Native LCB-FQE runtime config: "
         f"steps={FQE_N_STEPS}, "
         f"batch_size={FQE_BATCH_SIZE}, "
         f"target_update_interval=100, "
-        f"hidden_units={NATIVE_FQE_HIDDEN_UNITS}"
+        f"hidden_units={NATIVE_FQE_HIDDEN_UNITS}, "
+        f"ensemble_size={FQE_ENSEMBLE_SIZE}, "
+        f"beta={FQE_LCB_BETA}"
     )
 
     preparation_start = time.time()
@@ -1636,6 +1740,7 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
     action_dim = int(action_cpu.shape[1])
     transition_count = int(obs_cpu.shape[0])
     n_candidates = len(agents)
+    n_ensemble = FQE_ENSEMBLE_SIZE
 
     # Transfer the frozen dataset to the GPU once.
     observations = torch.as_tensor(obs_cpu, dtype=torch.float32, device=device)
@@ -1656,8 +1761,8 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
         initial_obs_cpu, dtype=torch.float32, device=device
     )
 
-    # Precompute pi_j(s') and pi_j(s0) exactly once per fixed candidate policy.
-    # These actions never change during FQE.
+    # Precompute pi_j(s') and pi_j(s0) once per fixed candidate policy. All B
+    # ensemble critics for candidate j evaluate the exact same target policy.
     cached_next_actions = []
     cached_initial_actions = []
 
@@ -1678,25 +1783,19 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
     cached_next_actions = torch.stack(cached_next_actions, dim=0)
     cached_initial_actions = torch.stack(cached_initial_actions, dim=0)
 
-    # The previous sequential d3rlpy path consumes two random transition
-    # samples before the first training minibatch:
-    #   1) PPOQWrapper.build_with_dataset(dataset)
-    #   2) FQE.fitter(...) while inferring observation shape
-    #
-    # Both calls are inside d3rl_evaluation_preserving_rng(), so every
-    # candidate sees the same two preliminary draws. Reproduce them here so
-    # the subsequent shared native minibatch schedule starts from the same
-    # NumPy RNG state as the old d3rlpy evaluator.
+    # Preserve the previous d3rlpy/native alignment: two preliminary NumPy
+    # transition draws precede the shared training minibatch schedule.
     _ = dataset.sample_transition()
     _ = dataset.sample_transition()
 
-    # One batched critic parameter bank. Identical candidate initialization
-    # preserves the previous per-candidate RNG-reset behavior.
+    # Candidate x ensemble critic bank. Ensemble initializations differ across
+    # member b but the same initialization set is reused across candidates.
     critic = BatchedFQECritic(
         n_candidates=n_candidates,
         observation_dim=observation_dim,
         action_dim=action_dim,
         hidden_units=NATIVE_FQE_HIDDEN_UNITS,
+        n_ensemble=n_ensemble,
         compute_device=device,
     )
     target_critic = copy.deepcopy(critic)
@@ -1711,9 +1810,9 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
         amsgrad=False,
     )
 
-    # d3rlpy ReplayBuffer.sample_transition uses np.random.randint for each
-    # sampled transition. Generate one common index schedule for every
-    # candidate, matching the previous preserving-RNG semantics.
+    # Every candidate and every ensemble member sees the same sampled replay
+    # transitions at each gradient step. Thus disagreement is induced by critic
+    # initialization rather than by accidental differences in data exposure.
     sampled_indices_np = np.random.randint(
         0,
         transition_count,
@@ -1745,32 +1844,33 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
         reward_batch = rewards[batch_index]
         next_obs_batch = next_observations[batch_index]
         terminal_batch = terminals[batch_index]
-        # Gather cached policy actions: [candidate, batch, action_dim].
+        # [candidate, batch, action_dim]; BatchedFQECritic broadcasts this over
+        # each candidate's ensemble dimension.
         next_action_batch = cached_next_actions[:, batch_index, :]
 
         with torch.no_grad():
+            # [candidate, ensemble, batch, 1]
             target_q = target_critic(next_obs_batch, next_action_batch)
-            discount = discounts[batch_index].unsqueeze(0)
+            discount = discounts[batch_index].unsqueeze(0).unsqueeze(0)
             bellman_target = (
-                reward_batch.unsqueeze(0)
+                reward_batch.unsqueeze(0).unsqueeze(0)
                 + discount
                 * target_q
-                * (1.0 - terminal_batch.unsqueeze(0))
+                * (1.0 - terminal_batch.unsqueeze(0).unsqueeze(0))
             )
 
         predicted_q = critic(obs_batch, action_batch)
 
-        # d3rlpy's ContinuousMeanQFunction uses elementwise MSE and mean
-        # reduction. Sum the independent per-candidate means rather than taking
-        # one global mean; this keeps each candidate's gradient magnitude equal
-        # to what an independent optimizer would receive.
+        # Each ensemble member is an independent FQE critic. Sum the member-wise
+        # mean losses so every critic receives the same gradient magnitude it
+        # would receive if optimized separately.
         squared_error = (predicted_q - bellman_target).pow(2)
-        loss_per_candidate = squared_error.mean(dim=(1, 2))
-        loss = loss_per_candidate.sum()
+        loss_per_critic = squared_error.mean(dim=(2, 3))
+        loss = loss_per_critic.sum()
 
         if not torch.isfinite(loss):
             raise RuntimeError(
-                f"Native batched FQE produced a non-finite loss at "
+                f"Native batched LCB-FQE produced a non-finite loss at "
                 f"gradient step {grad_step}."
             )
 
@@ -1783,47 +1883,105 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
         if grad_step % target_update_interval == 0:
             target_critic.load_state_dict(critic.state_dict())
 
-        last_losses = loss_per_candidate.detach()
+        last_losses = loss_per_critic.detach()
 
     if device.type == "cuda":
         torch.cuda.synchronize(device)
     fit_seconds = time.time() - fit_start
 
     with torch.no_grad():
+        # [candidate, ensemble, n_initial_states]
         initial_q = critic(
             initial_observations,
             cached_initial_actions,
         ).squeeze(-1)
-        initial_values = initial_q.mean(dim=1)
 
-    if not torch.all(torch.isfinite(initial_values)):
+        if not torch.all(torch.isfinite(initial_q)):
+            raise RuntimeError(
+                "Native batched LCB-FQE produced a non-finite initial-state Q."
+            )
+
+        # Implement the requested objective literally: first calculate ensemble
+        # mean/std at EACH s0, then form the lower confidence bound at that s0,
+        # then average over the frozen initial-state distribution.
+        state_mean_q = initial_q.mean(dim=1)
+        state_sigma_q = initial_q.std(dim=1, unbiased=False)
+        state_lcb_q = state_mean_q - FQE_LCB_BETA * state_sigma_q
+
+        lcb_scores = state_lcb_q.mean(dim=1)
+        mean_q_scores = state_mean_q.mean(dim=1)
+        mean_sigma_scores = state_sigma_q.mean(dim=1)
+
+        # Analysis-only diagnostic: each member's ordinary FQE initial-state
+        # value. This is not the quantity used to compute the per-state LCB.
+        ensemble_member_values = initial_q.mean(dim=2)
+
+    if not torch.all(torch.isfinite(lcb_scores)):
         raise RuntimeError(
-            "Native batched FQE produced a non-finite initial-state value."
+            "Native batched LCB-FQE produced a non-finite LCB score."
         )
 
-    scores = initial_values.detach().cpu().numpy().astype(np.float64).tolist()
+    scores_np = (
+        lcb_scores.detach().cpu().numpy().astype(np.float64)
+    )
+    mean_q_np = (
+        mean_q_scores.detach().cpu().numpy().astype(np.float64)
+    )
+    mean_sigma_np = (
+        mean_sigma_scores.detach().cpu().numpy().astype(np.float64)
+    )
+    ensemble_member_values_np = (
+        ensemble_member_values.detach().cpu().numpy().astype(np.float64)
+    )
+
+    scores = LCBFQEScores(
+        scores=scores_np.tolist(),
+        mean_q=mean_q_np,
+        mean_sigma=mean_sigma_np,
+        ensemble_member_values=ensemble_member_values_np,
+        beta=FQE_LCB_BETA,
+        ensemble_size=n_ensemble,
+    )
 
     print(
-        f"Native batched FQE preparation time: {preparation_seconds:.3f} s"
+        f"Native batched LCB-FQE preparation time: {preparation_seconds:.3f} s"
     )
     print(
-        f"Native batched FQE fitting time for all {n_candidates} candidates: "
-        f"{fit_seconds:.3f} s"
+        "Native batched LCB-FQE fitting time for all "
+        f"{n_candidates * n_ensemble} critics: {fit_seconds:.3f} s"
     )
     if last_losses is not None:
         print(
-            "Final per-candidate FQE loss: "
+            "Final mean FQE loss per candidate (averaged over ensemble): "
             + np.array2string(
-                last_losses.detach().cpu().numpy(),
+                last_losses.mean(dim=1).detach().cpu().numpy(),
                 precision=4,
                 separator=", ",
                 max_line_width=160,
             )
         )
     print(
-        "Estimated Initial State Values: "
+        "Ensemble mean initial-state Q: "
         + np.array2string(
-            np.asarray(scores),
+            mean_q_np,
+            precision=6,
+            separator=", ",
+            max_line_width=160,
+        )
+    )
+    print(
+        "Mean per-state ensemble sigma: "
+        + np.array2string(
+            mean_sigma_np,
+            precision=6,
+            separator=", ",
+            max_line_width=160,
+        )
+    )
+    print(
+        f"LCB-FQE scores (beta={FQE_LCB_BETA:g}): "
+        + np.array2string(
+            scores_np,
             precision=6,
             separator=", ",
             max_line_width=160,
@@ -1831,7 +1989,6 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
     )
 
     return scores
-
 
 def native_batched_fqe_preserving_rng(
     model, agents, dataset, native_data=None
@@ -2437,6 +2594,12 @@ def compute_replay_coverage_rank_metrics(
     contain the true oracle-best candidate and what regret remains after taking
     the best online return within that shortlist?
     """
+    fqe_ensemble_size = int(
+        getattr(fqe_scores, "ensemble_size", 1)
+    )
+    fqe_lcb_beta = float(
+        getattr(fqe_scores, "beta", 0.0)
+    )
     online_scores = np.asarray(online_scores, dtype=np.float64)
     fqe_scores = np.asarray(fqe_scores, dtype=np.float64)
 
@@ -2489,6 +2652,11 @@ def compute_replay_coverage_rank_metrics(
                 len(native_data["initial_observations"]),
             )
         ),
+        "fqe_score_type": (
+            "lcb" if fqe_ensemble_size > 1 or fqe_lcb_beta > 0.0 else "mean"
+        ),
+        "fqe_ensemble_size": fqe_ensemble_size,
+        "fqe_lcb_beta": fqe_lcb_beta,
         "pearson": pearson,
         "spearman": spearman,
         "kendall": kendall,
@@ -3593,10 +3761,18 @@ if __name__ == "__main__":
                     )
 
                 for j, init_est in enumerate(advantage_rew):
-                    print(
-                        f"agent{j}: online_return={float(cum_rews[j]):.6f}, "
-                        f"FQE={float(init_est):.6f}"
-                    )
+                    if isinstance(advantage_rew, LCBFQEScores):
+                        print(
+                            f"agent{j}: online_return={float(cum_rews[j]):.6f}, "
+                            f"FQE_mean={float(advantage_rew.mean_q[j]):.6f}, "
+                            f"FQE_sigma={float(advantage_rew.mean_sigma[j]):.6f}, "
+                            f"LCB_FQE={float(init_est):.6f}"
+                        )
+                    else:
+                        print(
+                            f"agent{j}: online_return={float(cum_rews[j]):.6f}, "
+                            f"FQE={float(init_est):.6f}"
+                        )
 
             # Candidate evaluation/FQE must not alter the PPO replay buffer. This check guards
             # against accidentally giving FQE access to the online ground-truth trajectories.
@@ -3636,6 +3812,18 @@ if __name__ == "__main__":
             # because the absolute FQE scale may drift as the offline dataset changes.
             if rank_correlation_study:
                 online_scores = np.asarray(cum_rews, dtype=np.float64)
+                fqe_mean_q_scores = np.asarray(
+                    getattr(advantage_rew, "mean_q", advantage_rew),
+                    dtype=np.float64,
+                )
+                fqe_sigma_scores = np.asarray(
+                    getattr(
+                        advantage_rew,
+                        "mean_sigma",
+                        np.zeros(len(advantage_rew), dtype=np.float64),
+                    ),
+                    dtype=np.float64,
+                )
                 fqe_scores = np.asarray(advantage_rew, dtype=np.float64)
 
                 if len(online_scores) != len(fqe_scores):
@@ -3662,8 +3850,26 @@ if __name__ == "__main__":
                 top3_hit = bool(fqe_idx in online_order[:min(3, len(online_order))])
                 top5_hit = bool(fqe_idx in online_order[:min(5, len(online_order))])
 
+                is_lcb_scoring = (
+                    isinstance(advantage_rew, LCBFQEScores)
+                    and (
+                        advantage_rew.ensemble_size > 1
+                        or advantage_rew.beta > 0.0
+                    )
+                )
+                score_label = "LCB-FQE" if is_lcb_scoring else "FQE"
+
                 rank_metrics = {
                     'iteration': int(i),
+                    'fqe_score_type': (
+                        'lcb' if is_lcb_scoring else 'mean'
+                    ),
+                    'fqe_ensemble_size': int(
+                        getattr(advantage_rew, 'ensemble_size', 1)
+                    ),
+                    'fqe_lcb_beta': float(
+                        getattr(advantage_rew, 'beta', 0.0)
+                    ),
                     'pearson': pearson,
                     'spearman': spearman,
                     'kendall': kendall,
@@ -3683,32 +3889,51 @@ if __name__ == "__main__":
                     rankStudyCandidateRows.append({
                         'iteration': int(i),
                         'candidate': int(candidate_idx),
+                        # Backward-compatible 'fqe' column is the actual ranking
+                        # score; under native Ensemble LCB-FQE this is the LCB.
                         'fqe': float(fqe_score),
+                        'fqe_mean_q': float(fqe_mean_q_scores[candidate_idx]),
+                        'fqe_mean_sigma': float(fqe_sigma_scores[candidate_idx]),
                         'online': float(online_score),
                     })
 
                 print("---------------------------------")
-                print("FQE / ONLINE RANKING STUDY")
+                print(f"{score_label} / ONLINE RANKING STUDY")
                 print(f"Pearson correlation:  {pearson:.4f}")
                 print(f"Spearman correlation: {spearman:.4f}")
                 print(f"Kendall tau:          {kendall:.4f}")
                 print(f"Online best agent:    {oracle_idx}")
-                print(f"FQE best agent:       {fqe_idx}")
+                print(f"{score_label} best agent:   {fqe_idx}")
                 print(f"Online best return:   {oracle_return:.4f}")
                 print(
-                    "FQE-selected agent true return: "
+                    f"{score_label}-selected agent true return: "
                     f"{fqe_selected_true_return:.4f}"
                 )
                 print(f"Selection regret:     {selection_regret:.4f}")
                 print(f"Exact top-1 agreement:       {top1_agreement}")
-                print(f"FQE choice in online top-3:  {top3_hit}")
-                print(f"FQE choice in online top-5:  {top5_hit}")
+                print(f"{score_label} choice in online top-3:  {top3_hit}")
+                print(f"{score_label} choice in online top-5:  {top5_hit}")
 
                 # Save raw paired scores and per-iteration metrics for later analysis.
                 np.save(
                     f'logs/{DIR}/fqe_results_{i}_{i + SEARCH_INTERV}.npy',
                     fqe_scores
                 )
+                # New LCB diagnostics. Existing fqe_results_* remains the
+                # ranking score for backward compatibility.
+                np.save(
+                    f'logs/{DIR}/fqe_mean_q_results_{i}_{i + SEARCH_INTERV}.npy',
+                    fqe_mean_q_scores
+                )
+                np.save(
+                    f'logs/{DIR}/fqe_sigma_results_{i}_{i + SEARCH_INTERV}.npy',
+                    fqe_sigma_scores
+                )
+                if isinstance(advantage_rew, LCBFQEScores):
+                    np.save(
+                        f'logs/{DIR}/fqe_ensemble_member_values_{i}_{i + SEARCH_INTERV}.npy',
+                        advantage_rew.ensemble_member_values
+                    )
                 np.save(
                     f'logs/{DIR}/online_all_results_{i}_{i + SEARCH_INTERV}.npy',
                     online_scores
@@ -3746,6 +3971,18 @@ if __name__ == "__main__":
                     coverage_scores_np = np.asarray(
                         coverage_scores, dtype=np.float64
                     )
+                    coverage_mean_q_np = np.asarray(
+                        getattr(coverage_scores, "mean_q", coverage_scores_np),
+                        dtype=np.float64,
+                    )
+                    coverage_sigma_np = np.asarray(
+                        getattr(
+                            coverage_scores,
+                            "mean_sigma",
+                            np.zeros_like(coverage_scores_np),
+                        ),
+                        dtype=np.float64,
+                    )
                     for candidate_idx, (coverage_fqe_score, online_score) in enumerate(
                         zip(coverage_scores_np, online_scores_for_coverage)
                     ):
@@ -3772,7 +4009,21 @@ if __name__ == "__main__":
                                 )
                             ),
                             "candidate": int(candidate_idx),
+                            # 'fqe' remains the ranking score; for the native
+                            # ensemble backend this is the LCB-FQE score.
                             "fqe": float(coverage_fqe_score),
+                            "fqe_mean_q": float(
+                                coverage_mean_q_np[candidate_idx]
+                            ),
+                            "fqe_mean_sigma": float(
+                                coverage_sigma_np[candidate_idx]
+                            ),
+                            "fqe_ensemble_size": int(
+                                getattr(coverage_scores, "ensemble_size", 1)
+                            ),
+                            "fqe_lcb_beta": float(
+                                getattr(coverage_scores, "beta", 0.0)
+                            ),
                             "online": float(online_score),
                         })
 
@@ -3803,13 +4054,35 @@ if __name__ == "__main__":
                         + " | ".join(hybrid_parts)
                     )
 
+                replay_coverage_npz_payload = {
+                    "online": online_scores_for_coverage,
+                }
+                for coverage_label, scores in replay_coverage_scores.items():
+                    # Backward-compatible key: fqe_<window> is the actual
+                    # ranking score, i.e. LCB under the ensemble backend.
+                    replay_coverage_npz_payload[
+                        f"fqe_{coverage_label}"
+                    ] = np.asarray(scores, dtype=np.float64)
+                    replay_coverage_npz_payload[
+                        f"fqe_mean_q_{coverage_label}"
+                    ] = np.asarray(
+                        getattr(scores, "mean_q", scores),
+                        dtype=np.float64,
+                    )
+                    replay_coverage_npz_payload[
+                        f"fqe_sigma_{coverage_label}"
+                    ] = np.asarray(
+                        getattr(
+                            scores,
+                            "mean_sigma",
+                            np.zeros(len(scores), dtype=np.float64),
+                        ),
+                        dtype=np.float64,
+                    )
+
                 np.savez(
                     f'logs/{DIR}/replay_coverage_scores_{i}_{i + SEARCH_INTERV}.npz',
-                    online=online_scores_for_coverage,
-                    **{
-                        f"fqe_{coverage_label}": np.asarray(scores, dtype=np.float64)
-                        for coverage_label, scores in replay_coverage_scores.items()
-                    },
+                    **replay_coverage_npz_payload,
                 )
 
             # Correlation calculation used by the original offline-selection path.
@@ -3896,7 +4169,12 @@ if __name__ == "__main__":
             )
 
             print("---------------------------------")
-            print("FQE / ONLINE RANKING STUDY SUMMARY")
+            summary_score_label = (
+                "LCB-FQE"
+                if (rank_summary_df["fqe_score_type"] == "lcb").all()
+                else "FQE"
+            )
+            print(f"{summary_score_label} / ONLINE RANKING STUDY SUMMARY")
             print(
                 f"Mean Pearson:  {rank_summary_df['pearson'].mean():.4f} "
                 f"+/- {rank_summary_df['pearson'].std(ddof=0):.4f}"
