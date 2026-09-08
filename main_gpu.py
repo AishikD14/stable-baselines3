@@ -189,10 +189,11 @@ if (
 
 # Objective-alignment diagnostic (analysis only).
 #
-# FQE estimates the gamma-discounted return, while the existing online selector
-# uses Stable-Baselines3 evaluate_policy's ordinary undiscounted episodic return.
-# This study records BOTH objectives on the exact same candidate-evaluation
-# trajectories and compares the raw FQE mean-Q estimate against each one.
+# This study records BOTH the ordinary undiscounted online episodic return and
+# the historical PPO-gamma-discounted online return on the exact same candidate
+# trajectories. With time-conditioned finite-horizon FQE enabled, the
+# undiscounted return is the objective-aligned target; the discounted return is
+# retained only as a historical diagnostic.
 #
 # IMPORTANT: the original online selector remains based on the undiscounted
 # return in ``cum_rews``. Discounted returns are diagnostic-only and never
@@ -201,6 +202,41 @@ if (
 OBJECTIVE_MISMATCH_STUDY = os.environ.get(
     "OBJECTIVE_MISMATCH_STUDY", "1"
 ) == "1"
+
+# Time-conditioned finite-horizon FQE (analysis/OPE only).
+#
+# This changes ONLY the native FQE evaluation objective. PPO still trains with
+# args.gamma/model.gamma, ESA candidate generation is unchanged, online
+# evaluation remains the ordinary undiscounted episodic return, and online
+# selection still uses cum_rews.
+#
+# When enabled, native FQE targets the same finite-episode objective as the
+# online oracle:
+#   Q(s_t, a_t, t) = r_t + Q(s_{t+1}, pi(s_{t+1}), t+1)
+# with OPE gamma = 1 and bootstrap = 0 at either a true terminal or an episode
+# truncation. The critic receives one extra normalized time feature t / H; the
+# PPO candidate policy itself still receives ONLY the original environment
+# observation.
+TIME_CONDITIONED_FINITE_HORIZON_FQE = os.environ.get(
+    "TIME_CONDITIONED_FINITE_HORIZON_FQE", "1"
+) == "1"
+
+# 0 means infer H from Gymnasium's registered environment specification
+# (env.spec.max_episode_steps). For Ant-v5 this resolves to 1000. A positive
+# value can be supplied for custom environments that do not expose a registered
+# TimeLimit horizon.
+FQE_FINITE_HORIZON_OVERRIDE = int(
+    os.environ.get("FQE_FINITE_HORIZON", "0")
+)
+if FQE_FINITE_HORIZON_OVERRIDE < 0:
+    raise ValueError("FQE_FINITE_HORIZON must be 0 (auto) or a positive integer.")
+
+if TIME_CONDITIONED_FINITE_HORIZON_FQE and FQE_BACKEND != "native_batched":
+    raise ValueError(
+        "Time-conditioned finite-horizon FQE is implemented for the "
+        "native_batched backend only. Set FQE_BACKEND=native_batched or "
+        "TIME_CONDITIONED_FINITE_HORIZON_FQE=0."
+    )
 
 # d3rlpy trains floor(n_steps / n_steps_per_epoch) complete epochs. Reject
 # invalid/non-divisible overrides so a requested FQE update budget is never
@@ -227,6 +263,63 @@ def print_device_info():
         print(f"CUDA device: {torch.cuda.get_device_name(device)}")
     else:
         print("CUDA is not available; using CPU fallback.")
+
+
+def resolve_fqe_finite_horizon(env_name):
+    """Resolve the evaluation horizon without changing the environment itself."""
+    if FQE_FINITE_HORIZON_OVERRIDE > 0:
+        return int(FQE_FINITE_HORIZON_OVERRIDE)
+
+    try:
+        spec = gym.spec(env_name)
+    except Exception as exc:
+        raise RuntimeError(
+            "Could not infer the finite-horizon FQE episode length from "
+            f"Gymnasium for {env_name!r}. Set FQE_FINITE_HORIZON explicitly."
+        ) from exc
+
+    max_episode_steps = getattr(spec, "max_episode_steps", None)
+    if max_episode_steps is None:
+        raise RuntimeError(
+            f"Gymnasium environment {env_name!r} does not expose "
+            "spec.max_episode_steps. Set FQE_FINITE_HORIZON explicitly."
+        )
+
+    max_episode_steps = int(max_episode_steps)
+    if max_episode_steps <= 0:
+        raise RuntimeError(
+            f"Invalid max_episode_steps={max_episode_steps} for {env_name!r}."
+        )
+    return max_episode_steps
+
+
+def _append_normalized_fqe_time(observations, timesteps, horizon):
+    """Append t/H to critic observations; candidate PPO policies never see it."""
+    if observations.ndim != 2:
+        raise ValueError(
+            "Time-conditioned native FQE expects rank-2 flat observations, "
+            f"got shape {tuple(observations.shape)}."
+        )
+    if timesteps.ndim == 1:
+        timesteps = timesteps.unsqueeze(-1)
+    if timesteps.ndim != 2 or timesteps.shape[1] != 1:
+        raise ValueError(
+            "FQE timesteps must have shape [batch, 1], got "
+            f"{tuple(timesteps.shape)}."
+        )
+    if observations.shape[0] != timesteps.shape[0]:
+        raise ValueError(
+            "FQE observation/timestep length mismatch: "
+            f"{observations.shape[0]} vs {timesteps.shape[0]}."
+        )
+
+    horizon_tensor = torch.as_tensor(
+        float(horizon), dtype=observations.dtype, device=observations.device
+    )
+    normalized_time = timesteps.to(
+        dtype=observations.dtype, device=observations.device
+    ) / horizon_tensor
+    return torch.cat((observations, normalized_time), dim=-1)
 
 
 # noinspection PyPep8Naming
@@ -1327,7 +1420,11 @@ def _policy_actions_current_model(model, observations, chunk_size=None):
 
 
 
-def build_native_fqe_replay_data(model, max_transitions=None):
+def build_native_fqe_replay_data(
+    model,
+    max_transitions=None,
+    finite_horizon_steps=None,
+):
     """Freeze scientifically correct replay transitions for native batched FQE.
 
     Unlike d3rlpy's MDPDataset/Episode representation, this path can retain the
@@ -1338,8 +1435,14 @@ def build_native_fqe_replay_data(model, max_transitions=None):
       * executed environment action
       * raw environment reward
       * true terminal/truncated next observation
-      * true terminal mask (timeouts bootstrap)
+      * original true-terminal and timeout flags
       * one-step transition interval
+      * per-episode timestep t reconstructed from real replay boundaries
+
+    In time-conditioned finite-horizon mode, ``finite_horizon_steps`` is the
+    online evaluation horizon H. The native FQE critic receives t/H and treats
+    BOTH true terminals and truncations as zero-bootstrap boundaries. Replay
+    storage itself is unchanged.
 
     If max_transitions is not None, select the most recent portion of the
     chronological replay ring first, then discard leading/trailing partial
@@ -1347,6 +1450,18 @@ def build_native_fqe_replay_data(model, max_transitions=None):
     the requested limit. max_transitions=None preserves full-buffer behavior.
     """
     rb = model.replay_buffer
+
+    if TIME_CONDITIONED_FINITE_HORIZON_FQE:
+        if finite_horizon_steps is None:
+            raise ValueError(
+                "finite_horizon_steps is required when "
+                "TIME_CONDITIONED_FINITE_HORIZON_FQE=1."
+            )
+        finite_horizon_steps = int(finite_horizon_steps)
+        if finite_horizon_steps <= 0:
+            raise ValueError("finite_horizon_steps must be > 0.")
+    elif finite_horizon_steps is not None:
+        finite_horizon_steps = int(finite_horizon_steps)
 
     semantics_version = getattr(
         rb, "_fqe_replay_semantics_version", None
@@ -1416,6 +1531,32 @@ def build_native_fqe_replay_data(model, max_transitions=None):
 
     selected_raw_transitions = int(len(time_indices) * rb.n_envs)
 
+    # Detect the known discontinuity created by replay-buffer reload followed
+    # by an environment reset. This is NOT an artificial MDP terminal. It is a
+    # data-continuity marker telling FQE that the saved unfinished trajectory
+    # cannot be joined to the first trajectory collected after the reset.
+    resume_seam_local_index = None
+    resume_seam_pos = getattr(rb, "_fqe_resume_seam_pos", None)
+    resume_positions_written = int(
+        getattr(rb, "_fqe_resume_positions_written", 0)
+    )
+    if (
+        TIME_CONDITIONED_FINITE_HORIZON_FQE
+        and resume_seam_pos is not None
+        and resume_positions_written > 0
+        and resume_positions_written < rb.buffer_size
+    ):
+        seam_matches = np.flatnonzero(
+            time_indices == int(resume_seam_pos)
+        )
+        if len(seam_matches) > 1:
+            raise RuntimeError(
+                "Internal FQE replay error: resume seam appeared more than "
+                "once in chronological replay indices."
+            )
+        if len(seam_matches) == 1:
+            resume_seam_local_index = int(seam_matches[0])
+
     obs_raw = np.asarray(rb.observations)[time_indices]
     next_obs_raw = np.asarray(rb.next_observations)[time_indices]
     actions_raw = np.asarray(rb.actions)[time_indices]
@@ -1429,7 +1570,11 @@ def build_native_fqe_replay_data(model, max_transitions=None):
     rewards_parts = []
     terminals_parts = []
     timeouts_parts = []
+    timestep_parts = []
+    next_timestep_parts = []
     initial_observation_parts = []
+    initial_timestep_parts = []
+    resume_gap_discarded_transitions = 0
 
     for env_idx in range(rb.n_envs):
         obs_env = np.asarray(obs_raw[:, env_idx]).copy()
@@ -1446,6 +1591,63 @@ def build_native_fqe_replay_data(model, max_transitions=None):
         ).reshape(-1, 1).astype(np.float32, copy=True)
 
         terminals_env = dones_env * (1.0 - timeouts_env)
+
+        # If this selected replay view spans the load/reset seam, remove only
+        # the unfinished OLD trajectory tail immediately before the seam. The
+        # first transition at the seam was collected after an explicit env
+        # reset, so it is a known episode start. Complete saved episodes before
+        # that tail are retained, and all post-reset data are retained.
+        #
+        # Example of the invalid raw chronology:
+        #   ... [old complete boundary] old_partial_tail |RESET| new_ep ...
+        # We convert it to:
+        #   ... [old complete boundary] | new_ep ...
+        # without inventing a terminal reward/transition.
+        begins_at_known_resume_start = False
+        if resume_seam_local_index is not None:
+            seam = int(resume_seam_local_index)
+            if not (0 <= seam < len(obs_env)):
+                raise RuntimeError(
+                    "Internal FQE replay error: resume seam index is outside "
+                    "the selected replay view."
+                )
+
+            raw_boundary_flags = (
+                (terminals_env[:, 0] > 0.5)
+                | (timeouts_env[:, 0] > 0.5)
+            )
+            boundaries_before_seam = np.flatnonzero(
+                raw_boundary_flags[:seam]
+            )
+            prefix_end = (
+                int(boundaries_before_seam[-1] + 1)
+                if len(boundaries_before_seam) > 0
+                else 0
+            )
+
+            discarded_here = int(seam - prefix_end)
+            if discarded_here < 0:
+                raise RuntimeError(
+                    "Internal FQE replay error: negative resume-gap length."
+                )
+
+            if discarded_here > 0 or seam == 0:
+                def _join_across_resume(arr):
+                    return np.concatenate(
+                        (arr[:prefix_end], arr[seam:]), axis=0
+                    )
+
+                obs_env = _join_across_resume(obs_env)
+                next_obs_env = _join_across_resume(next_obs_env)
+                actions_env = _join_across_resume(actions_env)
+                rewards_env = _join_across_resume(rewards_env)
+                dones_env = _join_across_resume(dones_env)
+                timeouts_env = _join_across_resume(timeouts_env)
+                terminals_env = _join_across_resume(terminals_env)
+
+                resume_gap_discarded_transitions += discarded_here
+                begins_at_known_resume_start = (prefix_end == 0)
+
         boundary_flags = (
             (terminals_env[:, 0] > 0.5)
             | (timeouts_env[:, 0] > 0.5)
@@ -1463,7 +1665,10 @@ def build_native_fqe_replay_data(model, max_transitions=None):
         # segment because its predecessor has been overwritten. For a finite
         # recent window, the predecessor is still available and tells us
         # exactly whether the first selected transition begins a new episode.
-        if window_was_truncated:
+        if begins_at_known_resume_start:
+            # The environment was explicitly reset before this transition.
+            leading_partial = False
+        elif window_was_truncated:
             leading_partial = bool(leading_partial_by_env[env_idx])
         else:
             leading_partial = bool(rb.full)
@@ -1499,8 +1704,50 @@ def build_native_fqe_replay_data(model, max_transitions=None):
             for idx in kept_boundaries[:-1]
         )
 
-        initial_observation_parts.append(
-            obs_keep[np.asarray(episode_starts, dtype=np.int64)]
+        # Reconstruct the within-episode timestep without changing replay
+        # collection. Each complete episode contributes t=0,...,L-1 and the
+        # corresponding next-timestep t+1. This is used only by the FQE critic.
+        timesteps_keep = np.empty(
+            (len(obs_keep), 1), dtype=np.float32
+        )
+        next_timesteps_keep = np.empty(
+            (len(obs_keep), 1), dtype=np.float32
+        )
+        episode_start = 0
+        for boundary_index in kept_boundaries:
+            episode_end = int(boundary_index + 1)
+            episode_length = int(episode_end - episode_start)
+            if episode_length <= 0:
+                raise RuntimeError(
+                    "Encountered an empty episode while reconstructing FQE time."
+                )
+            if (
+                TIME_CONDITIONED_FINITE_HORIZON_FQE
+                and episode_length > finite_horizon_steps
+            ):
+                raise RuntimeError(
+                    "Replay episode is longer than the configured finite "
+                    f"horizon: length={episode_length}, "
+                    f"H={finite_horizon_steps}."
+                )
+
+            episode_t = np.arange(
+                episode_length, dtype=np.float32
+            ).reshape(-1, 1)
+            timesteps_keep[episode_start:episode_end] = episode_t
+            next_timesteps_keep[episode_start:episode_end] = episode_t + 1.0
+            episode_start = episode_end
+
+        if episode_start != len(obs_keep):
+            raise RuntimeError(
+                "Internal FQE timestep reconstruction error: retained replay "
+                "segment did not end on an episode boundary."
+            )
+
+        initial_indices = np.asarray(episode_starts, dtype=np.int64)
+        initial_observation_parts.append(obs_keep[initial_indices])
+        initial_timestep_parts.append(
+            np.zeros((len(initial_indices), 1), dtype=np.float32)
         )
 
         observations_parts.append(obs_keep)
@@ -1509,6 +1756,8 @@ def build_native_fqe_replay_data(model, max_transitions=None):
         rewards_parts.append(rewards_keep)
         terminals_parts.append(terminals_keep)
         timeouts_parts.append(timeouts_keep)
+        timestep_parts.append(timesteps_keep)
+        next_timestep_parts.append(next_timesteps_keep)
 
     observations = np.concatenate(
         observations_parts, axis=0
@@ -1528,8 +1777,17 @@ def build_native_fqe_replay_data(model, max_transitions=None):
     timeouts = np.concatenate(
         timeouts_parts, axis=0
     ).astype(np.float32, copy=False)
+    timesteps = np.concatenate(
+        timestep_parts, axis=0
+    ).astype(np.float32, copy=False)
+    next_timesteps = np.concatenate(
+        next_timestep_parts, axis=0
+    ).astype(np.float32, copy=False)
     initial_observations = np.concatenate(
         initial_observation_parts, axis=0
+    ).astype(np.float32, copy=False)
+    initial_timesteps = np.concatenate(
+        initial_timestep_parts, axis=0
     ).astype(np.float32, copy=False)
 
     if np.any(
@@ -1557,6 +1815,20 @@ def build_native_fqe_replay_data(model, max_transitions=None):
 
     coverage_label = "full" if max_transitions is None else str(int(max_transitions))
 
+    if TIME_CONDITIONED_FINITE_HORIZON_FQE:
+        if np.any(timesteps[:, 0] < 0.0):
+            raise RuntimeError("Negative reconstructed FQE timestep detected.")
+        if np.any(timesteps[:, 0] >= float(finite_horizon_steps)):
+            raise RuntimeError(
+                "Reconstructed FQE timestep reaches/exceeds the configured "
+                f"horizon H={finite_horizon_steps}."
+            )
+        if np.any(next_timesteps[:, 0] > float(finite_horizon_steps)):
+            raise RuntimeError(
+                "Reconstructed next FQE timestep exceeds the configured "
+                f"horizon H={finite_horizon_steps}."
+            )
+
     print(
         "Native FQE replay data "
         f"[coverage={coverage_label}]: "
@@ -1566,6 +1838,20 @@ def build_native_fqe_replay_data(model, max_transitions=None):
         f"{n_episodes} episodes, "
         f"{len(initial_observations)} initial states"
     )
+    if resume_gap_discarded_transitions > 0:
+        print(
+            "  FQE replay-resume seam: discarded "
+            f"{resume_gap_discarded_transitions} transition(s) from the "
+            "unfinished saved trajectory immediately before the post-load "
+            "environment reset."
+        )
+    if TIME_CONDITIONED_FINITE_HORIZON_FQE:
+        print(
+            "  finite-horizon FQE time reconstruction: "
+            f"H={finite_horizon_steps}, "
+            f"t_range=[{int(np.min(timesteps))}, {int(np.max(timesteps))}], "
+            "critic_time_feature=t/H"
+        )
 
     return {
         "observations": observations,
@@ -1575,13 +1861,27 @@ def build_native_fqe_replay_data(model, max_transitions=None):
         "terminals": terminals,
         "timeouts": timeouts,
         "intervals": intervals,
+        "timesteps": timesteps,
+        "next_timesteps": next_timesteps,
         "initial_observations": initial_observations,
+        "initial_timesteps": initial_timesteps,
+        "finite_horizon_steps": (
+            int(finite_horizon_steps)
+            if finite_horizon_steps is not None
+            else None
+        ),
+        "time_conditioned_finite_horizon": bool(
+            TIME_CONDITIONED_FINITE_HORIZON_FQE
+        ),
         "coverage_label": coverage_label,
         "requested_max_transitions": max_transitions,
         "selected_raw_transitions": selected_raw_transitions,
         "actual_transitions": int(len(rewards)),
         "n_episodes": n_episodes,
         "total_available_transitions": total_available_transitions,
+        "resume_gap_discarded_transitions": int(
+            resume_gap_discarded_transitions
+        ),
     }
 
 
@@ -1886,7 +2186,7 @@ def build_support_penalized_scores(
             "Support-penalized FQE produced a non-finite ranking score."
         )
 
-    return SupportPenalizedFQEScores(
+    result = SupportPenalizedFQEScores(
         scores=penalized_scores,
         mean_q=mean_q,
         action_divergence=action_divergence,
@@ -1899,15 +2199,32 @@ def build_support_penalized_scores(
         ensemble_size=ensemble_size,
     )
 
+    # Preserve evaluator-objective metadata for diagnostics/CSV output.
+    for attr_name in (
+        "fqe_objective",
+        "fqe_gamma",
+        "finite_horizon_steps",
+        "time_conditioned",
+    ):
+        if hasattr(base_fqe_scores, attr_name):
+            setattr(result, attr_name, getattr(base_fqe_scores, attr_name))
+
+    return result
+
 
 def native_batched_fqe(model, agents, dataset, native_data=None):
-    """Fit Ensemble Lower Confidence Bound FQE for all candidates on the GPU.
+    """Fit native batched FQE for all candidates on the GPU.
 
     Everything outside the evaluator remains unchanged. Each candidate policy is
     paired with ``FQE_ENSEMBLE_SIZE`` independently initialized FQE critics,
     trained on the same frozen corrected replay transitions, same candidate
-    actions, same transition minibatches, optimizer, target-update schedule, and
-    Bellman objective used by the previous native FQE.
+    actions, same transition minibatches, optimizer, and target-update schedule.
+
+    With TIME_CONDITIONED_FINITE_HORIZON_FQE=1, the evaluator objective becomes:
+        Q(s_t, a_t, t) = r_t + Q(s_{t+1}, pi(s_{t+1}), t+1)
+    with OPE gamma=1 and zero bootstrap at either a true terminal or a replay
+    truncation. Only the critic receives the extra normalized time feature t/H;
+    candidate PPO policies still act on the original observation.
 
     Ranking score for candidate pi is computed exactly over the frozen initial
     state reference set:
@@ -1948,19 +2265,80 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
 
     preparation_start = time.time()
     if native_data is None:
+        if TIME_CONDITIONED_FINITE_HORIZON_FQE:
+            raise RuntimeError(
+                "Time-conditioned finite-horizon FQE requires corrected native "
+                "replay data with reconstructed timesteps. Pass native_data "
+                "from build_native_fqe_replay_data()."
+            )
         # Compatibility fallback for callers outside the active rank-study
         # path. The active native backend passes corrected replay data directly.
         native_data = build_native_fqe_data(dataset)
+
+    time_conditioned_finite_horizon = bool(
+        native_data.get(
+            "time_conditioned_finite_horizon",
+            TIME_CONDITIONED_FINITE_HORIZON_FQE,
+        )
+    )
+    finite_horizon_steps = native_data.get("finite_horizon_steps", None)
+
+    if time_conditioned_finite_horizon:
+        if finite_horizon_steps is None:
+            raise RuntimeError(
+                "Native FQE data is missing finite_horizon_steps."
+            )
+        finite_horizon_steps = int(finite_horizon_steps)
+        if finite_horizon_steps <= 0:
+            raise RuntimeError("finite_horizon_steps must be > 0.")
+        for required_key in (
+            "timesteps",
+            "next_timesteps",
+            "initial_timesteps",
+            "timeouts",
+        ):
+            if required_key not in native_data:
+                raise RuntimeError(
+                    "Time-conditioned finite-horizon FQE data is missing "
+                    f"{required_key!r}."
+                )
+
+        print(
+            "Native FQE objective: time-conditioned finite-horizon "
+            f"undiscounted return (H={finite_horizon_steps}, OPE gamma=1.0)."
+        )
+    else:
+        print(
+            "Native FQE objective: original discounted continuing objective "
+            f"(gamma={float(model.gamma):.8f})."
+        )
 
     obs_cpu = native_data["observations"]
     action_cpu = native_data["actions"]
     reward_cpu = native_data["rewards"]
     next_obs_cpu = native_data["next_observations"]
     terminal_cpu = native_data["terminals"]
+    timeout_cpu = native_data.get(
+        "timeouts", np.zeros_like(terminal_cpu, dtype=np.float32)
+    )
     interval_cpu = native_data["intervals"]
     initial_obs_cpu = native_data["initial_observations"]
 
-    observation_dim = int(obs_cpu.shape[1])
+    if time_conditioned_finite_horizon:
+        timestep_cpu = native_data["timesteps"]
+        next_timestep_cpu = native_data["next_timesteps"]
+        initial_timestep_cpu = native_data["initial_timesteps"]
+    else:
+        timestep_cpu = None
+        next_timestep_cpu = None
+        initial_timestep_cpu = None
+
+    raw_observation_dim = int(obs_cpu.shape[1])
+    observation_dim = (
+        raw_observation_dim + 1
+        if time_conditioned_finite_horizon
+        else raw_observation_dim
+    )
     action_dim = int(action_cpu.shape[1])
     transition_count = int(obs_cpu.shape[0])
     n_candidates = len(agents)
@@ -1978,12 +2356,47 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
     terminals = torch.as_tensor(
         terminal_cpu, dtype=torch.float32, device=device
     )
+    timeouts = torch.as_tensor(
+        timeout_cpu, dtype=torch.float32, device=device
+    )
     intervals = torch.as_tensor(
         interval_cpu, dtype=torch.float32, device=device
     )
     initial_observations = torch.as_tensor(
         initial_obs_cpu, dtype=torch.float32, device=device
     )
+
+    if time_conditioned_finite_horizon:
+        timesteps = torch.as_tensor(
+            timestep_cpu, dtype=torch.float32, device=device
+        )
+        next_timesteps = torch.as_tensor(
+            next_timestep_cpu, dtype=torch.float32, device=device
+        )
+        initial_timesteps = torch.as_tensor(
+            initial_timestep_cpu, dtype=torch.float32, device=device
+        )
+
+        critic_observations = _append_normalized_fqe_time(
+            observations, timesteps, finite_horizon_steps
+        )
+        critic_next_observations = _append_normalized_fqe_time(
+            next_observations, next_timesteps, finite_horizon_steps
+        )
+        critic_initial_observations = _append_normalized_fqe_time(
+            initial_observations,
+            initial_timesteps,
+            finite_horizon_steps,
+        )
+
+        # The online evaluator stops at either environment termination or
+        # truncation, so finite-horizon FQE must stop bootstrapping at both.
+        fqe_terminals = torch.maximum(terminals, timeouts)
+    else:
+        critic_observations = observations
+        critic_next_observations = next_observations
+        critic_initial_observations = initial_observations
+        fqe_terminals = terminals
 
     # Precompute pi_j(s') and pi_j(s0) once per fixed candidate policy. All B
     # ensemble critics for candidate j evaluate the exact same target policy.
@@ -2047,9 +2460,14 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
     )
     del sampled_indices_np
 
-    gamma = float(model.gamma)
+    if time_conditioned_finite_horizon:
+        # Match the original online selector's undiscounted finite-episode sum.
+        fqe_gamma = 1.0
+    else:
+        fqe_gamma = float(model.gamma)
+
     gamma_tensor = torch.as_tensor(
-        gamma, dtype=torch.float32, device=device
+        fqe_gamma, dtype=torch.float32, device=device
     )
     discounts = torch.pow(gamma_tensor, intervals)
     target_update_interval = 100
@@ -2063,11 +2481,11 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
     for grad_step in range(FQE_N_STEPS):
         batch_index = sampled_indices[grad_step]
 
-        obs_batch = observations[batch_index]
+        obs_batch = critic_observations[batch_index]
         action_batch = dataset_actions[batch_index]
         reward_batch = rewards[batch_index]
-        next_obs_batch = next_observations[batch_index]
-        terminal_batch = terminals[batch_index]
+        next_obs_batch = critic_next_observations[batch_index]
+        terminal_batch = fqe_terminals[batch_index]
         # [candidate, batch, action_dim]; BatchedFQECritic broadcasts this over
         # each candidate's ensemble dimension.
         next_action_batch = cached_next_actions[:, batch_index, :]
@@ -2116,7 +2534,7 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
     with torch.no_grad():
         # [candidate, ensemble, n_initial_states]
         initial_q = critic(
-            initial_observations,
+            critic_initial_observations,
             cached_initial_actions,
         ).squeeze(-1)
 
@@ -2165,6 +2583,18 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
         ensemble_member_values=ensemble_member_values_np,
         beta=FQE_LCB_BETA,
         ensemble_size=n_ensemble,
+    )
+    scores.fqe_gamma = float(fqe_gamma)
+    scores.time_conditioned = bool(time_conditioned_finite_horizon)
+    scores.finite_horizon_steps = (
+        int(finite_horizon_steps)
+        if time_conditioned_finite_horizon
+        else None
+    )
+    scores.fqe_objective = (
+        "time_conditioned_finite_horizon_undiscounted"
+        if time_conditioned_finite_horizon
+        else "original_discounted_continuing"
     )
 
     print(
@@ -2443,7 +2873,7 @@ def install_fqe_replay_semantics_patch(model):
 
         # Preserve the original ReplayBuffer.add implementation and therefore
         # its ring-buffer position/full logic and timeout extraction from infos.
-        return original_add(
+        result = original_add(
             replay_obs,
             replay_next_obs,
             replay_actions,
@@ -2451,6 +2881,14 @@ def install_fqe_replay_semantics_patch(model):
             replay_dones,
             infos,
         )
+
+        # Diagnostic/FQE metadata only. One ReplayBuffer.add call writes one
+        # ring position (containing one transition per VecEnv slot). This never
+        # feeds back into PPO training or modifies stored transitions.
+        if hasattr(rb, "_fqe_resume_positions_written"):
+            rb._fqe_resume_positions_written += 1
+
+        return result
 
     rb.add = corrected_replay_add
     rb._fqe_replay_semantics_patch_installed = True
@@ -2638,6 +3076,20 @@ def load_replay_buffer_npz(model, path):
         rb.pos = int(np.asarray(saved["pos"]).item())
         rb.full = bool(np.asarray(saved["full"]).item())
 
+        # FQE-only resume-seam metadata. The environment state itself is not
+        # serialized with this replay buffer. After loading, the experiment
+        # explicitly resets the environment before model.learn() resumes, so
+        # the first newly written replay transition begins a NEW episode even
+        # if the newest saved transition belonged to an unfinished episode.
+        #
+        # Record the next replay position now; corrected_replay_add() will count
+        # how many new ring positions have been written after the load. Native
+        # FQE uses this metadata only to avoid concatenating an old partial
+        # episode with a post-reset episode. No replay contents or PPO variables
+        # are changed.
+        rb._fqe_resume_seam_pos = int(rb.pos)
+        rb._fqe_resume_positions_written = 0
+
         # The file version has already been validated above. Restore it onto
         # the live replay object instead of relying only on patch-install order.
         rb._fqe_replay_semantics_version = saved_semantics_version
@@ -2694,6 +3146,35 @@ def build_fqe_dataset(model):
     else:
         time_indices = np.arange(0, rb.pos, dtype=np.int64)
 
+    # Keep the auxiliary d3rlpy dataset consistent with the corrected native
+    # finite-horizon replay view. A replay buffer loaded from disk is followed
+    # by an explicit environment reset in this experiment, so the unfinished
+    # saved trajectory immediately before the first post-load write cannot be
+    # concatenated with the post-reset trajectory. This correction is enabled
+    # only for the new finite-horizon study so disabling that study preserves
+    # the legacy dataset path exactly.
+    resume_seam_local_index = None
+    resume_seam_pos = getattr(rb, "_fqe_resume_seam_pos", None)
+    resume_positions_written = int(
+        getattr(rb, "_fqe_resume_positions_written", 0)
+    )
+    if (
+        TIME_CONDITIONED_FINITE_HORIZON_FQE
+        and resume_seam_pos is not None
+        and resume_positions_written > 0
+        and resume_positions_written < rb.buffer_size
+    ):
+        seam_matches = np.flatnonzero(
+            time_indices == int(resume_seam_pos)
+        )
+        if len(seam_matches) > 1:
+            raise RuntimeError(
+                "Internal FQE dataset error: resume seam appeared more than "
+                "once in chronological replay indices."
+            )
+        if len(seam_matches) == 1:
+            resume_seam_local_index = int(seam_matches[0])
+
     obs_raw = np.asarray(rb.observations)[time_indices]
     actions_raw = np.asarray(rb.actions)[time_indices]
     rewards_raw = np.asarray(rb.rewards)[time_indices]
@@ -2705,6 +3186,7 @@ def build_fqe_dataset(model):
     rewards_parts = []
     terminals_parts = []
     timeouts_parts = []
+    resume_gap_discarded_transitions = 0
 
     for env_idx in range(rb.n_envs):
         obs_env = np.asarray(obs_raw[:, env_idx]).copy()
@@ -2721,6 +3203,48 @@ def build_fqe_dataset(model):
         # an episode boundary but not an environmental terminal.
         terminals_env = dones_env * (1.0 - timeouts_env)
 
+        begins_at_known_resume_start = False
+        if resume_seam_local_index is not None:
+            seam = int(resume_seam_local_index)
+            if not (0 <= seam < len(obs_env)):
+                raise RuntimeError(
+                    "Internal FQE dataset error: resume seam index is outside "
+                    "the selected replay view."
+                )
+
+            raw_boundary_flags = (
+                (terminals_env[:, 0] > 0.5)
+                | (timeouts_env[:, 0] > 0.5)
+            )
+            boundaries_before_seam = np.flatnonzero(
+                raw_boundary_flags[:seam]
+            )
+            prefix_end = (
+                int(boundaries_before_seam[-1] + 1)
+                if len(boundaries_before_seam) > 0
+                else 0
+            )
+            discarded_here = int(seam - prefix_end)
+            if discarded_here < 0:
+                raise RuntimeError(
+                    "Internal FQE dataset error: negative resume-gap length."
+                )
+
+            if discarded_here > 0 or seam == 0:
+                def _join_dataset_across_resume(arr):
+                    return np.concatenate(
+                        (arr[:prefix_end], arr[seam:]), axis=0
+                    )
+
+                obs_env = _join_dataset_across_resume(obs_env)
+                actions_env = _join_dataset_across_resume(actions_env)
+                rewards_env = _join_dataset_across_resume(rewards_env)
+                dones_env = _join_dataset_across_resume(dones_env)
+                timeouts_env = _join_dataset_across_resume(timeouts_env)
+                terminals_env = _join_dataset_across_resume(terminals_env)
+                resume_gap_discarded_transitions += discarded_here
+                begins_at_known_resume_start = (prefix_end == 0)
+
         boundaries = np.flatnonzero(
             (terminals_env[:, 0] > 0.5) | (timeouts_env[:, 0] > 0.5)
         )
@@ -2732,7 +3256,12 @@ def build_fqe_dataset(model):
 
         # If full, the first retained transition can be in the middle of an
         # overwritten episode, so begin immediately after the first boundary.
-        start = int(boundaries[0] + 1) if rb.full else 0
+        # The one exception is a replay view that now begins exactly at the
+        # known post-load environment reset.
+        if begins_at_known_resume_start:
+            start = 0
+        else:
+            start = int(boundaries[0] + 1) if rb.full else 0
 
         # Stop at the last real boundary so no incomplete newest trajectory is
         # presented to d3rlpy as a complete episode.
@@ -2794,6 +3323,12 @@ def build_fqe_dataset(model):
         f"{int(np.sum(timeouts))} timeouts, "
         f"{n_episodes} episodes"
     )
+    if resume_gap_discarded_transitions > 0:
+        print(
+            "  FQE dataset replay-resume seam: discarded "
+            f"{resume_gap_discarded_transitions} transition(s) from the "
+            "unfinished saved trajectory before the post-load reset."
+        )
 
     return MDPDataset(
         observations=observations,
@@ -2834,6 +3369,18 @@ def compute_replay_coverage_rank_metrics(
     )
     support_reference_transitions = int(
         getattr(fqe_scores, "support_reference_transitions", 0)
+    )
+    fqe_objective = str(
+        getattr(fqe_scores, "fqe_objective", "unknown")
+    )
+    fqe_gamma = float(
+        getattr(fqe_scores, "fqe_gamma", np.nan)
+    )
+    finite_horizon_steps = getattr(
+        fqe_scores, "finite_horizon_steps", None
+    )
+    time_conditioned = bool(
+        getattr(fqe_scores, "time_conditioned", False)
     )
     online_scores = np.asarray(online_scores, dtype=np.float64)
     fqe_scores = np.asarray(fqe_scores, dtype=np.float64)
@@ -2894,6 +3441,13 @@ def compute_replay_coverage_rank_metrics(
         "support_penalty_lambda": support_lambda,
         "support_reference": support_reference_label,
         "support_reference_transitions": support_reference_transitions,
+        "fqe_objective": fqe_objective,
+        "fqe_gamma": fqe_gamma,
+        "finite_horizon_steps": (
+            -1 if finite_horizon_steps is None
+            else int(finite_horizon_steps)
+        ),
+        "time_conditioned": time_conditioned,
         "pearson": pearson,
         "spearman": spearman,
         "kendall": kendall,
@@ -3606,6 +4160,20 @@ if __name__ == "__main__":
     elif env_name == "BreakoutNoFrameskip-v4":
         args = args_breakout_no_frameskip.get_args(rest_args)
 
+    if TIME_CONDITIONED_FINITE_HORIZON_FQE:
+        fqe_finite_horizon_steps = resolve_fqe_finite_horizon(env_name)
+        print(
+            "Time-conditioned finite-horizon FQE enabled: "
+            f"H={fqe_finite_horizon_steps}, OPE gamma=1.0, "
+            "critic input includes normalized t/H."
+        )
+    else:
+        fqe_finite_horizon_steps = None
+        print(
+            "Time-conditioned finite-horizon FQE disabled: "
+            "native FQE keeps the original discounted objective."
+        )
+
     # ------------------------------------------------------------------------------------------------------------
     # Force the training/inference device to match the CUDA auto-detection above. This keeps one
     # consistent device across PPO, generated policy state dicts, and the GPU empty-space search.
@@ -4103,6 +4671,9 @@ if __name__ == "__main__":
                                 build_native_fqe_replay_data(
                                     model,
                                     max_transitions=coverage_window,
+                                    finite_horizon_steps=(
+                                        fqe_finite_horizon_steps
+                                    ),
                                 )
                             )
 
@@ -4116,6 +4687,13 @@ if __name__ == "__main__":
                             dtype=np.float32,
                             copy=True,
                         )
+                        coverage_reference_initial_timesteps = np.zeros(
+                            (
+                                len(coverage_reference_initial_observations),
+                                1,
+                            ),
+                            dtype=np.float32,
+                        )
 
                         for coverage_data in replay_coverage_data.values():
                             coverage_data["training_initial_states"] = int(
@@ -4123,6 +4701,9 @@ if __name__ == "__main__":
                             )
                             coverage_data["initial_observations"] = (
                                 coverage_reference_initial_observations.copy()
+                            )
+                            coverage_data["initial_timesteps"] = (
+                                coverage_reference_initial_timesteps.copy()
                             )
                             coverage_data["score_initial_states"] = int(
                                 len(coverage_reference_initial_observations)
@@ -4138,7 +4719,10 @@ if __name__ == "__main__":
                         # remains defined by the full corrected replay buffer.
                         native_fqe_data = replay_coverage_data["full"]
                     else:
-                        native_fqe_data = build_native_fqe_replay_data(model)
+                        native_fqe_data = build_native_fqe_replay_data(
+                            model,
+                            finite_horizon_steps=fqe_finite_horizon_steps,
+                        )
 
                     # The behavioral trust-region penalty uses one COMMON full
                     # corrected replay reference for all coverage windows. This
@@ -4150,7 +4734,10 @@ if __name__ == "__main__":
                     native_fqe_data = None
                     # d3rlpy still receives the same explicit behavior-support
                     # penalty, built from the corrected replay semantics.
-                    support_reference_data = build_native_fqe_replay_data(model)
+                    support_reference_data = build_native_fqe_replay_data(
+                        model,
+                        finite_horizon_steps=fqe_finite_horizon_steps,
+                    )
 
                 replay_buffer_before_candidate_eval = replay_buffer_signature(model.replay_buffer)
                 print(
@@ -4553,6 +5140,29 @@ if __name__ == "__main__":
                             0,
                         )
                     ),
+                    'fqe_objective': str(
+                        getattr(advantage_rew, 'fqe_objective', 'unknown')
+                    ),
+                    'fqe_gamma': float(
+                        getattr(advantage_rew, 'fqe_gamma', np.nan)
+                    ),
+                    'finite_horizon_steps': (
+                        -1
+                        if getattr(
+                            advantage_rew,
+                            'finite_horizon_steps',
+                            None,
+                        ) is None
+                        else int(
+                            getattr(
+                                advantage_rew,
+                                'finite_horizon_steps',
+                            )
+                        )
+                    ),
+                    'time_conditioned': bool(
+                        getattr(advantage_rew, 'time_conditioned', False)
+                    ),
                     'pearson': pearson,
                     'spearman': spearman,
                     'kendall': kendall,
@@ -4583,6 +5193,33 @@ if __name__ == "__main__":
                             support_penalty_scores[candidate_idx]
                         ),
                         'fqe_mean_sigma': float(fqe_sigma_scores[candidate_idx]),
+                        'fqe_objective': str(
+                            getattr(advantage_rew, 'fqe_objective', 'unknown')
+                        ),
+                        'fqe_gamma': float(
+                            getattr(advantage_rew, 'fqe_gamma', np.nan)
+                        ),
+                        'finite_horizon_steps': (
+                            -1
+                            if getattr(
+                                advantage_rew,
+                                'finite_horizon_steps',
+                                None,
+                            ) is None
+                            else int(
+                                getattr(
+                                    advantage_rew,
+                                    'finite_horizon_steps',
+                                )
+                            )
+                        ),
+                        'time_conditioned': bool(
+                            getattr(
+                                advantage_rew,
+                                'time_conditioned',
+                                False,
+                            )
+                        ),
                         'online': float(online_score),
                     })
 
@@ -4654,8 +5291,13 @@ if __name__ == "__main__":
                 # Compare RAW ordinary FQE (ensemble mean Q) to two online
                 # targets measured on the exact same evaluation trajectories:
                 #   1) original undiscounted episodic return (canonical selector)
-                #   2) gamma-discounted episodic return (aligned with FQE gamma)
-                # The support-penalized score is intentionally NOT used here.
+                #   2) PPO-gamma-discounted episodic return (historical diagnostic)
+                #
+                # With time-conditioned finite-horizon FQE enabled, target (1)
+                # is now the OBJECTIVE-ALIGNED comparison; target (2) remains
+                # only to show how the new evaluator differs from the previous
+                # discounted FQE objective. The support-penalized score is
+                # intentionally NOT used here.
                 if OBJECTIVE_MISMATCH_STUDY:
                     discounted_online_scores = np.asarray(
                         cum_discounted_rews, dtype=np.float64
@@ -4675,6 +5317,29 @@ if __name__ == "__main__":
                         iteration=i,
                         gamma=model.gamma,
                     )
+                    objective_metrics["fqe_objective"] = str(
+                        getattr(advantage_rew, "fqe_objective", "unknown")
+                    )
+                    objective_metrics["fqe_gamma"] = float(
+                        getattr(advantage_rew, "fqe_gamma", np.nan)
+                    )
+                    objective_metrics["finite_horizon_steps"] = (
+                        -1
+                        if getattr(
+                            advantage_rew,
+                            "finite_horizon_steps",
+                            None,
+                        ) is None
+                        else int(
+                            getattr(
+                                advantage_rew,
+                                "finite_horizon_steps",
+                            )
+                        )
+                    )
+                    objective_metrics["time_conditioned"] = bool(
+                        getattr(advantage_rew, "time_conditioned", False)
+                    )
                     objectiveMismatchMetrics.append(objective_metrics)
 
                     for candidate_idx in range(len(online_scores)):
@@ -4682,6 +5347,41 @@ if __name__ == "__main__":
                             "iteration": int(i),
                             "candidate": int(candidate_idx),
                             "gamma": float(model.gamma),
+                            "fqe_objective": str(
+                                getattr(
+                                    advantage_rew,
+                                    "fqe_objective",
+                                    "unknown",
+                                )
+                            ),
+                            "fqe_gamma": float(
+                                getattr(
+                                    advantage_rew,
+                                    "fqe_gamma",
+                                    np.nan,
+                                )
+                            ),
+                            "finite_horizon_steps": (
+                                -1
+                                if getattr(
+                                    advantage_rew,
+                                    "finite_horizon_steps",
+                                    None,
+                                ) is None
+                                else int(
+                                    getattr(
+                                        advantage_rew,
+                                        "finite_horizon_steps",
+                                    )
+                                )
+                            ),
+                            "time_conditioned": bool(
+                                getattr(
+                                    advantage_rew,
+                                    "time_conditioned",
+                                    False,
+                                )
+                            ),
                             "fqe_mean_q": float(
                                 fqe_mean_q_scores[candidate_idx]
                             ),
@@ -4695,7 +5395,18 @@ if __name__ == "__main__":
 
                     print("---------------------------------")
                     print("FQE OBJECTIVE-ALIGNMENT DIAGNOSTIC")
-                    print(f"gamma: {float(model.gamma):.8f}")
+                    print(
+                        "FQE evaluator: "
+                        f"{objective_metrics['fqe_objective']} | "
+                        f"OPE gamma={objective_metrics['fqe_gamma']:.8f} | "
+                        f"H={objective_metrics['finite_horizon_steps']} | "
+                        f"time_conditioned="
+                        f"{objective_metrics['time_conditioned']}"
+                    )
+                    print(
+                        "PPO / discounted-online diagnostic gamma: "
+                        f"{float(model.gamma):.8f}"
+                    )
                     print(
                         "FQE vs UNDISCOUNTED online: "
                         f"Pearson="
@@ -4870,6 +5581,41 @@ if __name__ == "__main__":
                                     coverage_scores,
                                     "support_reference_transitions",
                                     0,
+                                )
+                            ),
+                            "fqe_objective": str(
+                                getattr(
+                                    coverage_scores,
+                                    "fqe_objective",
+                                    "unknown",
+                                )
+                            ),
+                            "fqe_gamma": float(
+                                getattr(
+                                    coverage_scores,
+                                    "fqe_gamma",
+                                    np.nan,
+                                )
+                            ),
+                            "finite_horizon_steps": (
+                                -1
+                                if getattr(
+                                    coverage_scores,
+                                    "finite_horizon_steps",
+                                    None,
+                                ) is None
+                                else int(
+                                    getattr(
+                                        coverage_scores,
+                                        "finite_horizon_steps",
+                                    )
+                                )
+                            ),
+                            "time_conditioned": bool(
+                                getattr(
+                                    coverage_scores,
+                                    "time_conditioned",
+                                    False,
                                 )
                             ),
                             "online": float(online_score),
@@ -5098,8 +5844,20 @@ if __name__ == "__main__":
 
             print("---------------------------------")
             print("FQE OBJECTIVE-ALIGNMENT STUDY SUMMARY")
+            if "fqe_objective" in objective_summary_df.columns:
+                print(
+                    "FQE evaluator: "
+                    f"{objective_summary_df['fqe_objective'].iloc[0]} | "
+                    f"OPE gamma="
+                    f"{objective_summary_df['fqe_gamma'].iloc[0]:.8f} | "
+                    f"H="
+                    f"{int(objective_summary_df['finite_horizon_steps'].iloc[0])} | "
+                    f"time_conditioned="
+                    f"{bool(objective_summary_df['time_conditioned'].iloc[0])}"
+                )
             print(
-                f"gamma: {objective_summary_df['gamma'].iloc[0]:.8f}"
+                "PPO / discounted-online diagnostic gamma: "
+                f"{objective_summary_df['gamma'].iloc[0]:.8f}"
             )
             print(
                 "FQE vs UNDISCOUNTED online -- "
@@ -5132,7 +5890,7 @@ if __name__ == "__main__":
                 f"{objective_summary_df['fqe_vs_discounted_kendall'].std(ddof=0):.4f}"
             )
             print(
-                "Mean DISCOUNTING gain -- "
+                "Mean DISCOUNTED - UNDISCOUNTED correlation difference -- "
                 f"Pearson: "
                 f"{objective_summary_df['discounted_minus_undiscounted_pearson'].mean():+.4f} | "
                 f"Spearman: "
