@@ -187,6 +187,21 @@ if (
         "FQE_SUPPORT_PENALTY_LAMBDA must be finite and >= 0."
     )
 
+# Objective-alignment diagnostic (analysis only).
+#
+# FQE estimates the gamma-discounted return, while the existing online selector
+# uses Stable-Baselines3 evaluate_policy's ordinary undiscounted episodic return.
+# This study records BOTH objectives on the exact same candidate-evaluation
+# trajectories and compares the raw FQE mean-Q estimate against each one.
+#
+# IMPORTANT: the original online selector remains based on the undiscounted
+# return in ``cum_rews``. Discounted returns are diagnostic-only and never
+# affect PPO training, ESA candidate generation, candidate selection, replay
+# data, or the canonical support-penalized ranking study.
+OBJECTIVE_MISMATCH_STUDY = os.environ.get(
+    "OBJECTIVE_MISMATCH_STUDY", "1"
+) == "1"
+
 # d3rlpy trains floor(n_steps / n_steps_per_epoch) complete epochs. Reject
 # invalid/non-divisible overrides so a requested FQE update budget is never
 # silently shortened (e.g. 2500 with 1000 would otherwise run only 2000 steps).
@@ -2920,6 +2935,104 @@ def compute_replay_coverage_rank_metrics(
     return metrics
 
 
+
+def compute_objective_mismatch_metrics(
+    online_undiscounted,
+    online_discounted,
+    fqe_mean_q,
+    iteration,
+    gamma,
+):
+    """Compare raw FQE ranking against both online return definitions."""
+    online_undiscounted = np.asarray(online_undiscounted, dtype=np.float64)
+    online_discounted = np.asarray(online_discounted, dtype=np.float64)
+    fqe_mean_q = np.asarray(fqe_mean_q, dtype=np.float64)
+
+    if not (
+        len(online_undiscounted)
+        == len(online_discounted)
+        == len(fqe_mean_q)
+    ):
+        raise RuntimeError(
+            "Objective-mismatch length mismatch: "
+            f"undiscounted={len(online_undiscounted)}, "
+            f"discounted={len(online_discounted)}, FQE={len(fqe_mean_q)}."
+        )
+    if len(fqe_mean_q) == 0:
+        raise RuntimeError("Objective-mismatch study received zero candidates.")
+
+    def correlations(x, y):
+        df = pd.DataFrame({"x": x, "y": y})
+        return (
+            float(df.corr(method="pearson").loc["x", "y"]),
+            float(df.corr(method="spearman").loc["x", "y"]),
+            float(df.corr(method="kendall").loc["x", "y"]),
+        )
+
+    undisc_corr = correlations(fqe_mean_q, online_undiscounted)
+    disc_corr = correlations(fqe_mean_q, online_discounted)
+    online_corr = correlations(online_undiscounted, online_discounted)
+
+    n_candidates = len(fqe_mean_q)
+    fqe_idx = int(np.argmax(fqe_mean_q))
+    undisc_oracle_idx = int(np.argmax(online_undiscounted))
+    disc_oracle_idx = int(np.argmax(online_discounted))
+    undisc_order = np.argsort(online_undiscounted)[::-1]
+    disc_order = np.argsort(online_discounted)[::-1]
+
+    undisc_oracle_return = float(online_undiscounted[undisc_oracle_idx])
+    disc_oracle_return = float(online_discounted[disc_oracle_idx])
+    fqe_selected_undisc_return = float(online_undiscounted[fqe_idx])
+    fqe_selected_disc_return = float(online_discounted[fqe_idx])
+
+    metrics = {
+        "iteration": int(iteration),
+        "gamma": float(gamma),
+        "n_candidates": int(n_candidates),
+        "fqe_vs_undiscounted_pearson": undisc_corr[0],
+        "fqe_vs_undiscounted_spearman": undisc_corr[1],
+        "fqe_vs_undiscounted_kendall": undisc_corr[2],
+        "fqe_vs_discounted_pearson": disc_corr[0],
+        "fqe_vs_discounted_spearman": disc_corr[1],
+        "fqe_vs_discounted_kendall": disc_corr[2],
+        "discounted_minus_undiscounted_pearson": disc_corr[0] - undisc_corr[0],
+        "discounted_minus_undiscounted_spearman": disc_corr[1] - undisc_corr[1],
+        "discounted_minus_undiscounted_kendall": disc_corr[2] - undisc_corr[2],
+        "online_objectives_pearson": online_corr[0],
+        "online_objectives_spearman": online_corr[1],
+        "online_objectives_kendall": online_corr[2],
+        "fqe_idx": fqe_idx,
+        "undiscounted_oracle_idx": undisc_oracle_idx,
+        "discounted_oracle_idx": disc_oracle_idx,
+        "online_oracle_top1_same": bool(undisc_oracle_idx == disc_oracle_idx),
+        "fqe_top1_undiscounted": bool(fqe_idx == undisc_oracle_idx),
+        "fqe_top1_discounted": bool(fqe_idx == disc_oracle_idx),
+        "fqe_top3_undiscounted": bool(
+            fqe_idx in undisc_order[:min(3, n_candidates)]
+        ),
+        "fqe_top3_discounted": bool(
+            fqe_idx in disc_order[:min(3, n_candidates)]
+        ),
+        "fqe_top5_undiscounted": bool(
+            fqe_idx in undisc_order[:min(5, n_candidates)]
+        ),
+        "fqe_top5_discounted": bool(
+            fqe_idx in disc_order[:min(5, n_candidates)]
+        ),
+        "undiscounted_oracle_return": undisc_oracle_return,
+        "discounted_oracle_return": disc_oracle_return,
+        "fqe_selected_undiscounted_return": fqe_selected_undisc_return,
+        "fqe_selected_discounted_return": fqe_selected_disc_return,
+        "fqe_regret_undiscounted": float(
+            undisc_oracle_return - fqe_selected_undisc_return
+        ),
+        "fqe_regret_discounted": float(
+            disc_oracle_return - fqe_selected_disc_return
+        ),
+    }
+    return metrics
+
+
 def replay_buffer_signature(replay_buffer):
     """Small invariant used to detect accidental candidate-evaluation data leakage."""
     return (
@@ -3182,14 +3295,145 @@ def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_nu
 
     return agent_list, 0.0
 
+class DiscountedReturnTracker:
+    """Collect gamma-discounted episode returns from SB3 evaluate_policy.
+
+    Stable-Baselines3 calls the evaluation callback once per active VecEnv slot
+    after each environment step. We accumulate the discounted return there, so
+    the diagnostic uses the EXACT SAME transitions as the existing online
+    undiscounted evaluation. The callback never writes to evaluator locals.
+    """
+
+    def __init__(self, gamma):
+        self.gamma = float(gamma)
+        if not np.isfinite(self.gamma) or self.gamma < 0.0:
+            raise ValueError("Discount gamma must be finite and >= 0.")
+        self.running_returns = {}
+        self.discount_powers = {}
+        self.episode_returns = []
+        self.episode_lengths = []
+        self.running_lengths = {}
+
+    def __call__(self, local_vars, global_vars):
+        # Standard SB3 evaluate_policy exposes the current VecEnv slot as ``i``.
+        # Keep a defensive scalar-env fallback for compatible custom evaluators.
+        env_idx = int(local_vars.get("i", 0))
+
+        if "reward" in local_vars:
+            reward = float(np.asarray(local_vars["reward"]).reshape(-1)[0])
+        elif "rewards" in local_vars:
+            rewards = np.asarray(local_vars["rewards"]).reshape(-1)
+            reward = float(rewards[env_idx])
+        else:
+            raise RuntimeError(
+                "evaluate_policy callback did not expose reward(s); cannot "
+                "compute discounted online return on the same trajectory."
+            )
+
+        if "done" in local_vars:
+            done = bool(np.asarray(local_vars["done"]).reshape(-1)[0])
+        elif "dones" in local_vars:
+            dones = np.asarray(local_vars["dones"]).reshape(-1)
+            done = bool(dones[env_idx])
+        else:
+            raise RuntimeError(
+                "evaluate_policy callback did not expose done(s); cannot "
+                "detect discounted-return episode boundaries."
+            )
+
+        running_return = self.running_returns.get(env_idx, 0.0)
+        discount_power = self.discount_powers.get(env_idx, 1.0)
+        running_length = self.running_lengths.get(env_idx, 0)
+
+        running_return += discount_power * reward
+        discount_power *= self.gamma
+        running_length += 1
+
+        self.running_returns[env_idx] = running_return
+        self.discount_powers[env_idx] = discount_power
+        self.running_lengths[env_idx] = running_length
+
+        if done:
+            # Mirror evaluate_policy's episode-counting semantics. With a
+            # Monitor/VecMonitor wrapper, ``done`` can occur without a true
+            # counted episode (e.g. Atari life loss); SB3 counts the episode
+            # only when Monitor supplies info["episode"].
+            is_monitor_wrapped = bool(
+                local_vars.get("is_monitor_wrapped", False)
+            )
+            info = local_vars.get("info", {})
+            counted_episode = (
+                not is_monitor_wrapped
+                or (isinstance(info, dict) and "episode" in info)
+            )
+            if counted_episode:
+                self.episode_returns.append(float(running_return))
+                self.episode_lengths.append(int(running_length))
+
+            # VecEnv resets the underlying environment on done regardless of
+            # whether Monitor treats that boundary as a counted episode.
+            self.running_returns[env_idx] = 0.0
+            self.discount_powers[env_idx] = 1.0
+            self.running_lengths[env_idx] = 0
+
+
+def evaluate_policy_with_discounted_return(
+    model,
+    env,
+    n_eval_episodes,
+    gamma,
+    deterministic=True,
+    **evaluate_kwargs,
+):
+    """Run the original SB3 online evaluation and shadow its discounted return.
+
+    The undiscounted result is returned verbatim from ``evaluate_policy`` and is
+    still the quantity used by the original selector. The second return value is
+    only an analysis metric computed by a read-only callback over those same
+    environment steps.
+    """
+    if "callback" in evaluate_kwargs:
+        raise ValueError(
+            "evaluate_policy_with_discounted_return owns the callback so the "
+            "discounted diagnostic cannot be mixed with another callback."
+        )
+
+    tracker = DiscountedReturnTracker(gamma=gamma)
+    result = evaluate_policy(
+        model,
+        env,
+        n_eval_episodes=n_eval_episodes,
+        deterministic=deterministic,
+        callback=tracker,
+        **evaluate_kwargs,
+    )
+
+    if len(tracker.episode_returns) != int(n_eval_episodes):
+        raise RuntimeError(
+            "Discounted-return callback observed "
+            f"{len(tracker.episode_returns)} completed episodes, expected "
+            f"{int(n_eval_episodes)}. The local Stable-Baselines3 evaluator "
+            "callback semantics may differ from the expected API."
+        )
+
+    discounted_mean = float(np.mean(tracker.episode_returns))
+    return result, discounted_mean, np.asarray(
+        tracker.episode_returns, dtype=np.float64
+    )
+
+
 # Rollout policy to get average reward
-def rollout_policy(policy, env, n_eval=3, deterministic=True):
+# gamma=None preserves the original return type and behavior.
+def rollout_policy(policy, env, n_eval=3, deterministic=True, gamma=None):
     episode_rewards = []
+    discounted_episode_rewards = []
 
     for _ in range(n_eval):
         obs, _ = env.reset()
         done = False
         total_reward = 0.0
+        discounted_reward = 0.0
+        discount_power = 1.0
 
         while not done:
             # SB3 uses: policy.predict(obs, deterministic)
@@ -3199,15 +3443,27 @@ def rollout_policy(policy, env, n_eval=3, deterministic=True):
             done = terminated or truncated
 
             total_reward += reward
+            if gamma is not None:
+                discounted_reward += discount_power * reward
+                discount_power *= float(gamma)
 
         episode_rewards.append(total_reward)
+        if gamma is not None:
+            discounted_episode_rewards.append(discounted_reward)
 
-    # SB3 returns the mean reward
-    return sum(episode_rewards) / len(episode_rewards)
+    # Preserve the original return value when no discounted diagnostic is asked for.
+    mean_reward = sum(episode_rewards) / len(episode_rewards)
+    if gamma is None:
+        return mean_reward
+
+    mean_discounted_reward = (
+        sum(discounted_episode_rewards) / len(discounted_episode_rewards)
+    )
+    return mean_reward, mean_discounted_reward
 
 # Evaluation function for a single candidate agent
 def evaluate_candidate(args):
-    idx, agent_state_dict, env_name, seed, n_eval = args
+    idx, agent_state_dict, env_name, seed, n_eval, gamma = args
 
     dummy_env = gym.make(env_name)
     dummy_env.reset(seed=seed)
@@ -3223,22 +3479,53 @@ def evaluate_candidate(args):
     policy.load_state_dict(agent_state_dict)
 
     try:
-        avg_return = rollout_policy(policy, dummy_env, n_eval=n_eval, deterministic=True)
+        rollout_result = rollout_policy(
+            policy,
+            dummy_env,
+            n_eval=n_eval,
+            deterministic=True,
+            gamma=gamma,
+        )
     finally:
         close_env_safely(dummy_env)
 
+    if gamma is None:
+        avg_return = rollout_result
+        avg_discounted_return = None
+    else:
+        avg_return, avg_discounted_return = rollout_result
+
     # Evaluate policy
     print(f"avg return on {n_eval} trajectories of agent{idx}: {avg_return}")
-    return idx, avg_return
+    if avg_discounted_return is not None:
+        print(
+            f"avg gamma-discounted return on {n_eval} trajectories of "
+            f"agent{idx}: {avg_discounted_return}"
+        )
+    return idx, avg_return, avg_discounted_return
 
 # Parallel Evaluation of multiple agents
-def parallel_evaluate(agents, env_name, seed, n_eval_episodes=3):
+def parallel_evaluate(
+    agents,
+    env_name,
+    seed,
+    n_eval_episodes=3,
+    gamma=None,
+    return_discounted=False,
+):
     print("Evaluating", len(agents), "agents in parallel...")
 
     # Prepare job arguments
     cpu_agents = agents_to_cpu(agents)
     job_args = [
-        (j, cpu_agents[j], env_name, seed, n_eval_episodes)
+        (
+            j,
+            cpu_agents[j],
+            env_name,
+            seed,
+            n_eval_episodes,
+            gamma if return_discounted else None,
+        )
         for j in range(len(cpu_agents))
     ]
 
@@ -3251,10 +3538,13 @@ def parallel_evaluate(agents, env_name, seed, n_eval_episodes=3):
     # Sort by index
     results = sorted(results, key=lambda x: x[0])
 
-    # Only return returns
     returns = [r[1] for r in results]
+    if not return_discounted:
+        # Backward-compatible path.
+        return returns
 
-    return returns
+    discounted_returns = [r[2] for r in results]
+    return returns, discounted_returns
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
@@ -3600,6 +3890,11 @@ if __name__ == "__main__":
     rankStudyMetrics = []
     rankStudyCandidateRows = []
 
+    # Objective-alignment study. These diagnostics never participate in policy
+    # selection; the original undiscounted online return remains canonical.
+    objectiveMismatchMetrics = []
+    objectiveMismatchCandidateRows = []
+
     # Analysis-only replay coverage ablation. Never used for PPO/ESA selection.
     replayCoverageMetrics = []
     replayCoverageCandidateRows = []
@@ -3681,6 +3976,9 @@ if __name__ == "__main__":
                 saved_agents = False
 
             cum_rews = []
+            # Diagnostic-only gamma-discounted returns from the SAME online
+            # trajectories used to populate cum_rews. Never used for selection.
+            cum_discounted_rews = []
             cum_success = []
             best_agent_index = []
             advantage_rew = []
@@ -3887,13 +4185,50 @@ if __name__ == "__main__":
                         dummy_env.reset(seed=args.seed)
 
                     if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-                        mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
+                        if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
+                            eval_result, discounted_return, _ = (
+                                evaluate_policy_with_discounted_return(
+                                    model,
+                                    dummy_env,
+                                    n_eval_episodes=3,
+                                    gamma=model.gamma,
+                                    deterministic=True,
+                                    return_success_rate=True,
+                                )
+                            )
+                            mean_rew, std_rew, success = eval_result
+                            cum_discounted_rews.append(discounted_return)
+                        else:
+                            mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
                         print(f'avg 3 return on policy: {mean_rew}, Success rate: {success:.2f}')
+                        if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
+                            print(
+                                f'avg gamma-discounted return on same 3 trajectories: '
+                                f'{cum_discounted_rews[-1]}'
+                            )
                         cum_rews.append(mean_rew)
                         cum_success.append(success)
                     else:
-                        returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                        if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
+                            eval_result, discounted_return, _ = (
+                                evaluate_policy_with_discounted_return(
+                                    model,
+                                    dummy_env,
+                                    n_eval_episodes=3,
+                                    gamma=model.gamma,
+                                    deterministic=True,
+                                )
+                            )
+                            returns_trains = eval_result[0]
+                            cum_discounted_rews.append(discounted_return)
+                        else:
+                            returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
                         print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
+                        if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
+                            print(
+                                f'avg gamma-discounted return on same 3 trajectories '
+                                f'of agent{j}: {cum_discounted_rews[-1]}'
+                            )
                         cum_rews.append(returns_trains)
 
                     close_env_safely(dummy_env)
@@ -3920,16 +4255,27 @@ if __name__ == "__main__":
 
             # Parallel evaluation
             else:
-                cum_rews = parallel_evaluate(
-                    agents=agents,
-                    env_name=env_name,
-                    n_eval_episodes=3,
-                    seed=args.seed
-                )
+                if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
+                    cum_rews, cum_discounted_rews = parallel_evaluate(
+                        agents=agents,
+                        env_name=env_name,
+                        n_eval_episodes=3,
+                        seed=args.seed,
+                        gamma=model.gamma,
+                        return_discounted=True,
+                    )
+                else:
+                    cum_rews = parallel_evaluate(
+                        agents=agents,
+                        env_name=env_name,
+                        n_eval_episodes=3,
+                        seed=args.seed
+                    )
 
                 # parallel_evaluate performs only the online ground-truth
-                # rollouts. Rank-study FQE is intentionally deferred to the
-                # common batched block below.
+                # rollouts. The discounted diagnostic, when enabled, is
+                # accumulated inside those SAME rollouts. Rank-study FQE is
+                # intentionally deferred to the common batched block below.
 
             # Rank-correlation OPE is analysis-only and is evaluated after all
             # online candidate returns are already fixed. This preserves the
@@ -4089,7 +4435,14 @@ if __name__ == "__main__":
                 # print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
                 print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
             
-            print(f'avg cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
+            print(f'avg cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')
+            if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
+                print(
+                    f'avg gamma-discounted cum rews: '
+                    f'{np.mean(cum_discounted_rews)}, '
+                    f'std: {np.std(cum_discounted_rews)}, '
+                    f'gamma: {float(model.gamma):.8f}'
+                )
             if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
                 print(f'avg success rate: {np.mean(cum_success):.2f}, std: {np.std(cum_success):.2f}')
 
@@ -4284,10 +4637,119 @@ if __name__ == "__main__":
                     f'logs/{DIR}/online_all_results_{i}_{i + SEARCH_INTERV}.npy',
                     online_scores
                 )
+                if OBJECTIVE_MISMATCH_STUDY:
+                    np.save(
+                        f'logs/{DIR}/online_discounted_all_results_'
+                        f'{i}_{i + SEARCH_INTERV}.npy',
+                        np.asarray(cum_discounted_rews, dtype=np.float64),
+                    )
                 np.save(
                     f'logs/{DIR}/rank_metrics_{i}_{i + SEARCH_INTERV}.npy',
                     rank_metrics
                 )
+
+                # --------------------------------------------------------------
+                # OBJECTIVE MISMATCH STUDY (analysis only)
+                # --------------------------------------------------------------
+                # Compare RAW ordinary FQE (ensemble mean Q) to two online
+                # targets measured on the exact same evaluation trajectories:
+                #   1) original undiscounted episodic return (canonical selector)
+                #   2) gamma-discounted episodic return (aligned with FQE gamma)
+                # The support-penalized score is intentionally NOT used here.
+                if OBJECTIVE_MISMATCH_STUDY:
+                    discounted_online_scores = np.asarray(
+                        cum_discounted_rews, dtype=np.float64
+                    )
+                    if len(discounted_online_scores) != len(online_scores):
+                        raise RuntimeError(
+                            "Objective-mismatch diagnostic did not collect one "
+                            "discounted return per candidate: "
+                            f"discounted={len(discounted_online_scores)}, "
+                            f"undiscounted={len(online_scores)}."
+                        )
+
+                    objective_metrics = compute_objective_mismatch_metrics(
+                        online_undiscounted=online_scores,
+                        online_discounted=discounted_online_scores,
+                        fqe_mean_q=fqe_mean_q_scores,
+                        iteration=i,
+                        gamma=model.gamma,
+                    )
+                    objectiveMismatchMetrics.append(objective_metrics)
+
+                    for candidate_idx in range(len(online_scores)):
+                        objectiveMismatchCandidateRows.append({
+                            "iteration": int(i),
+                            "candidate": int(candidate_idx),
+                            "gamma": float(model.gamma),
+                            "fqe_mean_q": float(
+                                fqe_mean_q_scores[candidate_idx]
+                            ),
+                            "online_undiscounted": float(
+                                online_scores[candidate_idx]
+                            ),
+                            "online_discounted": float(
+                                discounted_online_scores[candidate_idx]
+                            ),
+                        })
+
+                    print("---------------------------------")
+                    print("FQE OBJECTIVE-ALIGNMENT DIAGNOSTIC")
+                    print(f"gamma: {float(model.gamma):.8f}")
+                    print(
+                        "FQE vs UNDISCOUNTED online: "
+                        f"Pearson="
+                        f"{objective_metrics['fqe_vs_undiscounted_pearson']:+.4f}, "
+                        f"Spearman="
+                        f"{objective_metrics['fqe_vs_undiscounted_spearman']:+.4f}, "
+                        f"Kendall="
+                        f"{objective_metrics['fqe_vs_undiscounted_kendall']:+.4f}"
+                    )
+                    print(
+                        "FQE vs DISCOUNTED online:   "
+                        f"Pearson="
+                        f"{objective_metrics['fqe_vs_discounted_pearson']:+.4f}, "
+                        f"Spearman="
+                        f"{objective_metrics['fqe_vs_discounted_spearman']:+.4f}, "
+                        f"Kendall="
+                        f"{objective_metrics['fqe_vs_discounted_kendall']:+.4f}"
+                    )
+                    print(
+                        "Discounted - undiscounted correlation delta: "
+                        f"Pearson="
+                        f"{objective_metrics['discounted_minus_undiscounted_pearson']:+.4f}, "
+                        f"Spearman="
+                        f"{objective_metrics['discounted_minus_undiscounted_spearman']:+.4f}, "
+                        f"Kendall="
+                        f"{objective_metrics['discounted_minus_undiscounted_kendall']:+.4f}"
+                    )
+                    print(
+                        "Online objective agreement: "
+                        f"Spearman="
+                        f"{objective_metrics['online_objectives_spearman']:+.4f}, "
+                        f"same top-1="
+                        f"{objective_metrics['online_oracle_top1_same']}"
+                    )
+                    print(
+                        "Raw FQE top-1 agreement: "
+                        f"undiscounted="
+                        f"{objective_metrics['fqe_top1_undiscounted']}, "
+                        f"discounted="
+                        f"{objective_metrics['fqe_top1_discounted']}"
+                    )
+                    print(
+                        "Raw FQE selection regret: "
+                        f"undiscounted="
+                        f"{objective_metrics['fqe_regret_undiscounted']:.4f}, "
+                        f"discounted="
+                        f"{objective_metrics['fqe_regret_discounted']:.4f}"
+                    )
+
+                    np.save(
+                        f'logs/{DIR}/objective_mismatch_metrics_'
+                        f'{i}_{i + SEARCH_INTERV}.npy',
+                        objective_metrics,
+                    )
 
             # Replay-coverage ablation metrics are analysis-only. The canonical
             # rankStudyMetrics above remain the FULL-buffer scores exactly as before.
@@ -4612,6 +5074,89 @@ if __name__ == "__main__":
             print(
                 f"Mean selection regret: "
                 f"{rank_summary_df['selection_regret'].mean():.4f}"
+            )
+
+        if OBJECTIVE_MISMATCH_STUDY and objectiveMismatchMetrics:
+            objective_summary_df = pd.DataFrame(objectiveMismatchMetrics)
+            objective_candidates_df = pd.DataFrame(
+                objectiveMismatchCandidateRows
+            )
+
+            objective_summary_df.to_csv(
+                f'logs/{DIR}/objective_mismatch_summary.csv',
+                index=False,
+            )
+            objective_candidates_df.to_csv(
+                f'logs/{DIR}/objective_mismatch_candidates.csv',
+                index=False,
+            )
+            np.save(
+                f'logs/{DIR}/objective_mismatch_summary.npy',
+                np.array(objectiveMismatchMetrics, dtype=object),
+                allow_pickle=True,
+            )
+
+            print("---------------------------------")
+            print("FQE OBJECTIVE-ALIGNMENT STUDY SUMMARY")
+            print(
+                f"gamma: {objective_summary_df['gamma'].iloc[0]:.8f}"
+            )
+            print(
+                "FQE vs UNDISCOUNTED online -- "
+                f"Pearson: "
+                f"{objective_summary_df['fqe_vs_undiscounted_pearson'].mean():+.4f} "
+                f"+/- "
+                f"{objective_summary_df['fqe_vs_undiscounted_pearson'].std(ddof=0):.4f} | "
+                f"Spearman: "
+                f"{objective_summary_df['fqe_vs_undiscounted_spearman'].mean():+.4f} "
+                f"+/- "
+                f"{objective_summary_df['fqe_vs_undiscounted_spearman'].std(ddof=0):.4f} | "
+                f"Kendall: "
+                f"{objective_summary_df['fqe_vs_undiscounted_kendall'].mean():+.4f} "
+                f"+/- "
+                f"{objective_summary_df['fqe_vs_undiscounted_kendall'].std(ddof=0):.4f}"
+            )
+            print(
+                "FQE vs DISCOUNTED online   -- "
+                f"Pearson: "
+                f"{objective_summary_df['fqe_vs_discounted_pearson'].mean():+.4f} "
+                f"+/- "
+                f"{objective_summary_df['fqe_vs_discounted_pearson'].std(ddof=0):.4f} | "
+                f"Spearman: "
+                f"{objective_summary_df['fqe_vs_discounted_spearman'].mean():+.4f} "
+                f"+/- "
+                f"{objective_summary_df['fqe_vs_discounted_spearman'].std(ddof=0):.4f} | "
+                f"Kendall: "
+                f"{objective_summary_df['fqe_vs_discounted_kendall'].mean():+.4f} "
+                f"+/- "
+                f"{objective_summary_df['fqe_vs_discounted_kendall'].std(ddof=0):.4f}"
+            )
+            print(
+                "Mean DISCOUNTING gain -- "
+                f"Pearson: "
+                f"{objective_summary_df['discounted_minus_undiscounted_pearson'].mean():+.4f} | "
+                f"Spearman: "
+                f"{objective_summary_df['discounted_minus_undiscounted_spearman'].mean():+.4f} | "
+                f"Kendall: "
+                f"{objective_summary_df['discounted_minus_undiscounted_kendall'].mean():+.4f}"
+            )
+            print(
+                "Raw FQE top-1 agreement -- "
+                f"undiscounted: "
+                f"{objective_summary_df['fqe_top1_undiscounted'].mean():.3f} | "
+                f"discounted: "
+                f"{objective_summary_df['fqe_top1_discounted'].mean():.3f}"
+            )
+            print(
+                "Online discounted/undiscounted oracle top-1 same rate: "
+                f"{objective_summary_df['online_oracle_top1_same'].mean():.3f}"
+            )
+            print(
+                "Mean raw-FQE selection regret -- "
+                f"undiscounted: "
+                f"{objective_summary_df['fqe_regret_undiscounted'].mean():.4f} | "
+                f"discounted: "
+                f"{objective_summary_df['fqe_regret_discounted'].mean():.4f}"
             )
 
         if REPLAY_COVERAGE_ABLATION and replayCoverageMetrics:
