@@ -60,6 +60,69 @@ FQE_N_STEPS = int(os.environ.get("FQE_N_STEPS", "10000"))
 FQE_N_STEPS_PER_EPOCH = int(os.environ.get("FQE_N_STEPS_PER_EPOCH", "1000"))
 FQE_BATCH_SIZE = int(os.environ.get("FQE_BATCH_SIZE", "100"))
 
+# Native FQE target-network refresh interval. The historical/default value is
+# 100, so the canonical rank-study estimator remains unchanged unless this is
+# overridden explicitly. The convergence study below varies this value only in
+# analysis-only shadow FQE fits.
+NATIVE_FQE_TARGET_UPDATE_INTERVAL = int(
+    os.environ.get("NATIVE_FQE_TARGET_UPDATE_INTERVAL", "100")
+)
+if NATIVE_FQE_TARGET_UPDATE_INTERVAL <= 0:
+    raise ValueError("NATIVE_FQE_TARGET_UPDATE_INTERVAL must be > 0.")
+
+# Final long-horizon FQE convergence / stability diagnostic.
+#
+# Each token is: <gradient_steps>:<target_update_interval>. By default this
+# performs the final clean comparison:
+#   1) 10k/100  -- unchanged canonical baseline
+#   2) 50k/100  -- more training with the original/stable target schedule
+#   3) 50k/10   -- same 50k training budget with the faster target schedule
+#
+# This isolates the two questions left by the previous convergence study:
+#   * Does simply training the original target=100 estimator longer help?
+#   * At the same 50k budget, is target=100 more stable/useful than target=10?
+#
+# All three fits use the SAME full frozen replay data, candidate policies,
+# online returns, critic initialization RNG state, and sampled replay-index
+# prefix. They are analysis-only and never participate in ESA/PPO policy
+# selection.
+FQE_CONVERGENCE_STUDY = os.environ.get("FQE_CONVERGENCE_STUDY", "1") == "1"
+_FQE_CONVERGENCE_SPEC = os.environ.get(
+    "FQE_CONVERGENCE_CONFIGS",
+    "10000:100,50000:100,50000:10",
+)
+FQE_CONVERGENCE_CONFIGS = []
+for _conv_token in _FQE_CONVERGENCE_SPEC.split(","):
+    _conv_token = _conv_token.strip()
+    if not _conv_token:
+        continue
+    try:
+        _conv_steps_text, _conv_target_text = _conv_token.split(":", 1)
+        _conv_steps = int(_conv_steps_text)
+        _conv_target = int(_conv_target_text)
+    except Exception as exc:
+        raise ValueError(
+            "FQE_CONVERGENCE_CONFIGS entries must have the form "
+            "<gradient_steps>:<target_update_interval>, e.g. 10000:10."
+        ) from exc
+    if _conv_steps <= 0 or _conv_target <= 0:
+        raise ValueError(
+            "FQE convergence gradient steps and target-update intervals must "
+            "both be positive."
+        )
+    FQE_CONVERGENCE_CONFIGS.append((_conv_steps, _conv_target))
+
+if FQE_CONVERGENCE_STUDY:
+    if not FQE_CONVERGENCE_CONFIGS:
+        raise ValueError(
+            "FQE_CONVERGENCE_CONFIGS must contain at least one configuration."
+        )
+    if len(FQE_CONVERGENCE_CONFIGS) != len(set(FQE_CONVERGENCE_CONFIGS)):
+        raise ValueError(
+            "FQE_CONVERGENCE_CONFIGS contains duplicate configurations: "
+            f"{FQE_CONVERGENCE_CONFIGS}"
+        )
+
 # Presentation/file-I/O switches only; these do not alter the FQE Bellman objective.
 FQE_SHOW_PROGRESS = os.environ.get("FQE_SHOW_PROGRESS", "0") == "1"
 FQE_USE_FILE_LOGGER = os.environ.get("FQE_USE_FILE_LOGGER", "0") == "1"
@@ -68,7 +131,10 @@ FQE_USE_FILE_LOGGER = os.environ.get("FQE_USE_FILE_LOGGER", "0") == "1"
 # The online oracle, PPO trajectory, candidate generation, and canonical rank-study
 # result remain based on the FULL corrected replay buffer. Additional recent windows
 # are evaluated only to diagnose replay coverage / distribution shift.
-REPLAY_COVERAGE_ABLATION = os.environ.get("REPLAY_COVERAGE_ABLATION", "1") == "1"
+# Disabled by default for the focused convergence study so each outer iteration
+# trains only on the full replay buffer. Set REPLAY_COVERAGE_ABLATION=1 to
+# restore the previous multi-window diagnostic; this does not affect PPO/ESA.
+REPLAY_COVERAGE_ABLATION = os.environ.get("REPLAY_COVERAGE_ABLATION", "0") == "1"
 _REPLAY_COVERAGE_SPEC = os.environ.get(
     "REPLAY_COVERAGE_WINDOWS",
     "35000,50000,65000,80000,full",
@@ -141,6 +207,12 @@ if FQE_BACKEND not in {"native_batched", "d3rlpy"}:
     raise ValueError(
         "FQE_BACKEND must be either 'native_batched' or 'd3rlpy'. "
         f"Got {FQE_BACKEND!r}."
+    )
+
+if FQE_CONVERGENCE_STUDY and FQE_BACKEND != "native_batched":
+    raise ValueError(
+        "FQE_CONVERGENCE_STUDY is implemented for the native_batched backend "
+        "only. Set FQE_BACKEND=native_batched or FQE_CONVERGENCE_STUDY=0."
     )
 
 # d3rlpy's default continuous vector critic is:
@@ -2205,6 +2277,9 @@ def build_support_penalized_scores(
         "fqe_gamma",
         "finite_horizon_steps",
         "time_conditioned",
+        "fqe_n_steps",
+        "fqe_target_update_interval",
+        "fqe_target_updates",
     ):
         if hasattr(base_fqe_scores, attr_name):
             setattr(result, attr_name, getattr(base_fqe_scores, attr_name))
@@ -2212,7 +2287,14 @@ def build_support_penalized_scores(
     return result
 
 
-def native_batched_fqe(model, agents, dataset, native_data=None):
+def native_batched_fqe(
+    model,
+    agents,
+    dataset,
+    native_data=None,
+    n_steps=None,
+    target_update_interval=None,
+):
     """Fit native batched FQE for all candidates on the GPU.
 
     Everything outside the evaluator remains unchanged. Each candidate policy is
@@ -2237,6 +2319,20 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
     which is well-defined for B=1. Setting FQE_ENSEMBLE_SIZE=1 and
     FQE_LCB_BETA=0 restores the previous single-critic score.
     """
+    if n_steps is None:
+        n_steps = FQE_N_STEPS
+    n_steps = int(n_steps)
+    if n_steps <= 0:
+        raise ValueError("native_batched_fqe n_steps must be > 0.")
+
+    if target_update_interval is None:
+        target_update_interval = NATIVE_FQE_TARGET_UPDATE_INTERVAL
+    target_update_interval = int(target_update_interval)
+    if target_update_interval <= 0:
+        raise ValueError(
+            "native_batched_fqe target_update_interval must be > 0."
+        )
+
     if len(agents) == 0:
         return LCBFQEScores(
             [], [], [], np.empty((0, FQE_ENSEMBLE_SIZE)),
@@ -2255,9 +2351,9 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
     )
     print(
         "Native FQE base-estimator runtime config: "
-        f"steps={FQE_N_STEPS}, "
+        f"steps={n_steps}, "
         f"batch_size={FQE_BATCH_SIZE}, "
-        f"target_update_interval=100, "
+        f"target_update_interval={target_update_interval}, "
         f"hidden_units={NATIVE_FQE_HIDDEN_UNITS}, "
         f"ensemble_size={FQE_ENSEMBLE_SIZE}, "
         f"beta={FQE_LCB_BETA}"
@@ -2453,7 +2549,7 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
     sampled_indices_np = np.random.randint(
         0,
         transition_count,
-        size=(FQE_N_STEPS, FQE_BATCH_SIZE),
+        size=(n_steps, FQE_BATCH_SIZE),
     )
     sampled_indices = torch.as_tensor(
         sampled_indices_np, dtype=torch.long, device=device
@@ -2470,15 +2566,13 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
         fqe_gamma, dtype=torch.float32, device=device
     )
     discounts = torch.pow(gamma_tensor, intervals)
-    target_update_interval = 100
-
     if device.type == "cuda":
         torch.cuda.synchronize(device)
     preparation_seconds = time.time() - preparation_start
     fit_start = time.time()
 
     last_losses = None
-    for grad_step in range(FQE_N_STEPS):
+    for grad_step in range(n_steps):
         batch_index = sampled_indices[grad_step]
 
         obs_batch = critic_observations[batch_index]
@@ -2585,6 +2679,11 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
         ensemble_size=n_ensemble,
     )
     scores.fqe_gamma = float(fqe_gamma)
+    scores.fqe_n_steps = int(n_steps)
+    scores.fqe_target_update_interval = int(target_update_interval)
+    scores.fqe_target_updates = int(
+        ((n_steps - 1) // target_update_interval) + 1
+    )
     scores.time_conditioned = bool(time_conditioned_finite_horizon)
     scores.finite_horizon_steps = (
         int(finite_horizon_steps)
@@ -2596,6 +2695,16 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
         if time_conditioned_finite_horizon
         else "original_discounted_continuing"
     )
+    if last_losses is not None:
+        scores.final_loss_per_candidate = (
+            last_losses.mean(dim=1).detach().cpu().numpy().astype(np.float64)
+        )
+        scores.mean_final_loss = float(np.mean(scores.final_loss_per_candidate))
+    else:
+        scores.final_loss_per_candidate = np.full(
+            n_candidates, np.nan, dtype=np.float64
+        )
+        scores.mean_final_loss = float("nan")
 
     print(
         f"Native batched FQE preparation time: {preparation_seconds:.3f} s"
@@ -2647,7 +2756,12 @@ def native_batched_fqe(model, agents, dataset, native_data=None):
     return scores
 
 def native_batched_fqe_preserving_rng(
-    model, agents, dataset, native_data=None
+    model,
+    agents,
+    dataset,
+    native_data=None,
+    n_steps=None,
+    target_update_interval=None,
 ):
     """Run native batched FQE without changing the online oracle RNG trajectory."""
     python_rng_state = random.getstate()
@@ -2665,6 +2779,8 @@ def native_batched_fqe_preserving_rng(
             agents,
             dataset,
             native_data=native_data,
+            n_steps=n_steps,
+            target_update_interval=target_update_interval,
         )
     finally:
         random.setstate(python_rng_state)
@@ -3587,6 +3703,93 @@ def compute_objective_mismatch_metrics(
     return metrics
 
 
+
+def compute_fqe_convergence_metrics(
+    online_scores,
+    raw_fqe_scores,
+    iteration,
+    n_steps,
+    target_update_interval,
+    score_metadata=None,
+):
+    """Metrics for the full-replay raw-FQE convergence diagnostic.
+
+    This intentionally ignores the behavioral support penalty. The purpose is
+    to isolate whether the time-conditioned H-step Bellman objective has had
+    enough optimization / target-network propagation to learn a useful value
+    scale and ranking.
+    """
+    online_scores = np.asarray(online_scores, dtype=np.float64)
+    raw_fqe_scores = np.asarray(raw_fqe_scores, dtype=np.float64)
+
+    if online_scores.shape != raw_fqe_scores.shape:
+        raise RuntimeError(
+            "FQE convergence length mismatch: "
+            f"online={online_scores.shape}, FQE={raw_fqe_scores.shape}."
+        )
+    if len(online_scores) == 0:
+        raise RuntimeError("FQE convergence study received zero candidates.")
+    if not np.all(np.isfinite(raw_fqe_scores)):
+        raise RuntimeError("FQE convergence study received non-finite Q values.")
+
+    rank_df = pd.DataFrame({"fqe": raw_fqe_scores, "online": online_scores})
+    pearson = float(rank_df.corr(method="pearson").loc["fqe", "online"])
+    spearman = float(rank_df.corr(method="spearman").loc["fqe", "online"])
+    kendall = float(rank_df.corr(method="kendall").loc["fqe", "online"])
+
+    n_candidates = len(online_scores)
+    oracle_idx = int(np.argmax(online_scores))
+    fqe_idx = int(np.argmax(raw_fqe_scores))
+    online_order = np.argsort(online_scores)[::-1]
+    oracle_return = float(online_scores[oracle_idx])
+    selected_return = float(online_scores[fqe_idx])
+
+    n_steps = int(n_steps)
+    target_update_interval = int(target_update_interval)
+    n_target_updates = int(((n_steps - 1) // target_update_interval) + 1)
+
+    metadata = score_metadata if score_metadata is not None else object()
+    finite_horizon_steps = getattr(metadata, "finite_horizon_steps", None)
+
+    return {
+        "iteration": int(iteration),
+        "config": f"{n_steps}_steps_target{target_update_interval}",
+        "fqe_n_steps": n_steps,
+        "fqe_target_update_interval": target_update_interval,
+        "fqe_target_updates": n_target_updates,
+        "fqe_objective": str(getattr(metadata, "fqe_objective", "unknown")),
+        "fqe_gamma": float(getattr(metadata, "fqe_gamma", np.nan)),
+        "finite_horizon_steps": (
+            -1 if finite_horizon_steps is None else int(finite_horizon_steps)
+        ),
+        "time_conditioned": bool(getattr(metadata, "time_conditioned", False)),
+        "pearson": pearson,
+        "spearman": spearman,
+        "kendall": kendall,
+        "oracle_idx": oracle_idx,
+        "fqe_idx": fqe_idx,
+        "top1_agreement": bool(fqe_idx == oracle_idx),
+        "top3_hit": bool(fqe_idx in online_order[:min(3, n_candidates)]),
+        "top5_hit": bool(fqe_idx in online_order[:min(5, n_candidates)]),
+        "oracle_return": oracle_return,
+        "fqe_selected_true_return": selected_return,
+        "selection_regret": float(oracle_return - selected_return),
+        # Q-scale / compression diagnostics. Absolute calibration is not a
+        # ranking requirement, but these values show whether the long-horizon
+        # Bellman target is still severely under-propagated.
+        "mean_fqe_q": float(np.mean(raw_fqe_scores)),
+        "std_fqe_q": float(np.std(raw_fqe_scores, ddof=0)),
+        "min_fqe_q": float(np.min(raw_fqe_scores)),
+        "max_fqe_q": float(np.max(raw_fqe_scores)),
+        "fqe_q_range": float(np.ptp(raw_fqe_scores)),
+        "mean_online_return": float(np.mean(online_scores)),
+        "std_online_return": float(np.std(online_scores, ddof=0)),
+        "online_return_range": float(np.ptp(online_scores)),
+        "mean_final_fqe_loss": float(
+            getattr(metadata, "mean_final_loss", np.nan)
+        ),
+    }
+
 def replay_buffer_signature(replay_buffer):
     """Small invariant used to detect accidental candidate-evaluation data leakage."""
     return (
@@ -3639,10 +3842,10 @@ def d3rl_evaluation(model, exp_name, dataset=None):
             algo=ppo_wrapper,
             config=d3rlpy.ope.FQEConfig(
                 learning_rate=3e-4,
+                # Preserve the original d3rlpy fallback semantics exactly.
+                # The convergence-study target-update knob is native-FQE only.
                 target_update_interval=100,
                 gamma=ppo_wrapper.ppo.gamma,
-                # 100 is the current/default value in the working experiment.
-                # Keeping it explicit makes speed ablations reproducible.
                 batch_size=FQE_BATCH_SIZE,
             ),
             device=str(device),
@@ -4467,6 +4670,11 @@ if __name__ == "__main__":
     replayCoverageMetrics = []
     replayCoverageCandidateRows = []
 
+    # Full-replay long-horizon FQE convergence diagnostic. Raw FQE only; never
+    # used for PPO/ESA selection.
+    fqeConvergenceMetrics = []
+    fqeConvergenceCandidateRows = []
+
     avg_checkpoint = False
     use_ptb = False
 
@@ -4910,6 +5118,7 @@ if __name__ == "__main__":
 
                 if FQE_BACKEND == "native_batched":
                     replay_coverage_scores = None
+                    canonical_base_fqe_scores = None
 
                     if REPLAY_COVERAGE_ABLATION:
                         replay_coverage_scores = OrderedDict()
@@ -4936,6 +5145,8 @@ if __name__ == "__main__":
                                 fqe_dataset,
                                 native_data=coverage_data,
                             )
+                            if coverage_label == "full":
+                                canonical_base_fqe_scores = base_fqe_scores
                             replay_coverage_scores[coverage_label] = (
                                 build_support_penalized_scores(
                                     base_fqe_scores=base_fqe_scores,
@@ -4958,6 +5169,7 @@ if __name__ == "__main__":
                             fqe_dataset,
                             native_data=native_fqe_data,
                         )
+                        canonical_base_fqe_scores = base_fqe_scores
                         advantage_rew = build_support_penalized_scores(
                             base_fqe_scores=base_fqe_scores,
                             action_divergence=support_action_divergence,
@@ -4966,6 +5178,113 @@ if __name__ == "__main__":
                                 support_reference_transitions
                             ),
                         )
+                    # ----------------------------------------------------------
+                    # LONG-HORIZON FQE CONVERGENCE / PROPAGATION STUDY
+                    # ----------------------------------------------------------
+                    # Compare raw FQE on the SAME full replay data while varying
+                    # only optimization steps and target-network refresh interval.
+                    # The canonical 10k/100 fit is reused when present, avoiding a
+                    # redundant fit. Support penalties are deliberately excluded.
+                    if FQE_CONVERGENCE_STUDY:
+                        if canonical_base_fqe_scores is None:
+                            raise RuntimeError(
+                                "FQE convergence study could not locate the canonical "
+                                "full-replay base FQE fit."
+                            )
+
+                        print("---------------------------------")
+                        print("FQE LONG-HORIZON CONVERGENCE STUDY")
+                        print(
+                            "Configs: "
+                            + ", ".join(
+                                f"{steps} steps / target {target_interval}"
+                                for steps, target_interval in FQE_CONVERGENCE_CONFIGS
+                            )
+                        )
+
+                        for conv_steps, conv_target_interval in FQE_CONVERGENCE_CONFIGS:
+                            if (
+                                int(conv_steps) == int(FQE_N_STEPS)
+                                and int(conv_target_interval)
+                                == int(NATIVE_FQE_TARGET_UPDATE_INTERVAL)
+                            ):
+                                conv_scores = canonical_base_fqe_scores
+                                reused_canonical = True
+                            else:
+                                conv_scores = native_batched_fqe_preserving_rng(
+                                    model,
+                                    agents,
+                                    fqe_dataset,
+                                    native_data=native_fqe_data,
+                                    n_steps=int(conv_steps),
+                                    target_update_interval=int(conv_target_interval),
+                                )
+                                reused_canonical = False
+
+                            conv_raw_q = np.asarray(
+                                getattr(conv_scores, "mean_q", conv_scores),
+                                dtype=np.float64,
+                            )
+                            conv_metrics = compute_fqe_convergence_metrics(
+                                online_scores=np.asarray(cum_rews, dtype=np.float64),
+                                raw_fqe_scores=conv_raw_q,
+                                iteration=i,
+                                n_steps=int(conv_steps),
+                                target_update_interval=int(conv_target_interval),
+                                score_metadata=conv_scores,
+                            )
+                            conv_metrics["reused_canonical_fit"] = bool(
+                                reused_canonical
+                            )
+                            fqeConvergenceMetrics.append(conv_metrics)
+
+                            for candidate_idx in range(len(conv_raw_q)):
+                                fqeConvergenceCandidateRows.append({
+                                    "iteration": int(i),
+                                    "candidate": int(candidate_idx),
+                                    "config": conv_metrics["config"],
+                                    "fqe_n_steps": int(conv_steps),
+                                    "fqe_target_update_interval": int(
+                                        conv_target_interval
+                                    ),
+                                    "fqe_target_updates": int(
+                                        conv_metrics["fqe_target_updates"]
+                                    ),
+                                    "fqe_objective": conv_metrics["fqe_objective"],
+                                    "fqe_gamma": conv_metrics["fqe_gamma"],
+                                    "finite_horizon_steps": conv_metrics[
+                                        "finite_horizon_steps"
+                                    ],
+                                    "time_conditioned": conv_metrics[
+                                        "time_conditioned"
+                                    ],
+                                    "fqe_mean_q": float(conv_raw_q[candidate_idx]),
+                                    "final_fqe_loss": float(
+                                        np.asarray(
+                                            getattr(
+                                                conv_scores,
+                                                "final_loss_per_candidate",
+                                                np.full(len(conv_raw_q), np.nan),
+                                            ),
+                                            dtype=np.float64,
+                                        )[candidate_idx]
+                                    ),
+                                    "online": float(cum_rews[candidate_idx]),
+                                })
+
+                            print(
+                                f"{conv_metrics['config']} | "
+                                f"target_updates={conv_metrics['fqe_target_updates']} | "
+                                f"meanQ={conv_metrics['mean_fqe_q']:.3f} | "
+                                f"Qrange={conv_metrics['fqe_q_range']:.3f} | "
+                                f"final_loss={conv_metrics['mean_final_fqe_loss']:.4f} | "
+                                f"Pearson={conv_metrics['pearson']:+.4f} | "
+                                f"Spearman={conv_metrics['spearman']:+.4f} | "
+                                f"Kendall={conv_metrics['kendall']:+.4f} | "
+                                f"top1={int(conv_metrics['top1_agreement'])} | "
+                                f"regret={conv_metrics['selection_regret']:.4f}"
+                            )
+
                 else:
                     replay_coverage_scores = None
                     base_fqe_scores = (
@@ -5163,6 +5482,23 @@ if __name__ == "__main__":
                     'time_conditioned': bool(
                         getattr(advantage_rew, 'time_conditioned', False)
                     ),
+                    'fqe_n_steps': int(
+                        getattr(advantage_rew, 'fqe_n_steps', FQE_N_STEPS)
+                    ),
+                    'fqe_target_update_interval': int(
+                        getattr(
+                            advantage_rew,
+                            'fqe_target_update_interval',
+                            NATIVE_FQE_TARGET_UPDATE_INTERVAL,
+                        )
+                    ),
+                    'fqe_target_updates': int(
+                        getattr(
+                            advantage_rew,
+                            'fqe_target_updates',
+                            ((FQE_N_STEPS - 1) // NATIVE_FQE_TARGET_UPDATE_INTERVAL) + 1,
+                        )
+                    ),
                     'pearson': pearson,
                     'spearman': spearman,
                     'kendall': kendall,
@@ -5218,6 +5554,23 @@ if __name__ == "__main__":
                                 advantage_rew,
                                 'time_conditioned',
                                 False,
+                            )
+                        ),
+                        'fqe_n_steps': int(
+                            getattr(advantage_rew, 'fqe_n_steps', FQE_N_STEPS)
+                        ),
+                        'fqe_target_update_interval': int(
+                            getattr(
+                                advantage_rew,
+                                'fqe_target_update_interval',
+                                NATIVE_FQE_TARGET_UPDATE_INTERVAL,
+                            )
+                        ),
+                        'fqe_target_updates': int(
+                            getattr(
+                                advantage_rew,
+                                'fqe_target_updates',
+                                ((FQE_N_STEPS - 1) // NATIVE_FQE_TARGET_UPDATE_INTERVAL) + 1,
                             )
                         ),
                         'online': float(online_score),
@@ -5916,6 +6269,60 @@ if __name__ == "__main__":
                 f"discounted: "
                 f"{objective_summary_df['fqe_regret_discounted'].mean():.4f}"
             )
+
+        if FQE_CONVERGENCE_STUDY and fqeConvergenceMetrics:
+            convergence_summary_df = pd.DataFrame(fqeConvergenceMetrics)
+            convergence_candidates_df = pd.DataFrame(
+                fqeConvergenceCandidateRows
+            )
+
+            convergence_summary_df.to_csv(
+                f'logs/{DIR}/fqe_convergence_summary.csv',
+                index=False,
+            )
+            convergence_candidates_df.to_csv(
+                f'logs/{DIR}/fqe_convergence_candidates.csv',
+                index=False,
+            )
+            np.save(
+                f'logs/{DIR}/fqe_convergence_summary.npy',
+                np.array(fqeConvergenceMetrics, dtype=object),
+                allow_pickle=True,
+            )
+
+            print("---------------------------------")
+            print("FQE LONG-HORIZON CONVERGENCE STUDY SUMMARY")
+            for conv_steps, conv_target_interval in FQE_CONVERGENCE_CONFIGS:
+                config_label = (
+                    f"{int(conv_steps)}_steps_target"
+                    f"{int(conv_target_interval)}"
+                )
+                group = convergence_summary_df[
+                    convergence_summary_df["config"] == config_label
+                ]
+                if group.empty:
+                    continue
+
+                print(
+                    f"steps={int(conv_steps):>6}, "
+                    f"target={int(conv_target_interval):>3}, "
+                    f"target_updates={int(group['fqe_target_updates'].iloc[0]):>5} | "
+                    f"meanQ={group['mean_fqe_q'].mean():.3f} "
+                    f"+/- {group['mean_fqe_q'].std(ddof=0):.3f} | "
+                    f"Qrange={group['fqe_q_range'].mean():.3f} | "
+                    f"final_loss={group['mean_final_fqe_loss'].mean():.4f} | "
+                    f"online_mean={group['mean_online_return'].mean():.3f} | "
+                    f"Pearson={group['pearson'].mean():+.4f} "
+                    f"+/- {group['pearson'].std(ddof=0):.4f} | "
+                    f"Spearman={group['spearman'].mean():+.4f} "
+                    f"+/- {group['spearman'].std(ddof=0):.4f} | "
+                    f"Kendall={group['kendall'].mean():+.4f} "
+                    f"+/- {group['kendall'].std(ddof=0):.4f} | "
+                    f"top1={group['top1_agreement'].mean():.3f} | "
+                    f"top3={group['top3_hit'].mean():.3f} | "
+                    f"top5={group['top5_hit'].mean():.3f} | "
+                    f"regret={group['selection_regret'].mean():.4f}"
+                )
 
         if REPLAY_COVERAGE_ABLATION and replayCoverageMetrics:
             coverage_summary_df = pd.DataFrame(replayCoverageMetrics)
