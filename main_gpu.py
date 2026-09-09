@@ -70,9 +70,12 @@ NATIVE_FQE_TARGET_UPDATE_INTERVAL = int(
 if NATIVE_FQE_TARGET_UPDATE_INTERVAL <= 0:
     raise ValueError("NATIVE_FQE_TARGET_UPDATE_INTERVAL must be > 0.")
 
-# Final long-horizon FQE convergence / stability diagnostic.
+# Final long-horizon FQE convergence / stability diagnostic (completed study).
 #
-# Each token is: <gradient_steps>:<target_update_interval>. By default this
+# This diagnostic is now OPT-IN by default because the convergence question has
+# already been tested and the new state-conditional support study below reuses a
+# 50k/100 FQE estimator. Set FQE_CONVERGENCE_STUDY=1 to reproduce it.
+# Each token is: <gradient_steps>:<target_update_interval>. When enabled it
 # performs the final clean comparison:
 #   1) 10k/100  -- unchanged canonical baseline
 #   2) 50k/100  -- more training with the original/stable target schedule
@@ -86,7 +89,7 @@ if NATIVE_FQE_TARGET_UPDATE_INTERVAL <= 0:
 # online returns, critic initialization RNG state, and sampled replay-index
 # prefix. They are analysis-only and never participate in ESA/PPO policy
 # selection.
-FQE_CONVERGENCE_STUDY = os.environ.get("FQE_CONVERGENCE_STUDY", "1") == "1"
+FQE_CONVERGENCE_STUDY = os.environ.get("FQE_CONVERGENCE_STUDY", "0") == "1"
 _FQE_CONVERGENCE_SPEC = os.environ.get(
     "FQE_CONVERGENCE_CONFIGS",
     "10000:100,50000:100,50000:10",
@@ -131,8 +134,9 @@ FQE_USE_FILE_LOGGER = os.environ.get("FQE_USE_FILE_LOGGER", "0") == "1"
 # The online oracle, PPO trajectory, candidate generation, and canonical rank-study
 # result remain based on the FULL corrected replay buffer. Additional recent windows
 # are evaluated only to diagnose replay coverage / distribution shift.
-# Disabled by default for the focused convergence study so each outer iteration
-# trains only on the full replay buffer. Set REPLAY_COVERAGE_ABLATION=1 to
+# Disabled by default for the focused state-conditional support study so each
+# outer iteration trains only on the full replay buffer. Set
+# REPLAY_COVERAGE_ABLATION=1 to
 # restore the previous multi-window diagnostic; this does not affect PPO/ESA.
 REPLAY_COVERAGE_ABLATION = os.environ.get("REPLAY_COVERAGE_ABLATION", "0") == "1"
 _REPLAY_COVERAGE_SPEC = os.environ.get(
@@ -257,6 +261,82 @@ if (
 ):
     raise ValueError(
         "FQE_SUPPORT_PENALTY_LAMBDA must be finite and >= 0."
+    )
+
+# State-conditional kNN support estimator / filter (analysis only).
+#
+# The previous paired-action penalty compared pi(s_i) only with the single
+# replay action a_i. This study estimates LOCAL action support instead:
+#
+#   1) standardize replay observations feature-wise;
+#   2) for a deterministic subset of replay states s_i, find the k nearest
+#      OTHER replay states N_k(s_i);
+#   3) compute the candidate's local action distance
+#        d_i(pi) = min_{j in N_k(s_i)} ||pi(s_i) - a_j||_2^2;
+#   4) calibrate a behavior-support threshold from the leave-one-out replay
+#      quantity
+#        d_i(behavior) = min_{j in N_k(s_i)} ||a_i - a_j||_2^2;
+#   5) call a candidate state "unsupported" when d_i(pi) exceeds the chosen
+#      percentile of the behavior distances.
+#
+# The FILTER keeps candidates whose unsupported-state fraction is below
+# KNN_SUPPORT_MAX_UNSUPPORTED_FRACTION. To keep the diagnostic well-defined if
+# that absolute threshold is too strict, the most-supported candidates are
+# added until KNN_SUPPORT_MIN_KEEP is reached. This fallback uses support only,
+# never online return or FQE.
+#
+# The filtered candidates are then ranked by a 50k/target100 raw FQE estimator,
+# chosen from the final convergence study as the primary stable FQE baseline.
+# This entire block is diagnostic only: PPO/ESA still selects from cum_rews.
+KNN_SUPPORT_STUDY = os.environ.get("KNN_SUPPORT_STUDY", "1") == "1"
+KNN_SUPPORT_K = int(os.environ.get("KNN_SUPPORT_K", "20"))
+KNN_SUPPORT_QUERY_COUNT = int(
+    os.environ.get("KNN_SUPPORT_QUERY_COUNT", "4096")
+)
+KNN_SUPPORT_QUERY_CHUNK_SIZE = int(
+    os.environ.get("KNN_SUPPORT_QUERY_CHUNK_SIZE", "128")
+)
+KNN_SUPPORT_BEHAVIOR_PERCENTILE = float(
+    os.environ.get("KNN_SUPPORT_BEHAVIOR_PERCENTILE", "95.0")
+)
+KNN_SUPPORT_MAX_UNSUPPORTED_FRACTION = float(
+    os.environ.get("KNN_SUPPORT_MAX_UNSUPPORTED_FRACTION", "0.20")
+)
+KNN_SUPPORT_MIN_KEEP = int(os.environ.get("KNN_SUPPORT_MIN_KEEP", "5"))
+KNN_SUPPORT_FQE_N_STEPS = int(
+    os.environ.get("KNN_SUPPORT_FQE_N_STEPS", "50000")
+)
+KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL = int(
+    os.environ.get("KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL", "100")
+)
+
+if KNN_SUPPORT_K <= 0:
+    raise ValueError("KNN_SUPPORT_K must be > 0.")
+if KNN_SUPPORT_QUERY_COUNT <= 0:
+    raise ValueError("KNN_SUPPORT_QUERY_COUNT must be > 0.")
+if KNN_SUPPORT_QUERY_CHUNK_SIZE <= 0:
+    raise ValueError("KNN_SUPPORT_QUERY_CHUNK_SIZE must be > 0.")
+if not (0.0 < KNN_SUPPORT_BEHAVIOR_PERCENTILE < 100.0):
+    raise ValueError(
+        "KNN_SUPPORT_BEHAVIOR_PERCENTILE must lie strictly between 0 and 100."
+    )
+if not (
+    np.isfinite(KNN_SUPPORT_MAX_UNSUPPORTED_FRACTION)
+    and 0.0 <= KNN_SUPPORT_MAX_UNSUPPORTED_FRACTION <= 1.0
+):
+    raise ValueError(
+        "KNN_SUPPORT_MAX_UNSUPPORTED_FRACTION must be finite and in [0, 1]."
+    )
+if KNN_SUPPORT_MIN_KEEP <= 0:
+    raise ValueError("KNN_SUPPORT_MIN_KEEP must be > 0.")
+if KNN_SUPPORT_FQE_N_STEPS <= 0:
+    raise ValueError("KNN_SUPPORT_FQE_N_STEPS must be > 0.")
+if KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL <= 0:
+    raise ValueError("KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL must be > 0.")
+if KNN_SUPPORT_STUDY and FQE_BACKEND != "native_batched":
+    raise ValueError(
+        "KNN_SUPPORT_STUDY is implemented for the native_batched backend only. "
+        "Set FQE_BACKEND=native_batched or KNN_SUPPORT_STUDY=0."
     )
 
 # Objective-alignment diagnostic (analysis only).
@@ -2221,6 +2301,271 @@ def compute_behavior_action_divergence_preserving_rng(
             torch.cuda.set_rng_state_all(cuda_rng_states)
 
 
+
+def _deterministic_even_subsample_indices(n_items, max_items):
+    """Even deterministic subsample with no experiment-RNG consumption."""
+    n_items = int(n_items)
+    max_items = int(max_items)
+    if n_items <= 0 or max_items <= 0:
+        raise ValueError("Subsample sizes must be positive.")
+    if max_items >= n_items:
+        return np.arange(n_items, dtype=np.int64)
+
+    # floor(j * n / m), j=0,...,m-1 is unique whenever m <= n and spans the
+    # full chronological replay view without consuming NumPy RNG state.
+    return (
+        (np.arange(max_items, dtype=np.int64) * n_items) // max_items
+    ).astype(np.int64, copy=False)
+
+
+def compute_state_conditional_knn_support(model, agents, support_data):
+    """Estimate candidate action support conditioned on nearby replay states.
+
+    Replay observations are standardized feature-wise before Euclidean kNN so
+    high-scale observation coordinates do not dominate the state metric. Query
+    states are an evenly spaced deterministic subset of the full frozen replay
+    view. The query transition itself is explicitly excluded from its neighbor
+    set, making the behavior calibration leave-one-out rather than collapsing
+    back to the old paired-action metric.
+
+    The returned candidate metric is the nearest local replay-action squared L2
+    distance at each query state. The behavior threshold is calibrated from the
+    same local neighborhoods using the replay action at the query state.
+
+    Analysis only: candidate policy weights are restored before returning.
+    """
+    if len(agents) == 0:
+        raise RuntimeError("kNN support study received zero candidate policies.")
+    if not isinstance(model.action_space, gym.spaces.Box):
+        raise NotImplementedError(
+            "State-conditional kNN support currently supports Box actions only."
+        )
+
+    observations_cpu = np.asarray(
+        support_data["observations"], dtype=np.float32
+    )
+    actions_cpu = np.asarray(support_data["actions"], dtype=np.float32)
+
+    if observations_cpu.ndim != 2 or actions_cpu.ndim != 2:
+        raise NotImplementedError(
+            "State-conditional kNN support currently expects flat vector "
+            "observations and actions."
+        )
+    if observations_cpu.shape[0] != actions_cpu.shape[0]:
+        raise RuntimeError(
+            "kNN support observation/action length mismatch: "
+            f"{observations_cpu.shape[0]} vs {actions_cpu.shape[0]}."
+        )
+    if not np.all(np.isfinite(observations_cpu)):
+        raise RuntimeError("kNN support replay observations contain non-finite values.")
+    if not np.all(np.isfinite(actions_cpu)):
+        raise RuntimeError("kNN support replay actions contain non-finite values.")
+
+    n_reference = int(observations_cpu.shape[0])
+    if n_reference <= KNN_SUPPORT_K:
+        raise RuntimeError(
+            "kNN support requires more replay transitions than KNN_SUPPORT_K: "
+            f"reference={n_reference}, k={KNN_SUPPORT_K}."
+        )
+
+    query_indices = _deterministic_even_subsample_indices(
+        n_reference,
+        min(KNN_SUPPORT_QUERY_COUNT, n_reference),
+    )
+    n_query = int(len(query_indices))
+
+    # State standardization is fitted only on the frozen replay reference.
+    state_mean = observations_cpu.mean(axis=0, dtype=np.float64).astype(np.float32)
+    state_std = observations_cpu.std(axis=0, dtype=np.float64).astype(np.float32)
+    state_std = np.where(state_std > 1e-6, state_std, 1.0).astype(np.float32)
+    standardized_obs_cpu = (
+        (observations_cpu - state_mean) / state_std
+    ).astype(np.float32, copy=False)
+
+    reference_states = torch.as_tensor(
+        standardized_obs_cpu, dtype=torch.float32, device=device
+    )
+    reference_actions = torch.as_tensor(
+        actions_cpu, dtype=torch.float32, device=device
+    )
+    query_index_tensor = torch.as_tensor(
+        query_indices, dtype=torch.long, device=device
+    )
+    query_states = reference_states[query_index_tensor]
+    query_behavior_actions = reference_actions[query_index_tensor]
+
+    # Exact GPU/CPU torch kNN in bounded query chunks. The self transition is
+    # assigned +inf before top-k, so every neighbor is a DIFFERENT replay row.
+    neighbor_index_chunks = []
+    neighbor_distance_chunks = []
+    with torch.no_grad():
+        for start in range(0, n_query, KNN_SUPPORT_QUERY_CHUNK_SIZE):
+            end = min(start + KNN_SUPPORT_QUERY_CHUNK_SIZE, n_query)
+            query_chunk = query_states[start:end]
+            query_ref_indices = query_index_tensor[start:end]
+
+            state_distances = torch.cdist(
+                query_chunk, reference_states, p=2
+            )
+            row_indices = torch.arange(
+                end - start, dtype=torch.long, device=device
+            )
+            state_distances[row_indices, query_ref_indices] = float("inf")
+
+            knn_distances, knn_indices = torch.topk(
+                state_distances,
+                k=KNN_SUPPORT_K,
+                dim=1,
+                largest=False,
+                sorted=True,
+            )
+            neighbor_index_chunks.append(knn_indices)
+            neighbor_distance_chunks.append(knn_distances)
+            del state_distances
+
+    neighbor_indices = torch.cat(neighbor_index_chunks, dim=0)
+    neighbor_state_distances = torch.cat(neighbor_distance_chunks, dim=0)
+    neighbor_actions = reference_actions[neighbor_indices]
+
+    with torch.no_grad():
+        behavior_local_sq_l2 = (
+            query_behavior_actions.unsqueeze(1) - neighbor_actions
+        ).pow(2).sum(dim=-1).min(dim=1).values
+
+    behavior_local_sq_l2_cpu = (
+        behavior_local_sq_l2.detach().cpu().numpy().astype(np.float64)
+    )
+    behavior_threshold = float(
+        np.quantile(
+            behavior_local_sq_l2_cpu,
+            KNN_SUPPORT_BEHAVIOR_PERCENTILE / 100.0,
+        )
+    )
+    if not np.isfinite(behavior_threshold):
+        raise RuntimeError("kNN support produced a non-finite behavior threshold.")
+
+    # Candidate actions are evaluated only on the support-query states, using
+    # the raw environment observation (never the standardized kNN feature).
+    query_raw_observations = torch.as_tensor(
+        observations_cpu[query_indices], dtype=torch.float32, device=device
+    )
+
+    original_policy_state = state_dict_to_cpu(model.policy.state_dict())
+    candidate_mean = []
+    candidate_median = []
+    candidate_p95 = []
+    candidate_max = []
+    candidate_unsupported_fraction = []
+    candidate_mean_excess = []
+
+    try:
+        for candidate_index, agent in enumerate(agents):
+            model.policy.load_state_dict(agent)
+            model.policy.to(device)
+            candidate_actions = _policy_actions_current_model(
+                model, query_raw_observations
+            )
+
+            if candidate_actions.shape[0] != n_query:
+                raise RuntimeError(
+                    "kNN support candidate-action query count mismatch at "
+                    f"candidate {candidate_index}."
+                )
+
+            with torch.no_grad():
+                local_sq_l2 = (
+                    candidate_actions.unsqueeze(1) - neighbor_actions
+                ).pow(2).sum(dim=-1).min(dim=1).values
+
+            local_cpu = local_sq_l2.detach().cpu().numpy().astype(np.float64)
+            if not np.all(np.isfinite(local_cpu)):
+                raise RuntimeError(
+                    "kNN support produced non-finite local action distances "
+                    f"for candidate {candidate_index}."
+                )
+
+            candidate_mean.append(float(np.mean(local_cpu)))
+            candidate_median.append(float(np.median(local_cpu)))
+            candidate_p95.append(float(np.quantile(local_cpu, 0.95)))
+            candidate_max.append(float(np.max(local_cpu)))
+            candidate_unsupported_fraction.append(
+                float(np.mean(local_cpu > behavior_threshold))
+            )
+            candidate_mean_excess.append(
+                float(np.mean(np.maximum(local_cpu - behavior_threshold, 0.0)))
+            )
+    finally:
+        model.policy.load_state_dict(original_policy_state)
+        model.policy.to(device)
+
+    candidate_mean = np.asarray(candidate_mean, dtype=np.float64)
+    candidate_median = np.asarray(candidate_median, dtype=np.float64)
+    candidate_p95 = np.asarray(candidate_p95, dtype=np.float64)
+    candidate_max = np.asarray(candidate_max, dtype=np.float64)
+    candidate_unsupported_fraction = np.asarray(
+        candidate_unsupported_fraction, dtype=np.float64
+    )
+    candidate_mean_excess = np.asarray(candidate_mean_excess, dtype=np.float64)
+
+    behavior_mean = float(np.mean(behavior_local_sq_l2_cpu))
+    behavior_median = float(np.median(behavior_local_sq_l2_cpu))
+    behavior_p95 = float(np.quantile(behavior_local_sq_l2_cpu, 0.95))
+    eps = 1e-12
+
+    return {
+        "reference_count": n_reference,
+        "query_count": n_query,
+        "query_indices": query_indices,
+        "k": int(KNN_SUPPORT_K),
+        "behavior_percentile": float(KNN_SUPPORT_BEHAVIOR_PERCENTILE),
+        "behavior_threshold_sq_l2": behavior_threshold,
+        "behavior_mean_sq_l2": behavior_mean,
+        "behavior_median_sq_l2": behavior_median,
+        "behavior_p95_sq_l2": behavior_p95,
+        "mean_neighbor_state_distance": float(
+            neighbor_state_distances.mean().detach().cpu().item()
+        ),
+        "p95_neighbor_state_distance": float(
+            np.quantile(
+                neighbor_state_distances.detach().cpu().numpy().reshape(-1),
+                0.95,
+            )
+        ),
+        "candidate_mean_sq_l2": candidate_mean,
+        "candidate_median_sq_l2": candidate_median,
+        "candidate_p95_sq_l2": candidate_p95,
+        "candidate_max_sq_l2": candidate_max,
+        "candidate_unsupported_fraction": candidate_unsupported_fraction,
+        "candidate_mean_excess_sq_l2": candidate_mean_excess,
+        "candidate_mean_ratio_to_behavior": candidate_mean / (behavior_mean + eps),
+    }
+
+
+def compute_state_conditional_knn_support_preserving_rng(
+    model, agents, support_data
+):
+    """Run the kNN support estimator without perturbing experiment RNG state."""
+    python_rng_state = random.getstate()
+    numpy_rng_state = np.random.get_state()
+    torch_rng_state = torch.random.get_rng_state()
+    cuda_rng_states = (
+        torch.cuda.get_rng_state_all()
+        if torch.cuda.is_available()
+        else None
+    )
+
+    try:
+        return compute_state_conditional_knn_support(
+            model, agents, support_data
+        )
+    finally:
+        random.setstate(python_rng_state)
+        np.random.set_state(numpy_rng_state)
+        torch.random.set_rng_state(torch_rng_state)
+        if cuda_rng_states is not None:
+            torch.cuda.set_rng_state_all(cuda_rng_states)
+
+
 def build_support_penalized_scores(
     base_fqe_scores,
     action_divergence,
@@ -3790,6 +4135,235 @@ def compute_fqe_convergence_metrics(
         ),
     }
 
+
+def compute_knn_support_filter_metrics(
+    online_scores,
+    raw_fqe_scores,
+    support_diagnostics,
+    iteration,
+    score_metadata=None,
+):
+    """Evaluate the state-conditional support FILTER without changing selection.
+
+    The absolute threshold is defined only by frozen replay behavior. If fewer
+    than KNN_SUPPORT_MIN_KEEP candidates pass, the pool is augmented with the
+    most-supported candidates, ordered by unsupported fraction then mean local
+    action distance. Online returns are NEVER used to define the filter.
+    Within the resulting pool, raw 50k/100 FQE determines the ranking.
+    """
+    online_scores = np.asarray(online_scores, dtype=np.float64)
+    raw_fqe_scores = np.asarray(raw_fqe_scores, dtype=np.float64)
+    unsupported = np.asarray(
+        support_diagnostics["candidate_unsupported_fraction"], dtype=np.float64
+    )
+    mean_distance = np.asarray(
+        support_diagnostics["candidate_mean_sq_l2"], dtype=np.float64
+    )
+
+    n_candidates = len(online_scores)
+    if not (
+        raw_fqe_scores.shape == online_scores.shape
+        == unsupported.shape == mean_distance.shape
+    ):
+        raise RuntimeError(
+            "kNN support filter length mismatch: "
+            f"online={online_scores.shape}, FQE={raw_fqe_scores.shape}, "
+            f"unsupported={unsupported.shape}, distance={mean_distance.shape}."
+        )
+    if n_candidates == 0:
+        raise RuntimeError("kNN support filter received zero candidates.")
+    if not (
+        np.all(np.isfinite(raw_fqe_scores))
+        and np.all(np.isfinite(unsupported))
+        and np.all(np.isfinite(mean_distance))
+    ):
+        raise RuntimeError("kNN support filter received non-finite diagnostics.")
+
+    oracle_idx = int(np.argmax(online_scores))
+    oracle_return = float(online_scores[oracle_idx])
+    oracle_best_mask = online_scores == oracle_return
+    online_order = np.argsort(online_scores)[::-1]
+    raw_fqe_order = np.argsort(raw_fqe_scores)[::-1]
+    raw_fqe_idx = int(raw_fqe_order[0])
+
+    threshold_pass = (
+        unsupported <= KNN_SUPPORT_MAX_UNSUPPORTED_FRACTION
+    )
+    effective_keep = threshold_pass.copy()
+
+    # Pure support ordering; FQE and online returns do not participate in the
+    # minimum-pool fallback.
+    support_order = np.lexsort((mean_distance, unsupported))
+    min_keep = min(int(KNN_SUPPORT_MIN_KEEP), n_candidates)
+    if int(np.sum(effective_keep)) < min_keep:
+        for candidate_idx in support_order:
+            effective_keep[int(candidate_idx)] = True
+            if int(np.sum(effective_keep)) >= min_keep:
+                break
+
+    threshold_keep_count = int(np.sum(threshold_pass))
+    effective_keep_count = int(np.sum(effective_keep))
+    fallback_fill_count = int(effective_keep_count - threshold_keep_count)
+    kept_indices = np.flatnonzero(effective_keep)
+    if len(kept_indices) == 0:
+        raise RuntimeError("kNN support filter produced an empty candidate pool.")
+
+    kept_order = kept_indices[
+        np.argsort(raw_fqe_scores[kept_indices])[::-1]
+    ]
+    filtered_idx = int(kept_order[0])
+    most_supported_idx = int(support_order[0])
+
+    def _corr(x, y, method):
+        frame = pd.DataFrame({"x": x, "y": y})
+        return float(frame.corr(method=method).loc["x", "y"])
+
+    metadata = score_metadata if score_metadata is not None else object()
+    finite_horizon_steps = getattr(metadata, "finite_horizon_steps", None)
+
+    metrics = {
+        "iteration": int(iteration),
+        "fqe_config": (
+            f"{int(getattr(metadata, 'fqe_n_steps', KNN_SUPPORT_FQE_N_STEPS))}"
+            f"_steps_target"
+            f"{int(getattr(metadata, 'fqe_target_update_interval', KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL))}"
+        ),
+        "fqe_n_steps": int(
+            getattr(metadata, "fqe_n_steps", KNN_SUPPORT_FQE_N_STEPS)
+        ),
+        "fqe_target_update_interval": int(
+            getattr(
+                metadata,
+                "fqe_target_update_interval",
+                KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL,
+            )
+        ),
+        "fqe_objective": str(getattr(metadata, "fqe_objective", "unknown")),
+        "fqe_gamma": float(getattr(metadata, "fqe_gamma", np.nan)),
+        "finite_horizon_steps": (
+            -1 if finite_horizon_steps is None else int(finite_horizon_steps)
+        ),
+        "time_conditioned": bool(getattr(metadata, "time_conditioned", False)),
+        "reference_transitions": int(support_diagnostics["reference_count"]),
+        "query_states": int(support_diagnostics["query_count"]),
+        "knn_k": int(support_diagnostics["k"]),
+        "behavior_percentile": float(
+            support_diagnostics["behavior_percentile"]
+        ),
+        "behavior_threshold_sq_l2": float(
+            support_diagnostics["behavior_threshold_sq_l2"]
+        ),
+        "behavior_mean_sq_l2": float(
+            support_diagnostics["behavior_mean_sq_l2"]
+        ),
+        "behavior_p95_sq_l2": float(
+            support_diagnostics["behavior_p95_sq_l2"]
+        ),
+        "mean_neighbor_state_distance": float(
+            support_diagnostics["mean_neighbor_state_distance"]
+        ),
+        "p95_neighbor_state_distance": float(
+            support_diagnostics["p95_neighbor_state_distance"]
+        ),
+        "max_unsupported_fraction": float(
+            KNN_SUPPORT_MAX_UNSUPPORTED_FRACTION
+        ),
+        "min_keep": int(min_keep),
+        "threshold_keep_count": threshold_keep_count,
+        "effective_keep_count": effective_keep_count,
+        "fallback_fill_count": fallback_fill_count,
+        "oracle_idx": oracle_idx,
+        "oracle_return": oracle_return,
+        "oracle_passes_absolute_filter": bool(threshold_pass[oracle_idx]),
+        "oracle_survives_effective_filter": bool(effective_keep[oracle_idx]),
+        "raw_fqe_idx": raw_fqe_idx,
+        "raw_fqe_selected_true_return": float(online_scores[raw_fqe_idx]),
+        "raw_fqe_selection_regret": float(
+            oracle_return - online_scores[raw_fqe_idx]
+        ),
+        "raw_fqe_top1": bool(raw_fqe_idx == oracle_idx),
+        "raw_fqe_top3": bool(raw_fqe_idx in online_order[:min(3, n_candidates)]),
+        "raw_fqe_top5": bool(raw_fqe_idx in online_order[:min(5, n_candidates)]),
+        "filtered_fqe_idx": filtered_idx,
+        "filtered_fqe_selected_true_return": float(online_scores[filtered_idx]),
+        "filtered_fqe_selection_regret": float(
+            oracle_return - online_scores[filtered_idx]
+        ),
+        "filtered_fqe_top1": bool(filtered_idx == oracle_idx),
+        "filtered_fqe_top3": bool(
+            filtered_idx in online_order[:min(3, n_candidates)]
+        ),
+        "filtered_fqe_top5": bool(
+            filtered_idx in online_order[:min(5, n_candidates)]
+        ),
+        "most_supported_idx": most_supported_idx,
+        "most_supported_true_return": float(online_scores[most_supported_idx]),
+        "most_supported_regret": float(
+            oracle_return - online_scores[most_supported_idx]
+        ),
+        "raw_fqe_pearson": _corr(raw_fqe_scores, online_scores, "pearson"),
+        "raw_fqe_spearman": _corr(raw_fqe_scores, online_scores, "spearman"),
+        "raw_fqe_kendall": _corr(raw_fqe_scores, online_scores, "kendall"),
+        # Higher support score means better support, hence the minus sign.
+        "support_score_spearman": _corr(-unsupported, online_scores, "spearman"),
+        "support_distance_spearman": _corr(-mean_distance, online_scores, "spearman"),
+        "fqe_vs_support_spearman": _corr(
+            raw_fqe_scores, -unsupported, "spearman"
+        ),
+        "mean_candidate_unsupported_fraction": float(np.mean(unsupported)),
+        "min_candidate_unsupported_fraction": float(np.min(unsupported)),
+        "max_candidate_unsupported_fraction": float(np.max(unsupported)),
+        "mean_candidate_local_sq_l2": float(np.mean(mean_distance)),
+    }
+
+    for requested_k in HYBRID_TOPK_VALUES:
+        raw_k = min(int(requested_k), n_candidates)
+        raw_shortlist = raw_fqe_order[:raw_k]
+        raw_best_pos = int(np.argmax(online_scores[raw_shortlist]))
+        raw_hybrid_idx = int(raw_shortlist[raw_best_pos])
+        raw_hybrid_return = float(online_scores[raw_hybrid_idx])
+
+        filtered_k = min(int(requested_k), len(kept_order))
+        filtered_shortlist = kept_order[:filtered_k]
+        filtered_best_pos = int(np.argmax(online_scores[filtered_shortlist]))
+        filtered_hybrid_idx = int(filtered_shortlist[filtered_best_pos])
+        filtered_hybrid_return = float(online_scores[filtered_hybrid_idx])
+
+        metrics[f"raw_oracle_recall_at_{requested_k}"] = bool(
+            np.any(oracle_best_mask[raw_shortlist])
+        )
+        metrics[f"raw_hybrid_regret_at_{requested_k}"] = float(
+            oracle_return - raw_hybrid_return
+        )
+        metrics[f"filtered_effective_k_at_{requested_k}"] = int(filtered_k)
+        metrics[f"filtered_oracle_recall_at_{requested_k}"] = bool(
+            np.any(oracle_best_mask[filtered_shortlist])
+        )
+        metrics[f"filtered_hybrid_regret_at_{requested_k}"] = float(
+            oracle_return - filtered_hybrid_return
+        )
+        metrics[f"filtered_online_reduction_at_{requested_k}"] = float(
+            1.0 - (filtered_k / n_candidates)
+        )
+
+    # Per-candidate rank annotations for CSV analysis / post-hoc threshold sweeps.
+    support_rank = np.empty(n_candidates, dtype=np.int64)
+    support_rank[support_order] = np.arange(1, n_candidates + 1, dtype=np.int64)
+    raw_fqe_rank = np.empty(n_candidates, dtype=np.int64)
+    raw_fqe_rank[raw_fqe_order] = np.arange(1, n_candidates + 1, dtype=np.int64)
+    filtered_rank = np.full(n_candidates, -1, dtype=np.int64)
+    filtered_rank[kept_order] = np.arange(1, len(kept_order) + 1, dtype=np.int64)
+
+    candidate_details = {
+        "threshold_pass": threshold_pass.astype(bool),
+        "effective_keep": effective_keep.astype(bool),
+        "support_rank": support_rank,
+        "raw_fqe_rank": raw_fqe_rank,
+        "filtered_fqe_rank": filtered_rank,
+    }
+    return metrics, candidate_details
+
+
 def replay_buffer_signature(replay_buffer):
     """Small invariant used to detect accidental candidate-evaluation data leakage."""
     return (
@@ -4675,6 +5249,11 @@ if __name__ == "__main__":
     fqeConvergenceMetrics = []
     fqeConvergenceCandidateRows = []
 
+    # State-conditional kNN support/filter study. Analysis only; never used for
+    # PPO/ESA selection.
+    knnSupportMetrics = []
+    knnSupportCandidateRows = []
+
     avg_checkpoint = False
     use_ptb = False
 
@@ -5099,6 +5678,48 @@ if __name__ == "__main__":
                     )
                 )
 
+                knn_support_diagnostics = None
+                if KNN_SUPPORT_STUDY:
+                    knn_support_diagnostics = (
+                        compute_state_conditional_knn_support_preserving_rng(
+                            model, agents, support_reference_data
+                        )
+                    )
+                    print("---------------------------------")
+                    print("STATE-CONDITIONAL kNN SUPPORT ESTIMATOR")
+                    print(
+                        f"reference={knn_support_diagnostics['reference_count']}, "
+                        f"queries={knn_support_diagnostics['query_count']}, "
+                        f"k={knn_support_diagnostics['k']}, "
+                        f"behavior_percentile="
+                        f"{knn_support_diagnostics['behavior_percentile']:.1f}"
+                    )
+                    print(
+                        "Behavior leave-one-out local-action threshold "
+                        "(squared L2): "
+                        f"{knn_support_diagnostics['behavior_threshold_sq_l2']:.6f}"
+                    )
+                    print(
+                        "Candidate unsupported-state fractions: "
+                        + np.array2string(
+                            knn_support_diagnostics[
+                                'candidate_unsupported_fraction'
+                            ],
+                            precision=4,
+                            separator=", ",
+                            max_line_width=160,
+                        )
+                    )
+                    print(
+                        "Candidate mean nearest-local-action squared L2: "
+                        + np.array2string(
+                            knn_support_diagnostics['candidate_mean_sq_l2'],
+                            precision=6,
+                            separator=", ",
+                            max_line_width=160,
+                        )
+                    )
+
                 print("---------------------------------")
                 print("BEHAVIOR SUPPORT PENALTY")
                 print(
@@ -5178,6 +5799,8 @@ if __name__ == "__main__":
                                 support_reference_transitions
                             ),
                         )
+                    knn_support_fqe_scores = None
+
                     # ----------------------------------------------------------
                     # LONG-HORIZON FQE CONVERGENCE / PROPAGATION STUDY
                     # ----------------------------------------------------------
@@ -5220,6 +5843,13 @@ if __name__ == "__main__":
                                     target_update_interval=int(conv_target_interval),
                                 )
                                 reused_canonical = False
+
+                            if (
+                                int(conv_steps) == int(KNN_SUPPORT_FQE_N_STEPS)
+                                and int(conv_target_interval)
+                                == int(KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL)
+                            ):
+                                knn_support_fqe_scores = conv_scores
 
                             conv_raw_q = np.asarray(
                                 getattr(conv_scores, "mean_q", conv_scores),
@@ -5283,6 +5913,203 @@ if __name__ == "__main__":
                                 f"Kendall={conv_metrics['kendall']:+.4f} | "
                                 f"top1={int(conv_metrics['top1_agreement'])} | "
                                 f"regret={conv_metrics['selection_regret']:.4f}"
+                            )
+
+                    # ----------------------------------------------------------
+                    # STATE-CONDITIONAL kNN SUPPORT FILTER STUDY
+                    # ----------------------------------------------------------
+                    if KNN_SUPPORT_STUDY:
+                        if knn_support_diagnostics is None:
+                            raise RuntimeError(
+                                "kNN support study is missing support diagnostics."
+                            )
+
+                        # Reuse the canonical fit if the user has already made
+                        # it the requested 50k/100 support-FQE configuration.
+                        if (
+                            knn_support_fqe_scores is None
+                            and int(getattr(
+                                canonical_base_fqe_scores,
+                                'fqe_n_steps',
+                                FQE_N_STEPS,
+                            )) == int(KNN_SUPPORT_FQE_N_STEPS)
+                            and int(getattr(
+                                canonical_base_fqe_scores,
+                                'fqe_target_update_interval',
+                                NATIVE_FQE_TARGET_UPDATE_INTERVAL,
+                            )) == int(KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL)
+                        ):
+                            knn_support_fqe_scores = canonical_base_fqe_scores
+
+                        if knn_support_fqe_scores is None:
+                            print("---------------------------------")
+                            print(
+                                "Fitting primary FQE for kNN support filter: "
+                                f"{KNN_SUPPORT_FQE_N_STEPS} steps / target "
+                                f"{KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL}"
+                            )
+                            knn_support_fqe_scores = (
+                                native_batched_fqe_preserving_rng(
+                                    model,
+                                    agents,
+                                    fqe_dataset,
+                                    native_data=native_fqe_data,
+                                    n_steps=KNN_SUPPORT_FQE_N_STEPS,
+                                    target_update_interval=(
+                                        KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL
+                                    ),
+                                )
+                            )
+
+                        knn_raw_fqe = np.asarray(
+                            getattr(
+                                knn_support_fqe_scores,
+                                'mean_q',
+                                knn_support_fqe_scores,
+                            ),
+                            dtype=np.float64,
+                        )
+                        knn_metrics, knn_candidate_details = (
+                            compute_knn_support_filter_metrics(
+                                online_scores=np.asarray(
+                                    cum_rews, dtype=np.float64
+                                ),
+                                raw_fqe_scores=knn_raw_fqe,
+                                support_diagnostics=knn_support_diagnostics,
+                                iteration=i,
+                                score_metadata=knn_support_fqe_scores,
+                            )
+                        )
+                        knnSupportMetrics.append(knn_metrics)
+
+                        for candidate_idx in range(len(knn_raw_fqe)):
+                            knnSupportCandidateRows.append({
+                                'iteration': int(i),
+                                'candidate': int(candidate_idx),
+                                'online': float(cum_rews[candidate_idx]),
+                                'fqe_mean_q': float(
+                                    knn_raw_fqe[candidate_idx]
+                                ),
+                                'fqe_n_steps': int(
+                                    knn_metrics['fqe_n_steps']
+                                ),
+                                'fqe_target_update_interval': int(
+                                    knn_metrics[
+                                        'fqe_target_update_interval'
+                                    ]
+                                ),
+                                'knn_k': int(
+                                    knn_support_diagnostics['k']
+                                ),
+                                'knn_query_states': int(
+                                    knn_support_diagnostics['query_count']
+                                ),
+                                'behavior_percentile': float(
+                                    knn_support_diagnostics[
+                                        'behavior_percentile'
+                                    ]
+                                ),
+                                'behavior_threshold_sq_l2': float(
+                                    knn_support_diagnostics[
+                                        'behavior_threshold_sq_l2'
+                                    ]
+                                ),
+                                'knn_mean_sq_l2': float(
+                                    knn_support_diagnostics[
+                                        'candidate_mean_sq_l2'
+                                    ][candidate_idx]
+                                ),
+                                'knn_median_sq_l2': float(
+                                    knn_support_diagnostics[
+                                        'candidate_median_sq_l2'
+                                    ][candidate_idx]
+                                ),
+                                'knn_p95_sq_l2': float(
+                                    knn_support_diagnostics[
+                                        'candidate_p95_sq_l2'
+                                    ][candidate_idx]
+                                ),
+                                'knn_mean_excess_sq_l2': float(
+                                    knn_support_diagnostics[
+                                        'candidate_mean_excess_sq_l2'
+                                    ][candidate_idx]
+                                ),
+                                'knn_mean_ratio_to_behavior': float(
+                                    knn_support_diagnostics[
+                                        'candidate_mean_ratio_to_behavior'
+                                    ][candidate_idx]
+                                ),
+                                'knn_unsupported_fraction': float(
+                                    knn_support_diagnostics[
+                                        'candidate_unsupported_fraction'
+                                    ][candidate_idx]
+                                ),
+                                'absolute_filter_pass': bool(
+                                    knn_candidate_details[
+                                        'threshold_pass'
+                                    ][candidate_idx]
+                                ),
+                                'effective_filter_keep': bool(
+                                    knn_candidate_details[
+                                        'effective_keep'
+                                    ][candidate_idx]
+                                ),
+                                'support_rank': int(
+                                    knn_candidate_details['support_rank'][
+                                        candidate_idx
+                                    ]
+                                ),
+                                'raw_fqe_rank': int(
+                                    knn_candidate_details['raw_fqe_rank'][
+                                        candidate_idx
+                                    ]
+                                ),
+                                'filtered_fqe_rank': int(
+                                    knn_candidate_details[
+                                        'filtered_fqe_rank'
+                                    ][candidate_idx]
+                                ),
+                            })
+
+                        print("---------------------------------")
+                        print("STATE-CONDITIONAL kNN SUPPORT FILTER")
+                        print(
+                            f"absolute_pass="
+                            f"{knn_metrics['threshold_keep_count']}/"
+                            f"{len(knn_raw_fqe)}, "
+                            f"effective_keep="
+                            f"{knn_metrics['effective_keep_count']}/"
+                            f"{len(knn_raw_fqe)}, "
+                            f"fallback_added="
+                            f"{knn_metrics['fallback_fill_count']}"
+                        )
+                        print(
+                            f"raw 50k/100 FQE idx="
+                            f"{knn_metrics['raw_fqe_idx']} | "
+                            f"regret="
+                            f"{knn_metrics['raw_fqe_selection_regret']:.4f}"
+                        )
+                        print(
+                            f"filtered FQE idx="
+                            f"{knn_metrics['filtered_fqe_idx']} | "
+                            f"regret="
+                            f"{knn_metrics['filtered_fqe_selection_regret']:.4f} | "
+                            f"oracle_survives_filter="
+                            f"{knn_metrics['oracle_survives_effective_filter']}"
+                        )
+                        for requested_k in HYBRID_TOPK_VALUES:
+                            print(
+                                f"  k={requested_k}: "
+                                f"raw Recall="
+                                f"{int(knn_metrics[f'raw_oracle_recall_at_{requested_k}'])}, "
+                                f"raw HReg="
+                                f"{knn_metrics[f'raw_hybrid_regret_at_{requested_k}']:.4f} | "
+                                f"filtered effective_k="
+                                f"{knn_metrics[f'filtered_effective_k_at_{requested_k}']}, "
+                                f"Recall="
+                                f"{int(knn_metrics[f'filtered_oracle_recall_at_{requested_k}'])}, "
+                                f"HReg="
+                                f"{knn_metrics[f'filtered_hybrid_regret_at_{requested_k}']:.4f}"
                             )
 
                 else:
@@ -5637,6 +6464,20 @@ if __name__ == "__main__":
                     f'logs/{DIR}/rank_metrics_{i}_{i + SEARCH_INTERV}.npy',
                     rank_metrics
                 )
+
+                if KNN_SUPPORT_STUDY and knn_support_diagnostics is not None:
+                    np.save(
+                        f'logs/{DIR}/knn_support_unsupported_fraction_'
+                        f'{i}_{i + SEARCH_INTERV}.npy',
+                        knn_support_diagnostics[
+                            'candidate_unsupported_fraction'
+                        ],
+                    )
+                    np.save(
+                        f'logs/{DIR}/knn_support_mean_sq_l2_'
+                        f'{i}_{i + SEARCH_INTERV}.npy',
+                        knn_support_diagnostics['candidate_mean_sq_l2'],
+                    )
 
                 # --------------------------------------------------------------
                 # OBJECTIVE MISMATCH STUDY (analysis only)
@@ -6322,6 +7163,93 @@ if __name__ == "__main__":
                     f"top3={group['top3_hit'].mean():.3f} | "
                     f"top5={group['top5_hit'].mean():.3f} | "
                     f"regret={group['selection_regret'].mean():.4f}"
+                )
+
+        if KNN_SUPPORT_STUDY and knnSupportMetrics:
+            knn_summary_df = pd.DataFrame(knnSupportMetrics)
+            knn_candidates_df = pd.DataFrame(knnSupportCandidateRows)
+
+            knn_summary_df.to_csv(
+                f'logs/{DIR}/knn_support_summary.csv',
+                index=False,
+            )
+            knn_candidates_df.to_csv(
+                f'logs/{DIR}/knn_support_candidates.csv',
+                index=False,
+            )
+            np.save(
+                f'logs/{DIR}/knn_support_summary.npy',
+                np.array(knnSupportMetrics, dtype=object),
+                allow_pickle=True,
+            )
+
+            print("---------------------------------")
+            print("STATE-CONDITIONAL kNN SUPPORT FILTER SUMMARY")
+            print(
+                f"FQE config: "
+                f"{int(knn_summary_df['fqe_n_steps'].iloc[0])} steps / "
+                f"target "
+                f"{int(knn_summary_df['fqe_target_update_interval'].iloc[0])}"
+            )
+            print(
+                f"k={int(knn_summary_df['knn_k'].iloc[0])}, "
+                f"mean query states="
+                f"{knn_summary_df['query_states'].mean():.1f}, "
+                f"behavior percentile="
+                f"{knn_summary_df['behavior_percentile'].iloc[0]:.1f}, "
+                f"max unsupported fraction="
+                f"{knn_summary_df['max_unsupported_fraction'].iloc[0]:.3f}, "
+                f"min keep={int(knn_summary_df['min_keep'].iloc[0])}"
+            )
+            print(
+                "Mean raw 50k/100 FQE Spearman: "
+                f"{knn_summary_df['raw_fqe_spearman'].mean():+.4f} "
+                f"+/- {knn_summary_df['raw_fqe_spearman'].std(ddof=0):.4f}"
+            )
+            print(
+                "Mean support-score Spearman vs online: "
+                f"{knn_summary_df['support_score_spearman'].mean():+.4f} "
+                f"+/- "
+                f"{knn_summary_df['support_score_spearman'].std(ddof=0):.4f}"
+            )
+            print(
+                "Mean absolute-threshold keep count: "
+                f"{knn_summary_df['threshold_keep_count'].mean():.2f} / "
+                f"{len(agents)}"
+            )
+            print(
+                "Mean effective keep count: "
+                f"{knn_summary_df['effective_keep_count'].mean():.2f} / "
+                f"{len(agents)} | "
+                f"mean fallback additions="
+                f"{knn_summary_df['fallback_fill_count'].mean():.2f}"
+            )
+            print(
+                "Oracle survives effective support filter: "
+                f"{knn_summary_df['oracle_survives_effective_filter'].mean():.3f}"
+            )
+            print(
+                "Direct raw FQE top-1 / regret: "
+                f"{knn_summary_df['raw_fqe_top1'].mean():.3f} / "
+                f"{knn_summary_df['raw_fqe_selection_regret'].mean():.4f}"
+            )
+            print(
+                "Direct filtered-FQE top-1 / regret: "
+                f"{knn_summary_df['filtered_fqe_top1'].mean():.3f} / "
+                f"{knn_summary_df['filtered_fqe_selection_regret'].mean():.4f}"
+            )
+            for requested_k in HYBRID_TOPK_VALUES:
+                print(
+                    f"k={requested_k}: raw Recall="
+                    f"{knn_summary_df[f'raw_oracle_recall_at_{requested_k}'].mean():.3f}, "
+                    f"raw HReg="
+                    f"{knn_summary_df[f'raw_hybrid_regret_at_{requested_k}'].mean():.4f} | "
+                    f"filtered Recall="
+                    f"{knn_summary_df[f'filtered_oracle_recall_at_{requested_k}'].mean():.3f}, "
+                    f"filtered HReg="
+                    f"{knn_summary_df[f'filtered_hybrid_regret_at_{requested_k}'].mean():.4f}, "
+                    f"effective_k="
+                    f"{knn_summary_df[f'filtered_effective_k_at_{requested_k}'].mean():.2f}"
                 )
 
         if REPLAY_COVERAGE_ABLATION and replayCoverageMetrics:
