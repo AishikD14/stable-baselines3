@@ -390,6 +390,82 @@ if TIME_CONDITIONED_FINITE_HORIZON_FQE and FQE_BACKEND != "native_batched":
         "TIME_CONDITIONED_FINITE_HORIZON_FQE=0."
     )
 
+
+# Analysis-only state-occupancy kNN diagnostic.
+#
+# This diagnostic uses the SAME deterministic online candidate trajectories that
+# are already collected for the ground-truth selector. It never adds those
+# trajectories to replay, never trains FQE on them, and never changes best_idx.
+#
+# For each online-visited candidate state, measure its k-th nearest-neighbor
+# distance to the frozen replay state distribution. By default the state metric
+# is time-aware: replay/candidate observations are standardized feature-wise and
+# t/H is appended and standardized as one additional feature. This matches the
+# finite-horizon evaluator's dependence on time without exposing online data to
+# FQE.
+#
+# A replay-calibrated 95th-percentile leave-one-out kNN radius defines an
+# "occupancy OOD" threshold. Candidate diagnostics then ask whether larger
+# occupancy shift is associated with larger FQE ranking error.
+STATE_OCCUPANCY_KNN_STUDY = (
+    os.environ.get("STATE_OCCUPANCY_KNN_STUDY", "1") == "1"
+)
+STATE_OCCUPANCY_K = int(os.environ.get("STATE_OCCUPANCY_K", "20"))
+STATE_OCCUPANCY_REPLAY_QUERY_COUNT = int(
+    os.environ.get("STATE_OCCUPANCY_REPLAY_QUERY_COUNT", "4096")
+)
+STATE_OCCUPANCY_CANDIDATE_QUERY_COUNT = int(
+    os.environ.get("STATE_OCCUPANCY_CANDIDATE_QUERY_COUNT", "512")
+)
+STATE_OCCUPANCY_QUERY_CHUNK_SIZE = int(
+    os.environ.get("STATE_OCCUPANCY_QUERY_CHUNK_SIZE", "128")
+)
+STATE_OCCUPANCY_BEHAVIOR_PERCENTILE = float(
+    os.environ.get("STATE_OCCUPANCY_BEHAVIOR_PERCENTILE", "95.0")
+)
+STATE_OCCUPANCY_INCLUDE_TIME = (
+    os.environ.get("STATE_OCCUPANCY_INCLUDE_TIME", "1") == "1"
+)
+STATE_OCCUPANCY_FQE_N_STEPS = int(
+    os.environ.get("STATE_OCCUPANCY_FQE_N_STEPS", "50000")
+)
+STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL = int(
+    os.environ.get("STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL", "100")
+)
+
+if STATE_OCCUPANCY_K <= 0:
+    raise ValueError("STATE_OCCUPANCY_K must be > 0.")
+if STATE_OCCUPANCY_REPLAY_QUERY_COUNT <= 0:
+    raise ValueError("STATE_OCCUPANCY_REPLAY_QUERY_COUNT must be > 0.")
+if STATE_OCCUPANCY_CANDIDATE_QUERY_COUNT <= 0:
+    raise ValueError("STATE_OCCUPANCY_CANDIDATE_QUERY_COUNT must be > 0.")
+if STATE_OCCUPANCY_QUERY_CHUNK_SIZE <= 0:
+    raise ValueError("STATE_OCCUPANCY_QUERY_CHUNK_SIZE must be > 0.")
+if not (0.0 < STATE_OCCUPANCY_BEHAVIOR_PERCENTILE < 100.0):
+    raise ValueError(
+        "STATE_OCCUPANCY_BEHAVIOR_PERCENTILE must lie strictly between 0 and 100."
+    )
+if STATE_OCCUPANCY_FQE_N_STEPS <= 0:
+    raise ValueError("STATE_OCCUPANCY_FQE_N_STEPS must be > 0.")
+if STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL <= 0:
+    raise ValueError(
+        "STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL must be > 0."
+    )
+if STATE_OCCUPANCY_KNN_STUDY and FQE_BACKEND != "native_batched":
+    raise ValueError(
+        "STATE_OCCUPANCY_KNN_STUDY is implemented for native_batched FQE only. "
+        "Set FQE_BACKEND=native_batched or STATE_OCCUPANCY_KNN_STUDY=0."
+    )
+if (
+    STATE_OCCUPANCY_KNN_STUDY
+    and STATE_OCCUPANCY_INCLUDE_TIME
+    and not TIME_CONDITIONED_FINITE_HORIZON_FQE
+):
+    raise ValueError(
+        "STATE_OCCUPANCY_INCLUDE_TIME=1 requires "
+        "TIME_CONDITIONED_FINITE_HORIZON_FQE=1."
+    )
+
 # d3rlpy trains floor(n_steps / n_steps_per_epoch) complete epochs. Reject
 # invalid/non-divisible overrides so a requested FQE update budget is never
 # silently shortened (e.g. 2500 with 1000 would otherwise run only 2000 steps).
@@ -2566,6 +2642,627 @@ def compute_state_conditional_knn_support_preserving_rng(
             torch.cuda.set_rng_state_all(cuda_rng_states)
 
 
+
+def compute_state_occupancy_knn_diagnostics(
+    candidate_trajectory_episodes,
+    replay_data,
+):
+    """Measure candidate state-occupancy novelty against frozen replay states.
+
+    ``candidate_trajectory_episodes`` is a list with one entry per candidate;
+    each candidate entry is a list of raw observation arrays, one array per
+    already-completed online evaluation episode. These are diagnostics from the
+    SAME trajectories used to produce ``cum_rews``. They are never inserted into
+    replay and never used to fit FQE.
+
+    The replay calibration is leave-one-out. For a deterministic subset of
+    replay states, the query row itself is assigned infinite distance before
+    retrieving the k nearest OTHER replay states. The k-th-neighbor radius is
+    used rather than 1-NN distance because it is a local-density diagnostic and
+    is less sensitive to a single accidental near-duplicate.
+
+    When STATE_OCCUPANCY_INCLUDE_TIME=1, both replay and candidate points are
+    represented as standardized [observation, t/H] features. Observation
+    standardization and time standardization are fitted ONLY on frozen replay.
+    """
+    observations_cpu = np.asarray(
+        replay_data["observations"], dtype=np.float32
+    )
+    if observations_cpu.ndim != 2:
+        raise NotImplementedError(
+            "State-occupancy kNN currently expects flat vector observations."
+        )
+    if observations_cpu.shape[0] <= STATE_OCCUPANCY_K:
+        raise RuntimeError(
+            "State-occupancy kNN requires more replay transitions than k: "
+            f"reference={observations_cpu.shape[0]}, "
+            f"k={STATE_OCCUPANCY_K}."
+        )
+    if not np.all(np.isfinite(observations_cpu)):
+        raise RuntimeError(
+            "State-occupancy replay observations contain non-finite values."
+        )
+    if len(candidate_trajectory_episodes) == 0:
+        raise RuntimeError(
+            "State-occupancy diagnostic received zero candidate trajectories."
+        )
+
+    n_reference = int(observations_cpu.shape[0])
+    state_mean = observations_cpu.mean(
+        axis=0, dtype=np.float64
+    ).astype(np.float32)
+    state_std = observations_cpu.std(
+        axis=0, dtype=np.float64
+    ).astype(np.float32)
+    state_std = np.where(
+        state_std > 1e-6, state_std, 1.0
+    ).astype(np.float32)
+
+    standardized_replay = (
+        (observations_cpu - state_mean) / state_std
+    ).astype(np.float32, copy=False)
+
+    finite_horizon_steps = replay_data.get("finite_horizon_steps", None)
+    if STATE_OCCUPANCY_INCLUDE_TIME:
+        if finite_horizon_steps is None:
+            raise RuntimeError(
+                "Time-aware state-occupancy kNN requires "
+                "replay_data['finite_horizon_steps']."
+            )
+        finite_horizon_steps = int(finite_horizon_steps)
+        if finite_horizon_steps <= 0:
+            raise RuntimeError(
+                "State-occupancy finite_horizon_steps must be > 0."
+            )
+        if "timesteps" not in replay_data:
+            raise RuntimeError(
+                "Time-aware state-occupancy kNN requires replay timesteps."
+            )
+
+        replay_timesteps = np.asarray(
+            replay_data["timesteps"], dtype=np.float32
+        ).reshape(-1)
+        if len(replay_timesteps) != n_reference:
+            raise RuntimeError(
+                "State-occupancy replay observation/timestep length mismatch: "
+                f"{n_reference} vs {len(replay_timesteps)}."
+            )
+        if (
+            np.any(replay_timesteps < 0.0)
+            or np.any(replay_timesteps >= float(finite_horizon_steps))
+        ):
+            raise RuntimeError(
+                "State-occupancy replay timesteps are outside [0, H)."
+            )
+
+        replay_time_normalized = (
+            replay_timesteps / float(finite_horizon_steps)
+        ).astype(np.float32)
+        time_mean = float(
+            np.mean(replay_time_normalized, dtype=np.float64)
+        )
+        time_std = float(
+            np.std(replay_time_normalized, dtype=np.float64)
+        )
+        if not np.isfinite(time_std) or time_std <= 1e-6:
+            time_std = 1.0
+        standardized_replay_time = (
+            (replay_time_normalized - time_mean) / time_std
+        ).astype(np.float32)
+        replay_features_cpu = np.concatenate(
+            (
+                standardized_replay,
+                standardized_replay_time.reshape(-1, 1),
+            ),
+            axis=1,
+        )
+    else:
+        time_mean = 0.0
+        time_std = 1.0
+        replay_features_cpu = standardized_replay
+
+    reference_features = torch.as_tensor(
+        replay_features_cpu,
+        dtype=torch.float32,
+        device=device,
+    )
+
+    replay_query_indices = _deterministic_even_subsample_indices(
+        n_reference,
+        min(STATE_OCCUPANCY_REPLAY_QUERY_COUNT, n_reference),
+    )
+    replay_query_index_tensor = torch.as_tensor(
+        replay_query_indices,
+        dtype=torch.long,
+        device=device,
+    )
+    replay_query_features = reference_features[replay_query_index_tensor]
+
+    # Leave-one-out replay calibration.
+    replay_knn_radius_chunks = []
+    replay_1nn_chunks = []
+    with torch.no_grad():
+        for start in range(
+            0,
+            len(replay_query_indices),
+            STATE_OCCUPANCY_QUERY_CHUNK_SIZE,
+        ):
+            end = min(
+                start + STATE_OCCUPANCY_QUERY_CHUNK_SIZE,
+                len(replay_query_indices),
+            )
+            query_chunk = replay_query_features[start:end]
+            query_ref_indices = replay_query_index_tensor[start:end]
+
+            distances = torch.cdist(
+                query_chunk, reference_features, p=2
+            )
+            row_indices = torch.arange(
+                end - start,
+                dtype=torch.long,
+                device=device,
+            )
+            distances[row_indices, query_ref_indices] = float("inf")
+
+            local_distances = torch.topk(
+                distances,
+                k=STATE_OCCUPANCY_K,
+                dim=1,
+                largest=False,
+                sorted=True,
+            ).values
+            replay_1nn_chunks.append(local_distances[:, 0])
+            replay_knn_radius_chunks.append(local_distances[:, -1])
+            del distances, local_distances
+
+    replay_knn_radius = torch.cat(
+        replay_knn_radius_chunks, dim=0
+    ).detach().cpu().numpy().astype(np.float64)
+    replay_1nn = torch.cat(
+        replay_1nn_chunks, dim=0
+    ).detach().cpu().numpy().astype(np.float64)
+
+    behavior_threshold = float(
+        np.quantile(
+            replay_knn_radius,
+            STATE_OCCUPANCY_BEHAVIOR_PERCENTILE / 100.0,
+        )
+    )
+    if not np.isfinite(behavior_threshold):
+        raise RuntimeError(
+            "State-occupancy kNN produced a non-finite replay threshold."
+        )
+
+    candidate_total_states = []
+    candidate_query_states = []
+    candidate_mean_knn_radius = []
+    candidate_median_knn_radius = []
+    candidate_p95_knn_radius = []
+    candidate_max_knn_radius = []
+    candidate_mean_1nn_distance = []
+    candidate_p95_1nn_distance = []
+    candidate_ood_fraction = []
+    candidate_mean_excess = []
+
+    for candidate_idx, episodes in enumerate(candidate_trajectory_episodes):
+        if not isinstance(episodes, (list, tuple)) or len(episodes) == 0:
+            raise RuntimeError(
+                "State-occupancy diagnostic is missing completed episodes for "
+                f"candidate {candidate_idx}."
+            )
+
+        candidate_states_parts = []
+        candidate_timesteps_parts = []
+        for episode_idx, episode_states in enumerate(episodes):
+            episode_states = np.asarray(
+                episode_states, dtype=np.float32
+            )
+            if episode_states.ndim != 2:
+                raise RuntimeError(
+                    "State-occupancy candidate episode must have shape "
+                    f"[T, obs_dim], got {episode_states.shape} for candidate "
+                    f"{candidate_idx}, episode {episode_idx}."
+                )
+            if episode_states.shape[1] != observations_cpu.shape[1]:
+                raise RuntimeError(
+                    "State-occupancy candidate/replay observation dimension "
+                    f"mismatch: candidate={episode_states.shape[1]}, "
+                    f"replay={observations_cpu.shape[1]}."
+                )
+            if episode_states.shape[0] <= 0:
+                raise RuntimeError(
+                    "State-occupancy diagnostic encountered an empty candidate "
+                    f"episode for candidate {candidate_idx}."
+                )
+            if not np.all(np.isfinite(episode_states)):
+                raise RuntimeError(
+                    "State-occupancy candidate trajectory contains non-finite "
+                    f"states for candidate {candidate_idx}."
+                )
+            if (
+                STATE_OCCUPANCY_INCLUDE_TIME
+                and episode_states.shape[0] > finite_horizon_steps
+            ):
+                raise RuntimeError(
+                    "Candidate online episode exceeds the finite horizon used "
+                    f"by FQE: length={episode_states.shape[0]}, "
+                    f"H={finite_horizon_steps}."
+                )
+
+            candidate_states_parts.append(episode_states)
+            candidate_timesteps_parts.append(
+                np.arange(
+                    episode_states.shape[0], dtype=np.float32
+                )
+            )
+
+        candidate_states = np.concatenate(
+            candidate_states_parts, axis=0
+        )
+        candidate_timesteps = np.concatenate(
+            candidate_timesteps_parts, axis=0
+        )
+        total_states = int(candidate_states.shape[0])
+
+        candidate_indices = _deterministic_even_subsample_indices(
+            total_states,
+            min(STATE_OCCUPANCY_CANDIDATE_QUERY_COUNT, total_states),
+        )
+        query_states = candidate_states[candidate_indices]
+        standardized_query_states = (
+            (query_states - state_mean) / state_std
+        ).astype(np.float32, copy=False)
+
+        if STATE_OCCUPANCY_INCLUDE_TIME:
+            query_t = candidate_timesteps[candidate_indices]
+            query_t_normalized = (
+                query_t / float(finite_horizon_steps)
+            ).astype(np.float32)
+            standardized_query_t = (
+                (query_t_normalized - time_mean) / time_std
+            ).astype(np.float32)
+            query_features_cpu = np.concatenate(
+                (
+                    standardized_query_states,
+                    standardized_query_t.reshape(-1, 1),
+                ),
+                axis=1,
+            )
+        else:
+            query_features_cpu = standardized_query_states
+
+        query_features = torch.as_tensor(
+            query_features_cpu,
+            dtype=torch.float32,
+            device=device,
+        )
+
+        candidate_radius_chunks = []
+        candidate_1nn_chunks = []
+        with torch.no_grad():
+            for start in range(
+                0,
+                len(candidate_indices),
+                STATE_OCCUPANCY_QUERY_CHUNK_SIZE,
+            ):
+                end = min(
+                    start + STATE_OCCUPANCY_QUERY_CHUNK_SIZE,
+                    len(candidate_indices),
+                )
+                distances = torch.cdist(
+                    query_features[start:end],
+                    reference_features,
+                    p=2,
+                )
+                local_distances = torch.topk(
+                    distances,
+                    k=STATE_OCCUPANCY_K,
+                    dim=1,
+                    largest=False,
+                    sorted=True,
+                ).values
+                candidate_1nn_chunks.append(local_distances[:, 0])
+                candidate_radius_chunks.append(local_distances[:, -1])
+                del distances, local_distances
+
+        candidate_radius = torch.cat(
+            candidate_radius_chunks, dim=0
+        ).detach().cpu().numpy().astype(np.float64)
+        candidate_1nn = torch.cat(
+            candidate_1nn_chunks, dim=0
+        ).detach().cpu().numpy().astype(np.float64)
+
+        candidate_total_states.append(total_states)
+        candidate_query_states.append(int(len(candidate_indices)))
+        candidate_mean_knn_radius.append(float(np.mean(candidate_radius)))
+        candidate_median_knn_radius.append(
+            float(np.median(candidate_radius))
+        )
+        candidate_p95_knn_radius.append(
+            float(np.quantile(candidate_radius, 0.95))
+        )
+        candidate_max_knn_radius.append(float(np.max(candidate_radius)))
+        candidate_mean_1nn_distance.append(float(np.mean(candidate_1nn)))
+        candidate_p95_1nn_distance.append(
+            float(np.quantile(candidate_1nn, 0.95))
+        )
+        candidate_ood_fraction.append(
+            float(np.mean(candidate_radius > behavior_threshold))
+        )
+        candidate_mean_excess.append(
+            float(
+                np.mean(
+                    np.maximum(
+                        candidate_radius - behavior_threshold,
+                        0.0,
+                    )
+                )
+            )
+        )
+
+    candidate_mean_knn_radius = np.asarray(
+        candidate_mean_knn_radius, dtype=np.float64
+    )
+    behavior_mean_radius = float(np.mean(replay_knn_radius))
+    eps = 1e-12
+
+    return {
+        "reference_count": int(n_reference),
+        "replay_query_count": int(len(replay_query_indices)),
+        "k": int(STATE_OCCUPANCY_K),
+        "behavior_percentile": float(
+            STATE_OCCUPANCY_BEHAVIOR_PERCENTILE
+        ),
+        "behavior_threshold_knn_radius": behavior_threshold,
+        "behavior_mean_knn_radius": behavior_mean_radius,
+        "behavior_median_knn_radius": float(
+            np.median(replay_knn_radius)
+        ),
+        "behavior_p95_knn_radius": float(
+            np.quantile(replay_knn_radius, 0.95)
+        ),
+        "behavior_mean_1nn_distance": float(np.mean(replay_1nn)),
+        "include_time": bool(STATE_OCCUPANCY_INCLUDE_TIME),
+        "finite_horizon_steps": (
+            int(finite_horizon_steps)
+            if finite_horizon_steps is not None
+            else -1
+        ),
+        "candidate_total_states": np.asarray(
+            candidate_total_states, dtype=np.int64
+        ),
+        "candidate_query_states": np.asarray(
+            candidate_query_states, dtype=np.int64
+        ),
+        "candidate_mean_knn_radius": candidate_mean_knn_radius,
+        "candidate_median_knn_radius": np.asarray(
+            candidate_median_knn_radius, dtype=np.float64
+        ),
+        "candidate_p95_knn_radius": np.asarray(
+            candidate_p95_knn_radius, dtype=np.float64
+        ),
+        "candidate_max_knn_radius": np.asarray(
+            candidate_max_knn_radius, dtype=np.float64
+        ),
+        "candidate_mean_1nn_distance": np.asarray(
+            candidate_mean_1nn_distance, dtype=np.float64
+        ),
+        "candidate_p95_1nn_distance": np.asarray(
+            candidate_p95_1nn_distance, dtype=np.float64
+        ),
+        "candidate_ood_fraction": np.asarray(
+            candidate_ood_fraction, dtype=np.float64
+        ),
+        "candidate_mean_excess_knn_radius": np.asarray(
+            candidate_mean_excess, dtype=np.float64
+        ),
+        "candidate_mean_ratio_to_behavior": (
+            candidate_mean_knn_radius / (behavior_mean_radius + eps)
+        ),
+    }
+
+
+def compute_state_occupancy_fqe_metrics(
+    online_scores,
+    raw_fqe_scores,
+    occupancy_diagnostics,
+    iteration,
+    score_metadata=None,
+):
+    """Relate online occupancy novelty to FQE ranking error.
+
+    Online states are used ONLY after their returns have already been measured.
+    Nothing returned here participates in PPO/ESA selection or FQE fitting.
+    """
+    online_scores = np.asarray(online_scores, dtype=np.float64)
+    raw_fqe_scores = np.asarray(raw_fqe_scores, dtype=np.float64)
+    mean_radius = np.asarray(
+        occupancy_diagnostics["candidate_mean_knn_radius"],
+        dtype=np.float64,
+    )
+    ood_fraction = np.asarray(
+        occupancy_diagnostics["candidate_ood_fraction"],
+        dtype=np.float64,
+    )
+
+    if not (
+        online_scores.shape
+        == raw_fqe_scores.shape
+        == mean_radius.shape
+        == ood_fraction.shape
+    ):
+        raise RuntimeError(
+            "State-occupancy metric length mismatch: "
+            f"online={online_scores.shape}, FQE={raw_fqe_scores.shape}, "
+            f"radius={mean_radius.shape}, OOD={ood_fraction.shape}."
+        )
+    if len(online_scores) == 0:
+        raise RuntimeError(
+            "State-occupancy FQE metrics received zero candidates."
+        )
+    if not (
+        np.all(np.isfinite(online_scores))
+        and np.all(np.isfinite(raw_fqe_scores))
+        and np.all(np.isfinite(mean_radius))
+        and np.all(np.isfinite(ood_fraction))
+    ):
+        raise RuntimeError(
+            "State-occupancy FQE metrics received non-finite values."
+        )
+
+    n_candidates = int(len(online_scores))
+    online_order = np.argsort(online_scores)[::-1]
+    fqe_order = np.argsort(raw_fqe_scores)[::-1]
+
+    online_rank = np.empty(n_candidates, dtype=np.int64)
+    online_rank[online_order] = np.arange(
+        1, n_candidates + 1, dtype=np.int64
+    )
+    fqe_rank = np.empty(n_candidates, dtype=np.int64)
+    fqe_rank[fqe_order] = np.arange(
+        1, n_candidates + 1, dtype=np.int64
+    )
+    abs_rank_error = np.abs(fqe_rank - online_rank).astype(np.float64)
+
+    # Rank smaller mean kNN radius as lower occupancy novelty.  OOD fraction
+    # is only a deterministic tie-breaker, so the reported occupancy rank and
+    # low/high-novelty quartiles match the continuous novelty quantity used by
+    # the main occupancy-vs-FQE-error correlations.
+    occupancy_order = np.lexsort((ood_fraction, mean_radius))
+    occupancy_rank = np.empty(n_candidates, dtype=np.int64)
+    occupancy_rank[occupancy_order] = np.arange(
+        1, n_candidates + 1, dtype=np.int64
+    )
+
+    def _safe_standardize(values):
+        values = np.asarray(values, dtype=np.float64)
+        scale = float(np.std(values, ddof=0))
+        if not np.isfinite(scale) or scale <= 1e-12:
+            return np.zeros_like(values)
+        return (values - float(np.mean(values))) / scale
+
+    online_z = _safe_standardize(online_scores)
+    fqe_z = _safe_standardize(raw_fqe_scores)
+    abs_z_error = np.abs(fqe_z - online_z)
+
+    def _corr(x, y, method="spearman"):
+        frame = pd.DataFrame({"x": x, "y": y})
+        return float(frame.corr(method=method).loc["x", "y"])
+
+    oracle_idx = int(np.argmax(online_scores))
+    fqe_idx = int(np.argmax(raw_fqe_scores))
+
+    quartile_size = max(1, int(math.ceil(n_candidates / 4.0)))
+    low_novelty = occupancy_order[:quartile_size]
+    high_novelty = occupancy_order[-quartile_size:]
+
+    metadata = score_metadata if score_metadata is not None else object()
+    finite_horizon_steps = getattr(metadata, "finite_horizon_steps", None)
+
+    metrics = {
+        "iteration": int(iteration),
+        "fqe_config": (
+            f"{int(getattr(metadata, 'fqe_n_steps', STATE_OCCUPANCY_FQE_N_STEPS))}"
+            f"_steps_target"
+            f"{int(getattr(metadata, 'fqe_target_update_interval', STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL))}"
+        ),
+        "fqe_n_steps": int(
+            getattr(
+                metadata,
+                "fqe_n_steps",
+                STATE_OCCUPANCY_FQE_N_STEPS,
+            )
+        ),
+        "fqe_target_update_interval": int(
+            getattr(
+                metadata,
+                "fqe_target_update_interval",
+                STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL,
+            )
+        ),
+        "fqe_objective": str(
+            getattr(metadata, "fqe_objective", "unknown")
+        ),
+        "fqe_gamma": float(getattr(metadata, "fqe_gamma", np.nan)),
+        "finite_horizon_steps": (
+            -1 if finite_horizon_steps is None
+            else int(finite_horizon_steps)
+        ),
+        "time_conditioned": bool(
+            getattr(metadata, "time_conditioned", False)
+        ),
+        "reference_transitions": int(
+            occupancy_diagnostics["reference_count"]
+        ),
+        "replay_query_states": int(
+            occupancy_diagnostics["replay_query_count"]
+        ),
+        "knn_k": int(occupancy_diagnostics["k"]),
+        "include_time": bool(occupancy_diagnostics["include_time"]),
+        "behavior_percentile": float(
+            occupancy_diagnostics["behavior_percentile"]
+        ),
+        "behavior_threshold_knn_radius": float(
+            occupancy_diagnostics["behavior_threshold_knn_radius"]
+        ),
+        "behavior_mean_knn_radius": float(
+            occupancy_diagnostics["behavior_mean_knn_radius"]
+        ),
+        "mean_candidate_knn_radius": float(np.mean(mean_radius)),
+        "mean_candidate_ood_fraction": float(np.mean(ood_fraction)),
+        "max_candidate_ood_fraction": float(np.max(ood_fraction)),
+        "occupancy_vs_online_spearman": _corr(
+            mean_radius, online_scores
+        ),
+        "occupancy_ood_vs_online_spearman": _corr(
+            ood_fraction, online_scores
+        ),
+        "occupancy_vs_fqe_spearman": _corr(
+            mean_radius, raw_fqe_scores
+        ),
+        # Positive values here support the hypothesis that stronger occupancy
+        # shift is associated with larger FQE ranking/calibration error.
+        "occupancy_vs_abs_fqe_rank_error_spearman": _corr(
+            mean_radius, abs_rank_error
+        ),
+        "occupancy_ood_vs_abs_fqe_rank_error_spearman": _corr(
+            ood_fraction, abs_rank_error
+        ),
+        "occupancy_vs_abs_fqe_z_error_spearman": _corr(
+            mean_radius, abs_z_error
+        ),
+        "oracle_idx": oracle_idx,
+        "oracle_occupancy_rank": int(occupancy_rank[oracle_idx]),
+        "oracle_mean_knn_radius": float(mean_radius[oracle_idx]),
+        "oracle_ood_fraction": float(ood_fraction[oracle_idx]),
+        "fqe_idx": fqe_idx,
+        "fqe_selected_occupancy_rank": int(occupancy_rank[fqe_idx]),
+        "fqe_selected_mean_knn_radius": float(mean_radius[fqe_idx]),
+        "fqe_selected_ood_fraction": float(ood_fraction[fqe_idx]),
+        "mean_abs_fqe_rank_error": float(np.mean(abs_rank_error)),
+        "low_novelty_quartile_mean_abs_rank_error": float(
+            np.mean(abs_rank_error[low_novelty])
+        ),
+        "high_novelty_quartile_mean_abs_rank_error": float(
+            np.mean(abs_rank_error[high_novelty])
+        ),
+        "high_minus_low_novelty_rank_error": float(
+            np.mean(abs_rank_error[high_novelty])
+            - np.mean(abs_rank_error[low_novelty])
+        ),
+    }
+
+    candidate_details = {
+        "online_rank": online_rank,
+        "fqe_rank": fqe_rank,
+        "abs_fqe_rank_error": abs_rank_error,
+        "abs_fqe_z_error": abs_z_error,
+        "occupancy_rank": occupancy_rank,
+    }
+    return metrics, candidate_details
+
+
+
 def build_support_penalized_scores(
     base_fqe_scores,
     action_divergence,
@@ -4627,28 +5324,83 @@ def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_nu
     return agent_list, 0.0
 
 class DiscountedReturnTracker:
-    """Collect gamma-discounted episode returns from SB3 evaluate_policy.
+    """Collect discounted returns and optional read-only online state traces.
 
     Stable-Baselines3 calls the evaluation callback once per active VecEnv slot
-    after each environment step. We accumulate the discounted return there, so
-    the diagnostic uses the EXACT SAME transitions as the existing online
-    undiscounted evaluation. The callback never writes to evaluator locals.
+    after each environment step. Discounted returns are accumulated exactly as
+    before. When ``capture_observations`` is enabled, the callback also copies
+    the PRE-STEP observation from those SAME online evaluation transitions.
+    The callback never writes to evaluator locals and never touches PPO replay.
     """
 
-    def __init__(self, gamma):
+    def __init__(self, gamma, capture_observations=False):
         self.gamma = float(gamma)
         if not np.isfinite(self.gamma) or self.gamma < 0.0:
             raise ValueError("Discount gamma must be finite and >= 0.")
+        self.capture_observations = bool(capture_observations)
         self.running_returns = {}
         self.discount_powers = {}
         self.episode_returns = []
         self.episode_lengths = []
         self.running_lengths = {}
+        self.running_observations = {}
+        self.trajectory_episodes = []
+
+    def _capture_current_observation(self, local_vars, env_idx):
+        if not self.capture_observations:
+            return
+
+        if "observations" not in local_vars:
+            raise RuntimeError(
+                "evaluate_policy callback did not expose the pre-step "
+                "'observations' variable required by the state-occupancy "
+                "diagnostic."
+            )
+
+        observations = local_vars["observations"]
+        if isinstance(observations, dict):
+            raise NotImplementedError(
+                "State-occupancy online tracing currently expects flat vector "
+                "observations, not Dict observations."
+            )
+
+        observations = np.asarray(observations)
+        if observations.ndim == 1:
+            if env_idx != 0:
+                raise RuntimeError(
+                    "State-occupancy callback received an unbatched observation "
+                    f"for env_idx={env_idx}."
+                )
+            current_observation = observations
+        else:
+            if not (0 <= env_idx < observations.shape[0]):
+                raise RuntimeError(
+                    "State-occupancy callback env index is outside the "
+                    f"observation batch: env_idx={env_idx}, "
+                    f"shape={observations.shape}."
+                )
+            current_observation = observations[env_idx]
+
+        current_observation = np.asarray(
+            current_observation, dtype=np.float32
+        ).reshape(-1)
+        if not np.all(np.isfinite(current_observation)):
+            raise RuntimeError(
+                "State-occupancy callback observed non-finite online state."
+            )
+
+        self.running_observations.setdefault(env_idx, []).append(
+            current_observation.copy()
+        )
 
     def __call__(self, local_vars, global_vars):
         # Standard SB3 evaluate_policy exposes the current VecEnv slot as ``i``.
         # Keep a defensive scalar-env fallback for compatible custom evaluators.
         env_idx = int(local_vars.get("i", 0))
+
+        # Copy the PRE-STEP state before episode-boundary bookkeeping. This is
+        # the state on which the deterministic candidate action was chosen.
+        self._capture_current_observation(local_vars, env_idx)
 
         if "reward" in local_vars:
             reward = float(np.asarray(local_vars["reward"]).reshape(-1)[0])
@@ -4701,11 +5453,25 @@ class DiscountedReturnTracker:
                 self.episode_returns.append(float(running_return))
                 self.episode_lengths.append(int(running_length))
 
+                if self.capture_observations:
+                    states = self.running_observations.get(env_idx, [])
+                    if len(states) != int(running_length):
+                        raise RuntimeError(
+                            "State-occupancy callback state-count mismatch: "
+                            f"states={len(states)}, steps={running_length}."
+                        )
+                    self.trajectory_episodes.append(
+                        np.asarray(states, dtype=np.float32)
+                    )
+
             # VecEnv resets the underlying environment on done regardless of
             # whether Monitor treats that boundary as a counted episode.
             self.running_returns[env_idx] = 0.0
             self.discount_powers[env_idx] = 1.0
             self.running_lengths[env_idx] = 0
+            if self.capture_observations:
+                self.running_observations[env_idx] = []
+
 
 
 def evaluate_policy_with_discounted_return(
@@ -4714,22 +5480,30 @@ def evaluate_policy_with_discounted_return(
     n_eval_episodes,
     gamma,
     deterministic=True,
+    capture_trajectory=False,
     **evaluate_kwargs,
 ):
-    """Run the original SB3 online evaluation and shadow its discounted return.
+    """Run the original SB3 online evaluation with read-only diagnostics.
 
     The undiscounted result is returned verbatim from ``evaluate_policy`` and is
-    still the quantity used by the original selector. The second return value is
-    only an analysis metric computed by a read-only callback over those same
-    environment steps.
+    still the quantity used by the original selector. The discounted return is
+    shadowed by the callback exactly as before. When ``capture_trajectory`` is
+    true, copies of the pre-step observations from those SAME evaluation
+    episodes are returned as an additional diagnostic value.
+
+    Captured states are never added to PPO replay and never used to train FQE.
     """
     if "callback" in evaluate_kwargs:
         raise ValueError(
             "evaluate_policy_with_discounted_return owns the callback so the "
-            "discounted diagnostic cannot be mixed with another callback."
+            "discounted/state-occupancy diagnostics cannot be mixed with "
+            "another callback."
         )
 
-    tracker = DiscountedReturnTracker(gamma=gamma)
+    tracker = DiscountedReturnTracker(
+        gamma=gamma,
+        capture_observations=capture_trajectory,
+    )
     result = evaluate_policy(
         model,
         env,
@@ -4748,9 +5522,26 @@ def evaluate_policy_with_discounted_return(
         )
 
     discounted_mean = float(np.mean(tracker.episode_returns))
-    return result, discounted_mean, np.asarray(
+    episode_returns = np.asarray(
         tracker.episode_returns, dtype=np.float64
     )
+
+    if not capture_trajectory:
+        # Preserve the exact historical 3-value return contract.
+        return result, discounted_mean, episode_returns
+
+    if len(tracker.trajectory_episodes) != int(n_eval_episodes):
+        raise RuntimeError(
+            "State-occupancy callback observed "
+            f"{len(tracker.trajectory_episodes)} completed trajectory traces, "
+            f"expected {int(n_eval_episodes)}."
+        )
+
+    trajectory_episodes = [
+        np.asarray(states, dtype=np.float32).copy()
+        for states in tracker.trajectory_episodes
+    ]
+    return result, discounted_mean, episode_returns, trajectory_episodes
 
 
 # Rollout policy to get average reward
@@ -5222,6 +6013,12 @@ if __name__ == "__main__":
             "the ground truth and remain the selector during this study."
         )
 
+    if STATE_OCCUPANCY_KNN_STUDY and not rank_correlation_study:
+        raise ValueError(
+            "STATE_OCCUPANCY_KNN_STUDY requires rank_correlation_study=True "
+            "because it diagnoses FQE error against the existing online oracle."
+        )
+
     saved_agents = False
     saved_iter = 4803
     model_already_learned = True
@@ -5254,10 +6051,23 @@ if __name__ == "__main__":
     knnSupportMetrics = []
     knnSupportCandidateRows = []
 
+    # State-occupancy kNN diagnostic. Uses copies of the SAME online candidate
+    # states only after online returns are fixed; never used for replay, FQE
+    # training, PPO/ESA selection, or best_idx.
+    stateOccupancyMetrics = []
+    stateOccupancyCandidateRows = []
+
     avg_checkpoint = False
     use_ptb = False
 
     parallel_evaluation = False
+
+    if STATE_OCCUPANCY_KNN_STUDY and parallel_evaluation:
+        raise NotImplementedError(
+            "STATE_OCCUPANCY_KNN_STUDY currently requires the active "
+            "non-parallel candidate-evaluation path so it can capture the "
+            "exact same SB3 evaluate_policy trajectories without extra rollouts."
+        )
 
     if exp == "PPO_baseline":
         # START_ITER = 1953
@@ -5334,6 +6144,10 @@ if __name__ == "__main__":
             # Diagnostic-only gamma-discounted returns from the SAME online
             # trajectories used to populate cum_rews. Never used for selection.
             cum_discounted_rews = []
+            # Optional read-only copies of the SAME online candidate states.
+            # One list entry per candidate; each entry contains the 3 completed
+            # evaluation episodes. These traces never enter PPO replay/FQE.
+            candidate_occupancy_trajectories = []
             cum_success = []
             best_agent_index = []
             advantage_rew = []
@@ -5544,7 +6358,7 @@ if __name__ == "__main__":
                 for j, a in enumerate(agents):
                     model.policy.load_state_dict(a)
                     model.policy.to(device)
-                    
+
                     # Online evaluation
                     if hasattr(args, 'n_envs') and args.n_envs > 1:
                         # Create a list of environment functions
@@ -5558,20 +6372,54 @@ if __name__ == "__main__":
 
                         dummy_env.reset(seed=args.seed)
 
+                    # The state-occupancy diagnostic is collected by a read-only
+                    # callback over the SAME evaluate_policy call. No additional
+                    # online rollout is introduced.
+                    need_readonly_online_callback = (
+                        rank_correlation_study
+                        and (
+                            OBJECTIVE_MISMATCH_STUDY
+                            or STATE_OCCUPANCY_KNN_STUDY
+                        )
+                    )
+
                     if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-                        if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
-                            eval_result, discounted_return, _ = (
+                        if need_readonly_online_callback:
+                            diagnostic_result = (
                                 evaluate_policy_with_discounted_return(
                                     model,
                                     dummy_env,
                                     n_eval_episodes=3,
                                     gamma=model.gamma,
                                     deterministic=True,
+                                    capture_trajectory=(
+                                        STATE_OCCUPANCY_KNN_STUDY
+                                    ),
                                     return_success_rate=True,
                                 )
                             )
+                            if STATE_OCCUPANCY_KNN_STUDY:
+                                (
+                                    eval_result,
+                                    discounted_return,
+                                    _,
+                                    trajectory_episodes,
+                                ) = diagnostic_result
+                                candidate_occupancy_trajectories.append(
+                                    trajectory_episodes
+                                )
+                            else:
+                                (
+                                    eval_result,
+                                    discounted_return,
+                                    _,
+                                ) = diagnostic_result
+
                             mean_rew, std_rew, success = eval_result
-                            cum_discounted_rews.append(discounted_return)
+                            if OBJECTIVE_MISMATCH_STUDY:
+                                cum_discounted_rews.append(
+                                    discounted_return
+                                )
                         else:
                             mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
                         print(f'avg 3 return on policy: {mean_rew}, Success rate: {success:.2f}')
@@ -5583,18 +6431,41 @@ if __name__ == "__main__":
                         cum_rews.append(mean_rew)
                         cum_success.append(success)
                     else:
-                        if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
-                            eval_result, discounted_return, _ = (
+                        if need_readonly_online_callback:
+                            diagnostic_result = (
                                 evaluate_policy_with_discounted_return(
                                     model,
                                     dummy_env,
                                     n_eval_episodes=3,
                                     gamma=model.gamma,
                                     deterministic=True,
+                                    capture_trajectory=(
+                                        STATE_OCCUPANCY_KNN_STUDY
+                                    ),
                                 )
                             )
+                            if STATE_OCCUPANCY_KNN_STUDY:
+                                (
+                                    eval_result,
+                                    discounted_return,
+                                    _,
+                                    trajectory_episodes,
+                                ) = diagnostic_result
+                                candidate_occupancy_trajectories.append(
+                                    trajectory_episodes
+                                )
+                            else:
+                                (
+                                    eval_result,
+                                    discounted_return,
+                                    _,
+                                ) = diagnostic_result
+
                             returns_trains = eval_result[0]
-                            cum_discounted_rews.append(discounted_return)
+                            if OBJECTIVE_MISMATCH_STUDY:
+                                cum_discounted_rews.append(
+                                    discounted_return
+                                )
                         else:
                             returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
                         print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
@@ -5650,6 +6521,68 @@ if __name__ == "__main__":
                 # rollouts. The discounted diagnostic, when enabled, is
                 # accumulated inside those SAME rollouts. Rank-study FQE is
                 # intentionally deferred to the common batched block below.
+
+            # --------------------------------------------------------------
+            # ANALYSIS-ONLY STATE-OCCUPANCY kNN DIAGNOSTIC
+            # --------------------------------------------------------------
+            # Uses copies of states from the SAME completed online evaluation
+            # trajectories. These states are not inserted into replay and are
+            # not available to FQE training or the online selector.
+            state_occupancy_diagnostics = None
+            if STATE_OCCUPANCY_KNN_STUDY:
+                if len(candidate_occupancy_trajectories) != len(agents):
+                    raise RuntimeError(
+                        "State-occupancy trajectory count mismatch: "
+                        f"{len(candidate_occupancy_trajectories)} traces for "
+                        f"{len(agents)} candidate policies."
+                    )
+                state_occupancy_diagnostics = (
+                    compute_state_occupancy_knn_diagnostics(
+                        candidate_trajectory_episodes=(
+                            candidate_occupancy_trajectories
+                        ),
+                        replay_data=support_reference_data,
+                    )
+                )
+
+                print("---------------------------------")
+                print("STATE-OCCUPANCY kNN DIAGNOSTIC")
+                print(
+                    f"reference={state_occupancy_diagnostics['reference_count']}, "
+                    f"replay_queries="
+                    f"{state_occupancy_diagnostics['replay_query_count']}, "
+                    f"k={state_occupancy_diagnostics['k']}, "
+                    f"time_aware="
+                    f"{state_occupancy_diagnostics['include_time']}, "
+                    f"behavior_percentile="
+                    f"{state_occupancy_diagnostics['behavior_percentile']:.1f}"
+                )
+                print(
+                    "Replay leave-one-out kNN-radius threshold: "
+                    f"{state_occupancy_diagnostics['behavior_threshold_knn_radius']:.6f}"
+                )
+                print(
+                    "Candidate occupancy OOD fractions: "
+                    + np.array2string(
+                        state_occupancy_diagnostics[
+                            'candidate_ood_fraction'
+                        ],
+                        precision=4,
+                        separator=", ",
+                        max_line_width=160,
+                    )
+                )
+                print(
+                    "Candidate mean kNN radii: "
+                    + np.array2string(
+                        state_occupancy_diagnostics[
+                            'candidate_mean_knn_radius'
+                        ],
+                        precision=6,
+                        separator=", ",
+                        max_line_width=160,
+                    )
+                )
 
             # Rank-correlation OPE is analysis-only and is evaluated after all
             # online candidate returns are already fixed. This preserves the
@@ -6111,6 +7044,248 @@ if __name__ == "__main__":
                                 f"HReg="
                                 f"{knn_metrics[f'filtered_hybrid_regret_at_{requested_k}']:.4f}"
                             )
+
+                    # ----------------------------------------------------------
+                    # STATE-OCCUPANCY kNN / FQE-ERROR DIAGNOSTIC
+                    # ----------------------------------------------------------
+                    if STATE_OCCUPANCY_KNN_STUDY:
+                        if state_occupancy_diagnostics is None:
+                            raise RuntimeError(
+                                "State-occupancy study is missing trajectory "
+                                "diagnostics."
+                            )
+
+                        occupancy_fqe_scores = None
+
+                        # Reuse any already-computed 50k/100 fit from the kNN
+                        # support/convergence diagnostics when it exactly matches
+                        # the occupancy study's requested estimator.
+                        if (
+                            knn_support_fqe_scores is not None
+                            and int(getattr(
+                                knn_support_fqe_scores,
+                                'fqe_n_steps',
+                                -1,
+                            )) == int(STATE_OCCUPANCY_FQE_N_STEPS)
+                            and int(getattr(
+                                knn_support_fqe_scores,
+                                'fqe_target_update_interval',
+                                -1,
+                            )) == int(
+                                STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL
+                            )
+                        ):
+                            occupancy_fqe_scores = knn_support_fqe_scores
+
+                        if (
+                            occupancy_fqe_scores is None
+                            and canonical_base_fqe_scores is not None
+                            and int(getattr(
+                                canonical_base_fqe_scores,
+                                'fqe_n_steps',
+                                FQE_N_STEPS,
+                            )) == int(STATE_OCCUPANCY_FQE_N_STEPS)
+                            and int(getattr(
+                                canonical_base_fqe_scores,
+                                'fqe_target_update_interval',
+                                NATIVE_FQE_TARGET_UPDATE_INTERVAL,
+                            )) == int(
+                                STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL
+                            )
+                        ):
+                            occupancy_fqe_scores = canonical_base_fqe_scores
+
+                        if occupancy_fqe_scores is None:
+                            print("---------------------------------")
+                            print(
+                                "Fitting primary FQE for state-occupancy "
+                                "diagnostic: "
+                                f"{STATE_OCCUPANCY_FQE_N_STEPS} steps / "
+                                f"target "
+                                f"{STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL}"
+                            )
+                            occupancy_fqe_scores = (
+                                native_batched_fqe_preserving_rng(
+                                    model,
+                                    agents,
+                                    fqe_dataset,
+                                    native_data=native_fqe_data,
+                                    n_steps=STATE_OCCUPANCY_FQE_N_STEPS,
+                                    target_update_interval=(
+                                        STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL
+                                    ),
+                                )
+                            )
+
+                        occupancy_raw_fqe = np.asarray(
+                            getattr(
+                                occupancy_fqe_scores,
+                                'mean_q',
+                                occupancy_fqe_scores,
+                            ),
+                            dtype=np.float64,
+                        )
+                        (
+                            occupancy_metrics,
+                            occupancy_candidate_details,
+                        ) = compute_state_occupancy_fqe_metrics(
+                            online_scores=np.asarray(
+                                cum_rews, dtype=np.float64
+                            ),
+                            raw_fqe_scores=occupancy_raw_fqe,
+                            occupancy_diagnostics=(
+                                state_occupancy_diagnostics
+                            ),
+                            iteration=i,
+                            score_metadata=occupancy_fqe_scores,
+                        )
+                        stateOccupancyMetrics.append(occupancy_metrics)
+
+                        for candidate_idx in range(
+                            len(occupancy_raw_fqe)
+                        ):
+                            stateOccupancyCandidateRows.append({
+                                'iteration': int(i),
+                                'candidate': int(candidate_idx),
+                                'online': float(cum_rews[candidate_idx]),
+                                'fqe_mean_q': float(
+                                    occupancy_raw_fqe[candidate_idx]
+                                ),
+                                'fqe_n_steps': int(
+                                    occupancy_metrics['fqe_n_steps']
+                                ),
+                                'fqe_target_update_interval': int(
+                                    occupancy_metrics[
+                                        'fqe_target_update_interval'
+                                    ]
+                                ),
+                                'knn_k': int(
+                                    state_occupancy_diagnostics['k']
+                                ),
+                                'time_aware': bool(
+                                    state_occupancy_diagnostics[
+                                        'include_time'
+                                    ]
+                                ),
+                                'behavior_percentile': float(
+                                    state_occupancy_diagnostics[
+                                        'behavior_percentile'
+                                    ]
+                                ),
+                                'behavior_threshold_knn_radius': float(
+                                    state_occupancy_diagnostics[
+                                        'behavior_threshold_knn_radius'
+                                    ]
+                                ),
+                                'trajectory_total_states': int(
+                                    state_occupancy_diagnostics[
+                                        'candidate_total_states'
+                                    ][candidate_idx]
+                                ),
+                                'trajectory_query_states': int(
+                                    state_occupancy_diagnostics[
+                                        'candidate_query_states'
+                                    ][candidate_idx]
+                                ),
+                                'occupancy_mean_knn_radius': float(
+                                    state_occupancy_diagnostics[
+                                        'candidate_mean_knn_radius'
+                                    ][candidate_idx]
+                                ),
+                                'occupancy_median_knn_radius': float(
+                                    state_occupancy_diagnostics[
+                                        'candidate_median_knn_radius'
+                                    ][candidate_idx]
+                                ),
+                                'occupancy_p95_knn_radius': float(
+                                    state_occupancy_diagnostics[
+                                        'candidate_p95_knn_radius'
+                                    ][candidate_idx]
+                                ),
+                                'occupancy_max_knn_radius': float(
+                                    state_occupancy_diagnostics[
+                                        'candidate_max_knn_radius'
+                                    ][candidate_idx]
+                                ),
+                                'occupancy_mean_1nn_distance': float(
+                                    state_occupancy_diagnostics[
+                                        'candidate_mean_1nn_distance'
+                                    ][candidate_idx]
+                                ),
+                                'occupancy_p95_1nn_distance': float(
+                                    state_occupancy_diagnostics[
+                                        'candidate_p95_1nn_distance'
+                                    ][candidate_idx]
+                                ),
+                                'occupancy_ood_fraction': float(
+                                    state_occupancy_diagnostics[
+                                        'candidate_ood_fraction'
+                                    ][candidate_idx]
+                                ),
+                                'occupancy_mean_excess_knn_radius': float(
+                                    state_occupancy_diagnostics[
+                                        'candidate_mean_excess_knn_radius'
+                                    ][candidate_idx]
+                                ),
+                                'occupancy_mean_ratio_to_behavior': float(
+                                    state_occupancy_diagnostics[
+                                        'candidate_mean_ratio_to_behavior'
+                                    ][candidate_idx]
+                                ),
+                                'online_rank': int(
+                                    occupancy_candidate_details[
+                                        'online_rank'
+                                    ][candidate_idx]
+                                ),
+                                'fqe_rank': int(
+                                    occupancy_candidate_details[
+                                        'fqe_rank'
+                                    ][candidate_idx]
+                                ),
+                                'abs_fqe_rank_error': float(
+                                    occupancy_candidate_details[
+                                        'abs_fqe_rank_error'
+                                    ][candidate_idx]
+                                ),
+                                'abs_fqe_z_error': float(
+                                    occupancy_candidate_details[
+                                        'abs_fqe_z_error'
+                                    ][candidate_idx]
+                                ),
+                                'occupancy_rank': int(
+                                    occupancy_candidate_details[
+                                        'occupancy_rank'
+                                    ][candidate_idx]
+                                ),
+                            })
+
+                        print("---------------------------------")
+                        print("STATE-OCCUPANCY / FQE ERROR DIAGNOSTIC")
+                        print(
+                            "occupancy-vs-|FQE rank error| Spearman="
+                            f"{occupancy_metrics['occupancy_vs_abs_fqe_rank_error_spearman']:+.4f} | "
+                            "OOD-vs-|FQE rank error| Spearman="
+                            f"{occupancy_metrics['occupancy_ood_vs_abs_fqe_rank_error_spearman']:+.4f}"
+                        )
+                        print(
+                            "occupancy-vs-|z(FQE)-z(online)| Spearman="
+                            f"{occupancy_metrics['occupancy_vs_abs_fqe_z_error_spearman']:+.4f}"
+                        )
+                        print(
+                            "low-novelty quartile mean |rank error|="
+                            f"{occupancy_metrics['low_novelty_quartile_mean_abs_rank_error']:.3f} | "
+                            "high-novelty quartile="
+                            f"{occupancy_metrics['high_novelty_quartile_mean_abs_rank_error']:.3f} | "
+                            "difference="
+                            f"{occupancy_metrics['high_minus_low_novelty_rank_error']:+.3f}"
+                        )
+                        print(
+                            f"oracle occupancy rank="
+                            f"{occupancy_metrics['oracle_occupancy_rank']}/"
+                            f"{len(occupancy_raw_fqe)}, "
+                            f"oracle OOD fraction="
+                            f"{occupancy_metrics['oracle_ood_fraction']:.4f}"
+                        )
 
                 else:
                     replay_coverage_scores = None
@@ -7251,6 +8426,87 @@ if __name__ == "__main__":
                     f"effective_k="
                     f"{knn_summary_df[f'filtered_effective_k_at_{requested_k}'].mean():.2f}"
                 )
+
+        if STATE_OCCUPANCY_KNN_STUDY and stateOccupancyMetrics:
+            occupancy_summary_df = pd.DataFrame(stateOccupancyMetrics)
+            occupancy_candidates_df = pd.DataFrame(
+                stateOccupancyCandidateRows
+            )
+
+            occupancy_summary_df.to_csv(
+                f'logs/{DIR}/state_occupancy_knn_summary.csv',
+                index=False,
+            )
+            occupancy_candidates_df.to_csv(
+                f'logs/{DIR}/state_occupancy_knn_candidates.csv',
+                index=False,
+            )
+            np.save(
+                f'logs/{DIR}/state_occupancy_knn_summary.npy',
+                np.array(stateOccupancyMetrics, dtype=object),
+                allow_pickle=True,
+            )
+
+            print("---------------------------------")
+            print("STATE-OCCUPANCY kNN DIAGNOSTIC SUMMARY")
+            print(
+                f"FQE config: "
+                f"{int(occupancy_summary_df['fqe_n_steps'].iloc[0])} "
+                f"steps / target "
+                f"{int(occupancy_summary_df['fqe_target_update_interval'].iloc[0])}"
+            )
+            print(
+                f"k={int(occupancy_summary_df['knn_k'].iloc[0])}, "
+                f"time_aware="
+                f"{bool(occupancy_summary_df['include_time'].iloc[0])}, "
+                f"mean replay queries="
+                f"{occupancy_summary_df['replay_query_states'].mean():.1f}, "
+                f"behavior percentile="
+                f"{occupancy_summary_df['behavior_percentile'].iloc[0]:.1f}"
+            )
+            print(
+                "Mean candidate occupancy OOD fraction: "
+                f"{occupancy_summary_df['mean_candidate_ood_fraction'].mean():.4f} "
+                f"+/- "
+                f"{occupancy_summary_df['mean_candidate_ood_fraction'].std(ddof=0):.4f}"
+            )
+            print(
+                "Occupancy radius vs |FQE rank error| Spearman: "
+                f"{occupancy_summary_df['occupancy_vs_abs_fqe_rank_error_spearman'].mean():+.4f} "
+                f"+/- "
+                f"{occupancy_summary_df['occupancy_vs_abs_fqe_rank_error_spearman'].std(ddof=0):.4f}"
+            )
+            print(
+                "Occupancy OOD fraction vs |FQE rank error| Spearman: "
+                f"{occupancy_summary_df['occupancy_ood_vs_abs_fqe_rank_error_spearman'].mean():+.4f} "
+                f"+/- "
+                f"{occupancy_summary_df['occupancy_ood_vs_abs_fqe_rank_error_spearman'].std(ddof=0):.4f}"
+            )
+            print(
+                "Occupancy radius vs |z(FQE)-z(online)| Spearman: "
+                f"{occupancy_summary_df['occupancy_vs_abs_fqe_z_error_spearman'].mean():+.4f} "
+                f"+/- "
+                f"{occupancy_summary_df['occupancy_vs_abs_fqe_z_error_spearman'].std(ddof=0):.4f}"
+            )
+            print(
+                "Occupancy radius vs online return Spearman: "
+                f"{occupancy_summary_df['occupancy_vs_online_spearman'].mean():+.4f} "
+                f"+/- "
+                f"{occupancy_summary_df['occupancy_vs_online_spearman'].std(ddof=0):.4f}"
+            )
+            print(
+                "Mean |FQE rank error|, low-novelty quartile / "
+                "high-novelty quartile: "
+                f"{occupancy_summary_df['low_novelty_quartile_mean_abs_rank_error'].mean():.3f} / "
+                f"{occupancy_summary_df['high_novelty_quartile_mean_abs_rank_error'].mean():.3f} "
+                f"(high-low="
+                f"{occupancy_summary_df['high_minus_low_novelty_rank_error'].mean():+.3f})"
+            )
+            print(
+                "Mean oracle occupancy rank: "
+                f"{occupancy_summary_df['oracle_occupancy_rank'].mean():.2f} / "
+                f"{len(agents)}"
+            )
 
         if REPLAY_COVERAGE_ABLATION and replayCoverageMetrics:
             coverage_summary_df = pd.DataFrame(replayCoverageMetrics)
