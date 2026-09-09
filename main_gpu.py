@@ -559,6 +559,53 @@ if TIME_RESOLVED_OCCUPANCY_CANDIDATE_QUERY_COUNT_PER_WINDOW <= 0:
         "TIME_RESOLVED_OCCUPANCY_CANDIDATE_QUERY_COUNT_PER_WINDOW must be > 0."
     )
 
+# Analysis-only online prefix-budget study.
+#
+# The CURRENT full-horizon online evaluator remains the selector/oracle. We do
+# not stop candidate rollouts at these budgets and we do not take any extra
+# environment steps. Instead, a read-only callback records the per-step rewards
+# from the exact same completed online evaluation episodes that populate
+# ``cum_rews``. After those full episodes finish, this study reconstructs the
+# return that would have been observed after only the first 100/250/500 steps.
+#
+# This lets us choose a prefix length before changing ESA itself. Nothing in
+# this block can affect candidate generation, PPO/replay, FQE, ``cum_rews``,
+# ``best_idx``, or the policy loaded for the next outer iteration.
+PREFIX_BUDGET_STUDY = os.environ.get("PREFIX_BUDGET_STUDY", "1") == "1"
+_PREFIX_BUDGET_SPEC = os.environ.get(
+    "PREFIX_BUDGET_STEPS",
+    "100,250,500",
+)
+PREFIX_BUDGET_STEPS = []
+for _prefix_token in _PREFIX_BUDGET_SPEC.split(","):
+    _prefix_token = _prefix_token.strip()
+    if not _prefix_token:
+        continue
+    _prefix_budget = int(_prefix_token)
+    if _prefix_budget <= 0:
+        raise ValueError("PREFIX_BUDGET_STEPS must contain positive integers.")
+    PREFIX_BUDGET_STEPS.append(_prefix_budget)
+
+PREFIX_BUDGET_ORACLE_STEPS = int(
+    os.environ.get("PREFIX_BUDGET_ORACLE_STEPS", "1000")
+)
+if PREFIX_BUDGET_ORACLE_STEPS <= 0:
+    raise ValueError("PREFIX_BUDGET_ORACLE_STEPS must be > 0.")
+if not PREFIX_BUDGET_STEPS:
+    raise ValueError("PREFIX_BUDGET_STEPS must contain at least one budget.")
+if len(PREFIX_BUDGET_STEPS) != len(set(PREFIX_BUDGET_STEPS)):
+    raise ValueError(
+        "PREFIX_BUDGET_STEPS contains duplicate budgets: "
+        f"{PREFIX_BUDGET_STEPS}"
+    )
+if any(budget >= PREFIX_BUDGET_ORACLE_STEPS for budget in PREFIX_BUDGET_STEPS):
+    raise ValueError(
+        "Every prefix budget must be strictly smaller than the full oracle "
+        f"budget ({PREFIX_BUDGET_ORACLE_STEPS}): {PREFIX_BUDGET_STEPS}"
+    )
+PREFIX_BUDGET_STEPS = tuple(sorted(PREFIX_BUDGET_STEPS))
+
+
 # d3rlpy trains floor(n_steps / n_steps_per_epoch) complete epochs. Reject
 # invalid/non-divisible overrides so a requested FQE update budget is never
 # silently shortened (e.g. 2500 with 1000 would otherwise run only 2000 steps).
@@ -6109,20 +6156,26 @@ def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_nu
     return agent_list, 0.0
 
 class DiscountedReturnTracker:
-    """Collect discounted returns and optional read-only online state traces.
+    """Collect discounted returns plus optional read-only online traces.
 
     Stable-Baselines3 calls the evaluation callback once per active VecEnv slot
     after each environment step. Discounted returns are accumulated exactly as
-    before. When ``capture_observations`` is enabled, the callback also copies
-    the PRE-STEP observation from those SAME online evaluation transitions.
-    The callback never writes to evaluator locals and never touches PPO replay.
+    before. Optional observation and reward copies come from those SAME online
+    evaluation transitions. The callback never writes to evaluator locals and
+    never touches PPO replay.
     """
 
-    def __init__(self, gamma, capture_observations=False):
+    def __init__(
+        self,
+        gamma,
+        capture_observations=False,
+        capture_rewards=False,
+    ):
         self.gamma = float(gamma)
         if not np.isfinite(self.gamma) or self.gamma < 0.0:
             raise ValueError("Discount gamma must be finite and >= 0.")
         self.capture_observations = bool(capture_observations)
+        self.capture_rewards = bool(capture_rewards)
         self.running_returns = {}
         self.discount_powers = {}
         self.episode_returns = []
@@ -6130,6 +6183,8 @@ class DiscountedReturnTracker:
         self.running_lengths = {}
         self.running_observations = {}
         self.trajectory_episodes = []
+        self.running_rewards = {}
+        self.reward_episodes = []
 
     def _capture_current_observation(self, local_vars, env_idx):
         if not self.capture_observations:
@@ -6213,6 +6268,9 @@ class DiscountedReturnTracker:
         discount_power = self.discount_powers.get(env_idx, 1.0)
         running_length = self.running_lengths.get(env_idx, 0)
 
+        if self.capture_rewards:
+            self.running_rewards.setdefault(env_idx, []).append(float(reward))
+
         running_return += discount_power * reward
         discount_power *= self.gamma
         running_length += 1
@@ -6249,6 +6307,17 @@ class DiscountedReturnTracker:
                         np.asarray(states, dtype=np.float32)
                     )
 
+                if self.capture_rewards:
+                    rewards = self.running_rewards.get(env_idx, [])
+                    if len(rewards) != int(running_length):
+                        raise RuntimeError(
+                            "Prefix-budget callback reward-count mismatch: "
+                            f"rewards={len(rewards)}, steps={running_length}."
+                        )
+                    self.reward_episodes.append(
+                        np.asarray(rewards, dtype=np.float64)
+                    )
+
             # VecEnv resets the underlying environment on done regardless of
             # whether Monitor treats that boundary as a counted episode.
             self.running_returns[env_idx] = 0.0
@@ -6256,6 +6325,8 @@ class DiscountedReturnTracker:
             self.running_lengths[env_idx] = 0
             if self.capture_observations:
                 self.running_observations[env_idx] = []
+            if self.capture_rewards:
+                self.running_rewards[env_idx] = []
 
 
 
@@ -6266,6 +6337,7 @@ def evaluate_policy_with_discounted_return(
     gamma,
     deterministic=True,
     capture_trajectory=False,
+    capture_rewards=False,
     **evaluate_kwargs,
 ):
     """Run the original SB3 online evaluation with read-only diagnostics.
@@ -6274,9 +6346,12 @@ def evaluate_policy_with_discounted_return(
     still the quantity used by the original selector. The discounted return is
     shadowed by the callback exactly as before. When ``capture_trajectory`` is
     true, copies of the pre-step observations from those SAME evaluation
-    episodes are returned as an additional diagnostic value.
+    episodes are returned as an additional diagnostic value. When
+    ``capture_rewards`` is true, the per-step rewards from the same episodes are
+    copied for the prefix-budget study.
 
-    Captured states are never added to PPO replay and never used to train FQE.
+    Captured states/rewards are never added to PPO replay and never used to
+    train FQE or choose the next policy.
     """
     if "callback" in evaluate_kwargs:
         raise ValueError(
@@ -6288,6 +6363,7 @@ def evaluate_policy_with_discounted_return(
     tracker = DiscountedReturnTracker(
         gamma=gamma,
         capture_observations=capture_trajectory,
+        capture_rewards=capture_rewards,
     )
     result = evaluate_policy(
         model,
@@ -6311,22 +6387,352 @@ def evaluate_policy_with_discounted_return(
         tracker.episode_returns, dtype=np.float64
     )
 
-    if not capture_trajectory:
+    if not capture_trajectory and not capture_rewards:
         # Preserve the exact historical 3-value return contract.
         return result, discounted_mean, episode_returns
 
-    if len(tracker.trajectory_episodes) != int(n_eval_episodes):
+    trajectory_episodes = None
+    if capture_trajectory:
+        if len(tracker.trajectory_episodes) != int(n_eval_episodes):
+            raise RuntimeError(
+                "State-occupancy callback observed "
+                f"{len(tracker.trajectory_episodes)} completed trajectory traces, "
+                f"expected {int(n_eval_episodes)}."
+            )
+        trajectory_episodes = [
+            np.asarray(states, dtype=np.float32).copy()
+            for states in tracker.trajectory_episodes
+        ]
+
+    reward_episodes = None
+    if capture_rewards:
+        if len(tracker.reward_episodes) != int(n_eval_episodes):
+            raise RuntimeError(
+                "Prefix-budget callback observed "
+                f"{len(tracker.reward_episodes)} completed reward traces, "
+                f"expected {int(n_eval_episodes)}."
+            )
+        reward_episodes = [
+            np.asarray(rewards, dtype=np.float64).copy()
+            for rewards in tracker.reward_episodes
+        ]
+
+    if capture_trajectory and capture_rewards:
+        return (
+            result,
+            discounted_mean,
+            episode_returns,
+            trajectory_episodes,
+            reward_episodes,
+        )
+    if capture_trajectory:
+        return result, discounted_mean, episode_returns, trajectory_episodes
+    return result, discounted_mean, episode_returns, reward_episodes
+
+
+def compute_prefix_budget_study_metrics(
+    full_online_scores,
+    candidate_reward_episodes,
+    iteration,
+):
+    """Compare shadow prefix selectors against the unchanged full selector.
+
+    ``full_online_scores`` is exactly ``cum_rews`` from the existing full
+    evaluation. ``candidate_reward_episodes`` contains copies of per-step
+    rewards from those same episodes. Prefix scores are reconstructed only
+    after the full rollouts have completed, so this function cannot affect
+    environment state, RNG, replay, FQE, or policy selection.
+
+    For an episode that terminates before a requested prefix budget, the prefix
+    return is the sum of all rewards actually available in that episode. This
+    matches what a real budget-limited evaluator would observe because no more
+    environment steps exist after termination.
+    """
+    full_online_scores = np.asarray(full_online_scores, dtype=np.float64)
+    n_candidates = int(len(full_online_scores))
+    if n_candidates == 0:
+        raise RuntimeError("Prefix-budget study received zero candidates.")
+    if len(candidate_reward_episodes) != n_candidates:
         raise RuntimeError(
-            "State-occupancy callback observed "
-            f"{len(tracker.trajectory_episodes)} completed trajectory traces, "
-            f"expected {int(n_eval_episodes)}."
+            "Prefix-budget candidate trace count mismatch: "
+            f"{len(candidate_reward_episodes)} traces for {n_candidates} candidates."
+        )
+    if not np.all(np.isfinite(full_online_scores)):
+        raise RuntimeError(
+            "Prefix-budget study received non-finite full online scores."
         )
 
-    trajectory_episodes = [
-        np.asarray(states, dtype=np.float32).copy()
-        for states in tracker.trajectory_episodes
-    ]
-    return result, discounted_mean, episode_returns, trajectory_episodes
+    validated_episodes = []
+    episode_counts = []
+    reconstructed_full_scores = []
+    for candidate_idx, episodes in enumerate(candidate_reward_episodes):
+        if not isinstance(episodes, (list, tuple)) or len(episodes) == 0:
+            raise RuntimeError(
+                "Prefix-budget study is missing completed reward episodes for "
+                f"candidate {candidate_idx}."
+            )
+
+        candidate_episodes = []
+        candidate_full_returns = []
+        for episode_idx, rewards in enumerate(episodes):
+            rewards = np.asarray(rewards, dtype=np.float64).reshape(-1)
+            if len(rewards) == 0:
+                raise RuntimeError(
+                    "Prefix-budget study encountered an empty reward episode for "
+                    f"candidate {candidate_idx}, episode {episode_idx}."
+                )
+            if not np.all(np.isfinite(rewards)):
+                raise RuntimeError(
+                    "Prefix-budget study encountered non-finite rewards for "
+                    f"candidate {candidate_idx}, episode {episode_idx}."
+                )
+            if len(rewards) > PREFIX_BUDGET_ORACLE_STEPS:
+                raise RuntimeError(
+                    "Prefix-budget reward trace exceeds the configured full oracle "
+                    f"budget: length={len(rewards)}, "
+                    f"oracle={PREFIX_BUDGET_ORACLE_STEPS}."
+                )
+            candidate_episodes.append(rewards)
+            candidate_full_returns.append(float(np.sum(rewards, dtype=np.float64)))
+
+        validated_episodes.append(candidate_episodes)
+        episode_counts.append(int(len(candidate_episodes)))
+        reconstructed_full_scores.append(float(np.mean(candidate_full_returns)))
+
+    if len(set(episode_counts)) != 1:
+        raise RuntimeError(
+            "Prefix-budget study expected the same number of evaluation episodes "
+            f"for every candidate, got {episode_counts}."
+        )
+
+    reconstructed_full_scores = np.asarray(
+        reconstructed_full_scores, dtype=np.float64
+    )
+    full_reconstruction_abs_error = np.abs(
+        reconstructed_full_scores - full_online_scores
+    )
+
+    # Strict sanity check: the callback-copied reward traces must reconstruct
+    # the SAME full online scores used by the unchanged selector. A tiny
+    # floating-point tolerance is allowed because the evaluator and this
+    # diagnostic may accumulate the same rewards through different NumPy
+    # scalar paths. Any larger mismatch means the prefix study is no longer
+    # measuring prefixes of the selector's actual trajectories.
+    reconstruction_tolerance = (
+        1e-5
+        + 1e-6 * np.maximum(1.0, np.abs(full_online_scores))
+    )
+    reconstruction_mismatch = (
+        full_reconstruction_abs_error > reconstruction_tolerance
+    )
+    if np.any(reconstruction_mismatch):
+        bad_indices = np.flatnonzero(reconstruction_mismatch).tolist()
+        raise RuntimeError(
+            "Prefix-budget reward traces do not reconstruct the unchanged "
+            "full online selector scores within tolerance. "
+            f"Candidates={bad_indices}, "
+            f"max_abs_error={float(np.max(full_reconstruction_abs_error)):.6g}."
+        )
+
+    # Actual full-evaluation episode lengths. Ant-v5 can terminate before the
+    # nominal 1000-step TimeLimit, so real online-step savings must be measured
+    # against these observed lengths rather than against a hard-coded 1000.
+    full_steps_per_candidate = np.asarray(
+        [
+            np.mean([len(rewards) for rewards in episodes])
+            for episodes in validated_episodes
+        ],
+        dtype=np.float64,
+    )
+    mean_full_steps_per_episode = float(
+        np.mean(full_steps_per_candidate)
+    )
+    if not np.isfinite(mean_full_steps_per_episode) or mean_full_steps_per_episode <= 0.0:
+        raise RuntimeError(
+            "Prefix-budget study computed an invalid full-evaluation step count."
+        )
+
+    # Match the active non-Fetch online selector exactly: it selects the last
+    # index in np.argsort(cum_rews). No prefix result below is fed back into it.
+    full_order = np.argsort(full_online_scores)[::-1]
+    oracle_idx = int(np.argsort(full_online_scores)[-1])
+    oracle_return = float(full_online_scores[oracle_idx])
+    oracle_best_mask = full_online_scores == float(np.max(full_online_scores))
+
+    full_rank = np.empty(n_candidates, dtype=np.int64)
+    full_rank[full_order] = np.arange(1, n_candidates + 1, dtype=np.int64)
+
+    def _safe_corr(x, y, method):
+        x = np.asarray(x, dtype=np.float64)
+        y = np.asarray(y, dtype=np.float64)
+        if len(x) < 2 or float(np.ptp(x)) <= 1e-12 or float(np.ptp(y)) <= 1e-12:
+            return float("nan")
+        frame = pd.DataFrame({"x": x, "y": y})
+        return float(frame.corr(method=method).loc["x", "y"])
+
+    summary_rows = []
+    candidate_rows = []
+
+    for budget in PREFIX_BUDGET_STEPS:
+        budget = int(budget)
+        prefix_scores = np.zeros(n_candidates, dtype=np.float64)
+        prefix_stds = np.zeros(n_candidates, dtype=np.float64)
+        mean_steps_used = np.zeros(n_candidates, dtype=np.float64)
+        reached_budget_fraction = np.zeros(n_candidates, dtype=np.float64)
+
+        for candidate_idx, episodes in enumerate(validated_episodes):
+            episode_prefix_returns = np.asarray(
+                [
+                    np.sum(rewards[:budget], dtype=np.float64)
+                    for rewards in episodes
+                ],
+                dtype=np.float64,
+            )
+            episode_steps_used = np.asarray(
+                [min(len(rewards), budget) for rewards in episodes],
+                dtype=np.float64,
+            )
+            prefix_scores[candidate_idx] = float(
+                np.mean(episode_prefix_returns)
+            )
+            prefix_stds[candidate_idx] = float(
+                np.std(episode_prefix_returns, ddof=0)
+            )
+            mean_steps_used[candidate_idx] = float(
+                np.mean(episode_steps_used)
+            )
+            reached_budget_fraction[candidate_idx] = float(
+                np.mean([len(rewards) >= budget for rewards in episodes])
+            )
+
+        prefix_order = np.argsort(prefix_scores)[::-1]
+        prefix_idx = int(np.argsort(prefix_scores)[-1])
+        prefix_rank = np.empty(n_candidates, dtype=np.int64)
+        prefix_rank[prefix_order] = np.arange(
+            1, n_candidates + 1, dtype=np.int64
+        )
+        abs_rank_error = np.abs(prefix_rank - full_rank).astype(np.float64)
+
+        prefix_selected_full_return = float(full_online_scores[prefix_idx])
+        selection_regret = float(oracle_return - prefix_selected_full_return)
+        full_return_range = float(np.ptp(full_online_scores))
+        normalized_regret = (
+            float(selection_regret / full_return_range)
+            if full_return_range > 1e-12
+            else 0.0
+        )
+
+        top3 = prefix_order[:min(3, n_candidates)]
+        top5 = prefix_order[:min(5, n_candidates)]
+        oracle_recall_top3 = bool(np.any(oracle_best_mask[top3]))
+        oracle_recall_top5 = bool(np.any(oracle_best_mask[top5]))
+
+        summary_rows.append({
+            "iteration": int(iteration),
+            "prefix_budget_steps": budget,
+            "oracle_budget_steps": int(PREFIX_BUDGET_ORACLE_STEPS),
+            "budget_fraction_of_oracle": float(
+                budget / float(PREFIX_BUDGET_ORACLE_STEPS)
+            ),
+            "n_candidates": int(n_candidates),
+            "n_eval_episodes": int(episode_counts[0]),
+            "pearson_vs_full": _safe_corr(
+                prefix_scores, full_online_scores, "pearson"
+            ),
+            "spearman_vs_full": _safe_corr(
+                prefix_scores, full_online_scores, "spearman"
+            ),
+            "kendall_vs_full": _safe_corr(
+                prefix_scores, full_online_scores, "kendall"
+            ),
+            "oracle_idx": int(oracle_idx),
+            "prefix_selected_idx": int(prefix_idx),
+            "top1_agreement": bool(prefix_idx == oracle_idx),
+            "oracle_recall_at_3": oracle_recall_top3,
+            "oracle_recall_at_5": oracle_recall_top5,
+            "oracle_prefix_rank": int(prefix_rank[oracle_idx]),
+            "prefix_selected_full_rank": int(full_rank[prefix_idx]),
+            "oracle_full_return": float(oracle_return),
+            "prefix_selected_full_return": prefix_selected_full_return,
+            "selection_regret": selection_regret,
+            "normalized_selection_regret": normalized_regret,
+            "mean_abs_rank_error": float(np.mean(abs_rank_error)),
+            "max_abs_rank_error": float(np.max(abs_rank_error)),
+            "mean_prefix_score": float(np.mean(prefix_scores)),
+            "std_prefix_score_across_candidates": float(
+                np.std(prefix_scores, ddof=0)
+            ),
+            "mean_steps_used_per_episode": float(np.mean(mean_steps_used)),
+            "mean_full_steps_per_episode": mean_full_steps_per_episode,
+            "episodes_reaching_budget_fraction": float(
+                np.mean(reached_budget_fraction)
+            ),
+            # Real savings versus the SAME completed full episodes used by
+            # cum_rews. This remains valid when Ant terminates before t=1000.
+            "mean_step_reduction_vs_oracle": float(
+                1.0
+                - (
+                    np.sum(mean_steps_used)
+                    / np.sum(full_steps_per_candidate)
+                )
+            ),
+            # Nominal savings relative to the configured 1000-step cap, kept
+            # separately because it can overstate savings after early exits.
+            "nominal_step_reduction_vs_oracle_cap": float(
+                1.0
+                - (
+                    np.mean(mean_steps_used)
+                    / PREFIX_BUDGET_ORACLE_STEPS
+                )
+            ),
+            "max_full_return_reconstruction_abs_error": float(
+                np.max(full_reconstruction_abs_error)
+            ),
+        })
+
+        for candidate_idx in range(n_candidates):
+            candidate_rows.append({
+                "iteration": int(iteration),
+                "prefix_budget_steps": budget,
+                "oracle_budget_steps": int(PREFIX_BUDGET_ORACLE_STEPS),
+                "candidate": int(candidate_idx),
+                "prefix_mean_return": float(prefix_scores[candidate_idx]),
+                "prefix_episode_return_std": float(
+                    prefix_stds[candidate_idx]
+                ),
+                "full_online_return": float(
+                    full_online_scores[candidate_idx]
+                ),
+                "reconstructed_full_return": float(
+                    reconstructed_full_scores[candidate_idx]
+                ),
+                "full_return_reconstruction_abs_error": float(
+                    full_reconstruction_abs_error[candidate_idx]
+                ),
+                "prefix_rank": int(prefix_rank[candidate_idx]),
+                "full_rank": int(full_rank[candidate_idx]),
+                "abs_rank_error": float(abs_rank_error[candidate_idx]),
+                "mean_steps_used_per_episode": float(
+                    mean_steps_used[candidate_idx]
+                ),
+                "mean_full_steps_per_episode": float(
+                    full_steps_per_candidate[candidate_idx]
+                ),
+                "step_reduction_vs_full_episode": float(
+                    1.0
+                    - (
+                        mean_steps_used[candidate_idx]
+                        / full_steps_per_candidate[candidate_idx]
+                    )
+                ),
+                "episodes_reaching_budget_fraction": float(
+                    reached_budget_fraction[candidate_idx]
+                ),
+                "is_full_oracle": bool(candidate_idx == oracle_idx),
+                "is_prefix_selected": bool(candidate_idx == prefix_idx),
+            })
+
+    return summary_rows, candidate_rows
 
 
 # Rollout policy to get average reward
@@ -6525,6 +6931,38 @@ if __name__ == "__main__":
         print(
             "Time-conditioned finite-horizon FQE disabled: "
             "native FQE keeps the original discounted objective."
+        )
+
+    if PREFIX_BUDGET_STUDY:
+        try:
+            _prefix_env_spec = gym.spec(env_name)
+            _prefix_env_horizon = getattr(
+                _prefix_env_spec, "max_episode_steps", None
+            )
+        except Exception as exc:
+            raise RuntimeError(
+                "PREFIX_BUDGET_STUDY requires a registered environment with "
+                "spec.max_episode_steps so the unchanged full selector can be "
+                "identified as the oracle."
+            ) from exc
+
+        if _prefix_env_horizon is None:
+            raise RuntimeError(
+                "PREFIX_BUDGET_STUDY requires env.spec.max_episode_steps."
+            )
+        _prefix_env_horizon = int(_prefix_env_horizon)
+        if _prefix_env_horizon != PREFIX_BUDGET_ORACLE_STEPS:
+            raise RuntimeError(
+                "PREFIX_BUDGET_STUDY is configured for a full "
+                f"{PREFIX_BUDGET_ORACLE_STEPS}-step oracle, but {env_name!r} "
+                f"has max_episode_steps={_prefix_env_horizon}. Disable the "
+                "study or explicitly change PREFIX_BUDGET_ORACLE_STEPS for "
+                "that environment."
+            )
+        print(
+            "Analysis-only prefix-budget study enabled: "
+            f"prefixes={list(PREFIX_BUDGET_STEPS)}, "
+            f"unchanged full oracle={PREFIX_BUDGET_ORACLE_STEPS} steps."
         )
 
     # ------------------------------------------------------------------------------------------------------------
@@ -6798,6 +7236,12 @@ if __name__ == "__main__":
             "the ground truth and remain the selector during this study."
         )
 
+    if PREFIX_BUDGET_STUDY and not online_eval:
+        raise ValueError(
+            "PREFIX_BUDGET_STUDY requires online_eval=True because the current "
+            "full online selector must remain the oracle during this study."
+        )
+
     if STATE_OCCUPANCY_KNN_STUDY and not rank_correlation_study:
         raise ValueError(
             "STATE_OCCUPANCY_KNN_STUDY requires rank_correlation_study=True "
@@ -6816,6 +7260,11 @@ if __name__ == "__main__":
     # never participates in policy selection.
     rankStudyMetrics = []
     rankStudyCandidateRows = []
+
+    # Strictly analysis-only prefix-budget study. Prefix scores are reconstructed
+    # from the SAME full online episodes and never participate in best_idx.
+    prefixBudgetMetrics = []
+    prefixBudgetCandidateRows = []
 
     # Objective-alignment study. These diagnostics never participate in policy
     # selection; the original undiscounted online return remains canonical.
@@ -6851,6 +7300,13 @@ if __name__ == "__main__":
     use_ptb = False
 
     parallel_evaluation = False
+
+    if PREFIX_BUDGET_STUDY and parallel_evaluation:
+        raise NotImplementedError(
+            "PREFIX_BUDGET_STUDY currently requires non-parallel candidate "
+            "evaluation so it can reuse the exact same full SB3 evaluation "
+            "episodes without extra rollouts."
+        )
 
     if STATE_OCCUPANCY_KNN_STUDY and parallel_evaluation:
         raise NotImplementedError(
@@ -6938,6 +7394,9 @@ if __name__ == "__main__":
             # One list entry per candidate; each entry contains the 3 completed
             # evaluation episodes. These traces never enter PPO replay/FQE.
             candidate_occupancy_trajectories = []
+            # Read-only per-step rewards from those same completed evaluation
+            # episodes. Used only to reconstruct 100/250/500-step prefix scores.
+            candidate_prefix_reward_episodes = []
             cum_success = []
             best_agent_index = []
             advantage_rew = []
@@ -7166,10 +7625,13 @@ if __name__ == "__main__":
                     # callback over the SAME evaluate_policy call. No additional
                     # online rollout is introduced.
                     need_readonly_online_callback = (
-                        rank_correlation_study
-                        and (
-                            OBJECTIVE_MISMATCH_STUDY
-                            or STATE_OCCUPANCY_KNN_STUDY
+                        PREFIX_BUDGET_STUDY
+                        or (
+                            rank_correlation_study
+                            and (
+                                OBJECTIVE_MISMATCH_STUDY
+                                or STATE_OCCUPANCY_KNN_STUDY
+                            )
                         )
                     )
 
@@ -7185,10 +7647,28 @@ if __name__ == "__main__":
                                     capture_trajectory=(
                                         STATE_OCCUPANCY_KNN_STUDY
                                     ),
+                                    capture_rewards=PREFIX_BUDGET_STUDY,
                                     return_success_rate=True,
                                 )
                             )
-                            if STATE_OCCUPANCY_KNN_STUDY:
+                            if (
+                                STATE_OCCUPANCY_KNN_STUDY
+                                and PREFIX_BUDGET_STUDY
+                            ):
+                                (
+                                    eval_result,
+                                    discounted_return,
+                                    _,
+                                    trajectory_episodes,
+                                    reward_episodes,
+                                ) = diagnostic_result
+                                candidate_occupancy_trajectories.append(
+                                    trajectory_episodes
+                                )
+                                candidate_prefix_reward_episodes.append(
+                                    reward_episodes
+                                )
+                            elif STATE_OCCUPANCY_KNN_STUDY:
                                 (
                                     eval_result,
                                     discounted_return,
@@ -7197,6 +7677,16 @@ if __name__ == "__main__":
                                 ) = diagnostic_result
                                 candidate_occupancy_trajectories.append(
                                     trajectory_episodes
+                                )
+                            elif PREFIX_BUDGET_STUDY:
+                                (
+                                    eval_result,
+                                    discounted_return,
+                                    _,
+                                    reward_episodes,
+                                ) = diagnostic_result
+                                candidate_prefix_reward_episodes.append(
+                                    reward_episodes
                                 )
                             else:
                                 (
@@ -7232,9 +7722,27 @@ if __name__ == "__main__":
                                     capture_trajectory=(
                                         STATE_OCCUPANCY_KNN_STUDY
                                     ),
+                                    capture_rewards=PREFIX_BUDGET_STUDY,
                                 )
                             )
-                            if STATE_OCCUPANCY_KNN_STUDY:
+                            if (
+                                STATE_OCCUPANCY_KNN_STUDY
+                                and PREFIX_BUDGET_STUDY
+                            ):
+                                (
+                                    eval_result,
+                                    discounted_return,
+                                    _,
+                                    trajectory_episodes,
+                                    reward_episodes,
+                                ) = diagnostic_result
+                                candidate_occupancy_trajectories.append(
+                                    trajectory_episodes
+                                )
+                                candidate_prefix_reward_episodes.append(
+                                    reward_episodes
+                                )
+                            elif STATE_OCCUPANCY_KNN_STUDY:
                                 (
                                     eval_result,
                                     discounted_return,
@@ -7243,6 +7751,16 @@ if __name__ == "__main__":
                                 ) = diagnostic_result
                                 candidate_occupancy_trajectories.append(
                                     trajectory_episodes
+                                )
+                            elif PREFIX_BUDGET_STUDY:
+                                (
+                                    eval_result,
+                                    discounted_return,
+                                    _,
+                                    reward_episodes,
+                                ) = diagnostic_result
+                                candidate_prefix_reward_episodes.append(
+                                    reward_episodes
                                 )
                             else:
                                 (
@@ -7311,6 +7829,58 @@ if __name__ == "__main__":
                 # rollouts. The discounted diagnostic, when enabled, is
                 # accumulated inside those SAME rollouts. Rank-study FQE is
                 # intentionally deferred to the common batched block below.
+
+            # --------------------------------------------------------------
+            # STRICTLY ANALYSIS-ONLY 100/250/500 PREFIX-BUDGET STUDY
+            # --------------------------------------------------------------
+            # The full candidate episodes have ALREADY completed and cum_rews
+            # has already been fixed. Reconstruct shorter prefix scores only
+            # from callback-copied rewards; never use them for best_idx.
+            if PREFIX_BUDGET_STUDY:
+                if parallel_evaluation:
+                    raise NotImplementedError(
+                        "PREFIX_BUDGET_STUDY currently requires the active "
+                        "non-parallel evaluation path so it can reuse the exact "
+                        "same full SB3 evaluation episodes without extra rollouts."
+                    )
+                if len(candidate_prefix_reward_episodes) != len(agents):
+                    raise RuntimeError(
+                        "Prefix-budget reward trace count mismatch: "
+                        f"{len(candidate_prefix_reward_episodes)} traces for "
+                        f"{len(agents)} candidate policies."
+                    )
+
+                (
+                    prefix_iteration_rows,
+                    prefix_candidate_rows,
+                ) = compute_prefix_budget_study_metrics(
+                    full_online_scores=np.asarray(
+                        cum_rews, dtype=np.float64
+                    ),
+                    candidate_reward_episodes=(
+                        candidate_prefix_reward_episodes
+                    ),
+                    iteration=i,
+                )
+                prefixBudgetMetrics.extend(prefix_iteration_rows)
+                prefixBudgetCandidateRows.extend(prefix_candidate_rows)
+
+                print("---------------------------------")
+                print("ANALYSIS-ONLY PREFIX-BUDGET STUDY")
+                for prefix_row in prefix_iteration_rows:
+                    print(
+                        f"prefix={prefix_row['prefix_budget_steps']:>3} | "
+                        f"Spearman(full)="
+                        f"{prefix_row['spearman_vs_full']:+.4f} | "
+                        f"top1={int(prefix_row['top1_agreement'])} | "
+                        f"oracle_rank="
+                        f"{prefix_row['oracle_prefix_rank']} | "
+                        f"Recall@3="
+                        f"{int(prefix_row['oracle_recall_at_3'])} | "
+                        f"Recall@5="
+                        f"{int(prefix_row['oracle_recall_at_5'])} | "
+                        f"regret={prefix_row['selection_regret']:.4f}"
+                    )
 
             # --------------------------------------------------------------
             # ANALYSIS-ONLY STATE-OCCUPANCY kNN DIAGNOSTIC
@@ -8971,6 +9541,48 @@ if __name__ == "__main__":
                 best_agent_index.append(best_idx)
                 np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
                 load_state_dict(model, best_agent)
+
+        if PREFIX_BUDGET_STUDY and prefixBudgetMetrics:
+            prefix_summary_df = pd.DataFrame(prefixBudgetMetrics)
+            prefix_candidates_df = pd.DataFrame(
+                prefixBudgetCandidateRows
+            )
+
+            prefix_summary_df.to_csv(
+                f'logs/{DIR}/prefix_budget_summary.csv',
+                index=False,
+            )
+            prefix_candidates_df.to_csv(
+                f'logs/{DIR}/prefix_budget_candidates.csv',
+                index=False,
+            )
+            np.save(
+                f'logs/{DIR}/prefix_budget_summary.npy',
+                np.array(prefixBudgetMetrics, dtype=object),
+                allow_pickle=True,
+            )
+
+            print("---------------------------------")
+            print("PREFIX-BUDGET STUDY SUMMARY (FULL 1000-STEP ORACLE UNCHANGED)")
+            for budget in PREFIX_BUDGET_STEPS:
+                group = prefix_summary_df[
+                    prefix_summary_df["prefix_budget_steps"] == int(budget)
+                ]
+                if group.empty:
+                    continue
+                print(
+                    f"prefix={int(budget):>3} | "
+                    f"Spearman={group['spearman_vs_full'].mean():+.4f} +/- "
+                    f"{group['spearman_vs_full'].std(ddof=0):.4f} | "
+                    f"top1={group['top1_agreement'].mean():.3f} | "
+                    f"Recall@3={group['oracle_recall_at_3'].mean():.3f} | "
+                    f"Recall@5={group['oracle_recall_at_5'].mean():.3f} | "
+                    f"mean oracle rank={group['oracle_prefix_rank'].mean():.2f} | "
+                    f"regret={group['selection_regret'].mean():.4f} +/- "
+                    f"{group['selection_regret'].std(ddof=0):.4f} | "
+                    f"mean step reduction="
+                    f"{group['mean_step_reduction_vs_oracle'].mean():.3f}"
+                )
 
         if rank_correlation_study and rankStudyMetrics:
             rank_summary_df = pd.DataFrame(rankStudyMetrics)
