@@ -637,6 +637,24 @@ if PREFIX_SHORTLIST_TOP_K <= 0:
 if PREFIX_SHORTLIST_N_EVAL_EPISODES <= 0:
     raise ValueError("PREFIX_SHORTLIST_N_EVAL_EPISODES must be > 0.")
 
+# Matched full-online control for the deployed 250-step -> top-10 experiment.
+#
+# When enabled, this mode deliberately BYPASSES the shortlist selector and
+# enters the pre-existing historical full-online evaluation path unchanged:
+# every ESA candidate receives the normal three deterministic full episodes and
+# the next PPO policy is chosen by the original all-candidate online rule.
+#
+# The existing PREFIX_SHORTLIST_SELECTOR flag is not rewritten. The derived
+# *_ACTIVE flag below only decides which experiment is executed, so setting
+# MATCHED_FULL_ONLINE_CONTROL=0 restores the shortlist deployment behavior
+# exactly as before. This control is enabled by default in this dedicated file.
+MATCHED_FULL_ONLINE_CONTROL = (
+    os.environ.get("MATCHED_FULL_ONLINE_CONTROL", "1") == "1"
+)
+PREFIX_SHORTLIST_SELECTOR_ACTIVE = (
+    PREFIX_SHORTLIST_SELECTOR and not MATCHED_FULL_ONLINE_CONTROL
+)
+
 
 # d3rlpy trains floor(n_steps / n_steps_per_epoch) complete epochs. Reject
 # invalid/non-divisible overrides so a requested FQE update budget is never
@@ -7253,6 +7271,94 @@ def evaluate_prefix_shortlist_selector(
             close_env_safely(episode_state.get("env"))
 
 
+def build_matched_full_online_control_rows(
+    online_returns,
+    iteration,
+    n_eval_episodes,
+    evaluation_n_envs,
+    full_horizon,
+):
+    """Build read-only logging rows for the matched full-online control.
+
+    This helper performs no rollout and never participates in selection. The
+    supplied returns are the already-computed values from the historical
+    all-candidate online evaluator. Rank 1 is highest full online return.
+    """
+    online_returns = np.asarray(online_returns, dtype=np.float64)
+    if online_returns.ndim != 1 or len(online_returns) == 0:
+        raise RuntimeError(
+            "Matched full-online control requires a non-empty 1-D return vector."
+        )
+    if not np.all(np.isfinite(online_returns)):
+        raise RuntimeError(
+            "Matched full-online control received non-finite candidate returns."
+        )
+
+    n_candidates = int(len(online_returns))
+    n_eval_episodes = int(n_eval_episodes)
+    evaluation_n_envs = int(evaluation_n_envs)
+    full_horizon = int(full_horizon)
+    if n_eval_episodes <= 0 or evaluation_n_envs <= 0 or full_horizon <= 0:
+        raise ValueError(
+            "Matched full-online control episode/env/horizon values must be > 0."
+        )
+
+    selected_idx = int(np.argsort(online_returns)[-1])
+    full_order = np.argsort(online_returns)[::-1]
+    full_rank = np.empty(n_candidates, dtype=np.int64)
+    full_rank[full_order] = np.arange(1, n_candidates + 1, dtype=np.int64)
+
+    nominal_full_cap_steps = int(
+        n_candidates * n_eval_episodes * full_horizon
+    )
+    hybrid_effective_top_k = min(
+        int(PREFIX_SHORTLIST_TOP_K), n_candidates
+    )
+    nominal_matched_hybrid_steps = int(
+        n_candidates * n_eval_episodes * PREFIX_SHORTLIST_STEPS
+        + hybrid_effective_top_k
+        * n_eval_episodes
+        * (full_horizon - PREFIX_SHORTLIST_STEPS)
+    )
+    nominal_hybrid_reduction = float(
+        1.0 - (nominal_matched_hybrid_steps / nominal_full_cap_steps)
+    )
+
+    summary_row = {
+        "iteration": int(iteration),
+        "mode": "matched_full_online_control",
+        "n_candidates": n_candidates,
+        "n_eval_episodes": n_eval_episodes,
+        "evaluation_n_envs": evaluation_n_envs,
+        "full_horizon": full_horizon,
+        "selected_idx": selected_idx,
+        "selected_full_return": float(online_returns[selected_idx]),
+        "mean_full_return_all_candidates": float(np.mean(online_returns)),
+        "std_full_return_all_candidates": float(np.std(online_returns)),
+        "min_full_return_all_candidates": float(np.min(online_returns)),
+        "max_full_return_all_candidates": float(np.max(online_returns)),
+        "nominal_full_cap_steps": nominal_full_cap_steps,
+        "nominal_control_step_reduction_vs_full_cap": 0.0,
+        "matched_hybrid_prefix_steps": int(PREFIX_SHORTLIST_STEPS),
+        "matched_hybrid_top_k": hybrid_effective_top_k,
+        "nominal_matched_hybrid_steps": nominal_matched_hybrid_steps,
+        "nominal_matched_hybrid_reduction_vs_control": nominal_hybrid_reduction,
+    }
+
+    candidate_rows = []
+    for candidate_idx in range(n_candidates):
+        candidate_rows.append({
+            "iteration": int(iteration),
+            "mode": "matched_full_online_control",
+            "candidate": int(candidate_idx),
+            "full_online_return": float(online_returns[candidate_idx]),
+            "full_online_rank": int(full_rank[candidate_idx]),
+            "selected": bool(candidate_idx == selected_idx),
+        })
+
+    return summary_row, candidate_rows
+
+
 # Evaluation function for a single candidate agent
 def evaluate_candidate(args):
     idx, agent_state_dict, env_name, seed, n_eval, gamma = args
@@ -7398,12 +7504,12 @@ if __name__ == "__main__":
     elif env_name == "BreakoutNoFrameskip-v4":
         args = args_breakout_no_frameskip.get_args(rest_args)
 
-    # The completed full-oracle diagnostics deliberately evaluate every
-    # candidate to episode completion. Keeping them active would erase the
-    # interaction savings of the real 250->top-10 selector. In selector mode
-    # disable only those analysis blocks; PPO/ESA/replay/training logic is not
-    # changed. Set PREFIX_SHORTLIST_SELECTOR=0 to reproduce the old diagnostics.
-    if PREFIX_SHORTLIST_SELECTOR:
+    # The matched control and the deployed shortlist selector are both
+    # selection experiments, not FQE/occupancy diagnostics. Disable the
+    # completed analysis blocks in either mode so the control differs from the
+    # hybrid run only in candidate evaluation/selection, not in extra shadow
+    # computation. PPO/ESA/replay/training logic is untouched.
+    if PREFIX_SHORTLIST_SELECTOR_ACTIVE or MATCHED_FULL_ONLINE_CONTROL:
         PREFIX_BUDGET_STUDY = False
         REPLAY_COVERAGE_ABLATION = False
         FQE_CONVERGENCE_STUDY = False
@@ -7412,6 +7518,7 @@ if __name__ == "__main__":
         STATE_OCCUPANCY_KNN_STUDY = False
         TIME_RESOLVED_OCCUPANCY_STUDY = False
 
+    if PREFIX_SHORTLIST_SELECTOR_ACTIVE:
         if env_name != "Ant-v5":
             raise NotImplementedError(
                 "PREFIX_SHORTLIST_SELECTOR is currently validated only for "
@@ -7448,6 +7555,41 @@ if __name__ == "__main__":
         )
     else:
         _shortlist_full_horizon = None
+
+    if MATCHED_FULL_ONLINE_CONTROL:
+        if env_name != "Ant-v5":
+            raise NotImplementedError(
+                "MATCHED_FULL_ONLINE_CONTROL is configured for the active "
+                "Ant-v5 hybrid-vs-control experiment."
+            )
+        try:
+            _control_env_spec = gym.spec(env_name)
+            _control_full_horizon = int(_control_env_spec.max_episode_steps)
+        except Exception as exc:
+            raise RuntimeError(
+                "MATCHED_FULL_ONLINE_CONTROL requires a registered Gymnasium "
+                "environment with spec.max_episode_steps."
+            ) from exc
+        if PREFIX_SHORTLIST_N_EVAL_EPISODES != 3:
+            raise ValueError(
+                "The historical full-online evaluator uses exactly 3 episodes. "
+                "For a matched control keep "
+                "PREFIX_SHORTLIST_N_EVAL_EPISODES=3."
+            )
+        print(
+            "Matched full-online control enabled: all candidates receive the "
+            "historical 3-episode full-horizon evaluation; selection uses the "
+            "original all-candidate online-return rule. "
+            f"full_horizon={_control_full_horizon}."
+        )
+        if PREFIX_SHORTLIST_SELECTOR:
+            print(
+                "PREFIX_SHORTLIST_SELECTOR is configured but intentionally "
+                "inactive while MATCHED_FULL_ONLINE_CONTROL=1. Set "
+                "MATCHED_FULL_ONLINE_CONTROL=0 to restore the hybrid selector."
+            )
+    else:
+        _control_full_horizon = None
 
     if TIME_CONDITIONED_FINITE_HORIZON_FQE:
         fqe_finite_horizon_steps = resolve_fqe_finite_horizon(env_name)
@@ -7759,7 +7901,9 @@ if __name__ == "__main__":
     # Rank-correlation study: additionally score the exact same candidates with FQE, but do
     # NOT use FQE to choose the next policy. The original online-selection trajectory remains
     # unchanged.
-    rank_correlation_study = not PREFIX_SHORTLIST_SELECTOR
+    rank_correlation_study = not (
+        PREFIX_SHORTLIST_SELECTOR_ACTIVE or MATCHED_FULL_ONLINE_CONTROL
+    )
     if rank_correlation_study and not online_eval:
         raise ValueError(
             "rank_correlation_study requires online_eval=True because online returns are "
@@ -7802,6 +7946,12 @@ if __name__ == "__main__":
     prefixShortlistMetrics = []
     prefixShortlistCandidateRows = []
 
+    # Matched full-online control logging. These rows are derived only from the
+    # already-computed historical full online returns and never feed back into
+    # PPO/ESA selection.
+    fullOnlineControlMetrics = []
+    fullOnlineControlCandidateRows = []
+
     # Objective-alignment study. These diagnostics never participate in policy
     # selection; the original undiscounted online return remains canonical.
     objectiveMismatchMetrics = []
@@ -7837,7 +7987,7 @@ if __name__ == "__main__":
 
     parallel_evaluation = False
 
-    if PREFIX_SHORTLIST_SELECTOR and parallel_evaluation:
+    if PREFIX_SHORTLIST_SELECTOR_ACTIVE and parallel_evaluation:
         raise NotImplementedError(
             "PREFIX_SHORTLIST_SELECTOR requires non-parallel evaluation so "
             "the exact episode environments can be paused at the prefix and "
@@ -8158,7 +8308,7 @@ if __name__ == "__main__":
             # Real 250-step -> top-10 -> continued-full selector.
             # When disabled, the historical candidate-evaluation code below is
             # entered unchanged.
-            if PREFIX_SHORTLIST_SELECTOR:
+            if PREFIX_SHORTLIST_SELECTOR_ACTIVE:
                 shortlist_result = evaluate_prefix_shortlist_selector(
                     model=model,
                     agents=agents,
@@ -9336,7 +9486,7 @@ if __name__ == "__main__":
                 # print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
                 print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
             
-            if PREFIX_SHORTLIST_SELECTOR:
+            if PREFIX_SHORTLIST_SELECTOR_ACTIVE:
                 print(
                     f'avg 250-step prefix return across all candidates: '
                     f'{np.mean(prefix_shortlist_scores)}, '
@@ -9370,7 +9520,13 @@ if __name__ == "__main__":
             np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents_to_cpu(agents))
             if online_eval:
                 np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
-                if PREFIX_SHORTLIST_SELECTOR:
+                if MATCHED_FULL_ONLINE_CONTROL:
+                    np.save(
+                        f'logs/{DIR}/full_online_control_returns_'
+                        f'{i}_{i + SEARCH_INTERV}.npy',
+                        np.asarray(cum_rews, dtype=np.float64),
+                    )
+                if PREFIX_SHORTLIST_SELECTOR_ACTIVE:
                     np.save(
                         f'logs/{DIR}/prefix_shortlist_prefix_returns_'
                         f'{i}_{i + SEARCH_INTERV}.npy',
@@ -10144,7 +10300,7 @@ if __name__ == "__main__":
 
             # Finding the best agent from online evaluation
             if online_eval:
-                if PREFIX_SHORTLIST_SELECTOR:
+                if PREFIX_SHORTLIST_SELECTOR_ACTIVE:
                     if shortlist_selection_scores is None:
                         raise RuntimeError(
                             "Prefix-shortlist selector scores are missing at "
@@ -10179,7 +10335,67 @@ if __name__ == "__main__":
                 np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
                 load_state_dict(model, best_agent)
 
-        if PREFIX_SHORTLIST_SELECTOR and prefixShortlistMetrics:
+                if MATCHED_FULL_ONLINE_CONTROL:
+                    control_summary_row, control_candidate_rows = (
+                        build_matched_full_online_control_rows(
+                            online_returns=cum_rews,
+                            iteration=i,
+                            n_eval_episodes=3,
+                            evaluation_n_envs=int(getattr(args, "n_envs", 1)),
+                            full_horizon=_control_full_horizon,
+                        )
+                    )
+                    if int(control_summary_row["selected_idx"]) != int(best_idx):
+                        raise RuntimeError(
+                            "Matched full-online control logging disagrees with "
+                            "the original online selector."
+                        )
+                    fullOnlineControlMetrics.append(control_summary_row)
+                    fullOnlineControlCandidateRows.extend(
+                        control_candidate_rows
+                    )
+
+        if MATCHED_FULL_ONLINE_CONTROL and fullOnlineControlMetrics:
+            full_control_summary_df = pd.DataFrame(
+                fullOnlineControlMetrics
+            )
+            full_control_candidates_df = pd.DataFrame(
+                fullOnlineControlCandidateRows
+            )
+            full_control_summary_df.to_csv(
+                f'logs/{DIR}/full_online_control_summary.csv',
+                index=False,
+            )
+            full_control_candidates_df.to_csv(
+                f'logs/{DIR}/full_online_control_candidates.csv',
+                index=False,
+            )
+            np.save(
+                f'logs/{DIR}/full_online_control_summary.npy',
+                np.array(fullOnlineControlMetrics, dtype=object),
+                allow_pickle=True,
+            )
+
+            print("---------------------------------")
+            print("MATCHED FULL-ONLINE CONTROL SUMMARY")
+            print(
+                "Mean selected full return: "
+                f"{full_control_summary_df['selected_full_return'].mean():.4f}"
+            )
+            print(
+                "Mean full return across all candidates: "
+                f"{full_control_summary_df['mean_full_return_all_candidates'].mean():.4f}"
+            )
+            print(
+                "Nominal candidate-evaluation step reduction vs the full "
+                "control itself: 0.000"
+            )
+            print(
+                "Matched hybrid nominal reduction for 250->top-10: "
+                f"{full_control_summary_df['nominal_matched_hybrid_reduction_vs_control'].mean():.3f}"
+            )
+
+        if PREFIX_SHORTLIST_SELECTOR_ACTIVE and prefixShortlistMetrics:
             prefix_shortlist_summary_df = pd.DataFrame(
                 prefixShortlistMetrics
             )
