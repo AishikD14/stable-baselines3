@@ -605,6 +605,38 @@ if any(budget >= PREFIX_BUDGET_ORACLE_STEPS for budget in PREFIX_BUDGET_STEPS):
     )
 PREFIX_BUDGET_STEPS = tuple(sorted(PREFIX_BUDGET_STEPS))
 
+# Online 250-step -> top-10 -> full-horizon shortlist selector.
+#
+# This is the deployment experiment motivated by the completed prefix-budget
+# study. Every candidate is evaluated on the SAME three deterministic Ant-v5
+# episode starts for at most PREFIX_SHORTLIST_STEPS. Only the top-k candidates
+# remain alive; their exact same episode environments are then continued from
+# the prefix boundary to the normal environment termination/TimeLimit. The
+# winner is still the candidate with the largest ordinary undiscounted mean
+# episodic return among the fully evaluated finalists.
+#
+# PPO training, ESA candidate generation, replay-buffer collection, checkpoint
+# handling, and the candidate policy parameters are untouched.
+PREFIX_SHORTLIST_SELECTOR = (
+    os.environ.get("PREFIX_SHORTLIST_SELECTOR", "1") == "1"
+)
+PREFIX_SHORTLIST_STEPS = int(
+    os.environ.get("PREFIX_SHORTLIST_STEPS", "250")
+)
+PREFIX_SHORTLIST_TOP_K = int(
+    os.environ.get("PREFIX_SHORTLIST_TOP_K", "10")
+)
+PREFIX_SHORTLIST_N_EVAL_EPISODES = int(
+    os.environ.get("PREFIX_SHORTLIST_N_EVAL_EPISODES", "3")
+)
+
+if PREFIX_SHORTLIST_STEPS <= 0:
+    raise ValueError("PREFIX_SHORTLIST_STEPS must be > 0.")
+if PREFIX_SHORTLIST_TOP_K <= 0:
+    raise ValueError("PREFIX_SHORTLIST_TOP_K must be > 0.")
+if PREFIX_SHORTLIST_N_EVAL_EPISODES <= 0:
+    raise ValueError("PREFIX_SHORTLIST_N_EVAL_EPISODES must be > 0.")
+
 
 # d3rlpy trains floor(n_steps / n_steps_per_epoch) complete epochs. Reject
 # invalid/non-divisible overrides so a requested FQE update budget is never
@@ -6774,6 +6806,453 @@ def rollout_policy(policy, env, n_eval=3, deterministic=True, gamma=None):
     )
     return mean_reward, mean_discounted_reward
 
+def _make_ant_seed_aligned_episode_env(
+    env_name,
+    seed,
+    episode_index,
+    seed_offset=0,
+):
+    """Create one resumable Ant evaluation episode matching the old reset order.
+
+    The previous non-parallel evaluator did:
+        env.reset(seed=seed)
+        evaluate_policy(...)
+    and SB3 then reset the environment once at evaluator start and once after
+    each completed episode. Ant-v5 consumes reset randomness at reset time but
+    has deterministic dynamics thereafter. Therefore episode e can be placed in
+    its exact old initial state by seeding a fresh environment and advancing the
+    reset RNG e+1 reset calls before any actions are taken.
+
+    Keeping one environment per episode lets the prefix stage pause at step 250
+    and later continue the exact same trajectory without replaying/restarting it.
+    """
+    if env_name != "Ant-v5":
+        raise NotImplementedError(
+            "PREFIX_SHORTLIST_SELECTOR is validated for the active Ant-v5 "
+            "experiment only. Its seed-alignment argument relies on Ant-v5 "
+            "using randomness at reset but deterministic dynamics afterward."
+        )
+
+    episode_index = int(episode_index)
+    seed_offset = int(seed_offset)
+    if episode_index < 0:
+        raise ValueError("episode_index must be >= 0.")
+    if seed_offset < 0:
+        raise ValueError("seed_offset must be >= 0.")
+
+    env = gym.make(env_name)
+    try:
+        # This first seeded reset reproduces the explicit reset already present
+        # in the original candidate-evaluation code.
+        env.reset(seed=int(seed) + seed_offset)
+
+        # SB3 evaluate_policy then performs one reset to start episode 0 and a
+        # further reset before each later episode. Advance the reset RNG to the
+        # corresponding initial state, but do NOT take any environment steps.
+        obs = None
+        for _ in range(episode_index + 1):
+            obs, _ = env.reset()
+
+        return env, np.array(obs, copy=True)
+    except Exception:
+        close_env_safely(env)
+        raise
+
+
+def _sb3_evaluation_episode_reset_plan(n_eval_episodes, n_envs):
+    """Return the counted episode slots used by SB3 evaluate_policy.
+
+    Stable-Baselines3 distributes requested episodes across VecEnv slots with
+    target count ``(n_eval_episodes + env_idx) // n_envs``. Reproducing that
+    assignment preserves the old reset/seed population even when the training
+    configuration uses more than one evaluation environment.
+    """
+    n_eval_episodes = int(n_eval_episodes)
+    n_envs = int(n_envs)
+    if n_eval_episodes <= 0 or n_envs <= 0:
+        raise ValueError("n_eval_episodes and n_envs must both be > 0.")
+
+    targets = [
+        (n_eval_episodes + env_idx) // n_envs
+        for env_idx in range(n_envs)
+    ]
+    plan = []
+    for env_idx, target_count in enumerate(targets):
+        for local_episode_index in range(int(target_count)):
+            plan.append((int(env_idx), int(local_episode_index)))
+
+    if len(plan) != n_eval_episodes:
+        raise RuntimeError(
+            "Internal prefix-shortlist error while reproducing SB3 episode "
+            f"allocation: expected {n_eval_episodes}, got {len(plan)}."
+        )
+    return plan
+
+
+def _advance_prefix_shortlist_episode(
+    model,
+    episode_state,
+    stop_after_steps=None,
+    full_horizon=None,
+):
+    """Advance one already-created evaluation episode in place.
+
+    ``stop_after_steps`` is an absolute within-episode step count. Passing None
+    continues until the environment terminates/truncates. No reset is performed
+    here, which is what makes the second stage a true continuation of the 250-
+    step prefix rather than a restarted full evaluation.
+    """
+    if episode_state["done"]:
+        return
+
+    if stop_after_steps is not None:
+        stop_after_steps = int(stop_after_steps)
+        if stop_after_steps <= 0:
+            raise ValueError("stop_after_steps must be > 0 or None.")
+
+    if full_horizon is not None:
+        full_horizon = int(full_horizon)
+        if full_horizon <= 0:
+            raise ValueError("full_horizon must be > 0 or None.")
+
+    while not episode_state["done"]:
+        if (
+            stop_after_steps is not None
+            and episode_state["steps"] >= stop_after_steps
+        ):
+            break
+
+        if (
+            full_horizon is not None
+            and episode_state["steps"] >= full_horizon
+        ):
+            raise RuntimeError(
+                "Prefix-shortlist evaluation reached the configured full "
+                "horizon without an environment termination/truncation. "
+                "The Gymnasium TimeLimit semantics differ from the expected "
+                "Ant-v5 setup."
+            )
+
+        action, _ = model.predict(
+            episode_state["obs"], deterministic=True
+        )
+        (
+            next_obs,
+            reward,
+            terminated,
+            truncated,
+            _,
+        ) = episode_state["env"].step(action)
+
+        reward_value = float(np.asarray(reward).reshape(-1)[0])
+        if not np.isfinite(reward_value):
+            raise RuntimeError(
+                "Prefix-shortlist evaluation observed a non-finite reward."
+            )
+
+        episode_state["total_return"] += reward_value
+        episode_state["steps"] += 1
+        episode_state["obs"] = np.array(next_obs, copy=True)
+        episode_state["done"] = bool(terminated or truncated)
+
+
+def evaluate_prefix_shortlist_selector(
+    model,
+    agents,
+    env_name,
+    seed,
+    prefix_steps,
+    top_k,
+    n_eval_episodes,
+    full_horizon,
+    iteration,
+    evaluation_n_envs=1,
+):
+    """Run the real 250-step -> top-k -> continued-full evaluation selector.
+
+    Stage 1 evaluates every candidate for at most ``prefix_steps`` on the same
+    three Ant-v5 episode starts used by the historical non-parallel evaluator.
+    Stage 2 resumes ONLY the top-k candidates from the exact paused states and
+    finishes those episodes. Non-finalists take no more environment steps.
+
+    Returns full-horizon values only for finalists (NaN elsewhere), plus an
+    explicit selection-score vector with -inf for non-finalists so they cannot
+    accidentally be selected downstream.
+    """
+    n_candidates = int(len(agents))
+    prefix_steps = int(prefix_steps)
+    top_k = int(top_k)
+    n_eval_episodes = int(n_eval_episodes)
+    full_horizon = int(full_horizon)
+    evaluation_n_envs = int(evaluation_n_envs)
+
+    if n_candidates <= 0:
+        raise RuntimeError(
+            "Prefix-shortlist selector received zero candidate policies."
+        )
+    if prefix_steps <= 0 or prefix_steps >= full_horizon:
+        raise ValueError(
+            "Prefix-shortlist prefix must satisfy 0 < prefix < full horizon: "
+            f"prefix={prefix_steps}, horizon={full_horizon}."
+        )
+    if top_k <= 0:
+        raise ValueError("Prefix-shortlist top_k must be > 0.")
+    if n_eval_episodes <= 0:
+        raise ValueError(
+            "Prefix-shortlist n_eval_episodes must be > 0."
+        )
+    if evaluation_n_envs <= 0:
+        raise ValueError(
+            "Prefix-shortlist evaluation_n_envs must be > 0."
+        )
+
+    reset_plan = _sb3_evaluation_episode_reset_plan(
+        n_eval_episodes=n_eval_episodes,
+        n_envs=evaluation_n_envs,
+    )
+
+    effective_top_k = min(top_k, n_candidates)
+    candidate_episode_states = [[] for _ in range(n_candidates)]
+    prefix_scores = np.zeros(n_candidates, dtype=np.float64)
+    prefix_stds = np.zeros(n_candidates, dtype=np.float64)
+    prefix_mean_steps = np.zeros(n_candidates, dtype=np.float64)
+    full_returns = np.full(n_candidates, np.nan, dtype=np.float64)
+    selection_scores = np.full(n_candidates, -np.inf, dtype=np.float64)
+
+    opened_states = []
+    try:
+        print("---------------------------------")
+        print(
+            "PREFIX-SHORTLIST STAGE 1: evaluating all "
+            f"{n_candidates} candidates for {prefix_steps} steps "
+            f"x {n_eval_episodes} episodes"
+        )
+
+        for candidate_idx, agent in enumerate(agents):
+            model.policy.load_state_dict(agent)
+            model.policy.to(device)
+
+            episode_states = []
+            for seed_offset, local_episode_idx in reset_plan:
+                env, obs = _make_ant_seed_aligned_episode_env(
+                    env_name=env_name,
+                    seed=seed,
+                    episode_index=local_episode_idx,
+                    seed_offset=seed_offset,
+                )
+                episode_state = {
+                    "env": env,
+                    "obs": obs,
+                    "total_return": 0.0,
+                    "steps": 0,
+                    "done": False,
+                }
+                opened_states.append(episode_state)
+                episode_states.append(episode_state)
+
+                _advance_prefix_shortlist_episode(
+                    model=model,
+                    episode_state=episode_state,
+                    stop_after_steps=prefix_steps,
+                    full_horizon=full_horizon,
+                )
+
+            candidate_episode_states[candidate_idx] = episode_states
+            episode_prefix_returns = np.asarray(
+                [state["total_return"] for state in episode_states],
+                dtype=np.float64,
+            )
+            episode_prefix_steps = np.asarray(
+                [state["steps"] for state in episode_states],
+                dtype=np.float64,
+            )
+            prefix_scores[candidate_idx] = float(
+                np.mean(episode_prefix_returns)
+            )
+            prefix_stds[candidate_idx] = float(
+                np.std(episode_prefix_returns, ddof=0)
+            )
+            prefix_mean_steps[candidate_idx] = float(
+                np.mean(episode_prefix_steps)
+            )
+
+            print(
+                f"agent{candidate_idx}: prefix_return="
+                f"{prefix_scores[candidate_idx]:.6f}, "
+                f"mean_steps={prefix_mean_steps[candidate_idx]:.1f}"
+            )
+
+        # Match NumPy ranking/tie behavior used throughout the existing code.
+        # The last k indices in ascending argsort are the top-k candidates.
+        shortlist_indices = np.argsort(prefix_scores)[-effective_top_k:]
+        shortlist_mask = np.zeros(n_candidates, dtype=bool)
+        shortlist_mask[shortlist_indices] = True
+
+        # The discarded half can be closed immediately once the shortlist is
+        # known. Their step-250 returns/counts remain in the lightweight state
+        # dictionaries, but they take no more environment steps and retain no
+        # MuJoCo simulator resources during finalist continuation.
+        for candidate_idx in range(n_candidates):
+            if shortlist_mask[candidate_idx]:
+                continue
+            for episode_state in candidate_episode_states[candidate_idx]:
+                close_env_safely(episode_state.get("env"))
+                episode_state["env"] = None
+
+        print("---------------------------------")
+        print(
+            f"PREFIX-SHORTLIST STAGE 2: continuing top "
+            f"{effective_top_k} candidates from step {prefix_steps}"
+        )
+        print(
+            "shortlist indices (best prefix first): "
+            + str(
+                np.argsort(prefix_scores)[::-1][
+                    :effective_top_k
+                ].tolist()
+            )
+        )
+
+        for candidate_idx in shortlist_indices:
+            candidate_idx = int(candidate_idx)
+            model.policy.load_state_dict(agents[candidate_idx])
+            model.policy.to(device)
+
+            episode_states = candidate_episode_states[candidate_idx]
+            for episode_state in episode_states:
+                _advance_prefix_shortlist_episode(
+                    model=model,
+                    episode_state=episode_state,
+                    stop_after_steps=None,
+                    full_horizon=full_horizon,
+                )
+
+            episode_full_returns = np.asarray(
+                [state["total_return"] for state in episode_states],
+                dtype=np.float64,
+            )
+            full_return = float(np.mean(episode_full_returns))
+            if not np.isfinite(full_return):
+                raise RuntimeError(
+                    "Prefix-shortlist produced a non-finite finalist return "
+                    f"for candidate {candidate_idx}."
+                )
+
+            full_returns[candidate_idx] = full_return
+            selection_scores[candidate_idx] = full_return
+
+            # This finalist is complete; release its three simulators now.
+            for episode_state in episode_states:
+                close_env_safely(episode_state.get("env"))
+                episode_state["env"] = None
+
+            print(
+                f"agent{candidate_idx}: continued_full_return="
+                f"{full_return:.6f}"
+            )
+
+        if int(np.sum(np.isfinite(full_returns))) != effective_top_k:
+            raise RuntimeError(
+                "Prefix-shortlist finalist count mismatch after continuation."
+            )
+
+        selected_idx = int(np.argsort(selection_scores)[-1])
+        if not shortlist_mask[selected_idx]:
+            raise RuntimeError(
+                "Prefix-shortlist internal error: selected candidate is not "
+                "in the top-k prefix shortlist."
+            )
+
+        total_env_steps = int(
+            sum(state["steps"] for state in opened_states)
+        )
+        nominal_full_cap_steps = int(
+            n_candidates * n_eval_episodes * full_horizon
+        )
+        nominal_step_reduction = float(
+            1.0 - (total_env_steps / nominal_full_cap_steps)
+        )
+
+        # Rank 1 = highest 250-step prefix score.
+        prefix_order = np.argsort(prefix_scores)[::-1]
+        prefix_rank = np.empty(n_candidates, dtype=np.int64)
+        prefix_rank[prefix_order] = np.arange(
+            1, n_candidates + 1, dtype=np.int64
+        )
+
+        summary_row = {
+            "iteration": int(iteration),
+            "prefix_steps": int(prefix_steps),
+            "top_k": int(effective_top_k),
+            "n_candidates": int(n_candidates),
+            "n_eval_episodes": int(n_eval_episodes),
+            "evaluation_n_envs": int(evaluation_n_envs),
+            "full_horizon": int(full_horizon),
+            "selected_idx": int(selected_idx),
+            "selected_prefix_rank": int(prefix_rank[selected_idx]),
+            "selected_prefix_return": float(prefix_scores[selected_idx]),
+            "selected_full_return": float(full_returns[selected_idx]),
+            "total_env_steps": int(total_env_steps),
+            "nominal_full_cap_steps": int(nominal_full_cap_steps),
+            "nominal_step_reduction_vs_full_cap": nominal_step_reduction,
+            "mean_prefix_return_all_candidates": float(
+                np.mean(prefix_scores)
+            ),
+            "mean_full_return_finalists": float(
+                np.nanmean(full_returns)
+            ),
+        }
+
+        candidate_rows = []
+        for candidate_idx in range(n_candidates):
+            episode_states = candidate_episode_states[candidate_idx]
+            candidate_rows.append({
+                "iteration": int(iteration),
+                "candidate": int(candidate_idx),
+                "prefix_steps": int(prefix_steps),
+                "top_k": int(effective_top_k),
+                "prefix_mean_return": float(prefix_scores[candidate_idx]),
+                "prefix_episode_return_std": float(
+                    prefix_stds[candidate_idx]
+                ),
+                "prefix_rank": int(prefix_rank[candidate_idx]),
+                "shortlisted": bool(shortlist_mask[candidate_idx]),
+                "full_online_return": (
+                    float(full_returns[candidate_idx])
+                    if shortlist_mask[candidate_idx]
+                    else float("nan")
+                ),
+                "selection_score": float(
+                    selection_scores[candidate_idx]
+                ),
+                "mean_steps_used_per_episode": float(
+                    np.mean([state["steps"] for state in episode_states])
+                ),
+                "selected": bool(candidate_idx == selected_idx),
+            })
+
+        return {
+            "prefix_scores": prefix_scores,
+            "prefix_stds": prefix_stds,
+            "prefix_mean_steps": prefix_mean_steps,
+            "shortlist_indices": np.asarray(
+                shortlist_indices, dtype=np.int64
+            ),
+            "shortlist_mask": shortlist_mask,
+            "full_returns": full_returns,
+            "selection_scores": selection_scores,
+            "selected_idx": int(selected_idx),
+            "summary_row": summary_row,
+            "candidate_rows": candidate_rows,
+        }
+    finally:
+        # All environments are evaluation-only and are closed whether the
+        # staged selector succeeds or raises. Candidate interactions never enter
+        # PPO replay.
+        for episode_state in opened_states:
+            close_env_safely(episode_state.get("env"))
+
+
 # Evaluation function for a single candidate agent
 def evaluate_candidate(args):
     idx, agent_state_dict, env_name, seed, n_eval, gamma = args
@@ -6918,6 +7397,57 @@ if __name__ == "__main__":
         args = args_fetch_push_dense.get_args(rest_args)
     elif env_name == "BreakoutNoFrameskip-v4":
         args = args_breakout_no_frameskip.get_args(rest_args)
+
+    # The completed full-oracle diagnostics deliberately evaluate every
+    # candidate to episode completion. Keeping them active would erase the
+    # interaction savings of the real 250->top-10 selector. In selector mode
+    # disable only those analysis blocks; PPO/ESA/replay/training logic is not
+    # changed. Set PREFIX_SHORTLIST_SELECTOR=0 to reproduce the old diagnostics.
+    if PREFIX_SHORTLIST_SELECTOR:
+        PREFIX_BUDGET_STUDY = False
+        REPLAY_COVERAGE_ABLATION = False
+        FQE_CONVERGENCE_STUDY = False
+        KNN_SUPPORT_STUDY = False
+        OBJECTIVE_MISMATCH_STUDY = False
+        STATE_OCCUPANCY_KNN_STUDY = False
+        TIME_RESOLVED_OCCUPANCY_STUDY = False
+
+        if env_name != "Ant-v5":
+            raise NotImplementedError(
+                "PREFIX_SHORTLIST_SELECTOR is currently validated only for "
+                "the active Ant-v5 experiment."
+            )
+
+        try:
+            _shortlist_env_spec = gym.spec(env_name)
+            _shortlist_full_horizon = int(
+                _shortlist_env_spec.max_episode_steps
+            )
+        except Exception as exc:
+            raise RuntimeError(
+                "PREFIX_SHORTLIST_SELECTOR requires a registered Gymnasium "
+                "environment with spec.max_episode_steps."
+            ) from exc
+
+        if not (0 < PREFIX_SHORTLIST_STEPS < _shortlist_full_horizon):
+            raise ValueError(
+                "PREFIX_SHORTLIST_STEPS must be strictly between 0 and the "
+                f"environment horizon {_shortlist_full_horizon}."
+            )
+        print(
+            "Online prefix-shortlist selector enabled: "
+            f"prefix={PREFIX_SHORTLIST_STEPS}, "
+            f"top_k={PREFIX_SHORTLIST_TOP_K}, "
+            f"episodes={PREFIX_SHORTLIST_N_EVAL_EPISODES}, "
+            f"full_horizon={_shortlist_full_horizon}."
+        )
+        print(
+            "Completed full-oracle FQE/occupancy/prefix diagnostics are "
+            "disabled in this mode so discarded candidates truly stop at "
+            f"step {PREFIX_SHORTLIST_STEPS}."
+        )
+    else:
+        _shortlist_full_horizon = None
 
     if TIME_CONDITIONED_FINITE_HORIZON_FQE:
         fqe_finite_horizon_steps = resolve_fqe_finite_horizon(env_name)
@@ -7229,7 +7759,7 @@ if __name__ == "__main__":
     # Rank-correlation study: additionally score the exact same candidates with FQE, but do
     # NOT use FQE to choose the next policy. The original online-selection trajectory remains
     # unchanged.
-    rank_correlation_study = True
+    rank_correlation_study = not PREFIX_SHORTLIST_SELECTOR
     if rank_correlation_study and not online_eval:
         raise ValueError(
             "rank_correlation_study requires online_eval=True because online returns are "
@@ -7266,6 +7796,12 @@ if __name__ == "__main__":
     prefixBudgetMetrics = []
     prefixBudgetCandidateRows = []
 
+    # Real online 250-step -> top-10 -> continued-full selector diagnostics.
+    # These rows describe the selector that actually chooses the next policy;
+    # they never feed back into PPO/ESA beyond the intended best-agent choice.
+    prefixShortlistMetrics = []
+    prefixShortlistCandidateRows = []
+
     # Objective-alignment study. These diagnostics never participate in policy
     # selection; the original undiscounted online return remains canonical.
     objectiveMismatchMetrics = []
@@ -7300,6 +7836,13 @@ if __name__ == "__main__":
     use_ptb = False
 
     parallel_evaluation = False
+
+    if PREFIX_SHORTLIST_SELECTOR and parallel_evaluation:
+        raise NotImplementedError(
+            "PREFIX_SHORTLIST_SELECTOR requires non-parallel evaluation so "
+            "the exact episode environments can be paused at the prefix and "
+            "continued for finalists."
+        )
 
     if PREFIX_BUDGET_STUDY and parallel_evaluation:
         raise NotImplementedError(
@@ -7387,6 +7930,16 @@ if __name__ == "__main__":
                 saved_agents = False
 
             cum_rews = []
+            # New two-stage selector values. In selector mode, ``cum_rews``
+            # contains full returns for the top-10 finalists and NaN for the
+            # intentionally discarded candidates. ``shortlist_selection_scores``
+            # uses -inf for discarded candidates and is the only vector used by
+            # the selector itself.
+            prefix_shortlist_scores = None
+            prefix_shortlist_indices = None
+            prefix_shortlist_full_returns = None
+            shortlist_selection_scores = None
+
             # Diagnostic-only gamma-discounted returns from the SAME online
             # trajectories used to populate cum_rews. Never used for selection.
             cum_discounted_rews = []
@@ -7602,8 +8155,46 @@ if __name__ == "__main__":
                 support_reference_data = None
                 replay_buffer_before_candidate_eval = None
 
-            # Non-parallel evaluation (Commented out)
-            if not parallel_evaluation:
+            # Real 250-step -> top-10 -> continued-full selector.
+            # When disabled, the historical candidate-evaluation code below is
+            # entered unchanged.
+            if PREFIX_SHORTLIST_SELECTOR:
+                shortlist_result = evaluate_prefix_shortlist_selector(
+                    model=model,
+                    agents=agents,
+                    env_name=env_name,
+                    seed=args.seed,
+                    prefix_steps=PREFIX_SHORTLIST_STEPS,
+                    top_k=PREFIX_SHORTLIST_TOP_K,
+                    n_eval_episodes=PREFIX_SHORTLIST_N_EVAL_EPISODES,
+                    full_horizon=_shortlist_full_horizon,
+                    iteration=i,
+                    evaluation_n_envs=int(
+                        getattr(args, "n_envs", 1)
+                    ),
+                )
+                prefix_shortlist_scores = shortlist_result[
+                    "prefix_scores"
+                ]
+                prefix_shortlist_indices = shortlist_result[
+                    "shortlist_indices"
+                ]
+                prefix_shortlist_full_returns = shortlist_result[
+                    "full_returns"
+                ]
+                shortlist_selection_scores = shortlist_result[
+                    "selection_scores"
+                ]
+                cum_rews = prefix_shortlist_full_returns.tolist()
+                prefixShortlistMetrics.append(
+                    shortlist_result["summary_row"]
+                )
+                prefixShortlistCandidateRows.extend(
+                    shortlist_result["candidate_rows"]
+                )
+
+            # Non-parallel historical evaluation.
+            elif not parallel_evaluation:
                 for j, a in enumerate(agents):
                     model.policy.load_state_dict(a)
                     model.policy.to(device)
@@ -8745,7 +9336,25 @@ if __name__ == "__main__":
                 # print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
                 print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
             
-            print(f'avg cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')
+            if PREFIX_SHORTLIST_SELECTOR:
+                print(
+                    f'avg 250-step prefix return across all candidates: '
+                    f'{np.mean(prefix_shortlist_scores)}, '
+                    f'std: {np.std(prefix_shortlist_scores)}'
+                )
+                finalist_returns = prefix_shortlist_full_returns[
+                    prefix_shortlist_indices
+                ]
+                print(
+                    f'avg full return across top-{len(prefix_shortlist_indices)} '
+                    f'finalists: {np.mean(finalist_returns)}, '
+                    f'std: {np.std(finalist_returns)}'
+                )
+            else:
+                print(
+                    f'avg cum rews: {np.mean(cum_rews)}, '
+                    f'std: {np.std(cum_rews)}'
+                )
             if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
                 print(
                     f'avg gamma-discounted cum rews: '
@@ -8761,6 +9370,22 @@ if __name__ == "__main__":
             np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents_to_cpu(agents))
             if online_eval:
                 np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+                if PREFIX_SHORTLIST_SELECTOR:
+                    np.save(
+                        f'logs/{DIR}/prefix_shortlist_prefix_returns_'
+                        f'{i}_{i + SEARCH_INTERV}.npy',
+                        prefix_shortlist_scores,
+                    )
+                    np.save(
+                        f'logs/{DIR}/prefix_shortlist_indices_'
+                        f'{i}_{i + SEARCH_INTERV}.npy',
+                        prefix_shortlist_indices,
+                    )
+                    np.save(
+                        f'logs/{DIR}/prefix_shortlist_selection_scores_'
+                        f'{i}_{i + SEARCH_INTERV}.npy',
+                        shortlist_selection_scores,
+                    )
 
                 if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
                     np.save(f'logs/{DIR}/success_{i}_{i + SEARCH_INTERV}.npy', cum_success)
@@ -9519,7 +10144,19 @@ if __name__ == "__main__":
 
             # Finding the best agent from online evaluation
             if online_eval:
-                if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                if PREFIX_SHORTLIST_SELECTOR:
+                    if shortlist_selection_scores is None:
+                        raise RuntimeError(
+                            "Prefix-shortlist selector scores are missing at "
+                            "best-agent selection time."
+                        )
+                    # Non-finalists carry -inf, so this is exactly: choose the
+                    # best ordinary full online return among the top-10 prefix
+                    # finalists. Match the old NumPy argsort tie behavior.
+                    best_idx = int(
+                        np.argsort(shortlist_selection_scores)[-1]
+                    )
+                elif env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
                     # Mask for successes. Keep the original selection rule, but convert the
                     # Python lists to arrays before boolean indexing.
                     success_array = np.asarray(cum_success)
@@ -9541,6 +10178,43 @@ if __name__ == "__main__":
                 best_agent_index.append(best_idx)
                 np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
                 load_state_dict(model, best_agent)
+
+        if PREFIX_SHORTLIST_SELECTOR and prefixShortlistMetrics:
+            prefix_shortlist_summary_df = pd.DataFrame(
+                prefixShortlistMetrics
+            )
+            prefix_shortlist_candidates_df = pd.DataFrame(
+                prefixShortlistCandidateRows
+            )
+            prefix_shortlist_summary_df.to_csv(
+                f'logs/{DIR}/prefix_shortlist_summary.csv',
+                index=False,
+            )
+            prefix_shortlist_candidates_df.to_csv(
+                f'logs/{DIR}/prefix_shortlist_candidates.csv',
+                index=False,
+            )
+            np.save(
+                f'logs/{DIR}/prefix_shortlist_summary.npy',
+                np.array(prefixShortlistMetrics, dtype=object),
+                allow_pickle=True,
+            )
+
+            print("---------------------------------")
+            print("250-STEP -> TOP-10 -> FULL SELECTOR SUMMARY")
+            print(
+                "Mean selected full return: "
+                f"{prefix_shortlist_summary_df['selected_full_return'].mean():.4f}"
+            )
+            print(
+                "Mean selected prefix rank: "
+                f"{prefix_shortlist_summary_df['selected_prefix_rank'].mean():.2f}"
+            )
+            print(
+                "Mean nominal environment-step reduction vs full 1000-step "
+                "evaluation of every candidate: "
+                f"{prefix_shortlist_summary_df['nominal_step_reduction_vs_full_cap'].mean():.3f}"
+            )
 
         if PREFIX_BUDGET_STUDY and prefixBudgetMetrics:
             prefix_summary_df = pd.DataFrame(prefixBudgetMetrics)
