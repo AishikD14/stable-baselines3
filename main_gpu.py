@@ -607,16 +607,26 @@ PREFIX_BUDGET_STEPS = tuple(sorted(PREFIX_BUDGET_STEPS))
 
 # Online 250-step -> top-10 -> full-horizon shortlist selector.
 #
-# This is the deployment experiment motivated by the completed prefix-budget
-# study. Every candidate is evaluated on the SAME three deterministic Ant-v5
-# episode starts for at most PREFIX_SHORTLIST_STEPS. Only the top-k candidates
-# remain alive; their exact same episode environments are then continued from
-# the prefix boundary to the normal environment termination/TimeLimit. The
-# winner is still the candidate with the largest ordinary undiscounted mean
-# episodic return among the fully evaluated finalists.
+# This is the deployment experiment motivated by the completed Ant-v5
+# prefix-budget study. For the cross-environment generalization test, the SAME
+# Ant-derived selector (250-step prefix, top-10 shortlist, 3 evaluation episodes)
+# is carried unchanged to the standard Gymnasium MuJoCo locomotion tasks below.
+# Every candidate is evaluated on seed-aligned episode starts for at most
+# PREFIX_SHORTLIST_STEPS. Only the top-k candidates remain alive; their exact
+# same episode environments are then continued from the prefix boundary to the
+# normal environment termination/TimeLimit.
 #
 # PPO training, ESA candidate generation, replay-buffer collection, checkpoint
 # handling, and the candidate policy parameters are untouched.
+PREFIX_SHORTLIST_SUPPORTED_ENVS = (
+    "Ant-v5",
+    "HalfCheetah-v5",
+    "Hopper-v5",
+    "Walker2d-v5",
+    "Humanoid-v5",
+    "Swimmer-v5",
+)
+
 PREFIX_SHORTLIST_SELECTOR = (
     os.environ.get("PREFIX_SHORTLIST_SELECTOR", "1") == "1"
 )
@@ -628,6 +638,23 @@ PREFIX_SHORTLIST_TOP_K = int(
 )
 PREFIX_SHORTLIST_N_EVAL_EPISODES = int(
     os.environ.get("PREFIX_SHORTLIST_N_EVAL_EPISODES", "3")
+)
+
+# Analysis-only shadow oracle for the deployed prefix shortlist selector.
+#
+# The selector itself remains EXACTLY 250-step -> top-k -> full continuation:
+# only shortlisted candidates participate in selection. After that selection
+# score vector has been fixed, this diagnostic optionally resumes the paused
+# non-shortlisted candidate episodes to the same full horizon. Those extra
+# interactions are logged separately and NEVER enter selection, PPO replay,
+# ESA candidate generation, or the policy loaded for the next iteration.
+#
+# This lets the same run answer whether a prefix-rank > top_k candidate would
+# have beaten the deployed shortlist winner. Because those are real extra
+# environment interactions, they are diagnostic overhead and are deliberately
+# excluded from the selector's existing total_env_steps / reduction metrics.
+PREFIX_SHORTLIST_SHADOW_ORACLE = (
+    os.environ.get("PREFIX_SHORTLIST_SHADOW_ORACLE", "1") == "1"
 )
 
 if PREFIX_SHORTLIST_STEPS <= 0:
@@ -645,11 +672,12 @@ if PREFIX_SHORTLIST_N_EVAL_EPISODES <= 0:
 # the next PPO policy is chosen by the original all-candidate online rule.
 #
 # The existing PREFIX_SHORTLIST_SELECTOR flag is not rewritten. The derived
-# *_ACTIVE flag below only decides which experiment is executed, so setting
-# MATCHED_FULL_ONLINE_CONTROL=0 restores the shortlist deployment behavior
-# exactly as before. This control is enabled by default in this dedicated file.
+# *_ACTIVE flag below only decides which experiment is executed. This
+# cross-environment file defaults to the hybrid selector; set
+# MATCHED_FULL_ONLINE_CONTROL=1 to run the matched exhaustive control for the
+# same environment/seed.
 MATCHED_FULL_ONLINE_CONTROL = (
-    os.environ.get("MATCHED_FULL_ONLINE_CONTROL", "1") == "1"
+    os.environ.get("MATCHED_FULL_ONLINE_CONTROL", "0") == "1"
 )
 PREFIX_SHORTLIST_SELECTOR_ACTIVE = (
     PREFIX_SHORTLIST_SELECTOR and not MATCHED_FULL_ONLINE_CONTROL
@@ -823,7 +851,7 @@ class ANNAnnoy:
             all_indices.append(indices)
             all_distances.append(distances)
         return all_indices, all_distances
-    
+
 class ANNFaiss:
     def __init__(self, dimension, n_neighbors) -> None:
         import faiss
@@ -871,7 +899,7 @@ class ANNHnswlib:
     def query(self, coor):
         indices,  distances = self.index.knn_query(coor, self.n_neighbors)
         return indices, distances
-    
+
 def F(epsilon, sigma, d):
     return 6 * epsilon * (2 * (sigma / d)**13 - (sigma / d)**7) / sigma
 
@@ -966,7 +994,7 @@ def empty_center(data, coor, neighbor, use_ANN, use_momentum, movestep, numiter)
     momentum = np.zeros(coor.shape)
     es_configs = []
     for i in range(numiter):
-        
+
         if not use_ANN:
             # Calculate the nearest neighbors of the agents using KNN
             distances_, adjs_ = neighbor.kneighbors(coor)
@@ -995,7 +1023,7 @@ def empty_center(data, coor, neighbor, use_ANN, use_momentum, movestep, numiter)
             momentum /= np.linalg.norm(momentum)
 
     es_configs.extend(coor.tolist())
-        
+
     if not use_momentum:
         return np.linalg.norm(coor - orig_coor), coor
     else:
@@ -1012,23 +1040,23 @@ def random_walk(data, coor, neighbor, use_momentum, movestep, numiter):
     for i in range(numiter):
         # Generate a random direction
         direction = np.random.uniform(-1, 1, coor.shape)
-        
+
         # Normalize the random direction
         mag = np.linalg.norm(direction)
         if mag < 1e-7:
             break
         direction /= mag
-        
+
         if use_momentum:
             direction = direction * mag / (cum_mag + mag) + momentum * cum_mag / (cum_mag + mag)
 
         coor += direction * movestep
-        
+
         if use_momentum:
             cum_mag = gamma * cum_mag + mag
             momentum = gamma * momentum + direction
             momentum /= np.linalg.norm(momentum)
-        
+
         # Store configurations periodically for elastic search purposes
         if i % 20 == 0:
             # if use_momentum:
@@ -1323,7 +1351,7 @@ def random_search_policies(algo, directory, start, end, env, agent_num=10):
     # Sample from the fitted Gaussian distribution
     policies = np.random.multivariate_normal(mean, covariance, agent_num)
     print("Shape of generated policies:", policies.shape)
-    
+
     # Calculate log-likelihood of the training data under the fitted Gaussian model
     # log_likelihood = np.sum(multivariate_normal.logpdf(dt, mean=mean, cov=covariance))
     # print("Log-likelihood of the training data under the fitted Gaussian model:", log_likelihood)
@@ -1337,7 +1365,7 @@ def random_search_policies(algo, directory, start, end, env, agent_num=10):
 
     # # Calculate the distance of each random agent to the mean of the training agents
     # distances = [euclidean(policy, training_agents_mean) for policy in policies]
-    
+
     # # Average distance
     # average_distance = np.mean(distances)
     # print("Average distance of random agents to training agents:", average_distance)
@@ -1362,7 +1390,7 @@ def random_search_policies(algo, directory, start, end, env, agent_num=10):
     average_distance = np.mean(distances)
     print("Average distance of random agents to nearest neighbors:", average_distance)
 
-    
+
     return agents, average_distance
 
 # Neighbor search plus random walk
@@ -1397,7 +1425,7 @@ def neighbor_search_random_walk(algo, directory, start, end, env, saved_agents=F
     # neigh = NearestNeighbors(n_neighbors=6)
     # neigh.fit(policies)
     # _, adjs = neigh.kneighbors(policies)
-    
+
     # points = policies[adjs[:, 1:]]
     # points = points.mean(axis=1)
     # print(points.shape)
@@ -1408,7 +1436,7 @@ def neighbor_search_random_walk(algo, directory, start, end, env, saved_agents=F
     # # Average distance
     # average_distance = np.mean(distances)
     # print("Average distance of agents to nearest neighbors:", average_distance)
-    
+
     return agents, 0
 
 # Random Sampling plus empty space search
@@ -1457,7 +1485,7 @@ def random_search_empty_space_policies(algo, directory, start, end, env, agent_n
     # Average distance
     average_distance = np.mean(distances)
     print("Average distance of agents to nearest neighbors:", average_distance)
-    
+
     return agents, average_distance
 
 # Random Sampling plus random walk
@@ -1503,7 +1531,7 @@ def random_search_random_walk(algo, directory, start, end, env, agent_num=10):
     # Average distance
     average_distance = np.mean(distances)
     print("Average distance of agents to nearest neighbors:", average_distance)
-    
+
     return agents, average_distance
 
 def load_state_dict(algo, params):
@@ -6076,7 +6104,7 @@ def average_checkpoints(checkpoint_paths):
 
     policies = np.array(policies)
     avg_policy_vec = np.mean(policies, axis=0)
-    
+
     return avg_policy_vec
 
 # Guided Evolutionary Strategies
@@ -6801,7 +6829,7 @@ def rollout_policy(policy, env, n_eval=3, deterministic=True, gamma=None):
         while not done:
             # SB3 uses: policy.predict(obs, deterministic)
             action, _ = policy.predict(obs, deterministic=deterministic)
-            
+
             obs, reward, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
 
@@ -6824,31 +6852,32 @@ def rollout_policy(policy, env, n_eval=3, deterministic=True, gamma=None):
     )
     return mean_reward, mean_discounted_reward
 
-def _make_ant_seed_aligned_episode_env(
+def _make_mujoco_seed_aligned_episode_env(
     env_name,
     seed,
     episode_index,
     seed_offset=0,
 ):
-    """Create one resumable Ant evaluation episode matching the old reset order.
+    """Create one resumable MuJoCo evaluation episode matching old reset order.
 
-    The previous non-parallel evaluator did:
+    The historical non-parallel evaluator does:
         env.reset(seed=seed)
         evaluate_policy(...)
-    and SB3 then reset the environment once at evaluator start and once after
-    each completed episode. Ant-v5 consumes reset randomness at reset time but
-    has deterministic dynamics thereafter. Therefore episode e can be placed in
-    its exact old initial state by seeding a fresh environment and advancing the
-    reset RNG e+1 reset calls before any actions are taken.
+    and SB3 then resets the environment once at evaluator start and again after
+    each completed episode. The supported Gymnasium MuJoCo locomotion tasks use
+    seeded reset randomness and deterministic dynamics thereafter, so episode e
+    can be placed at the same seeded reset in a fresh environment by advancing
+    its local reset RNG e+1 calls before taking any action.
 
-    Keeping one environment per episode lets the prefix stage pause at step 250
-    and later continue the exact same trajectory without replaying/restarting it.
+    Keeping one environment per episode lets the prefix stage pause at the
+    prefix boundary and later continue the exact same trajectory without
+    replaying or restarting it.
     """
-    if env_name != "Ant-v5":
+    if env_name not in PREFIX_SHORTLIST_SUPPORTED_ENVS:
         raise NotImplementedError(
-            "PREFIX_SHORTLIST_SELECTOR is validated for the active Ant-v5 "
-            "experiment only. Its seed-alignment argument relies on Ant-v5 "
-            "using randomness at reset but deterministic dynamics afterward."
+            "PREFIX_SHORTLIST_SELECTOR seed-aligned continuation is enabled "
+            "only for the validated standard MuJoCo locomotion set: "
+            f"{PREFIX_SHORTLIST_SUPPORTED_ENVS}. Got {env_name!r}."
         )
 
     episode_index = int(episode_index)
@@ -6947,8 +6976,8 @@ def _advance_prefix_shortlist_episode(
             raise RuntimeError(
                 "Prefix-shortlist evaluation reached the configured full "
                 "horizon without an environment termination/truncation. "
-                "The Gymnasium TimeLimit semantics differ from the expected "
-                "Ant-v5 setup."
+                "The Gymnasium TimeLimit semantics differ from the configured "
+                f"{episode_state.get('env_name', 'environment')} setup."
             )
 
         action, _ = model.predict(
@@ -6974,6 +7003,120 @@ def _advance_prefix_shortlist_episode(
         episode_state["done"] = bool(terminated or truncated)
 
 
+
+def _continue_prefix_shortlist_shadow_oracle(
+    model,
+    agents,
+    candidate_episode_states,
+    shortlist_mask,
+    finalist_full_returns,
+    full_horizon,
+):
+    """Continue discarded prefix candidates for an analysis-only all-20 oracle.
+
+    This function is deliberately called only AFTER the deployed shortlist
+    selection scores have been finalized. It resumes the exact already-paused
+    episode environments for candidates outside the shortlist and computes
+    their full-horizon returns. It never modifies the shortlist selection-score
+    vector.
+
+    To keep the surrounding experiment behavior unchanged, Python/NumPy/Torch
+    RNG state and the model policy state/mode are restored before returning.
+    The temporary evaluation environments themselves are diagnostic-only and
+    are closed after their shadow continuation.
+    """
+    shortlist_mask = np.asarray(shortlist_mask, dtype=bool)
+    shadow_full_returns = np.asarray(
+        finalist_full_returns, dtype=np.float64
+    ).copy()
+
+    if len(agents) != len(candidate_episode_states):
+        raise RuntimeError(
+            "Shadow oracle candidate/state length mismatch: "
+            f"agents={len(agents)}, states={len(candidate_episode_states)}."
+        )
+    if shortlist_mask.shape != (len(agents),):
+        raise RuntimeError(
+            "Shadow oracle shortlist mask has unexpected shape: "
+            f"{shortlist_mask.shape}."
+        )
+
+    discarded_indices = np.flatnonzero(~shortlist_mask)
+    if len(discarded_indices) == 0:
+        return shadow_full_returns
+
+    python_rng_state = random.getstate()
+    numpy_rng_state = np.random.get_state()
+    torch_rng_state = torch.random.get_rng_state()
+    cuda_rng_states = (
+        torch.cuda.get_rng_state_all()
+        if torch.cuda.is_available()
+        else None
+    )
+    policy_state = state_dict_to_cpu(model.policy.state_dict())
+    policy_training_mode = bool(model.policy.training)
+
+    try:
+        print("---------------------------------")
+        print(
+            "PREFIX-SHORTLIST SHADOW ORACLE: continuing discarded "
+            f"{len(discarded_indices)} candidates for diagnostics only"
+        )
+        print(
+            "Shadow oracle does NOT change shortlist selection; extra "
+            "environment steps are logged separately."
+        )
+
+        for candidate_idx in discarded_indices:
+            candidate_idx = int(candidate_idx)
+            model.policy.load_state_dict(agents[candidate_idx])
+            model.policy.to(device)
+
+            episode_states = candidate_episode_states[candidate_idx]
+            for episode_state in episode_states:
+                _advance_prefix_shortlist_episode(
+                    model=model,
+                    episode_state=episode_state,
+                    stop_after_steps=None,
+                    full_horizon=full_horizon,
+                )
+
+            episode_full_returns = np.asarray(
+                [state["total_return"] for state in episode_states],
+                dtype=np.float64,
+            )
+            full_return = float(np.mean(episode_full_returns))
+            if not np.isfinite(full_return):
+                raise RuntimeError(
+                    "Prefix-shortlist shadow oracle produced a non-finite "
+                    f"return for candidate {candidate_idx}."
+                )
+            shadow_full_returns[candidate_idx] = full_return
+
+            for episode_state in episode_states:
+                close_env_safely(episode_state.get("env"))
+                episode_state["env"] = None
+
+            print(
+                f"agent{candidate_idx}: shadow_full_return="
+                f"{full_return:.6f}"
+            )
+    finally:
+        # Restore the exact model/RNG state visible to the surrounding
+        # experiment before this analysis-only diagnostic ran.
+        model.policy.load_state_dict(policy_state)
+        model.policy.to(device)
+        model.policy.set_training_mode(policy_training_mode)
+
+        random.setstate(python_rng_state)
+        np.random.set_state(numpy_rng_state)
+        torch.random.set_rng_state(torch_rng_state)
+        if cuda_rng_states is not None:
+            torch.cuda.set_rng_state_all(cuda_rng_states)
+
+    return shadow_full_returns
+
+
 def evaluate_prefix_shortlist_selector(
     model,
     agents,
@@ -6989,13 +7132,19 @@ def evaluate_prefix_shortlist_selector(
     """Run the real 250-step -> top-k -> continued-full evaluation selector.
 
     Stage 1 evaluates every candidate for at most ``prefix_steps`` on the same
-    three Ant-v5 episode starts used by the historical non-parallel evaluator.
+    seeded episode starts used by the historical non-parallel evaluator.
     Stage 2 resumes ONLY the top-k candidates from the exact paused states and
-    finishes those episodes. Non-finalists take no more environment steps.
+    finishes those episodes. The deployed selection is finalized from those
+    finalists exactly as before.
 
-    Returns full-horizon values only for finalists (NaN elsewhere), plus an
-    explicit selection-score vector with -inf for non-finalists so they cannot
-    accidentally be selected downstream.
+    If PREFIX_SHORTLIST_SHADOW_ORACLE is enabled, a diagnostic-only stage then
+    resumes the discarded candidates to full horizon so all-candidate oracle
+    recall/regret can be measured in the SAME run. Those extra interactions do
+    not alter the finalist-only selection-score vector.
+
+    Returns the original finalist-only full-horizon values (NaN elsewhere) plus
+    an explicit selection-score vector with -inf for non-finalists, together
+    with separate shadow-oracle full returns when enabled.
     """
     n_candidates = int(len(agents))
     prefix_steps = int(prefix_steps)
@@ -7036,6 +7185,7 @@ def evaluate_prefix_shortlist_selector(
     prefix_mean_steps = np.zeros(n_candidates, dtype=np.float64)
     full_returns = np.full(n_candidates, np.nan, dtype=np.float64)
     selection_scores = np.full(n_candidates, -np.inf, dtype=np.float64)
+    shadow_full_returns = np.full(n_candidates, np.nan, dtype=np.float64)
 
     opened_states = []
     try:
@@ -7052,7 +7202,7 @@ def evaluate_prefix_shortlist_selector(
 
             episode_states = []
             for seed_offset, local_episode_idx in reset_plan:
-                env, obs = _make_ant_seed_aligned_episode_env(
+                env, obs = _make_mujoco_seed_aligned_episode_env(
                     env_name=env_name,
                     seed=seed,
                     episode_index=local_episode_idx,
@@ -7060,6 +7210,7 @@ def evaluate_prefix_shortlist_selector(
                 )
                 episode_state = {
                     "env": env,
+                    "env_name": env_name,
                     "obs": obs,
                     "total_return": 0.0,
                     "steps": 0,
@@ -7106,16 +7257,19 @@ def evaluate_prefix_shortlist_selector(
         shortlist_mask = np.zeros(n_candidates, dtype=bool)
         shortlist_mask[shortlist_indices] = True
 
-        # The discarded half can be closed immediately once the shortlist is
-        # known. Their step-250 returns/counts remain in the lightweight state
-        # dictionaries, but they take no more environment steps and retain no
-        # MuJoCo simulator resources during finalist continuation.
-        for candidate_idx in range(n_candidates):
-            if shortlist_mask[candidate_idx]:
-                continue
-            for episode_state in candidate_episode_states[candidate_idx]:
-                close_env_safely(episode_state.get("env"))
-                episode_state["env"] = None
+        # Preserve the original deployment behavior when the shadow oracle is
+        # disabled: discarded candidates are closed at the prefix boundary.
+        # When the shadow oracle is enabled, keep those exact paused simulator
+        # states alive only until AFTER finalist selection has been finalized.
+        # Their later continuation is diagnostic-only and never changes the
+        # selector's scores or selected policy.
+        if not PREFIX_SHORTLIST_SHADOW_ORACLE:
+            for candidate_idx in range(n_candidates):
+                if shortlist_mask[candidate_idx]:
+                    continue
+                for episode_state in candidate_episode_states[candidate_idx]:
+                    close_env_safely(episode_state.get("env"))
+                    episode_state["env"] = None
 
         print("---------------------------------")
         print(
@@ -7181,6 +7335,17 @@ def evaluate_prefix_shortlist_selector(
                 "in the top-k prefix shortlist."
             )
 
+        # IMPORTANT: capture the deployed selector cost BEFORE any shadow-oracle
+        # continuation. These are the exact step counts the algorithm would use
+        # with the diagnostic disabled, so the existing total_env_steps and
+        # reduction metrics preserve their original meaning.
+        selector_steps_per_candidate = np.asarray(
+            [
+                np.mean([state["steps"] for state in episode_states])
+                for episode_states in candidate_episode_states
+            ],
+            dtype=np.float64,
+        )
         total_env_steps = int(
             sum(state["steps"] for state in opened_states)
         )
@@ -7191,14 +7356,117 @@ def evaluate_prefix_shortlist_selector(
             1.0 - (total_env_steps / nominal_full_cap_steps)
         )
 
-        # Rank 1 = highest 250-step prefix score.
+        # Rank 1 = highest prefix score.
         prefix_order = np.argsort(prefix_scores)[::-1]
         prefix_rank = np.empty(n_candidates, dtype=np.int64)
         prefix_rank[prefix_order] = np.arange(
             1, n_candidates + 1, dtype=np.int64
         )
 
+        # Analysis-only all-candidate oracle. The deployed winner and selection
+        # score vector above are already fixed and are never overwritten here.
+        if PREFIX_SHORTLIST_SHADOW_ORACLE:
+            shadow_full_returns = _continue_prefix_shortlist_shadow_oracle(
+                model=model,
+                agents=agents,
+                candidate_episode_states=candidate_episode_states,
+                shortlist_mask=shortlist_mask,
+                finalist_full_returns=full_returns,
+                full_horizon=full_horizon,
+            )
+        else:
+            shadow_full_returns = np.asarray(
+                full_returns, dtype=np.float64
+            ).copy()
+
+        diagnostic_total_env_steps = int(
+            sum(state["steps"] for state in opened_states)
+        )
+        shadow_oracle_extra_env_steps = int(
+            diagnostic_total_env_steps - total_env_steps
+        )
+        if shadow_oracle_extra_env_steps < 0:
+            raise RuntimeError(
+                "Prefix-shortlist shadow oracle produced negative extra-step "
+                "accounting."
+            )
+        diagnostic_step_reduction_vs_full_cap = float(
+            1.0 - (diagnostic_total_env_steps / nominal_full_cap_steps)
+        )
+
+        shadow_enabled = bool(PREFIX_SHORTLIST_SHADOW_ORACLE)
+        if shadow_enabled:
+            if not np.all(np.isfinite(shadow_full_returns)):
+                raise RuntimeError(
+                    "Shadow oracle enabled but not every candidate has a "
+                    "finite full-horizon return."
+                )
+
+            oracle_return = float(np.max(shadow_full_returns))
+            oracle_idx = int(np.argsort(shadow_full_returns)[-1])
+            oracle_best_mask = shadow_full_returns == oracle_return
+            oracle_recalled = bool(
+                np.any(oracle_best_mask & shortlist_mask)
+            )
+            selected_matches_oracle = bool(
+                np.isclose(
+                    float(full_returns[selected_idx]),
+                    oracle_return,
+                    rtol=0.0,
+                    atol=1e-12,
+                )
+            )
+            selector_regret_vs_oracle = float(
+                oracle_return - float(full_returns[selected_idx])
+            )
+            if selector_regret_vs_oracle < -1e-9:
+                raise RuntimeError(
+                    "Shadow-oracle return is lower than the deployed selected "
+                    "return, which is internally inconsistent."
+                )
+
+            full_order = np.argsort(shadow_full_returns)[::-1]
+            shadow_full_rank = np.empty(n_candidates, dtype=np.int64)
+            shadow_full_rank[full_order] = np.arange(
+                1, n_candidates + 1, dtype=np.int64
+            )
+
+            discarded_indices = np.flatnonzero(~shortlist_mask)
+            if len(discarded_indices) > 0:
+                discarded_values = shadow_full_returns[discarded_indices]
+                discarded_best_pos = int(np.argsort(discarded_values)[-1])
+                discarded_best_idx = int(
+                    discarded_indices[discarded_best_pos]
+                )
+                discarded_best_full_return = float(
+                    shadow_full_returns[discarded_best_idx]
+                )
+                discarded_best_prefix_rank = int(
+                    prefix_rank[discarded_best_idx]
+                )
+                discarded_best_beats_selected = bool(
+                    discarded_best_full_return
+                    > float(full_returns[selected_idx])
+                )
+            else:
+                discarded_best_idx = -1
+                discarded_best_full_return = float("nan")
+                discarded_best_prefix_rank = -1
+                discarded_best_beats_selected = False
+        else:
+            oracle_idx = -1
+            oracle_return = float("nan")
+            oracle_recalled = False
+            selected_matches_oracle = False
+            selector_regret_vs_oracle = float("nan")
+            shadow_full_rank = np.full(n_candidates, -1, dtype=np.int64)
+            discarded_best_idx = -1
+            discarded_best_full_return = float("nan")
+            discarded_best_prefix_rank = -1
+            discarded_best_beats_selected = False
+
         summary_row = {
+            "environment": str(env_name),
             "iteration": int(iteration),
             "prefix_steps": int(prefix_steps),
             "top_k": int(effective_top_k),
@@ -7219,12 +7487,48 @@ def evaluate_prefix_shortlist_selector(
             "mean_full_return_finalists": float(
                 np.nanmean(full_returns)
             ),
+            # Shadow-oracle fields are analysis-only. Existing selector fields
+            # above keep their pre-diagnostic semantics unchanged.
+            "shadow_oracle_enabled": bool(shadow_enabled),
+            "shadow_oracle_idx": int(oracle_idx),
+            "shadow_oracle_prefix_rank": (
+                int(prefix_rank[oracle_idx])
+                if oracle_idx >= 0 else -1
+            ),
+            "shadow_oracle_full_return": float(oracle_return),
+            "shadow_oracle_recalled_by_shortlist": bool(oracle_recalled),
+            "selected_matches_shadow_oracle": bool(
+                selected_matches_oracle
+            ),
+            "selector_regret_vs_shadow_oracle": float(
+                selector_regret_vs_oracle
+            ),
+            "best_discarded_idx": int(discarded_best_idx),
+            "best_discarded_prefix_rank": int(
+                discarded_best_prefix_rank
+            ),
+            "best_discarded_full_return": float(
+                discarded_best_full_return
+            ),
+            "best_discarded_beats_selected": bool(
+                discarded_best_beats_selected
+            ),
+            "shadow_oracle_extra_env_steps": int(
+                shadow_oracle_extra_env_steps
+            ),
+            "diagnostic_total_env_steps": int(
+                diagnostic_total_env_steps
+            ),
+            "diagnostic_step_reduction_vs_full_cap": float(
+                diagnostic_step_reduction_vs_full_cap
+            ),
         }
 
         candidate_rows = []
         for candidate_idx in range(n_candidates):
             episode_states = candidate_episode_states[candidate_idx]
             candidate_rows.append({
+                "environment": str(env_name),
                 "iteration": int(iteration),
                 "candidate": int(candidate_idx),
                 "prefix_steps": int(prefix_steps),
@@ -7243,10 +7547,39 @@ def evaluate_prefix_shortlist_selector(
                 "selection_score": float(
                     selection_scores[candidate_idx]
                 ),
+                # Existing field preserves deployed selector cost semantics.
                 "mean_steps_used_per_episode": float(
-                    np.mean([state["steps"] for state in episode_states])
+                    selector_steps_per_candidate[candidate_idx]
                 ),
                 "selected": bool(candidate_idx == selected_idx),
+                "shadow_oracle_enabled": bool(shadow_enabled),
+                "shadow_continued": bool(
+                    shadow_enabled and not shortlist_mask[candidate_idx]
+                ),
+                "shadow_full_online_return": (
+                    float(shadow_full_returns[candidate_idx])
+                    if shadow_enabled else float("nan")
+                ),
+                "shadow_full_rank": int(
+                    shadow_full_rank[candidate_idx]
+                ),
+                "shadow_oracle_best": bool(
+                    shadow_enabled
+                    and np.isclose(
+                        shadow_full_returns[candidate_idx],
+                        oracle_return,
+                        rtol=0.0,
+                        atol=1e-12,
+                    )
+                ),
+                "shadow_would_beat_selected": bool(
+                    shadow_enabled
+                    and shadow_full_returns[candidate_idx]
+                    > float(full_returns[selected_idx])
+                ),
+                "diagnostic_mean_steps_used_per_episode": float(
+                    np.mean([state["steps"] for state in episode_states])
+                ),
             })
 
         return {
@@ -7259,6 +7592,12 @@ def evaluate_prefix_shortlist_selector(
             "shortlist_mask": shortlist_mask,
             "full_returns": full_returns,
             "selection_scores": selection_scores,
+            "shadow_full_returns": shadow_full_returns,
+            "shadow_oracle_idx": int(oracle_idx),
+            "shadow_oracle_recalled": bool(oracle_recalled),
+            "selector_regret_vs_shadow_oracle": float(
+                selector_regret_vs_oracle
+            ),
             "selected_idx": int(selected_idx),
             "summary_row": summary_row,
             "candidate_rows": candidate_rows,
@@ -7277,6 +7616,7 @@ def build_matched_full_online_control_rows(
     n_eval_episodes,
     evaluation_n_envs,
     full_horizon,
+    environment=None,
 ):
     """Build read-only logging rows for the matched full-online control.
 
@@ -7325,6 +7665,7 @@ def build_matched_full_online_control_rows(
     )
 
     summary_row = {
+        "environment": "" if environment is None else str(environment),
         "iteration": int(iteration),
         "mode": "matched_full_online_control",
         "n_candidates": n_candidates,
@@ -7348,6 +7689,7 @@ def build_matched_full_online_control_rows(
     candidate_rows = []
     for candidate_idx in range(n_candidates):
         candidate_rows.append({
+            "environment": "" if environment is None else str(environment),
             "iteration": int(iteration),
             "mode": "matched_full_online_control",
             "candidate": int(candidate_idx),
@@ -7446,19 +7788,2897 @@ def parallel_evaluate(
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
+
+# -------------------------------------------------------------------------------------------------
+# Study orchestration helpers
+# -------------------------------------------------------------------------------------------------
+# These helpers are a structural refactor only. They keep the original study code/order intact
+# while keeping the executable training loop focused on PPO/ESA control flow.
+
+def prepare_rank_correlation_study_iteration(model, agents, iteration, fqe_finite_horizon_steps, rank_correlation_study):
+    if rank_correlation_study:
+        fqe_dataset = build_fqe_dataset(model)
+
+        # Freeze corrected native transition views at the same point in time,
+        # BEFORE online candidate evaluation. Candidate rollouts therefore cannot
+        # enter any replay-coverage window.
+        replay_coverage_data = None
+        if FQE_BACKEND == "native_batched":
+            if REPLAY_COVERAGE_ABLATION:
+                replay_coverage_data = OrderedDict()
+                for coverage_window in REPLAY_COVERAGE_WINDOWS:
+                    coverage_label = (
+                        "full" if coverage_window is None
+                        else str(int(coverage_window))
+                    )
+                    replay_coverage_data[coverage_label] = (
+                        build_native_fqe_replay_data(
+                            model,
+                            max_transitions=coverage_window,
+                            finite_horizon_steps=(
+                                fqe_finite_horizon_steps
+                            ),
+                        )
+                    )
+
+                # Replay-coverage ablation must vary only the FQE
+                # TRAINING replay. Use one common frozen start-state
+                # reference set for scoring every window; otherwise the
+                # experiment changes both replay coverage and the s0
+                # distribution used by E[Q(s0, pi(s0))].
+                coverage_reference_initial_observations = np.array(
+                    replay_coverage_data["full"]["initial_observations"],
+                    dtype=np.float32,
+                    copy=True,
+                )
+                coverage_reference_initial_timesteps = np.zeros(
+                    (
+                        len(coverage_reference_initial_observations),
+                        1,
+                    ),
+                    dtype=np.float32,
+                )
+
+                for coverage_data in replay_coverage_data.values():
+                    coverage_data["training_initial_states"] = int(
+                        len(coverage_data["initial_observations"])
+                    )
+                    coverage_data["initial_observations"] = (
+                        coverage_reference_initial_observations.copy()
+                    )
+                    coverage_data["initial_timesteps"] = (
+                        coverage_reference_initial_timesteps.copy()
+                    )
+                    coverage_data["score_initial_states"] = int(
+                        len(coverage_reference_initial_observations)
+                    )
+
+                print(
+                    "Replay coverage scoring reference: "
+                    f"{len(coverage_reference_initial_observations)} "
+                    "common full-buffer initial states."
+                )
+
+                # Preserve original/canonical behavior: the existing rank study
+                # remains defined by the full corrected replay buffer.
+                native_fqe_data = replay_coverage_data["full"]
+            else:
+                native_fqe_data = build_native_fqe_replay_data(
+                    model,
+                    finite_horizon_steps=fqe_finite_horizon_steps,
+                )
+
+            # The behavioral trust-region penalty uses one COMMON full
+            # corrected replay reference for all coverage windows. This
+            # keeps the coverage ablation scientifically clean: only FQE
+            # training coverage changes across windows, not the support
+            # metric itself.
+            support_reference_data = native_fqe_data
+        else:
+            native_fqe_data = None
+            # d3rlpy still receives the same explicit behavior-support
+            # penalty, built from the corrected replay semantics.
+            support_reference_data = build_native_fqe_replay_data(
+                model,
+                finite_horizon_steps=fqe_finite_horizon_steps,
+            )
+
+        replay_buffer_before_candidate_eval = replay_buffer_signature(model.replay_buffer)
+        print(
+            "Rank-correlation study enabled: frozen one FQE dataset for all "
+            f"{len(agents)} candidates in iteration {iteration}. "
+            f"FQE backend: {FQE_BACKEND}"
+        )
+    else:
+        fqe_dataset = None
+        native_fqe_data = None
+        replay_coverage_data = None
+        support_reference_data = None
+        replay_buffer_before_candidate_eval = None
+    return (fqe_dataset, native_fqe_data, replay_coverage_data, support_reference_data, replay_buffer_before_candidate_eval)
+
+
+def evaluate_candidates_iteration(model, agents, env_name, args, iteration, DIR, online_eval, parallel_evaluation, rank_correlation_study, prefixShortlistMetrics, prefixShortlistCandidateRows, cum_rews, cum_discounted_rews, candidate_occupancy_trajectories, candidate_prefix_reward_episodes, cum_success, advantage_rew, shortlist_full_horizon, make_envs):
+    # Preserve the pre-refactor outer-loop defaults for non-shortlist paths.
+    # These remain None unless the active hybrid selector populates them.
+    prefix_shortlist_scores = None
+    prefix_shortlist_indices = None
+    prefix_shortlist_full_returns = None
+    shortlist_selection_scores = None
+
+    if PREFIX_SHORTLIST_SELECTOR_ACTIVE:
+        shortlist_result = evaluate_prefix_shortlist_selector(
+            model=model,
+            agents=agents,
+            env_name=env_name,
+            seed=args.seed,
+            prefix_steps=PREFIX_SHORTLIST_STEPS,
+            top_k=PREFIX_SHORTLIST_TOP_K,
+            n_eval_episodes=PREFIX_SHORTLIST_N_EVAL_EPISODES,
+            full_horizon=shortlist_full_horizon,
+            iteration=iteration,
+            evaluation_n_envs=int(
+                getattr(args, "n_envs", 1)
+            ),
+        )
+        prefix_shortlist_scores = shortlist_result[
+            "prefix_scores"
+        ]
+        prefix_shortlist_indices = shortlist_result[
+            "shortlist_indices"
+        ]
+        prefix_shortlist_full_returns = shortlist_result[
+            "full_returns"
+        ]
+        shortlist_selection_scores = shortlist_result[
+            "selection_scores"
+        ]
+        cum_rews = prefix_shortlist_full_returns.tolist()
+        prefixShortlistMetrics.append(
+            shortlist_result["summary_row"]
+        )
+        prefixShortlistCandidateRows.extend(
+            shortlist_result["candidate_rows"]
+        )
+
+    # Non-parallel historical evaluation.
+    elif not parallel_evaluation:
+        for j, a in enumerate(agents):
+            model.policy.load_state_dict(a)
+            model.policy.to(device)
+
+            # Online evaluation
+            if hasattr(args, 'n_envs') and args.n_envs > 1:
+                # Create a list of environment functions
+                dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
+                dummy_env = SubprocVecEnv(dummy_env_fns)
+            else:
+                dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+
+                if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                    dummy_env = FlattenObservation(dummy_env)
+
+                dummy_env.reset(seed=args.seed)
+
+            # The state-occupancy diagnostic is collected by a read-only
+            # callback over the SAME evaluate_policy call. No additional
+            # online rollout is introduced.
+            need_readonly_online_callback = (
+                PREFIX_BUDGET_STUDY
+                or (
+                    rank_correlation_study
+                    and (
+                        OBJECTIVE_MISMATCH_STUDY
+                        or STATE_OCCUPANCY_KNN_STUDY
+                    )
+                )
+            )
+
+            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                if need_readonly_online_callback:
+                    diagnostic_result = (
+                        evaluate_policy_with_discounted_return(
+                            model,
+                            dummy_env,
+                            n_eval_episodes=3,
+                            gamma=model.gamma,
+                            deterministic=True,
+                            capture_trajectory=(
+                                STATE_OCCUPANCY_KNN_STUDY
+                            ),
+                            capture_rewards=PREFIX_BUDGET_STUDY,
+                            return_success_rate=True,
+                        )
+                    )
+                    if (
+                        STATE_OCCUPANCY_KNN_STUDY
+                        and PREFIX_BUDGET_STUDY
+                    ):
+                        (
+                            eval_result,
+                            discounted_return,
+                            _,
+                            trajectory_episodes,
+                            reward_episodes,
+                        ) = diagnostic_result
+                        candidate_occupancy_trajectories.append(
+                            trajectory_episodes
+                        )
+                        candidate_prefix_reward_episodes.append(
+                            reward_episodes
+                        )
+                    elif STATE_OCCUPANCY_KNN_STUDY:
+                        (
+                            eval_result,
+                            discounted_return,
+                            _,
+                            trajectory_episodes,
+                        ) = diagnostic_result
+                        candidate_occupancy_trajectories.append(
+                            trajectory_episodes
+                        )
+                    elif PREFIX_BUDGET_STUDY:
+                        (
+                            eval_result,
+                            discounted_return,
+                            _,
+                            reward_episodes,
+                        ) = diagnostic_result
+                        candidate_prefix_reward_episodes.append(
+                            reward_episodes
+                        )
+                    else:
+                        (
+                            eval_result,
+                            discounted_return,
+                            _,
+                        ) = diagnostic_result
+
+                    mean_rew, std_rew, success = eval_result
+                    if OBJECTIVE_MISMATCH_STUDY:
+                        cum_discounted_rews.append(
+                            discounted_return
+                        )
+                else:
+                    mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
+                print(f'avg 3 return on policy: {mean_rew}, Success rate: {success:.2f}')
+                if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
+                    print(
+                        f'avg gamma-discounted return on same 3 trajectories: '
+                        f'{cum_discounted_rews[-1]}'
+                    )
+                cum_rews.append(mean_rew)
+                cum_success.append(success)
+            else:
+                if need_readonly_online_callback:
+                    diagnostic_result = (
+                        evaluate_policy_with_discounted_return(
+                            model,
+                            dummy_env,
+                            n_eval_episodes=3,
+                            gamma=model.gamma,
+                            deterministic=True,
+                            capture_trajectory=(
+                                STATE_OCCUPANCY_KNN_STUDY
+                            ),
+                            capture_rewards=PREFIX_BUDGET_STUDY,
+                        )
+                    )
+                    if (
+                        STATE_OCCUPANCY_KNN_STUDY
+                        and PREFIX_BUDGET_STUDY
+                    ):
+                        (
+                            eval_result,
+                            discounted_return,
+                            _,
+                            trajectory_episodes,
+                            reward_episodes,
+                        ) = diagnostic_result
+                        candidate_occupancy_trajectories.append(
+                            trajectory_episodes
+                        )
+                        candidate_prefix_reward_episodes.append(
+                            reward_episodes
+                        )
+                    elif STATE_OCCUPANCY_KNN_STUDY:
+                        (
+                            eval_result,
+                            discounted_return,
+                            _,
+                            trajectory_episodes,
+                        ) = diagnostic_result
+                        candidate_occupancy_trajectories.append(
+                            trajectory_episodes
+                        )
+                    elif PREFIX_BUDGET_STUDY:
+                        (
+                            eval_result,
+                            discounted_return,
+                            _,
+                            reward_episodes,
+                        ) = diagnostic_result
+                        candidate_prefix_reward_episodes.append(
+                            reward_episodes
+                        )
+                    else:
+                        (
+                            eval_result,
+                            discounted_return,
+                            _,
+                        ) = diagnostic_result
+
+                    returns_trains = eval_result[0]
+                    if OBJECTIVE_MISMATCH_STUDY:
+                        cum_discounted_rews.append(
+                            discounted_return
+                        )
+                else:
+                    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
+                if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
+                    print(
+                        f'avg gamma-discounted return on same 3 trajectories '
+                        f'of agent{j}: {cum_discounted_rews[-1]}'
+                    )
+                cum_rews.append(returns_trains)
+
+            close_env_safely(dummy_env)
+
+            # Q-function / FQE evaluation.
+            #
+            # In rank_correlation_study mode, defer FQE until ALL
+            # candidates have completed the exact same online evaluation.
+            # The previous per-candidate FQE call preserved/restored RNG
+            # and never mutated the replay buffer, so moving all shadow
+            # FQE work after the online loop leaves the online oracle
+            # trajectory unchanged while enabling one batched GPU fit.
+            #
+            # Keep the legacy offline-selection path unchanged.
+            if not rank_correlation_study and not online_eval:
+                fqe_exp_name = f"{'-'.join(DIR.split('/'))}"
+                init_est = d3rl_evaluation(model, fqe_exp_name)
+                if init_est is None:
+                    raise RuntimeError(
+                        f"FQE failed for iteration {iteration}, agent {j}."
+                    )
+                init_est = float(np.asarray(init_est).reshape(-1)[0])
+                advantage_rew.append(init_est)
+
+    # Parallel evaluation
+    else:
+        if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
+            cum_rews, cum_discounted_rews = parallel_evaluate(
+                agents=agents,
+                env_name=env_name,
+                n_eval_episodes=3,
+                seed=args.seed,
+                gamma=model.gamma,
+                return_discounted=True,
+            )
+        else:
+            cum_rews = parallel_evaluate(
+                agents=agents,
+                env_name=env_name,
+                n_eval_episodes=3,
+                seed=args.seed
+            )
+    return (cum_rews, cum_discounted_rews, prefix_shortlist_scores, prefix_shortlist_indices, prefix_shortlist_full_returns, shortlist_selection_scores, advantage_rew)
+
+
+def run_prefix_budget_study_iteration(agents, cum_rews, candidate_prefix_reward_episodes, iteration, parallel_evaluation, prefixBudgetMetrics, prefixBudgetCandidateRows):
+    if PREFIX_BUDGET_STUDY:
+        if parallel_evaluation:
+            raise NotImplementedError(
+                "PREFIX_BUDGET_STUDY currently requires the active "
+                "non-parallel evaluation path so it can reuse the exact "
+                "same full SB3 evaluation episodes without extra rollouts."
+            )
+        if len(candidate_prefix_reward_episodes) != len(agents):
+            raise RuntimeError(
+                "Prefix-budget reward trace count mismatch: "
+                f"{len(candidate_prefix_reward_episodes)} traces for "
+                f"{len(agents)} candidate policies."
+            )
+
+        (
+            prefix_iteration_rows,
+            prefix_candidate_rows,
+        ) = compute_prefix_budget_study_metrics(
+            full_online_scores=np.asarray(
+                cum_rews, dtype=np.float64
+            ),
+            candidate_reward_episodes=(
+                candidate_prefix_reward_episodes
+            ),
+            iteration=iteration,
+        )
+        prefixBudgetMetrics.extend(prefix_iteration_rows)
+        prefixBudgetCandidateRows.extend(prefix_candidate_rows)
+
+        print("---------------------------------")
+        print("ANALYSIS-ONLY PREFIX-BUDGET STUDY")
+        for prefix_row in prefix_iteration_rows:
+            print(
+                f"prefix={prefix_row['prefix_budget_steps']:>3} | "
+                f"Spearman(full)="
+                f"{prefix_row['spearman_vs_full']:+.4f} | "
+                f"top1={int(prefix_row['top1_agreement'])} | "
+                f"oracle_rank="
+                f"{prefix_row['oracle_prefix_rank']} | "
+                f"Recall@3="
+                f"{int(prefix_row['oracle_recall_at_3'])} | "
+                f"Recall@5="
+                f"{int(prefix_row['oracle_recall_at_5'])} | "
+                f"regret={prefix_row['selection_regret']:.4f}"
+            )
+
+
+def run_state_occupancy_knn_study_iteration(agents, candidate_occupancy_trajectories, support_reference_data):
+    state_occupancy_diagnostics = None
+    if STATE_OCCUPANCY_KNN_STUDY:
+        if len(candidate_occupancy_trajectories) != len(agents):
+            raise RuntimeError(
+                "State-occupancy trajectory count mismatch: "
+                f"{len(candidate_occupancy_trajectories)} traces for "
+                f"{len(agents)} candidate policies."
+            )
+        state_occupancy_diagnostics = (
+            compute_state_occupancy_knn_diagnostics(
+                candidate_trajectory_episodes=(
+                    candidate_occupancy_trajectories
+                ),
+                replay_data=support_reference_data,
+            )
+        )
+
+        print("---------------------------------")
+        print("STATE-OCCUPANCY kNN DIAGNOSTIC")
+        print(
+            f"reference={state_occupancy_diagnostics['reference_count']}, "
+            f"replay_queries="
+            f"{state_occupancy_diagnostics['replay_query_count']}, "
+            f"k={state_occupancy_diagnostics['k']}, "
+            f"time_aware="
+            f"{state_occupancy_diagnostics['include_time']}, "
+            f"behavior_percentile="
+            f"{state_occupancy_diagnostics['behavior_percentile']:.1f}"
+        )
+        print(
+            "Replay leave-one-out kNN-radius threshold: "
+            f"{state_occupancy_diagnostics['behavior_threshold_knn_radius']:.6f}"
+        )
+        print(
+            "Candidate occupancy OOD fractions: "
+            + np.array2string(
+                state_occupancy_diagnostics[
+                    'candidate_ood_fraction'
+                ],
+                precision=4,
+                separator=", ",
+                max_line_width=160,
+            )
+        )
+        print(
+            "Candidate mean kNN radii: "
+            + np.array2string(
+                state_occupancy_diagnostics[
+                    'candidate_mean_knn_radius'
+                ],
+                precision=6,
+                separator=", ",
+                max_line_width=160,
+            )
+        )
+    return state_occupancy_diagnostics
+
+
+def run_time_resolved_occupancy_study_iteration(candidate_occupancy_trajectories, support_reference_data, cum_rews, occupancy_raw_fqe, iteration, occupancy_fqe_scores, timeResolvedOccupancyMetrics, timeResolvedOccupancyCandidateRows):
+    if TIME_RESOLVED_OCCUPANCY_STUDY:
+        (
+            time_resolved_rows,
+            time_resolved_candidate_rows,
+        ) = compute_time_resolved_state_occupancy_diagnostics(
+            candidate_trajectory_episodes=(
+                candidate_occupancy_trajectories
+            ),
+            replay_data=support_reference_data,
+            online_scores=np.asarray(
+                cum_rews, dtype=np.float64
+            ),
+            raw_fqe_scores=occupancy_raw_fqe,
+            iteration=iteration,
+            score_metadata=occupancy_fqe_scores,
+        )
+        timeResolvedOccupancyMetrics.extend(
+            time_resolved_rows
+        )
+        timeResolvedOccupancyCandidateRows.extend(
+            time_resolved_candidate_rows
+        )
+
+        print("---------------------------------")
+        print("TIME-RESOLVED STATE-OCCUPANCY DIAGNOSTIC")
+        for window_row in time_resolved_rows:
+            print(
+                f"  [{window_row['window_start']},"
+                f"{window_row['window_end']}): "
+                f"mean_OOD="
+                f"{window_row['mean_candidate_ood_fraction']:.4f}, "
+                f"radius/behavior="
+                f"{window_row['mean_candidate_radius_ratio_to_behavior']:.3f}, "
+                f"rho(novelty,online)="
+                f"{window_row['occupancy_vs_online_spearman']:+.4f}, "
+                f"rho(novelty,FQE-overvaluation)="
+                f"{window_row['occupancy_vs_fqe_rank_overvaluation_spearman']:+.4f}"
+            )
+
+
+def run_state_occupancy_fqe_study_iteration(state_occupancy_diagnostics, knn_support_fqe_scores, canonical_base_fqe_scores, model, agents, fqe_dataset, native_fqe_data, cum_rews, iteration, candidate_occupancy_trajectories, support_reference_data, stateOccupancyMetrics, stateOccupancyCandidateRows, timeResolvedOccupancyMetrics, timeResolvedOccupancyCandidateRows):
+    if STATE_OCCUPANCY_KNN_STUDY:
+        if state_occupancy_diagnostics is None:
+            raise RuntimeError(
+                "State-occupancy study is missing trajectory "
+                "diagnostics."
+            )
+
+        occupancy_fqe_scores = None
+
+        # Reuse any already-computed 50k/100 fit from the kNN
+        # support/convergence diagnostics when it exactly matches
+        # the occupancy study's requested estimator.
+        if (
+            knn_support_fqe_scores is not None
+            and int(getattr(
+                knn_support_fqe_scores,
+                'fqe_n_steps',
+                -1,
+            )) == int(STATE_OCCUPANCY_FQE_N_STEPS)
+            and int(getattr(
+                knn_support_fqe_scores,
+                'fqe_target_update_interval',
+                -1,
+            )) == int(
+                STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL
+            )
+        ):
+            occupancy_fqe_scores = knn_support_fqe_scores
+
+        if (
+            occupancy_fqe_scores is None
+            and canonical_base_fqe_scores is not None
+            and int(getattr(
+                canonical_base_fqe_scores,
+                'fqe_n_steps',
+                FQE_N_STEPS,
+            )) == int(STATE_OCCUPANCY_FQE_N_STEPS)
+            and int(getattr(
+                canonical_base_fqe_scores,
+                'fqe_target_update_interval',
+                NATIVE_FQE_TARGET_UPDATE_INTERVAL,
+            )) == int(
+                STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL
+            )
+        ):
+            occupancy_fqe_scores = canonical_base_fqe_scores
+
+        if occupancy_fqe_scores is None:
+            print("---------------------------------")
+            print(
+                "Fitting primary FQE for state-occupancy "
+                "diagnostic: "
+                f"{STATE_OCCUPANCY_FQE_N_STEPS} steps / "
+                f"target "
+                f"{STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL}"
+            )
+            occupancy_fqe_scores = (
+                native_batched_fqe_preserving_rng(
+                    model,
+                    agents,
+                    fqe_dataset,
+                    native_data=native_fqe_data,
+                    n_steps=STATE_OCCUPANCY_FQE_N_STEPS,
+                    target_update_interval=(
+                        STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL
+                    ),
+                )
+            )
+
+        occupancy_raw_fqe = np.asarray(
+            getattr(
+                occupancy_fqe_scores,
+                'mean_q',
+                occupancy_fqe_scores,
+            ),
+            dtype=np.float64,
+        )
+        (
+            occupancy_metrics,
+            occupancy_candidate_details,
+        ) = compute_state_occupancy_fqe_metrics(
+            online_scores=np.asarray(
+                cum_rews, dtype=np.float64
+            ),
+            raw_fqe_scores=occupancy_raw_fqe,
+            occupancy_diagnostics=(
+                state_occupancy_diagnostics
+            ),
+            iteration=iteration,
+            score_metadata=occupancy_fqe_scores,
+        )
+        stateOccupancyMetrics.append(occupancy_metrics)
+
+        for candidate_idx in range(
+            len(occupancy_raw_fqe)
+        ):
+            stateOccupancyCandidateRows.append({
+                'iteration': int(iteration),
+                'candidate': int(candidate_idx),
+                'online': float(cum_rews[candidate_idx]),
+                'fqe_mean_q': float(
+                    occupancy_raw_fqe[candidate_idx]
+                ),
+                'fqe_n_steps': int(
+                    occupancy_metrics['fqe_n_steps']
+                ),
+                'fqe_target_update_interval': int(
+                    occupancy_metrics[
+                        'fqe_target_update_interval'
+                    ]
+                ),
+                'knn_k': int(
+                    state_occupancy_diagnostics['k']
+                ),
+                'time_aware': bool(
+                    state_occupancy_diagnostics[
+                        'include_time'
+                    ]
+                ),
+                'behavior_percentile': float(
+                    state_occupancy_diagnostics[
+                        'behavior_percentile'
+                    ]
+                ),
+                'behavior_threshold_knn_radius': float(
+                    state_occupancy_diagnostics[
+                        'behavior_threshold_knn_radius'
+                    ]
+                ),
+                'trajectory_total_states': int(
+                    state_occupancy_diagnostics[
+                        'candidate_total_states'
+                    ][candidate_idx]
+                ),
+                'trajectory_query_states': int(
+                    state_occupancy_diagnostics[
+                        'candidate_query_states'
+                    ][candidate_idx]
+                ),
+                'occupancy_mean_knn_radius': float(
+                    state_occupancy_diagnostics[
+                        'candidate_mean_knn_radius'
+                    ][candidate_idx]
+                ),
+                'occupancy_median_knn_radius': float(
+                    state_occupancy_diagnostics[
+                        'candidate_median_knn_radius'
+                    ][candidate_idx]
+                ),
+                'occupancy_p95_knn_radius': float(
+                    state_occupancy_diagnostics[
+                        'candidate_p95_knn_radius'
+                    ][candidate_idx]
+                ),
+                'occupancy_max_knn_radius': float(
+                    state_occupancy_diagnostics[
+                        'candidate_max_knn_radius'
+                    ][candidate_idx]
+                ),
+                'occupancy_mean_1nn_distance': float(
+                    state_occupancy_diagnostics[
+                        'candidate_mean_1nn_distance'
+                    ][candidate_idx]
+                ),
+                'occupancy_p95_1nn_distance': float(
+                    state_occupancy_diagnostics[
+                        'candidate_p95_1nn_distance'
+                    ][candidate_idx]
+                ),
+                'occupancy_ood_fraction': float(
+                    state_occupancy_diagnostics[
+                        'candidate_ood_fraction'
+                    ][candidate_idx]
+                ),
+                'occupancy_mean_excess_knn_radius': float(
+                    state_occupancy_diagnostics[
+                        'candidate_mean_excess_knn_radius'
+                    ][candidate_idx]
+                ),
+                'occupancy_mean_ratio_to_behavior': float(
+                    state_occupancy_diagnostics[
+                        'candidate_mean_ratio_to_behavior'
+                    ][candidate_idx]
+                ),
+                'online_rank': int(
+                    occupancy_candidate_details[
+                        'online_rank'
+                    ][candidate_idx]
+                ),
+                'fqe_rank': int(
+                    occupancy_candidate_details[
+                        'fqe_rank'
+                    ][candidate_idx]
+                ),
+                'abs_fqe_rank_error': float(
+                    occupancy_candidate_details[
+                        'abs_fqe_rank_error'
+                    ][candidate_idx]
+                ),
+                'abs_fqe_z_error': float(
+                    occupancy_candidate_details[
+                        'abs_fqe_z_error'
+                    ][candidate_idx]
+                ),
+                'occupancy_rank': int(
+                    occupancy_candidate_details[
+                        'occupancy_rank'
+                    ][candidate_idx]
+                ),
+            })
+
+        print("---------------------------------")
+        print("STATE-OCCUPANCY / FQE ERROR DIAGNOSTIC")
+        print(
+            "occupancy-vs-|FQE rank error| Spearman="
+            f"{occupancy_metrics['occupancy_vs_abs_fqe_rank_error_spearman']:+.4f} | "
+            "OOD-vs-|FQE rank error| Spearman="
+            f"{occupancy_metrics['occupancy_ood_vs_abs_fqe_rank_error_spearman']:+.4f}"
+        )
+        print(
+            "occupancy-vs-|z(FQE)-z(online)| Spearman="
+            f"{occupancy_metrics['occupancy_vs_abs_fqe_z_error_spearman']:+.4f}"
+        )
+        print(
+            "low-novelty quartile mean |rank error|="
+            f"{occupancy_metrics['low_novelty_quartile_mean_abs_rank_error']:.3f} | "
+            "high-novelty quartile="
+            f"{occupancy_metrics['high_novelty_quartile_mean_abs_rank_error']:.3f} | "
+            "difference="
+            f"{occupancy_metrics['high_minus_low_novelty_rank_error']:+.3f}"
+        )
+        print(
+            f"oracle occupancy rank="
+            f"{occupancy_metrics['oracle_occupancy_rank']}/"
+            f"{len(occupancy_raw_fqe)}, "
+            f"oracle OOD fraction="
+            f"{occupancy_metrics['oracle_ood_fraction']:.4f}"
+        )
+
+        # --------------------------------------------------
+        # TIME-RESOLVED STATE-OCCUPANCY DIAGNOSTIC
+        # --------------------------------------------------
+        run_time_resolved_occupancy_study_iteration(
+            candidate_occupancy_trajectories=candidate_occupancy_trajectories,
+            support_reference_data=support_reference_data,
+            cum_rews=cum_rews,
+            occupancy_raw_fqe=occupancy_raw_fqe,
+            iteration=iteration,
+            occupancy_fqe_scores=occupancy_fqe_scores,
+            timeResolvedOccupancyMetrics=timeResolvedOccupancyMetrics,
+            timeResolvedOccupancyCandidateRows=timeResolvedOccupancyCandidateRows,
+        )
+
+
+def run_knn_support_filter_study_iteration(knn_support_diagnostics, knn_support_fqe_scores, canonical_base_fqe_scores, model, agents, fqe_dataset, native_fqe_data, cum_rews, iteration, knnSupportMetrics, knnSupportCandidateRows):
+    if KNN_SUPPORT_STUDY:
+        if knn_support_diagnostics is None:
+            raise RuntimeError(
+                "kNN support study is missing support diagnostics."
+            )
+
+        # Reuse the canonical fit if the user has already made
+        # it the requested 50k/100 support-FQE configuration.
+        if (
+            knn_support_fqe_scores is None
+            and int(getattr(
+                canonical_base_fqe_scores,
+                'fqe_n_steps',
+                FQE_N_STEPS,
+            )) == int(KNN_SUPPORT_FQE_N_STEPS)
+            and int(getattr(
+                canonical_base_fqe_scores,
+                'fqe_target_update_interval',
+                NATIVE_FQE_TARGET_UPDATE_INTERVAL,
+            )) == int(KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL)
+        ):
+            knn_support_fqe_scores = canonical_base_fqe_scores
+
+        if knn_support_fqe_scores is None:
+            print("---------------------------------")
+            print(
+                "Fitting primary FQE for kNN support filter: "
+                f"{KNN_SUPPORT_FQE_N_STEPS} steps / target "
+                f"{KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL}"
+            )
+            knn_support_fqe_scores = (
+                native_batched_fqe_preserving_rng(
+                    model,
+                    agents,
+                    fqe_dataset,
+                    native_data=native_fqe_data,
+                    n_steps=KNN_SUPPORT_FQE_N_STEPS,
+                    target_update_interval=(
+                        KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL
+                    ),
+                )
+            )
+
+        knn_raw_fqe = np.asarray(
+            getattr(
+                knn_support_fqe_scores,
+                'mean_q',
+                knn_support_fqe_scores,
+            ),
+            dtype=np.float64,
+        )
+        knn_metrics, knn_candidate_details = (
+            compute_knn_support_filter_metrics(
+                online_scores=np.asarray(
+                    cum_rews, dtype=np.float64
+                ),
+                raw_fqe_scores=knn_raw_fqe,
+                support_diagnostics=knn_support_diagnostics,
+                iteration=iteration,
+                score_metadata=knn_support_fqe_scores,
+            )
+        )
+        knnSupportMetrics.append(knn_metrics)
+
+        for candidate_idx in range(len(knn_raw_fqe)):
+            knnSupportCandidateRows.append({
+                'iteration': int(iteration),
+                'candidate': int(candidate_idx),
+                'online': float(cum_rews[candidate_idx]),
+                'fqe_mean_q': float(
+                    knn_raw_fqe[candidate_idx]
+                ),
+                'fqe_n_steps': int(
+                    knn_metrics['fqe_n_steps']
+                ),
+                'fqe_target_update_interval': int(
+                    knn_metrics[
+                        'fqe_target_update_interval'
+                    ]
+                ),
+                'knn_k': int(
+                    knn_support_diagnostics['k']
+                ),
+                'knn_query_states': int(
+                    knn_support_diagnostics['query_count']
+                ),
+                'behavior_percentile': float(
+                    knn_support_diagnostics[
+                        'behavior_percentile'
+                    ]
+                ),
+                'behavior_threshold_sq_l2': float(
+                    knn_support_diagnostics[
+                        'behavior_threshold_sq_l2'
+                    ]
+                ),
+                'knn_mean_sq_l2': float(
+                    knn_support_diagnostics[
+                        'candidate_mean_sq_l2'
+                    ][candidate_idx]
+                ),
+                'knn_median_sq_l2': float(
+                    knn_support_diagnostics[
+                        'candidate_median_sq_l2'
+                    ][candidate_idx]
+                ),
+                'knn_p95_sq_l2': float(
+                    knn_support_diagnostics[
+                        'candidate_p95_sq_l2'
+                    ][candidate_idx]
+                ),
+                'knn_mean_excess_sq_l2': float(
+                    knn_support_diagnostics[
+                        'candidate_mean_excess_sq_l2'
+                    ][candidate_idx]
+                ),
+                'knn_mean_ratio_to_behavior': float(
+                    knn_support_diagnostics[
+                        'candidate_mean_ratio_to_behavior'
+                    ][candidate_idx]
+                ),
+                'knn_unsupported_fraction': float(
+                    knn_support_diagnostics[
+                        'candidate_unsupported_fraction'
+                    ][candidate_idx]
+                ),
+                'absolute_filter_pass': bool(
+                    knn_candidate_details[
+                        'threshold_pass'
+                    ][candidate_idx]
+                ),
+                'effective_filter_keep': bool(
+                    knn_candidate_details[
+                        'effective_keep'
+                    ][candidate_idx]
+                ),
+                'support_rank': int(
+                    knn_candidate_details['support_rank'][
+                        candidate_idx
+                    ]
+                ),
+                'raw_fqe_rank': int(
+                    knn_candidate_details['raw_fqe_rank'][
+                        candidate_idx
+                    ]
+                ),
+                'filtered_fqe_rank': int(
+                    knn_candidate_details[
+                        'filtered_fqe_rank'
+                    ][candidate_idx]
+                ),
+            })
+
+        print("---------------------------------")
+        print("STATE-CONDITIONAL kNN SUPPORT FILTER")
+        print(
+            f"absolute_pass="
+            f"{knn_metrics['threshold_keep_count']}/"
+            f"{len(knn_raw_fqe)}, "
+            f"effective_keep="
+            f"{knn_metrics['effective_keep_count']}/"
+            f"{len(knn_raw_fqe)}, "
+            f"fallback_added="
+            f"{knn_metrics['fallback_fill_count']}"
+        )
+        print(
+            f"raw 50k/100 FQE idx="
+            f"{knn_metrics['raw_fqe_idx']} | "
+            f"regret="
+            f"{knn_metrics['raw_fqe_selection_regret']:.4f}"
+        )
+        print(
+            f"filtered FQE idx="
+            f"{knn_metrics['filtered_fqe_idx']} | "
+            f"regret="
+            f"{knn_metrics['filtered_fqe_selection_regret']:.4f} | "
+            f"oracle_survives_filter="
+            f"{knn_metrics['oracle_survives_effective_filter']}"
+        )
+        for requested_k in HYBRID_TOPK_VALUES:
+            print(
+                f"  k={requested_k}: "
+                f"raw Recall="
+                f"{int(knn_metrics[f'raw_oracle_recall_at_{requested_k}'])}, "
+                f"raw HReg="
+                f"{knn_metrics[f'raw_hybrid_regret_at_{requested_k}']:.4f} | "
+                f"filtered effective_k="
+                f"{knn_metrics[f'filtered_effective_k_at_{requested_k}']}, "
+                f"Recall="
+                f"{int(knn_metrics[f'filtered_oracle_recall_at_{requested_k}'])}, "
+                f"HReg="
+                f"{knn_metrics[f'filtered_hybrid_regret_at_{requested_k}']:.4f}"
+            )
+    return knn_support_fqe_scores
+
+
+def run_fqe_convergence_study_iteration(canonical_base_fqe_scores, knn_support_fqe_scores, model, agents, fqe_dataset, native_fqe_data, cum_rews, iteration, fqeConvergenceMetrics, fqeConvergenceCandidateRows):
+    if FQE_CONVERGENCE_STUDY:
+        if canonical_base_fqe_scores is None:
+            raise RuntimeError(
+                "FQE convergence study could not locate the canonical "
+                "full-replay base FQE fit."
+            )
+
+        print("---------------------------------")
+        print("FQE LONG-HORIZON CONVERGENCE STUDY")
+        print(
+            "Configs: "
+            + ", ".join(
+                f"{steps} steps / target {target_interval}"
+                for steps, target_interval in FQE_CONVERGENCE_CONFIGS
+            )
+        )
+
+        for conv_steps, conv_target_interval in FQE_CONVERGENCE_CONFIGS:
+            if (
+                int(conv_steps) == int(FQE_N_STEPS)
+                and int(conv_target_interval)
+                == int(NATIVE_FQE_TARGET_UPDATE_INTERVAL)
+            ):
+                conv_scores = canonical_base_fqe_scores
+                reused_canonical = True
+            else:
+                conv_scores = native_batched_fqe_preserving_rng(
+                    model,
+                    agents,
+                    fqe_dataset,
+                    native_data=native_fqe_data,
+                    n_steps=int(conv_steps),
+                    target_update_interval=int(conv_target_interval),
+                )
+                reused_canonical = False
+
+            if (
+                int(conv_steps) == int(KNN_SUPPORT_FQE_N_STEPS)
+                and int(conv_target_interval)
+                == int(KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL)
+            ):
+                knn_support_fqe_scores = conv_scores
+
+            conv_raw_q = np.asarray(
+                getattr(conv_scores, "mean_q", conv_scores),
+                dtype=np.float64,
+            )
+            conv_metrics = compute_fqe_convergence_metrics(
+                online_scores=np.asarray(cum_rews, dtype=np.float64),
+                raw_fqe_scores=conv_raw_q,
+                iteration=iteration,
+                n_steps=int(conv_steps),
+                target_update_interval=int(conv_target_interval),
+                score_metadata=conv_scores,
+            )
+            conv_metrics["reused_canonical_fit"] = bool(
+                reused_canonical
+            )
+            fqeConvergenceMetrics.append(conv_metrics)
+
+            for candidate_idx in range(len(conv_raw_q)):
+                fqeConvergenceCandidateRows.append({
+                    "iteration": int(iteration),
+                    "candidate": int(candidate_idx),
+                    "config": conv_metrics["config"],
+                    "fqe_n_steps": int(conv_steps),
+                    "fqe_target_update_interval": int(
+                        conv_target_interval
+                    ),
+                    "fqe_target_updates": int(
+                        conv_metrics["fqe_target_updates"]
+                    ),
+                    "fqe_objective": conv_metrics["fqe_objective"],
+                    "fqe_gamma": conv_metrics["fqe_gamma"],
+                    "finite_horizon_steps": conv_metrics[
+                        "finite_horizon_steps"
+                    ],
+                    "time_conditioned": conv_metrics[
+                        "time_conditioned"
+                    ],
+                    "fqe_mean_q": float(conv_raw_q[candidate_idx]),
+                    "final_fqe_loss": float(
+                        np.asarray(
+                            getattr(
+                                conv_scores,
+                                "final_loss_per_candidate",
+                                np.full(len(conv_raw_q), np.nan),
+                            ),
+                            dtype=np.float64,
+                        )[candidate_idx]
+                    ),
+                    "online": float(cum_rews[candidate_idx]),
+                })
+
+            print(
+                f"{conv_metrics['config']} | "
+                f"target_updates={conv_metrics['fqe_target_updates']} | "
+                f"meanQ={conv_metrics['mean_fqe_q']:.3f} | "
+                f"Qrange={conv_metrics['fqe_q_range']:.3f} | "
+                f"final_loss={conv_metrics['mean_final_fqe_loss']:.4f} | "
+                f"Pearson={conv_metrics['pearson']:+.4f} | "
+                f"Spearman={conv_metrics['spearman']:+.4f} | "
+                f"Kendall={conv_metrics['kendall']:+.4f} | "
+                f"top1={int(conv_metrics['top1_agreement'])} | "
+                f"regret={conv_metrics['selection_regret']:.4f}"
+            )
+    return knn_support_fqe_scores
+
+
+def run_replay_coverage_fqe_scoring_iteration(model, agents, fqe_dataset, native_fqe_data, replay_coverage_data, support_action_divergence, support_reference_label, support_reference_transitions, advantage_rew):
+    replay_coverage_scores = None
+    canonical_base_fqe_scores = None
+    if REPLAY_COVERAGE_ABLATION:
+        replay_coverage_scores = OrderedDict()
+
+        print("---------------------------------")
+        print("REPLAY COVERAGE ABLATION")
+        print(
+            "Windows: "
+            + ", ".join(replay_coverage_data.keys())
+        )
+
+        for coverage_label, coverage_data in replay_coverage_data.items():
+            print("---------------------------------")
+            print(
+                "Running FQE replay coverage window: "
+                f"{coverage_label} "
+                f"(actual complete transitions="
+                f"{coverage_data['actual_transitions']}, "
+                f"episodes={coverage_data['n_episodes']})"
+            )
+            base_fqe_scores = native_batched_fqe_preserving_rng(
+                model,
+                agents,
+                fqe_dataset,
+                native_data=coverage_data,
+            )
+            if coverage_label == "full":
+                canonical_base_fqe_scores = base_fqe_scores
+            replay_coverage_scores[coverage_label] = (
+                build_support_penalized_scores(
+                    base_fqe_scores=base_fqe_scores,
+                    action_divergence=support_action_divergence,
+                    support_reference_label=support_reference_label,
+                    support_reference_transitions=(
+                        support_reference_transitions
+                    ),
+                )
+            )
+
+        # CRITICAL: preserve original/canonical rank-study semantics.
+        # Downstream rank metrics still use the FULL replay FQE
+        # estimate, now augmented only by the explicit support term.
+        advantage_rew = replay_coverage_scores["full"]
+    else:
+        base_fqe_scores = native_batched_fqe_preserving_rng(
+            model,
+            agents,
+            fqe_dataset,
+            native_data=native_fqe_data,
+        )
+        canonical_base_fqe_scores = base_fqe_scores
+        advantage_rew = build_support_penalized_scores(
+            base_fqe_scores=base_fqe_scores,
+            action_divergence=support_action_divergence,
+            support_reference_label=support_reference_label,
+            support_reference_transitions=(
+                support_reference_transitions
+            ),
+        )
+    return replay_coverage_scores, canonical_base_fqe_scores, advantage_rew
+
+
+def run_knn_support_estimator_study_iteration(model, agents, support_reference_data):
+    knn_support_diagnostics = None
+    if KNN_SUPPORT_STUDY:
+        knn_support_diagnostics = (
+            compute_state_conditional_knn_support_preserving_rng(
+                model, agents, support_reference_data
+            )
+        )
+        print("---------------------------------")
+        print("STATE-CONDITIONAL kNN SUPPORT ESTIMATOR")
+        print(
+            f"reference={knn_support_diagnostics['reference_count']}, "
+            f"queries={knn_support_diagnostics['query_count']}, "
+            f"k={knn_support_diagnostics['k']}, "
+            f"behavior_percentile="
+            f"{knn_support_diagnostics['behavior_percentile']:.1f}"
+        )
+        print(
+            "Behavior leave-one-out local-action threshold "
+            "(squared L2): "
+            f"{knn_support_diagnostics['behavior_threshold_sq_l2']:.6f}"
+        )
+        print(
+            "Candidate unsupported-state fractions: "
+            + np.array2string(
+                knn_support_diagnostics[
+                    'candidate_unsupported_fraction'
+                ],
+                precision=4,
+                separator=", ",
+                max_line_width=160,
+            )
+        )
+        print(
+            "Candidate mean nearest-local-action squared L2: "
+            + np.array2string(
+                knn_support_diagnostics['candidate_mean_sq_l2'],
+                precision=6,
+                separator=", ",
+                max_line_width=160,
+            )
+        )
+    return knn_support_diagnostics
+
+
+def run_rank_correlation_fqe_studies_iteration(model, agents, fqe_dataset, native_fqe_data, replay_coverage_data, support_reference_data, state_occupancy_diagnostics, candidate_occupancy_trajectories, cum_rews, iteration, DIR, rank_correlation_study, advantage_rew, fqeConvergenceMetrics, fqeConvergenceCandidateRows, knnSupportMetrics, knnSupportCandidateRows, stateOccupancyMetrics, stateOccupancyCandidateRows, timeResolvedOccupancyMetrics, timeResolvedOccupancyCandidateRows):
+    replay_coverage_scores = None
+    knn_support_diagnostics = None
+    if rank_correlation_study:
+        # Compute the behavioral trust-region term ONCE per outer
+        # iteration from the common frozen full-buffer support reference.
+        # Candidate online rollouts have already completed, but they are
+        # not stored in this replay buffer, and the leakage invariant below
+        # verifies that fact.
+        support_action_divergence = (
+            compute_behavior_action_divergence_preserving_rng(
+                model,
+                agents,
+                support_reference_data,
+            )
+        )
+        support_reference_label = str(
+            support_reference_data.get("coverage_label", "full")
+        )
+        support_reference_transitions = int(
+            support_reference_data.get(
+                "actual_transitions",
+                len(support_reference_data["observations"]),
+            )
+        )
+
+        knn_support_diagnostics = None
+        knn_support_diagnostics = run_knn_support_estimator_study_iteration(
+            model=model,
+            agents=agents,
+            support_reference_data=support_reference_data,
+        )
+
+        print("---------------------------------")
+        print("BEHAVIOR SUPPORT PENALTY")
+        print(
+            f"lambda={FQE_SUPPORT_PENALTY_LAMBDA:g}, "
+            f"reference={support_reference_label}, "
+            f"transitions={support_reference_transitions}"
+        )
+        print(
+            "Mean squared-L2 action divergence per candidate: "
+            + np.array2string(
+                support_action_divergence,
+                precision=6,
+                separator=", ",
+                max_line_width=160,
+            )
+        )
+
+        if FQE_BACKEND == "native_batched":
+            replay_coverage_scores = None
+            canonical_base_fqe_scores = None
+
+            (
+                replay_coverage_scores,
+                canonical_base_fqe_scores,
+                advantage_rew,
+            ) = run_replay_coverage_fqe_scoring_iteration(
+                model=model,
+                agents=agents,
+                fqe_dataset=fqe_dataset,
+                native_fqe_data=native_fqe_data,
+                replay_coverage_data=replay_coverage_data,
+                support_action_divergence=support_action_divergence,
+                support_reference_label=support_reference_label,
+                support_reference_transitions=support_reference_transitions,
+                advantage_rew=advantage_rew,
+            )
+            knn_support_fqe_scores = None
+
+            # ----------------------------------------------------------
+            # LONG-HORIZON FQE CONVERGENCE / PROPAGATION STUDY
+            # ----------------------------------------------------------
+            # Compare raw FQE on the SAME full replay data while varying
+            # only optimization steps and target-network refresh interval.
+            # The canonical 10k/100 fit is reused when present, avoiding a
+            # redundant fit. Support penalties are deliberately excluded.
+            knn_support_fqe_scores = run_fqe_convergence_study_iteration(
+                canonical_base_fqe_scores=canonical_base_fqe_scores,
+                knn_support_fqe_scores=knn_support_fqe_scores,
+                model=model,
+                agents=agents,
+                fqe_dataset=fqe_dataset,
+                native_fqe_data=native_fqe_data,
+                cum_rews=cum_rews,
+                iteration=iteration,
+                fqeConvergenceMetrics=fqeConvergenceMetrics,
+                fqeConvergenceCandidateRows=fqeConvergenceCandidateRows,
+            )
+
+            # ----------------------------------------------------------
+            # STATE-CONDITIONAL kNN SUPPORT FILTER STUDY
+            # ----------------------------------------------------------
+            knn_support_fqe_scores = run_knn_support_filter_study_iteration(
+                knn_support_diagnostics=knn_support_diagnostics,
+                knn_support_fqe_scores=knn_support_fqe_scores,
+                canonical_base_fqe_scores=canonical_base_fqe_scores,
+                model=model,
+                agents=agents,
+                fqe_dataset=fqe_dataset,
+                native_fqe_data=native_fqe_data,
+                cum_rews=cum_rews,
+                iteration=iteration,
+                knnSupportMetrics=knnSupportMetrics,
+                knnSupportCandidateRows=knnSupportCandidateRows,
+            )
+
+            # ----------------------------------------------------------
+            # STATE-OCCUPANCY kNN / FQE-ERROR DIAGNOSTIC
+            # ----------------------------------------------------------
+            run_state_occupancy_fqe_study_iteration(
+                state_occupancy_diagnostics=state_occupancy_diagnostics,
+                knn_support_fqe_scores=knn_support_fqe_scores,
+                canonical_base_fqe_scores=canonical_base_fqe_scores,
+                model=model,
+                agents=agents,
+                fqe_dataset=fqe_dataset,
+                native_fqe_data=native_fqe_data,
+                cum_rews=cum_rews,
+                iteration=iteration,
+                candidate_occupancy_trajectories=candidate_occupancy_trajectories,
+                support_reference_data=support_reference_data,
+                stateOccupancyMetrics=stateOccupancyMetrics,
+                stateOccupancyCandidateRows=stateOccupancyCandidateRows,
+                timeResolvedOccupancyMetrics=timeResolvedOccupancyMetrics,
+                timeResolvedOccupancyCandidateRows=timeResolvedOccupancyCandidateRows,
+            )
+
+        else:
+            replay_coverage_scores = None
+            base_fqe_scores = (
+                sequential_d3rlpy_fqe_scores_preserving_rng(
+                    model,
+                    agents,
+                    fqe_dataset,
+                    DIR,
+                    iteration,
+                )
+            )
+            advantage_rew = build_support_penalized_scores(
+                base_fqe_scores=base_fqe_scores,
+                action_divergence=support_action_divergence,
+                support_reference_label=support_reference_label,
+                support_reference_transitions=support_reference_transitions,
+            )
+
+        if len(advantage_rew) != len(agents):
+            raise RuntimeError(
+                "FQE score count mismatch: "
+                f"{len(advantage_rew)} scores for {len(agents)} agents."
+            )
+
+        for j, init_est in enumerate(advantage_rew):
+            if isinstance(advantage_rew, SupportPenalizedFQEScores):
+                print(
+                    f"agent{j}: online_return={float(cum_rews[j]):.6f}, "
+                    f"FQE={float(advantage_rew.mean_q[j]):.6f}, "
+                    f"action_div={float(advantage_rew.action_divergence[j]):.6f}, "
+                    f"support_penalty={float(advantage_rew.support_penalty[j]):.6f}, "
+                    f"SupportPen_FQE={float(init_est):.6f}"
+                )
+            else:
+                print(
+                    f"agent{j}: online_return={float(cum_rews[j]):.6f}, "
+                    f"FQE={float(init_est):.6f}"
+                )
+    return advantage_rew, replay_coverage_scores, knn_support_diagnostics
+
+
+def verify_rank_study_replay_integrity(model, rank_correlation_study, replay_buffer_before_candidate_eval):
+    if rank_correlation_study:
+        replay_buffer_after_candidate_eval = replay_buffer_signature(model.replay_buffer)
+        if replay_buffer_after_candidate_eval != replay_buffer_before_candidate_eval:
+            raise RuntimeError(
+                "Replay buffer changed during candidate evaluation/FQE. This would leak "
+                "online candidate interactions into the offline rank-correlation study."
+            )
+        print("Replay-buffer leakage check: PASSED")
+
+
+def print_iteration_evaluation_summary(online_eval, advantage_rew, prefix_shortlist_scores, prefix_shortlist_indices, prefix_shortlist_full_returns, cum_rews, cum_discounted_rews, model, rank_correlation_study, env_name, cum_success):
+    if not online_eval:
+        # print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
+        print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
+
+    if PREFIX_SHORTLIST_SELECTOR_ACTIVE:
+        print(
+            f'avg 250-step prefix return across all candidates: '
+            f'{np.mean(prefix_shortlist_scores)}, '
+            f'std: {np.std(prefix_shortlist_scores)}'
+        )
+        finalist_returns = prefix_shortlist_full_returns[
+            prefix_shortlist_indices
+        ]
+        print(
+            f'avg full return across top-{len(prefix_shortlist_indices)} '
+            f'finalists: {np.mean(finalist_returns)}, '
+            f'std: {np.std(finalist_returns)}'
+        )
+    else:
+        print(
+            f'avg cum rews: {np.mean(cum_rews)}, '
+            f'std: {np.std(cum_rews)}'
+        )
+    if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
+        print(
+            f'avg gamma-discounted cum rews: '
+            f'{np.mean(cum_discounted_rews)}, '
+            f'std: {np.std(cum_discounted_rews)}, '
+            f'gamma: {float(model.gamma):.8f}'
+        )
+    if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+        print(f'avg success rate: {np.mean(cum_success):.2f}, std: {np.std(cum_success):.2f}')
+
+
+def save_iteration_evaluation_outputs(DIR, iteration, SEARCH_INTERV, agents, online_eval, cum_rews, env_name, cum_success, prefix_shortlist_scores, prefix_shortlist_indices, shortlist_selection_scores, advantage_rew, timeArray, start_time):
+    os.makedirs(f'logs/{DIR}', exist_ok=True)
+
+    np.save(f'logs/{DIR}/agents_{iteration}_{iteration + SEARCH_INTERV}.npy', agents_to_cpu(agents))
+    if online_eval:
+        np.save(f'logs/{DIR}/results_{iteration}_{iteration + SEARCH_INTERV}.npy', cum_rews)
+        if MATCHED_FULL_ONLINE_CONTROL:
+            np.save(
+                f'logs/{DIR}/full_online_control_returns_'
+                f'{iteration}_{iteration + SEARCH_INTERV}.npy',
+                np.asarray(cum_rews, dtype=np.float64),
+            )
+        if PREFIX_SHORTLIST_SELECTOR_ACTIVE:
+            np.save(
+                f'logs/{DIR}/prefix_shortlist_prefix_returns_'
+                f'{iteration}_{iteration + SEARCH_INTERV}.npy',
+                prefix_shortlist_scores,
+            )
+            np.save(
+                f'logs/{DIR}/prefix_shortlist_indices_'
+                f'{iteration}_{iteration + SEARCH_INTERV}.npy',
+                prefix_shortlist_indices,
+            )
+            np.save(
+                f'logs/{DIR}/prefix_shortlist_selection_scores_'
+                f'{iteration}_{iteration + SEARCH_INTERV}.npy',
+                shortlist_selection_scores,
+            )
+
+        if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+            np.save(f'logs/{DIR}/success_{iteration}_{iteration + SEARCH_INTERV}.npy', cum_success)
+    if not online_eval:
+        np.save(f'logs/{DIR}/adv_results_{iteration}_{iteration + SEARCH_INTERV}.npy', advantage_rew)
+    timeArray.append(time.time() - start_time)
+
+
+def run_objective_mismatch_study_iteration(model, advantage_rew, cum_discounted_rews, online_scores, fqe_mean_q_scores, iteration, DIR, SEARCH_INTERV, objectiveMismatchMetrics, objectiveMismatchCandidateRows):
+    if OBJECTIVE_MISMATCH_STUDY:
+        discounted_online_scores = np.asarray(
+            cum_discounted_rews, dtype=np.float64
+        )
+        if len(discounted_online_scores) != len(online_scores):
+            raise RuntimeError(
+                "Objective-mismatch diagnostic did not collect one "
+                "discounted return per candidate: "
+                f"discounted={len(discounted_online_scores)}, "
+                f"undiscounted={len(online_scores)}."
+            )
+
+        objective_metrics = compute_objective_mismatch_metrics(
+            online_undiscounted=online_scores,
+            online_discounted=discounted_online_scores,
+            fqe_mean_q=fqe_mean_q_scores,
+            iteration=iteration,
+            gamma=model.gamma,
+        )
+        objective_metrics["fqe_objective"] = str(
+            getattr(advantage_rew, "fqe_objective", "unknown")
+        )
+        objective_metrics["fqe_gamma"] = float(
+            getattr(advantage_rew, "fqe_gamma", np.nan)
+        )
+        objective_metrics["finite_horizon_steps"] = (
+            -1
+            if getattr(
+                advantage_rew,
+                "finite_horizon_steps",
+                None,
+            ) is None
+            else int(
+                getattr(
+                    advantage_rew,
+                    "finite_horizon_steps",
+                )
+            )
+        )
+        objective_metrics["time_conditioned"] = bool(
+            getattr(advantage_rew, "time_conditioned", False)
+        )
+        objectiveMismatchMetrics.append(objective_metrics)
+
+        for candidate_idx in range(len(online_scores)):
+            objectiveMismatchCandidateRows.append({
+                "iteration": int(iteration),
+                "candidate": int(candidate_idx),
+                "gamma": float(model.gamma),
+                "fqe_objective": str(
+                    getattr(
+                        advantage_rew,
+                        "fqe_objective",
+                        "unknown",
+                    )
+                ),
+                "fqe_gamma": float(
+                    getattr(
+                        advantage_rew,
+                        "fqe_gamma",
+                        np.nan,
+                    )
+                ),
+                "finite_horizon_steps": (
+                    -1
+                    if getattr(
+                        advantage_rew,
+                        "finite_horizon_steps",
+                        None,
+                    ) is None
+                    else int(
+                        getattr(
+                            advantage_rew,
+                            "finite_horizon_steps",
+                        )
+                    )
+                ),
+                "time_conditioned": bool(
+                    getattr(
+                        advantage_rew,
+                        "time_conditioned",
+                        False,
+                    )
+                ),
+                "fqe_mean_q": float(
+                    fqe_mean_q_scores[candidate_idx]
+                ),
+                "online_undiscounted": float(
+                    online_scores[candidate_idx]
+                ),
+                "online_discounted": float(
+                    discounted_online_scores[candidate_idx]
+                ),
+            })
+
+        print("---------------------------------")
+        print("FQE OBJECTIVE-ALIGNMENT DIAGNOSTIC")
+        print(
+            "FQE evaluator: "
+            f"{objective_metrics['fqe_objective']} | "
+            f"OPE gamma={objective_metrics['fqe_gamma']:.8f} | "
+            f"H={objective_metrics['finite_horizon_steps']} | "
+            f"time_conditioned="
+            f"{objective_metrics['time_conditioned']}"
+        )
+        print(
+            "PPO / discounted-online diagnostic gamma: "
+            f"{float(model.gamma):.8f}"
+        )
+        print(
+            "FQE vs UNDISCOUNTED online: "
+            f"Pearson="
+            f"{objective_metrics['fqe_vs_undiscounted_pearson']:+.4f}, "
+            f"Spearman="
+            f"{objective_metrics['fqe_vs_undiscounted_spearman']:+.4f}, "
+            f"Kendall="
+            f"{objective_metrics['fqe_vs_undiscounted_kendall']:+.4f}"
+        )
+        print(
+            "FQE vs DISCOUNTED online:   "
+            f"Pearson="
+            f"{objective_metrics['fqe_vs_discounted_pearson']:+.4f}, "
+            f"Spearman="
+            f"{objective_metrics['fqe_vs_discounted_spearman']:+.4f}, "
+            f"Kendall="
+            f"{objective_metrics['fqe_vs_discounted_kendall']:+.4f}"
+        )
+        print(
+            "Discounted - undiscounted correlation delta: "
+            f"Pearson="
+            f"{objective_metrics['discounted_minus_undiscounted_pearson']:+.4f}, "
+            f"Spearman="
+            f"{objective_metrics['discounted_minus_undiscounted_spearman']:+.4f}, "
+            f"Kendall="
+            f"{objective_metrics['discounted_minus_undiscounted_kendall']:+.4f}"
+        )
+        print(
+            "Online objective agreement: "
+            f"Spearman="
+            f"{objective_metrics['online_objectives_spearman']:+.4f}, "
+            f"same top-1="
+            f"{objective_metrics['online_oracle_top1_same']}"
+        )
+        print(
+            "Raw FQE top-1 agreement: "
+            f"undiscounted="
+            f"{objective_metrics['fqe_top1_undiscounted']}, "
+            f"discounted="
+            f"{objective_metrics['fqe_top1_discounted']}"
+        )
+        print(
+            "Raw FQE selection regret: "
+            f"undiscounted="
+            f"{objective_metrics['fqe_regret_undiscounted']:.4f}, "
+            f"discounted="
+            f"{objective_metrics['fqe_regret_discounted']:.4f}"
+        )
+
+        np.save(
+            f'logs/{DIR}/objective_mismatch_metrics_'
+            f'{iteration}_{iteration + SEARCH_INTERV}.npy',
+            objective_metrics,
+        )
+
+
+def record_rank_correlation_study_iteration(model, advantage_rew, cum_rews, cum_discounted_rews, knn_support_diagnostics, iteration, DIR, SEARCH_INTERV, rank_correlation_study, rankStudyMetrics, rankStudyCandidateRows, objectiveMismatchMetrics, objectiveMismatchCandidateRows):
+    if rank_correlation_study:
+        online_scores = np.asarray(cum_rews, dtype=np.float64)
+        fqe_mean_q_scores = np.asarray(
+            getattr(advantage_rew, "mean_q", advantage_rew),
+            dtype=np.float64,
+        )
+        fqe_sigma_scores = np.asarray(
+            getattr(
+                advantage_rew,
+                "mean_sigma",
+                np.zeros(len(advantage_rew), dtype=np.float64),
+            ),
+            dtype=np.float64,
+        )
+        action_divergence_scores = np.asarray(
+            getattr(
+                advantage_rew,
+                "action_divergence",
+                np.zeros(len(advantage_rew), dtype=np.float64),
+            ),
+            dtype=np.float64,
+        )
+        support_penalty_scores = np.asarray(
+            getattr(
+                advantage_rew,
+                "support_penalty",
+                np.zeros(len(advantage_rew), dtype=np.float64),
+            ),
+            dtype=np.float64,
+        )
+        fqe_scores = np.asarray(advantage_rew, dtype=np.float64)
+
+        if len(online_scores) != len(fqe_scores):
+            raise RuntimeError(
+                f"Rank-study length mismatch: {len(online_scores)} online returns vs "
+                f"{len(fqe_scores)} FQE scores."
+            )
+
+        rank_df = pd.DataFrame({
+            'fqe': fqe_scores,
+            'online': online_scores,
+        })
+        pearson = float(rank_df.corr(method='pearson').loc['fqe', 'online'])
+        spearman = float(rank_df.corr(method='spearman').loc['fqe', 'online'])
+        kendall = float(rank_df.corr(method='kendall').loc['fqe', 'online'])
+
+        oracle_idx = int(np.argmax(online_scores))
+        fqe_idx = int(np.argmax(fqe_scores))
+        oracle_return = float(online_scores[oracle_idx])
+        fqe_selected_true_return = float(online_scores[fqe_idx])
+        selection_regret = float(oracle_return - fqe_selected_true_return)
+        online_order = np.argsort(online_scores)[::-1]
+        top1_agreement = bool(fqe_idx == oracle_idx)
+        top3_hit = bool(fqe_idx in online_order[:min(3, len(online_order))])
+        top5_hit = bool(fqe_idx in online_order[:min(5, len(online_order))])
+
+        is_support_penalized = isinstance(
+            advantage_rew, SupportPenalizedFQEScores
+        )
+        score_label = (
+            "Support-Penalized FQE"
+            if is_support_penalized
+            else "FQE"
+        )
+
+        rank_metrics = {
+            'iteration': int(iteration),
+            'fqe_score_type': (
+                'support_penalized'
+                if is_support_penalized
+                else 'mean'
+            ),
+            'fqe_ensemble_size': int(
+                getattr(advantage_rew, 'ensemble_size', 1)
+            ),
+            'support_penalty_lambda': float(
+                getattr(advantage_rew, 'penalty_lambda', 0.0)
+            ),
+            'support_reference': str(
+                getattr(
+                    advantage_rew,
+                    'support_reference_label',
+                    'none',
+                )
+            ),
+            'support_reference_transitions': int(
+                getattr(
+                    advantage_rew,
+                    'support_reference_transitions',
+                    0,
+                )
+            ),
+            'fqe_objective': str(
+                getattr(advantage_rew, 'fqe_objective', 'unknown')
+            ),
+            'fqe_gamma': float(
+                getattr(advantage_rew, 'fqe_gamma', np.nan)
+            ),
+            'finite_horizon_steps': (
+                -1
+                if getattr(
+                    advantage_rew,
+                    'finite_horizon_steps',
+                    None,
+                ) is None
+                else int(
+                    getattr(
+                        advantage_rew,
+                        'finite_horizon_steps',
+                    )
+                )
+            ),
+            'time_conditioned': bool(
+                getattr(advantage_rew, 'time_conditioned', False)
+            ),
+            'fqe_n_steps': int(
+                getattr(advantage_rew, 'fqe_n_steps', FQE_N_STEPS)
+            ),
+            'fqe_target_update_interval': int(
+                getattr(
+                    advantage_rew,
+                    'fqe_target_update_interval',
+                    NATIVE_FQE_TARGET_UPDATE_INTERVAL,
+                )
+            ),
+            'fqe_target_updates': int(
+                getattr(
+                    advantage_rew,
+                    'fqe_target_updates',
+                    ((FQE_N_STEPS - 1) // NATIVE_FQE_TARGET_UPDATE_INTERVAL) + 1,
+                )
+            ),
+            'pearson': pearson,
+            'spearman': spearman,
+            'kendall': kendall,
+            'oracle_idx': oracle_idx,
+            'fqe_idx': fqe_idx,
+            'oracle_return': oracle_return,
+            'fqe_selected_true_return': fqe_selected_true_return,
+            'selection_regret': selection_regret,
+            'top1_agreement': top1_agreement,
+            'top3_hit': top3_hit,
+            'top5_hit': top5_hit,
+        }
+        rankStudyMetrics.append(rank_metrics)
+        for candidate_idx, (fqe_score, online_score) in enumerate(
+            zip(fqe_scores, online_scores)
+        ):
+            rankStudyCandidateRows.append({
+                'iteration': int(iteration),
+                'candidate': int(candidate_idx),
+                # Backward-compatible 'fqe' column is the actual ranking
+                # score: FQE - lambda * behavioral action divergence.
+                'fqe': float(fqe_score),
+                'fqe_mean_q': float(fqe_mean_q_scores[candidate_idx]),
+                'action_divergence': float(
+                    action_divergence_scores[candidate_idx]
+                ),
+                'support_penalty': float(
+                    support_penalty_scores[candidate_idx]
+                ),
+                'fqe_mean_sigma': float(fqe_sigma_scores[candidate_idx]),
+                'fqe_objective': str(
+                    getattr(advantage_rew, 'fqe_objective', 'unknown')
+                ),
+                'fqe_gamma': float(
+                    getattr(advantage_rew, 'fqe_gamma', np.nan)
+                ),
+                'finite_horizon_steps': (
+                    -1
+                    if getattr(
+                        advantage_rew,
+                        'finite_horizon_steps',
+                        None,
+                    ) is None
+                    else int(
+                        getattr(
+                            advantage_rew,
+                            'finite_horizon_steps',
+                        )
+                    )
+                ),
+                'time_conditioned': bool(
+                    getattr(
+                        advantage_rew,
+                        'time_conditioned',
+                        False,
+                    )
+                ),
+                'fqe_n_steps': int(
+                    getattr(advantage_rew, 'fqe_n_steps', FQE_N_STEPS)
+                ),
+                'fqe_target_update_interval': int(
+                    getattr(
+                        advantage_rew,
+                        'fqe_target_update_interval',
+                        NATIVE_FQE_TARGET_UPDATE_INTERVAL,
+                    )
+                ),
+                'fqe_target_updates': int(
+                    getattr(
+                        advantage_rew,
+                        'fqe_target_updates',
+                        ((FQE_N_STEPS - 1) // NATIVE_FQE_TARGET_UPDATE_INTERVAL) + 1,
+                    )
+                ),
+                'online': float(online_score),
+            })
+
+        print("---------------------------------")
+        print(f"{score_label} / ONLINE RANKING STUDY")
+        print(f"Pearson correlation:  {pearson:.4f}")
+        print(f"Spearman correlation: {spearman:.4f}")
+        print(f"Kendall tau:          {kendall:.4f}")
+        print(f"Online best agent:    {oracle_idx}")
+        print(f"{score_label} best agent:   {fqe_idx}")
+        print(f"Online best return:   {oracle_return:.4f}")
+        print(
+            f"{score_label}-selected agent true return: "
+            f"{fqe_selected_true_return:.4f}"
+        )
+        print(f"Selection regret:     {selection_regret:.4f}")
+        print(f"Exact top-1 agreement:       {top1_agreement}")
+        print(f"{score_label} choice in online top-3:  {top3_hit}")
+        print(f"{score_label} choice in online top-5:  {top5_hit}")
+
+        # Save raw paired scores and per-iteration metrics for later analysis.
+        np.save(
+            f'logs/{DIR}/fqe_results_{iteration}_{iteration + SEARCH_INTERV}.npy',
+            fqe_scores
+        )
+        # Save the raw components so lambda can be swept post-hoc
+        # without rerunning FQE or online candidate evaluation. Existing
+        # fqe_results_* remains the actual ranking score for backward
+        # compatibility.
+        np.save(
+            f'logs/{DIR}/fqe_mean_q_results_{iteration}_{iteration + SEARCH_INTERV}.npy',
+            fqe_mean_q_scores
+        )
+        np.save(
+            f'logs/{DIR}/fqe_action_divergence_results_{iteration}_{iteration + SEARCH_INTERV}.npy',
+            action_divergence_scores
+        )
+        np.save(
+            f'logs/{DIR}/fqe_support_penalty_results_{iteration}_{iteration + SEARCH_INTERV}.npy',
+            support_penalty_scores
+        )
+        np.save(
+            f'logs/{DIR}/fqe_sigma_results_{iteration}_{iteration + SEARCH_INTERV}.npy',
+            fqe_sigma_scores
+        )
+        if hasattr(advantage_rew, 'ensemble_member_values'):
+            np.save(
+                f'logs/{DIR}/fqe_ensemble_member_values_{iteration}_{iteration + SEARCH_INTERV}.npy',
+                advantage_rew.ensemble_member_values
+            )
+        np.save(
+            f'logs/{DIR}/online_all_results_{iteration}_{iteration + SEARCH_INTERV}.npy',
+            online_scores
+        )
+        if OBJECTIVE_MISMATCH_STUDY:
+            np.save(
+                f'logs/{DIR}/online_discounted_all_results_'
+                f'{iteration}_{iteration + SEARCH_INTERV}.npy',
+                np.asarray(cum_discounted_rews, dtype=np.float64),
+            )
+        np.save(
+            f'logs/{DIR}/rank_metrics_{iteration}_{iteration + SEARCH_INTERV}.npy',
+            rank_metrics
+        )
+
+        if KNN_SUPPORT_STUDY and knn_support_diagnostics is not None:
+            np.save(
+                f'logs/{DIR}/knn_support_unsupported_fraction_'
+                f'{iteration}_{iteration + SEARCH_INTERV}.npy',
+                knn_support_diagnostics[
+                    'candidate_unsupported_fraction'
+                ],
+            )
+            np.save(
+                f'logs/{DIR}/knn_support_mean_sq_l2_'
+                f'{iteration}_{iteration + SEARCH_INTERV}.npy',
+                knn_support_diagnostics['candidate_mean_sq_l2'],
+            )
+
+        # --------------------------------------------------------------
+        # OBJECTIVE MISMATCH STUDY (analysis only)
+        # --------------------------------------------------------------
+        # Compare RAW ordinary FQE (ensemble mean Q) to two online
+        # targets measured on the exact same evaluation trajectories:
+        #   1) original undiscounted episodic return (canonical selector)
+        #   2) PPO-gamma-discounted episodic return (historical diagnostic)
+        #
+        # With time-conditioned finite-horizon FQE enabled, target (1)
+        # is now the OBJECTIVE-ALIGNED comparison; target (2) remains
+        # only to show how the new evaluator differs from the previous
+        # discounted FQE objective. The support-penalized score is
+        # intentionally NOT used here.
+        run_objective_mismatch_study_iteration(
+            model=model,
+            advantage_rew=advantage_rew,
+            cum_discounted_rews=cum_discounted_rews,
+            online_scores=online_scores,
+            fqe_mean_q_scores=fqe_mean_q_scores,
+            iteration=iteration,
+            DIR=DIR,
+            SEARCH_INTERV=SEARCH_INTERV,
+            objectiveMismatchMetrics=objectiveMismatchMetrics,
+            objectiveMismatchCandidateRows=objectiveMismatchCandidateRows,
+        )
+
+
+def record_replay_coverage_study_iteration(cum_rews, replay_coverage_scores, replay_coverage_data, iteration, DIR, SEARCH_INTERV, rank_correlation_study, replayCoverageMetrics, replayCoverageCandidateRows):
+    if (
+        rank_correlation_study
+        and FQE_BACKEND == "native_batched"
+        and REPLAY_COVERAGE_ABLATION
+    ):
+        online_scores_for_coverage = np.asarray(
+            cum_rews, dtype=np.float64
+        )
+
+        print("---------------------------------")
+        print("REPLAY COVERAGE ABLATION RESULTS")
+
+        for coverage_label, coverage_scores in replay_coverage_scores.items():
+            coverage_data = replay_coverage_data[coverage_label]
+            coverage_metrics = compute_replay_coverage_rank_metrics(
+                online_scores=online_scores_for_coverage,
+                fqe_scores=coverage_scores,
+                iteration=iteration,
+                coverage_label=coverage_label,
+                native_data=coverage_data,
+            )
+            replayCoverageMetrics.append(coverage_metrics)
+
+            coverage_scores_np = np.asarray(
+                coverage_scores, dtype=np.float64
+            )
+            coverage_mean_q_np = np.asarray(
+                getattr(coverage_scores, "mean_q", coverage_scores_np),
+                dtype=np.float64,
+            )
+            coverage_sigma_np = np.asarray(
+                getattr(
+                    coverage_scores,
+                    "mean_sigma",
+                    np.zeros_like(coverage_scores_np),
+                ),
+                dtype=np.float64,
+            )
+            coverage_action_div_np = np.asarray(
+                getattr(
+                    coverage_scores,
+                    "action_divergence",
+                    np.zeros_like(coverage_scores_np),
+                ),
+                dtype=np.float64,
+            )
+            coverage_support_penalty_np = np.asarray(
+                getattr(
+                    coverage_scores,
+                    "support_penalty",
+                    np.zeros_like(coverage_scores_np),
+                ),
+                dtype=np.float64,
+            )
+            for candidate_idx, (coverage_fqe_score, online_score) in enumerate(
+                zip(coverage_scores_np, online_scores_for_coverage)
+            ):
+                replayCoverageCandidateRows.append({
+                    "iteration": int(iteration),
+                    "coverage": str(coverage_label),
+                    "requested_max_transitions": (
+                        -1
+                        if coverage_data["requested_max_transitions"] is None
+                        else int(coverage_data["requested_max_transitions"])
+                    ),
+                    "actual_transitions": int(coverage_data["actual_transitions"]),
+                    "n_episodes": int(coverage_data["n_episodes"]),
+                    "training_initial_states": int(
+                        coverage_data.get(
+                            "training_initial_states",
+                            len(coverage_data["initial_observations"]),
+                        )
+                    ),
+                    "score_initial_states": int(
+                        coverage_data.get(
+                            "score_initial_states",
+                            len(coverage_data["initial_observations"]),
+                        )
+                    ),
+                    "candidate": int(candidate_idx),
+                    # 'fqe' remains the actual support-penalized
+                    # ranking score for backward compatibility.
+                    "fqe": float(coverage_fqe_score),
+                    "fqe_mean_q": float(
+                        coverage_mean_q_np[candidate_idx]
+                    ),
+                    "action_divergence": float(
+                        coverage_action_div_np[candidate_idx]
+                    ),
+                    "support_penalty": float(
+                        coverage_support_penalty_np[candidate_idx]
+                    ),
+                    "fqe_mean_sigma": float(
+                        coverage_sigma_np[candidate_idx]
+                    ),
+                    "fqe_ensemble_size": int(
+                        getattr(coverage_scores, "ensemble_size", 1)
+                    ),
+                    "support_penalty_lambda": float(
+                        getattr(
+                            coverage_scores,
+                            "penalty_lambda",
+                            0.0,
+                        )
+                    ),
+                    "support_reference": str(
+                        getattr(
+                            coverage_scores,
+                            "support_reference_label",
+                            "none",
+                        )
+                    ),
+                    "support_reference_transitions": int(
+                        getattr(
+                            coverage_scores,
+                            "support_reference_transitions",
+                            0,
+                        )
+                    ),
+                    "fqe_objective": str(
+                        getattr(
+                            coverage_scores,
+                            "fqe_objective",
+                            "unknown",
+                        )
+                    ),
+                    "fqe_gamma": float(
+                        getattr(
+                            coverage_scores,
+                            "fqe_gamma",
+                            np.nan,
+                        )
+                    ),
+                    "finite_horizon_steps": (
+                        -1
+                        if getattr(
+                            coverage_scores,
+                            "finite_horizon_steps",
+                            None,
+                        ) is None
+                        else int(
+                            getattr(
+                                coverage_scores,
+                                "finite_horizon_steps",
+                            )
+                        )
+                    ),
+                    "time_conditioned": bool(
+                        getattr(
+                            coverage_scores,
+                            "time_conditioned",
+                            False,
+                        )
+                    ),
+                    "online": float(online_score),
+                })
+
+            direct_summary = (
+                f"coverage={coverage_label:>5} | "
+                f"actual={coverage_metrics['actual_transitions']:>6} | "
+                f"episodes={coverage_metrics['n_episodes']:>3} | "
+                f"score_s0={coverage_metrics['score_initial_states']:>3} | "
+                f"Pearson={coverage_metrics['pearson']:+.4f} | "
+                f"Spearman={coverage_metrics['spearman']:+.4f} | "
+                f"Kendall={coverage_metrics['kendall']:+.4f} | "
+                f"direct_top1={int(coverage_metrics['top1_agreement'])} | "
+                f"direct_regret={coverage_metrics['selection_regret']:.4f}"
+            )
+
+            hybrid_parts = []
+            for requested_k in HYBRID_TOPK_VALUES:
+                hybrid_parts.append(
+                    f"Recall@{requested_k}="
+                    f"{int(coverage_metrics[f'oracle_recall_at_{requested_k}'])}, "
+                    f"HReg@{requested_k}="
+                    f"{coverage_metrics[f'hybrid_regret_at_{requested_k}']:.4f}"
+                )
+
+            print(
+                direct_summary
+                + " | "
+                + " | ".join(hybrid_parts)
+            )
+
+        replay_coverage_npz_payload = {
+            "online": online_scores_for_coverage,
+        }
+        for coverage_label, scores in replay_coverage_scores.items():
+            # Backward-compatible key: fqe_<window> is the actual
+            # support-penalized ranking score. Save both raw components
+            # so lambda can be swept post-hoc.
+            replay_coverage_npz_payload[
+                f"fqe_{coverage_label}"
+            ] = np.asarray(scores, dtype=np.float64)
+            replay_coverage_npz_payload[
+                f"fqe_mean_q_{coverage_label}"
+            ] = np.asarray(
+                getattr(scores, "mean_q", scores),
+                dtype=np.float64,
+            )
+            replay_coverage_npz_payload[
+                f"action_divergence_{coverage_label}"
+            ] = np.asarray(
+                getattr(
+                    scores,
+                    "action_divergence",
+                    np.zeros(len(scores), dtype=np.float64),
+                ),
+                dtype=np.float64,
+            )
+            replay_coverage_npz_payload[
+                f"support_penalty_{coverage_label}"
+            ] = np.asarray(
+                getattr(
+                    scores,
+                    "support_penalty",
+                    np.zeros(len(scores), dtype=np.float64),
+                ),
+                dtype=np.float64,
+            )
+            replay_coverage_npz_payload[
+                f"fqe_sigma_{coverage_label}"
+            ] = np.asarray(
+                getattr(
+                    scores,
+                    "mean_sigma",
+                    np.zeros(len(scores), dtype=np.float64),
+                ),
+                dtype=np.float64,
+            )
+
+        np.savez(
+            f'logs/{DIR}/replay_coverage_scores_{iteration}_{iteration + SEARCH_INTERV}.npz',
+            **replay_coverage_npz_payload,
+        )
+
+
+def save_matched_full_online_control_results(MATCHED_FULL_ONLINE_CONTROL, fullOnlineControlMetrics, fullOnlineControlCandidateRows, DIR):
+    if MATCHED_FULL_ONLINE_CONTROL and fullOnlineControlMetrics:
+        full_control_summary_df = pd.DataFrame(
+            fullOnlineControlMetrics
+        )
+        full_control_candidates_df = pd.DataFrame(
+            fullOnlineControlCandidateRows
+        )
+        full_control_summary_df.to_csv(
+            f'logs/{DIR}/full_online_control_summary.csv',
+            index=False,
+        )
+        full_control_candidates_df.to_csv(
+            f'logs/{DIR}/full_online_control_candidates.csv',
+            index=False,
+        )
+        np.save(
+            f'logs/{DIR}/full_online_control_summary.npy',
+            np.array(fullOnlineControlMetrics, dtype=object),
+            allow_pickle=True,
+        )
+
+        print("---------------------------------")
+        print("MATCHED FULL-ONLINE CONTROL SUMMARY")
+        print(
+            "Mean selected full return: "
+            f"{full_control_summary_df['selected_full_return'].mean():.4f}"
+        )
+        print(
+            "Mean full return across all candidates: "
+            f"{full_control_summary_df['mean_full_return_all_candidates'].mean():.4f}"
+        )
+        print(
+            "Nominal candidate-evaluation step reduction vs the full "
+            "control itself: 0.000"
+        )
+        print(
+            f"Matched hybrid nominal reduction for {PREFIX_SHORTLIST_STEPS}->top-{PREFIX_SHORTLIST_TOP_K}: "
+            f"{full_control_summary_df['nominal_matched_hybrid_reduction_vs_control'].mean():.3f}"
+        )
+
+
+def save_prefix_shortlist_results(PREFIX_SHORTLIST_SELECTOR_ACTIVE, prefixShortlistMetrics, prefixShortlistCandidateRows, DIR, env_name):
+    if PREFIX_SHORTLIST_SELECTOR_ACTIVE and prefixShortlistMetrics:
+        prefix_shortlist_summary_df = pd.DataFrame(
+            prefixShortlistMetrics
+        )
+        prefix_shortlist_candidates_df = pd.DataFrame(
+            prefixShortlistCandidateRows
+        )
+        prefix_shortlist_summary_df.to_csv(
+            f'logs/{DIR}/prefix_shortlist_summary.csv',
+            index=False,
+        )
+        prefix_shortlist_candidates_df.to_csv(
+            f'logs/{DIR}/prefix_shortlist_candidates.csv',
+            index=False,
+        )
+        np.save(
+            f'logs/{DIR}/prefix_shortlist_summary.npy',
+            np.array(prefixShortlistMetrics, dtype=object),
+            allow_pickle=True,
+        )
+
+        print("---------------------------------")
+        print(f"{PREFIX_SHORTLIST_STEPS}-STEP -> TOP-{PREFIX_SHORTLIST_TOP_K} -> FULL SELECTOR SUMMARY [{env_name}]")
+        print(
+            "Mean selected full return: "
+            f"{prefix_shortlist_summary_df['selected_full_return'].mean():.4f}"
+        )
+        print(
+            "Mean selected prefix rank: "
+            f"{prefix_shortlist_summary_df['selected_prefix_rank'].mean():.2f}"
+        )
+        print(
+            "Mean nominal environment-step reduction vs full-horizon "
+            "evaluation of every candidate: "
+            f"{prefix_shortlist_summary_df['nominal_step_reduction_vs_full_cap'].mean():.3f}"
+        )
+        if (
+            "shadow_oracle_enabled" in prefix_shortlist_summary_df.columns
+            and prefix_shortlist_summary_df["shadow_oracle_enabled"].any()
+        ):
+            shadow_df = prefix_shortlist_summary_df[
+                prefix_shortlist_summary_df["shadow_oracle_enabled"]
+            ]
+            print(
+                f"Shadow all-candidate oracle recall@{PREFIX_SHORTLIST_TOP_K}: "
+                f"{shadow_df['shadow_oracle_recalled_by_shortlist'].mean():.3f}"
+            )
+            print(
+                "Mean selector regret vs shadow all-candidate oracle: "
+                f"{shadow_df['selector_regret_vs_shadow_oracle'].mean():.4f}"
+            )
+            print(
+                "Iterations where best discarded candidate beat the deployed "
+                "winner: "
+                f"{int(shadow_df['best_discarded_beats_selected'].sum())}/"
+                f"{len(shadow_df)}"
+            )
+            print(
+                "Mean shadow-oracle diagnostic extra environment steps: "
+                f"{shadow_df['shadow_oracle_extra_env_steps'].mean():.1f}"
+            )
+
+
+def save_prefix_budget_study_results(PREFIX_BUDGET_STUDY, prefixBudgetMetrics, prefixBudgetCandidateRows, DIR):
+    if PREFIX_BUDGET_STUDY and prefixBudgetMetrics:
+        prefix_summary_df = pd.DataFrame(prefixBudgetMetrics)
+        prefix_candidates_df = pd.DataFrame(
+            prefixBudgetCandidateRows
+        )
+
+        prefix_summary_df.to_csv(
+            f'logs/{DIR}/prefix_budget_summary.csv',
+            index=False,
+        )
+        prefix_candidates_df.to_csv(
+            f'logs/{DIR}/prefix_budget_candidates.csv',
+            index=False,
+        )
+        np.save(
+            f'logs/{DIR}/prefix_budget_summary.npy',
+            np.array(prefixBudgetMetrics, dtype=object),
+            allow_pickle=True,
+        )
+
+        print("---------------------------------")
+        print("PREFIX-BUDGET STUDY SUMMARY (FULL 1000-STEP ORACLE UNCHANGED)")
+        for budget in PREFIX_BUDGET_STEPS:
+            group = prefix_summary_df[
+                prefix_summary_df["prefix_budget_steps"] == int(budget)
+            ]
+            if group.empty:
+                continue
+            print(
+                f"prefix={int(budget):>3} | "
+                f"Spearman={group['spearman_vs_full'].mean():+.4f} +/- "
+                f"{group['spearman_vs_full'].std(ddof=0):.4f} | "
+                f"top1={group['top1_agreement'].mean():.3f} | "
+                f"Recall@3={group['oracle_recall_at_3'].mean():.3f} | "
+                f"Recall@5={group['oracle_recall_at_5'].mean():.3f} | "
+                f"mean oracle rank={group['oracle_prefix_rank'].mean():.2f} | "
+                f"regret={group['selection_regret'].mean():.4f} +/- "
+                f"{group['selection_regret'].std(ddof=0):.4f} | "
+                f"mean step reduction="
+                f"{group['mean_step_reduction_vs_oracle'].mean():.3f}"
+            )
+
+
+def save_rank_correlation_study_results(rank_correlation_study, rankStudyMetrics, rankStudyCandidateRows, DIR):
+    if rank_correlation_study and rankStudyMetrics:
+        rank_summary_df = pd.DataFrame(rankStudyMetrics)
+        rank_summary_df.to_csv(f'logs/{DIR}/rank_study_summary.csv', index=False)
+        pd.DataFrame(rankStudyCandidateRows).to_csv(
+            f'logs/{DIR}/rank_study_candidates.csv', index=False
+        )
+        np.save(
+            f'logs/{DIR}/rank_study_summary.npy',
+            np.array(rankStudyMetrics, dtype=object),
+            allow_pickle=True
+        )
+
+        print("---------------------------------")
+        summary_score_label = (
+            "Support-Penalized FQE"
+            if (
+                rank_summary_df["fqe_score_type"]
+                == "support_penalized"
+            ).all()
+            else "FQE"
+        )
+        print(f"{summary_score_label} / ONLINE RANKING STUDY SUMMARY")
+        print(
+            f"Mean Pearson:  {rank_summary_df['pearson'].mean():.4f} "
+            f"+/- {rank_summary_df['pearson'].std(ddof=0):.4f}"
+        )
+        print(
+            f"Mean Spearman: {rank_summary_df['spearman'].mean():.4f} "
+            f"+/- {rank_summary_df['spearman'].std(ddof=0):.4f}"
+        )
+        print(
+            f"Mean Kendall:  {rank_summary_df['kendall'].mean():.4f} "
+            f"+/- {rank_summary_df['kendall'].std(ddof=0):.4f}"
+        )
+        print(
+            f"Top-1 agreement rate: "
+            f"{rank_summary_df['top1_agreement'].mean():.3f}"
+        )
+        print(
+            f"Top-3 hit rate: "
+            f"{rank_summary_df['top3_hit'].mean():.3f}"
+        )
+        print(
+            f"Top-5 hit rate: "
+            f"{rank_summary_df['top5_hit'].mean():.3f}"
+        )
+        print(
+            f"Mean selection regret: "
+            f"{rank_summary_df['selection_regret'].mean():.4f}"
+        )
+
+
+def save_objective_mismatch_study_results(OBJECTIVE_MISMATCH_STUDY, objectiveMismatchMetrics, objectiveMismatchCandidateRows, DIR):
+    if OBJECTIVE_MISMATCH_STUDY and objectiveMismatchMetrics:
+        objective_summary_df = pd.DataFrame(objectiveMismatchMetrics)
+        objective_candidates_df = pd.DataFrame(
+            objectiveMismatchCandidateRows
+        )
+
+        objective_summary_df.to_csv(
+            f'logs/{DIR}/objective_mismatch_summary.csv',
+            index=False,
+        )
+        objective_candidates_df.to_csv(
+            f'logs/{DIR}/objective_mismatch_candidates.csv',
+            index=False,
+        )
+        np.save(
+            f'logs/{DIR}/objective_mismatch_summary.npy',
+            np.array(objectiveMismatchMetrics, dtype=object),
+            allow_pickle=True,
+        )
+
+        print("---------------------------------")
+        print("FQE OBJECTIVE-ALIGNMENT STUDY SUMMARY")
+        if "fqe_objective" in objective_summary_df.columns:
+            print(
+                "FQE evaluator: "
+                f"{objective_summary_df['fqe_objective'].iloc[0]} | "
+                f"OPE gamma="
+                f"{objective_summary_df['fqe_gamma'].iloc[0]:.8f} | "
+                f"H="
+                f"{int(objective_summary_df['finite_horizon_steps'].iloc[0])} | "
+                f"time_conditioned="
+                f"{bool(objective_summary_df['time_conditioned'].iloc[0])}"
+            )
+        print(
+            "PPO / discounted-online diagnostic gamma: "
+            f"{objective_summary_df['gamma'].iloc[0]:.8f}"
+        )
+        print(
+            "FQE vs UNDISCOUNTED online -- "
+            f"Pearson: "
+            f"{objective_summary_df['fqe_vs_undiscounted_pearson'].mean():+.4f} "
+            f"+/- "
+            f"{objective_summary_df['fqe_vs_undiscounted_pearson'].std(ddof=0):.4f} | "
+            f"Spearman: "
+            f"{objective_summary_df['fqe_vs_undiscounted_spearman'].mean():+.4f} "
+            f"+/- "
+            f"{objective_summary_df['fqe_vs_undiscounted_spearman'].std(ddof=0):.4f} | "
+            f"Kendall: "
+            f"{objective_summary_df['fqe_vs_undiscounted_kendall'].mean():+.4f} "
+            f"+/- "
+            f"{objective_summary_df['fqe_vs_undiscounted_kendall'].std(ddof=0):.4f}"
+        )
+        print(
+            "FQE vs DISCOUNTED online   -- "
+            f"Pearson: "
+            f"{objective_summary_df['fqe_vs_discounted_pearson'].mean():+.4f} "
+            f"+/- "
+            f"{objective_summary_df['fqe_vs_discounted_pearson'].std(ddof=0):.4f} | "
+            f"Spearman: "
+            f"{objective_summary_df['fqe_vs_discounted_spearman'].mean():+.4f} "
+            f"+/- "
+            f"{objective_summary_df['fqe_vs_discounted_spearman'].std(ddof=0):.4f} | "
+            f"Kendall: "
+            f"{objective_summary_df['fqe_vs_discounted_kendall'].mean():+.4f} "
+            f"+/- "
+            f"{objective_summary_df['fqe_vs_discounted_kendall'].std(ddof=0):.4f}"
+        )
+        print(
+            "Mean DISCOUNTED - UNDISCOUNTED correlation difference -- "
+            f"Pearson: "
+            f"{objective_summary_df['discounted_minus_undiscounted_pearson'].mean():+.4f} | "
+            f"Spearman: "
+            f"{objective_summary_df['discounted_minus_undiscounted_spearman'].mean():+.4f} | "
+            f"Kendall: "
+            f"{objective_summary_df['discounted_minus_undiscounted_kendall'].mean():+.4f}"
+        )
+        print(
+            "Raw FQE top-1 agreement -- "
+            f"undiscounted: "
+            f"{objective_summary_df['fqe_top1_undiscounted'].mean():.3f} | "
+            f"discounted: "
+            f"{objective_summary_df['fqe_top1_discounted'].mean():.3f}"
+        )
+        print(
+            "Online discounted/undiscounted oracle top-1 same rate: "
+            f"{objective_summary_df['online_oracle_top1_same'].mean():.3f}"
+        )
+        print(
+            "Mean raw-FQE selection regret -- "
+            f"undiscounted: "
+            f"{objective_summary_df['fqe_regret_undiscounted'].mean():.4f} | "
+            f"discounted: "
+            f"{objective_summary_df['fqe_regret_discounted'].mean():.4f}"
+        )
+
+
+def save_fqe_convergence_study_results(FQE_CONVERGENCE_STUDY, fqeConvergenceMetrics, fqeConvergenceCandidateRows, DIR):
+    if FQE_CONVERGENCE_STUDY and fqeConvergenceMetrics:
+        convergence_summary_df = pd.DataFrame(fqeConvergenceMetrics)
+        convergence_candidates_df = pd.DataFrame(
+            fqeConvergenceCandidateRows
+        )
+
+        convergence_summary_df.to_csv(
+            f'logs/{DIR}/fqe_convergence_summary.csv',
+            index=False,
+        )
+        convergence_candidates_df.to_csv(
+            f'logs/{DIR}/fqe_convergence_candidates.csv',
+            index=False,
+        )
+        np.save(
+            f'logs/{DIR}/fqe_convergence_summary.npy',
+            np.array(fqeConvergenceMetrics, dtype=object),
+            allow_pickle=True,
+        )
+
+        print("---------------------------------")
+        print("FQE LONG-HORIZON CONVERGENCE STUDY SUMMARY")
+        for conv_steps, conv_target_interval in FQE_CONVERGENCE_CONFIGS:
+            config_label = (
+                f"{int(conv_steps)}_steps_target"
+                f"{int(conv_target_interval)}"
+            )
+            group = convergence_summary_df[
+                convergence_summary_df["config"] == config_label
+            ]
+            if group.empty:
+                continue
+
+            print(
+                f"steps={int(conv_steps):>6}, "
+                f"target={int(conv_target_interval):>3}, "
+                f"target_updates={int(group['fqe_target_updates'].iloc[0]):>5} | "
+                f"meanQ={group['mean_fqe_q'].mean():.3f} "
+                f"+/- {group['mean_fqe_q'].std(ddof=0):.3f} | "
+                f"Qrange={group['fqe_q_range'].mean():.3f} | "
+                f"final_loss={group['mean_final_fqe_loss'].mean():.4f} | "
+                f"online_mean={group['mean_online_return'].mean():.3f} | "
+                f"Pearson={group['pearson'].mean():+.4f} "
+                f"+/- {group['pearson'].std(ddof=0):.4f} | "
+                f"Spearman={group['spearman'].mean():+.4f} "
+                f"+/- {group['spearman'].std(ddof=0):.4f} | "
+                f"Kendall={group['kendall'].mean():+.4f} "
+                f"+/- {group['kendall'].std(ddof=0):.4f} | "
+                f"top1={group['top1_agreement'].mean():.3f} | "
+                f"top3={group['top3_hit'].mean():.3f} | "
+                f"top5={group['top5_hit'].mean():.3f} | "
+                f"regret={group['selection_regret'].mean():.4f}"
+            )
+
+
+def save_knn_support_study_results(KNN_SUPPORT_STUDY, knnSupportMetrics, knnSupportCandidateRows, DIR, n_candidates):
+    if KNN_SUPPORT_STUDY and knnSupportMetrics:
+        knn_summary_df = pd.DataFrame(knnSupportMetrics)
+        knn_candidates_df = pd.DataFrame(knnSupportCandidateRows)
+
+        knn_summary_df.to_csv(
+            f'logs/{DIR}/knn_support_summary.csv',
+            index=False,
+        )
+        knn_candidates_df.to_csv(
+            f'logs/{DIR}/knn_support_candidates.csv',
+            index=False,
+        )
+        np.save(
+            f'logs/{DIR}/knn_support_summary.npy',
+            np.array(knnSupportMetrics, dtype=object),
+            allow_pickle=True,
+        )
+
+        print("---------------------------------")
+        print("STATE-CONDITIONAL kNN SUPPORT FILTER SUMMARY")
+        print(
+            f"FQE config: "
+            f"{int(knn_summary_df['fqe_n_steps'].iloc[0])} steps / "
+            f"target "
+            f"{int(knn_summary_df['fqe_target_update_interval'].iloc[0])}"
+        )
+        print(
+            f"k={int(knn_summary_df['knn_k'].iloc[0])}, "
+            f"mean query states="
+            f"{knn_summary_df['query_states'].mean():.1f}, "
+            f"behavior percentile="
+            f"{knn_summary_df['behavior_percentile'].iloc[0]:.1f}, "
+            f"max unsupported fraction="
+            f"{knn_summary_df['max_unsupported_fraction'].iloc[0]:.3f}, "
+            f"min keep={int(knn_summary_df['min_keep'].iloc[0])}"
+        )
+        print(
+            "Mean raw 50k/100 FQE Spearman: "
+            f"{knn_summary_df['raw_fqe_spearman'].mean():+.4f} "
+            f"+/- {knn_summary_df['raw_fqe_spearman'].std(ddof=0):.4f}"
+        )
+        print(
+            "Mean support-score Spearman vs online: "
+            f"{knn_summary_df['support_score_spearman'].mean():+.4f} "
+            f"+/- "
+            f"{knn_summary_df['support_score_spearman'].std(ddof=0):.4f}"
+        )
+        print(
+            "Mean absolute-threshold keep count: "
+            f"{knn_summary_df['threshold_keep_count'].mean():.2f} / "
+            f"{n_candidates}"
+        )
+        print(
+            "Mean effective keep count: "
+            f"{knn_summary_df['effective_keep_count'].mean():.2f} / "
+            f"{n_candidates} | "
+            f"mean fallback additions="
+            f"{knn_summary_df['fallback_fill_count'].mean():.2f}"
+        )
+        print(
+            "Oracle survives effective support filter: "
+            f"{knn_summary_df['oracle_survives_effective_filter'].mean():.3f}"
+        )
+        print(
+            "Direct raw FQE top-1 / regret: "
+            f"{knn_summary_df['raw_fqe_top1'].mean():.3f} / "
+            f"{knn_summary_df['raw_fqe_selection_regret'].mean():.4f}"
+        )
+        print(
+            "Direct filtered-FQE top-1 / regret: "
+            f"{knn_summary_df['filtered_fqe_top1'].mean():.3f} / "
+            f"{knn_summary_df['filtered_fqe_selection_regret'].mean():.4f}"
+        )
+        for requested_k in HYBRID_TOPK_VALUES:
+            print(
+                f"k={requested_k}: raw Recall="
+                f"{knn_summary_df[f'raw_oracle_recall_at_{requested_k}'].mean():.3f}, "
+                f"raw HReg="
+                f"{knn_summary_df[f'raw_hybrid_regret_at_{requested_k}'].mean():.4f} | "
+                f"filtered Recall="
+                f"{knn_summary_df[f'filtered_oracle_recall_at_{requested_k}'].mean():.3f}, "
+                f"filtered HReg="
+                f"{knn_summary_df[f'filtered_hybrid_regret_at_{requested_k}'].mean():.4f}, "
+                f"effective_k="
+                f"{knn_summary_df[f'filtered_effective_k_at_{requested_k}'].mean():.2f}"
+            )
+
+
+def save_state_occupancy_study_results(STATE_OCCUPANCY_KNN_STUDY, stateOccupancyMetrics, stateOccupancyCandidateRows, DIR, n_candidates):
+    if STATE_OCCUPANCY_KNN_STUDY and stateOccupancyMetrics:
+        occupancy_summary_df = pd.DataFrame(stateOccupancyMetrics)
+        occupancy_candidates_df = pd.DataFrame(
+            stateOccupancyCandidateRows
+        )
+
+        occupancy_summary_df.to_csv(
+            f'logs/{DIR}/state_occupancy_knn_summary.csv',
+            index=False,
+        )
+        occupancy_candidates_df.to_csv(
+            f'logs/{DIR}/state_occupancy_knn_candidates.csv',
+            index=False,
+        )
+        np.save(
+            f'logs/{DIR}/state_occupancy_knn_summary.npy',
+            np.array(stateOccupancyMetrics, dtype=object),
+            allow_pickle=True,
+        )
+
+        print("---------------------------------")
+        print("STATE-OCCUPANCY kNN DIAGNOSTIC SUMMARY")
+        print(
+            f"FQE config: "
+            f"{int(occupancy_summary_df['fqe_n_steps'].iloc[0])} "
+            f"steps / target "
+            f"{int(occupancy_summary_df['fqe_target_update_interval'].iloc[0])}"
+        )
+        print(
+            f"k={int(occupancy_summary_df['knn_k'].iloc[0])}, "
+            f"time_aware="
+            f"{bool(occupancy_summary_df['include_time'].iloc[0])}, "
+            f"mean replay queries="
+            f"{occupancy_summary_df['replay_query_states'].mean():.1f}, "
+            f"behavior percentile="
+            f"{occupancy_summary_df['behavior_percentile'].iloc[0]:.1f}"
+        )
+        print(
+            "Mean candidate occupancy OOD fraction: "
+            f"{occupancy_summary_df['mean_candidate_ood_fraction'].mean():.4f} "
+            f"+/- "
+            f"{occupancy_summary_df['mean_candidate_ood_fraction'].std(ddof=0):.4f}"
+        )
+        print(
+            "Occupancy radius vs |FQE rank error| Spearman: "
+            f"{occupancy_summary_df['occupancy_vs_abs_fqe_rank_error_spearman'].mean():+.4f} "
+            f"+/- "
+            f"{occupancy_summary_df['occupancy_vs_abs_fqe_rank_error_spearman'].std(ddof=0):.4f}"
+        )
+        print(
+            "Occupancy OOD fraction vs |FQE rank error| Spearman: "
+            f"{occupancy_summary_df['occupancy_ood_vs_abs_fqe_rank_error_spearman'].mean():+.4f} "
+            f"+/- "
+            f"{occupancy_summary_df['occupancy_ood_vs_abs_fqe_rank_error_spearman'].std(ddof=0):.4f}"
+        )
+        print(
+            "Occupancy radius vs |z(FQE)-z(online)| Spearman: "
+            f"{occupancy_summary_df['occupancy_vs_abs_fqe_z_error_spearman'].mean():+.4f} "
+            f"+/- "
+            f"{occupancy_summary_df['occupancy_vs_abs_fqe_z_error_spearman'].std(ddof=0):.4f}"
+        )
+        print(
+            "Occupancy radius vs online return Spearman: "
+            f"{occupancy_summary_df['occupancy_vs_online_spearman'].mean():+.4f} "
+            f"+/- "
+            f"{occupancy_summary_df['occupancy_vs_online_spearman'].std(ddof=0):.4f}"
+        )
+        print(
+            "Mean |FQE rank error|, low-novelty quartile / "
+            "high-novelty quartile: "
+            f"{occupancy_summary_df['low_novelty_quartile_mean_abs_rank_error'].mean():.3f} / "
+            f"{occupancy_summary_df['high_novelty_quartile_mean_abs_rank_error'].mean():.3f} "
+            f"(high-low="
+            f"{occupancy_summary_df['high_minus_low_novelty_rank_error'].mean():+.3f})"
+        )
+        print(
+            "Mean oracle occupancy rank: "
+            f"{occupancy_summary_df['oracle_occupancy_rank'].mean():.2f} / "
+            f"{n_candidates}"
+        )
+
+
+def save_time_resolved_occupancy_study_results(TIME_RESOLVED_OCCUPANCY_STUDY, timeResolvedOccupancyMetrics, timeResolvedOccupancyCandidateRows, DIR):
+    if (
+        TIME_RESOLVED_OCCUPANCY_STUDY
+        and timeResolvedOccupancyMetrics
+    ):
+        time_occ_summary_df = pd.DataFrame(
+            timeResolvedOccupancyMetrics
+        )
+        time_occ_candidates_df = pd.DataFrame(
+            timeResolvedOccupancyCandidateRows
+        )
+
+        time_occ_summary_df.to_csv(
+            f'logs/{DIR}/time_resolved_occupancy_summary.csv',
+            index=False,
+        )
+        time_occ_candidates_df.to_csv(
+            f'logs/{DIR}/time_resolved_occupancy_candidates.csv',
+            index=False,
+        )
+        np.save(
+            f'logs/{DIR}/time_resolved_occupancy_summary.npy',
+            np.array(timeResolvedOccupancyMetrics, dtype=object),
+            allow_pickle=True,
+        )
+
+        print("---------------------------------")
+        print("TIME-RESOLVED STATE-OCCUPANCY SUMMARY")
+        window_order = (
+            time_occ_summary_df[
+                ["window_index", "window_label", "window_start", "window_end"]
+            ]
+            .drop_duplicates()
+            .sort_values("window_index")
+        )
+        for _, window_meta in window_order.iterrows():
+            window_label = window_meta["window_label"]
+            group = time_occ_summary_df[
+                time_occ_summary_df["window_label"] == window_label
+            ]
+            print(
+                f"[{int(window_meta['window_start'])},"
+                f"{int(window_meta['window_end'])}): "
+                f"mean OOD="
+                f"{group['mean_candidate_ood_fraction'].mean():.4f} +/- "
+                f"{group['mean_candidate_ood_fraction'].std(ddof=0):.4f} | "
+                f"radius/behavior="
+                f"{group['mean_candidate_radius_ratio_to_behavior'].mean():.3f} | "
+                f"rho(novelty,online)="
+                f"{group['occupancy_vs_online_spearman'].mean():+.4f} +/- "
+                f"{group['occupancy_vs_online_spearman'].std(ddof=0):.4f} | "
+                f"rho(novelty,FQE-overvaluation)="
+                f"{group['occupancy_vs_fqe_rank_overvaluation_spearman'].mean():+.4f} +/- "
+                f"{group['occupancy_vs_fqe_rank_overvaluation_spearman'].std(ddof=0):.4f}"
+            )
+
+
+def save_replay_coverage_study_results(REPLAY_COVERAGE_ABLATION, replayCoverageMetrics, replayCoverageCandidateRows, DIR):
+    if REPLAY_COVERAGE_ABLATION and replayCoverageMetrics:
+        coverage_summary_df = pd.DataFrame(replayCoverageMetrics)
+        coverage_candidates_df = pd.DataFrame(replayCoverageCandidateRows)
+
+        coverage_summary_df.to_csv(
+            f'logs/{DIR}/replay_coverage_ablation.csv',
+            index=False,
+        )
+        coverage_candidates_df.to_csv(
+            f'logs/{DIR}/replay_coverage_candidates.csv',
+            index=False,
+        )
+
+        coverage_order = [
+            "full" if w is None else str(int(w))
+            for w in REPLAY_COVERAGE_WINDOWS
+        ]
+
+        # Compact one-row-per-window summary focused on the hybrid selector.
+        hybrid_summary_rows = []
+        for coverage_label in coverage_order:
+            group = coverage_summary_df[
+                coverage_summary_df["coverage"] == coverage_label
+            ]
+            if group.empty:
+                continue
+
+            row = {
+                "coverage": coverage_label,
+                "mean_actual_transitions": float(
+                    group["actual_transitions"].mean()
+                ),
+                "mean_episodes": float(group["n_episodes"].mean()),
+                "mean_pearson": float(group["pearson"].mean()),
+                "mean_spearman": float(group["spearman"].mean()),
+                "mean_kendall": float(group["kendall"].mean()),
+                "direct_top1_rate": float(
+                    group["top1_agreement"].mean()
+                ),
+                "direct_mean_regret": float(
+                    group["selection_regret"].mean()
+                ),
+            }
+            for requested_k in HYBRID_TOPK_VALUES:
+                row[f"oracle_recall_at_{requested_k}"] = float(
+                    group[f"oracle_recall_at_{requested_k}"].mean()
+                )
+                row[f"hybrid_mean_regret_at_{requested_k}"] = float(
+                    group[f"hybrid_regret_at_{requested_k}"].mean()
+                )
+                row[f"online_reduction_at_{requested_k}"] = float(
+                    group[
+                        f"hybrid_online_reduction_at_{requested_k}"
+                    ].mean()
+                )
+            hybrid_summary_rows.append(row)
+
+        pd.DataFrame(hybrid_summary_rows).to_csv(
+            f'logs/{DIR}/replay_coverage_hybrid_summary.csv',
+            index=False,
+        )
+
+        print("---------------------------------")
+        print("REPLAY COVERAGE ABLATION SUMMARY")
+
+        for coverage_label in coverage_order:
+            group = coverage_summary_df[
+                coverage_summary_df["coverage"] == coverage_label
+            ]
+            if group.empty:
+                continue
+
+            direct_summary = (
+                f"coverage={coverage_label:>5} | "
+                f"mean actual transitions={group['actual_transitions'].mean():.1f} | "
+                f"mean episodes={group['n_episodes'].mean():.1f} | "
+                f"score_s0={group['score_initial_states'].mean():.1f} | "
+                f"Pearson={group['pearson'].mean():+.4f} "
+                f"+/- {group['pearson'].std(ddof=0):.4f} | "
+                f"Spearman={group['spearman'].mean():+.4f} "
+                f"+/- {group['spearman'].std(ddof=0):.4f} | "
+                f"Kendall={group['kendall'].mean():+.4f} "
+                f"+/- {group['kendall'].std(ddof=0):.4f} | "
+                f"direct_top1={group['top1_agreement'].mean():.3f} | "
+                f"direct_mean_regret={group['selection_regret'].mean():.4f}"
+            )
+
+            hybrid_parts = []
+            for requested_k in HYBRID_TOPK_VALUES:
+                hybrid_parts.append(
+                    f"Recall@{requested_k}="
+                    f"{group[f'oracle_recall_at_{requested_k}'].mean():.3f}, "
+                    f"HReg@{requested_k}="
+                    f"{group[f'hybrid_regret_at_{requested_k}'].mean():.4f}, "
+                    f"online_reduction="
+                    f"{group[f'hybrid_online_reduction_at_{requested_k}'].mean():.3f}"
+                )
+
+            print(
+                direct_summary
+                + " | "
+                + " | ".join(hybrid_parts)
+            )
+
+
 if __name__ == "__main__":
 
     mp.set_start_method("spawn", force=True)
 
     parser = argparse.ArgumentParser()
-    args, rest_args = parser.parse_known_args()
+    parser.add_argument(
+        "--env_name",
+        default=os.environ.get("ENV_NAME", "Humanoid-v5"),
+        choices=[
+            "Ant-v5",
+            "HalfCheetah-v5",
+            "Hopper-v5",
+            "Walker2d-v5",
+            "Humanoid-v5",
+            "Swimmer-v5",
+            "CartPole-v1",
+            "MountainCar-v0",
+            "Pendulum-v1",
+            "FetchReach-v4",
+            "FetchReachDense-v4",
+            "FetchPush-v4",
+            "FetchPushDense-v4",
+            "BreakoutNoFrameskip-v4",
+            "AntDir-v0",
+        ],
+        help="Environment to run. The prefix-shortlist generalization path supports the standard MuJoCo locomotion tasks.",
+    )
+    launcher_args, rest_args = parser.parse_known_args()
 
-    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
-    # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
-    # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
-    # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
-    # env_name = "Humanoid-v5" # For standard ant locomotion task (single goal task)
-    # env_name = "Swimmer-v5" # For standard swimmer locomotion task (single goal task)
+    env_name = launcher_args.env_name
+
+    # Standard MuJoCo locomotion environments supported by the transferred
+    # 250-step -> top-10 selector:
+    # Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5, Swimmer-v5.
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
     # env_name = "MountainCar-v0" # For mountain car (single goal task)
@@ -7503,6 +10723,10 @@ if __name__ == "__main__":
         args = args_fetch_push_dense.get_args(rest_args)
     elif env_name == "BreakoutNoFrameskip-v4":
         args = args_breakout_no_frameskip.get_args(rest_args)
+    else:
+        raise ValueError(f"No experiment argument configuration is defined for {env_name!r}.")
+
+    print(f"Selected environment: {env_name}")
 
     # The matched control and the deployed shortlist selector are both
     # selection experiments, not FQE/occupancy diagnostics. Disable the
@@ -7519,10 +10743,11 @@ if __name__ == "__main__":
         TIME_RESOLVED_OCCUPANCY_STUDY = False
 
     if PREFIX_SHORTLIST_SELECTOR_ACTIVE:
-        if env_name != "Ant-v5":
+        if env_name not in PREFIX_SHORTLIST_SUPPORTED_ENVS:
             raise NotImplementedError(
-                "PREFIX_SHORTLIST_SELECTOR is currently validated only for "
-                "the active Ant-v5 experiment."
+                "PREFIX_SHORTLIST_SELECTOR generalization mode supports only "
+                "the standard MuJoCo locomotion environments: "
+                f"{PREFIX_SHORTLIST_SUPPORTED_ENVS}. Got {env_name!r}."
             )
 
         try:
@@ -7549,18 +10774,30 @@ if __name__ == "__main__":
             f"full_horizon={_shortlist_full_horizon}."
         )
         print(
-            "Completed full-oracle FQE/occupancy/prefix diagnostics are "
-            "disabled in this mode so discarded candidates truly stop at "
-            f"step {PREFIX_SHORTLIST_STEPS}."
+            "Completed FQE/occupancy/prefix diagnostics are disabled in this "
+            "mode so they cannot affect the deployed selector."
         )
+        if PREFIX_SHORTLIST_SHADOW_ORACLE:
+            print(
+                "Shadow all-candidate oracle ENABLED: after the top-k winner "
+                "is fixed, discarded candidates are continued only for "
+                "diagnostics. Their extra environment steps are logged "
+                "separately and never affect selection or PPO replay."
+            )
+        else:
+            print(
+                "Shadow all-candidate oracle disabled: discarded candidates "
+                f"stop at step {PREFIX_SHORTLIST_STEPS}."
+            )
     else:
         _shortlist_full_horizon = None
 
     if MATCHED_FULL_ONLINE_CONTROL:
-        if env_name != "Ant-v5":
+        if env_name not in PREFIX_SHORTLIST_SUPPORTED_ENVS:
             raise NotImplementedError(
-                "MATCHED_FULL_ONLINE_CONTROL is configured for the active "
-                "Ant-v5 hybrid-vs-control experiment."
+                "MATCHED_FULL_ONLINE_CONTROL generalization mode supports only "
+                "the standard MuJoCo locomotion environments: "
+                f"{PREFIX_SHORTLIST_SUPPORTED_ENVS}. Got {env_name!r}."
             )
         try:
             _control_env_spec = gym.spec(env_name)
@@ -7570,6 +10807,12 @@ if __name__ == "__main__":
                 "MATCHED_FULL_ONLINE_CONTROL requires a registered Gymnasium "
                 "environment with spec.max_episode_steps."
             ) from exc
+        if not (0 < PREFIX_SHORTLIST_STEPS < _control_full_horizon):
+            raise ValueError(
+                "The matched hybrid prefix must satisfy 0 < prefix < full "
+                f"horizon: prefix={PREFIX_SHORTLIST_STEPS}, "
+                f"horizon={_control_full_horizon}."
+            )
         if PREFIX_SHORTLIST_N_EVAL_EPISODES != 3:
             raise ValueError(
                 "The historical full-online evaluator uses exactly 3 episodes. "
@@ -7651,7 +10894,7 @@ if __name__ == "__main__":
         np.random.seed(args.seed)
 
     # -------------------------------------------------------------------------------------------------------------
-    
+
     def make_envs(env_name, seed):
         def _init(seed_offset):
             def _thunk():
@@ -7660,7 +10903,7 @@ if __name__ == "__main__":
                 return env
             return _thunk
         return _init
-    
+
     if hasattr(args, 'n_envs') and args.n_envs > 1:
         print("Creating multiple envs - ", args.n_envs)
         if env_name in ["BreakoutNoFrameskip-v4"]:
@@ -7685,7 +10928,7 @@ if __name__ == "__main__":
         else:
             env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
             env.reset(seed=args.seed)
-    
+
     if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
         env = FlattenObservation(env)
     elif env_name in ["BreakoutNoFrameskip-v4"]:
@@ -7696,7 +10939,7 @@ if __name__ == "__main__":
     print("---------------------------------")
     print("Environment created")
     print(env.action_space, env.observation_space)
-    
+
     # ------------------------------------------------------------------------------------------------------------
     # goal = np.random.uniform(0, 3.1416)
     # env = gym.make(env_name, goal=goal) # multi-task learning
@@ -7781,7 +11024,7 @@ if __name__ == "__main__":
     if hasattr(args, 'learning_rate'):
         ppo_kwargs["learning_rate"] = args.learning_rate
 
-    if hasattr(args, 'batch_size'): 
+    if hasattr(args, 'batch_size'):
         ppo_kwargs["batch_size"] = args.batch_size
 
     if hasattr(args, 'normalize'):
@@ -7839,27 +11082,27 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    # print("Starting Initial training")
-    # os.makedirs(f'full_exp_on_ppo2/models/'+env_name, exist_ok=True)
-    # os.makedirs(f'full_exp_on_ppo2/replay_buffers/'+env_name, exist_ok=True)
+    print("Starting Initial training")
+    os.makedirs(f'full_exp_on_ppo2/models/'+env_name, exist_ok=True)
+    os.makedirs(f'full_exp_on_ppo2/replay_buffers/'+env_name, exist_ok=True)
 
-    # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_ppo2/models/"+env_name+"/ppo_ant_1M"+'_'+str(args.seed))
+    model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
+    model.save("full_exp_on_ppo2/models/"+env_name+"/ppo_humanoid_1M"+'_'+str(args.seed))
 
-    # print("Initial training done")
+    print("Initial training done")
 
-    # # Correct replay-buffer save format + corrected replay semantics for later FQE.
-    # # IMPORTANT: buffers created before FQE_REPLAY_SEMANTICS_VERSION=2 must be
-    # # regenerated once. Uncomment the initial-training block and this save block
-    # # together so the saved PPO model and its replay buffer come from the same run.
-    # print("Saving replay buffer for later use")
-    # replay_buffer_path = (
-    #     f'full_exp_on_ppo2/replay_buffers/{env_name}/'
-    #     f'replay_buffer_{args.seed}.npz'
-    # )
-    # save_replay_buffer_npz(model, replay_buffer_path)
+    # Correct replay-buffer save format + corrected replay semantics for later FQE.
+    # IMPORTANT: buffers created before FQE_REPLAY_SEMANTICS_VERSION=2 must be
+    # regenerated once. Uncomment the initial-training block and this save block
+    # together so the saved PPO model and its replay buffer come from the same run.
+    print("Saving replay buffer for later use")
+    replay_buffer_path = (
+        f'full_exp_on_ppo2/replay_buffers/{env_name}/'
+        f'replay_buffer_{args.seed}.npz'
+    )
+    save_replay_buffer_npz(model, replay_buffer_path)
 
-    # quit()
+    quit()
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -8048,17 +11291,17 @@ if __name__ == "__main__":
             if saved_agents:
                 if not model_already_learned:
                     model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
-                                log_interval=1, 
-                                tb_log_name=exp, 
-                                reset_num_timesteps=True if i == START_ITER else False, 
+                                log_interval=1,
+                                tb_log_name=exp,
+                                reset_num_timesteps=True if i == START_ITER else False,
                                 first_iteration=True if i == START_ITER else False,
                                 )
 
             else:
                 model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
-                            log_interval=1, 
-                            tb_log_name=exp, 
-                            reset_num_timesteps=True if i == START_ITER else False, 
+                            log_interval=1,
+                            tb_log_name=exp,
+                            reset_num_timesteps=True if i == START_ITER else False,
                             first_iteration=True if i == START_ITER else False,
                             )
 
@@ -8205,366 +11448,52 @@ if __name__ == "__main__":
             # iteration, after the candidate set has been constructed. Every candidate FQE fit
             # below receives this same dataset. Candidate online-evaluation trajectories must
             # never enter this buffer.
-            if rank_correlation_study:
-                fqe_dataset = build_fqe_dataset(model)
-
-                # Freeze corrected native transition views at the same point in time,
-                # BEFORE online candidate evaluation. Candidate rollouts therefore cannot
-                # enter any replay-coverage window.
-                replay_coverage_data = None
-                if FQE_BACKEND == "native_batched":
-                    if REPLAY_COVERAGE_ABLATION:
-                        replay_coverage_data = OrderedDict()
-                        for coverage_window in REPLAY_COVERAGE_WINDOWS:
-                            coverage_label = (
-                                "full" if coverage_window is None
-                                else str(int(coverage_window))
-                            )
-                            replay_coverage_data[coverage_label] = (
-                                build_native_fqe_replay_data(
-                                    model,
-                                    max_transitions=coverage_window,
-                                    finite_horizon_steps=(
-                                        fqe_finite_horizon_steps
-                                    ),
-                                )
-                            )
-
-                        # Replay-coverage ablation must vary only the FQE
-                        # TRAINING replay. Use one common frozen start-state
-                        # reference set for scoring every window; otherwise the
-                        # experiment changes both replay coverage and the s0
-                        # distribution used by E[Q(s0, pi(s0))].
-                        coverage_reference_initial_observations = np.array(
-                            replay_coverage_data["full"]["initial_observations"],
-                            dtype=np.float32,
-                            copy=True,
-                        )
-                        coverage_reference_initial_timesteps = np.zeros(
-                            (
-                                len(coverage_reference_initial_observations),
-                                1,
-                            ),
-                            dtype=np.float32,
-                        )
-
-                        for coverage_data in replay_coverage_data.values():
-                            coverage_data["training_initial_states"] = int(
-                                len(coverage_data["initial_observations"])
-                            )
-                            coverage_data["initial_observations"] = (
-                                coverage_reference_initial_observations.copy()
-                            )
-                            coverage_data["initial_timesteps"] = (
-                                coverage_reference_initial_timesteps.copy()
-                            )
-                            coverage_data["score_initial_states"] = int(
-                                len(coverage_reference_initial_observations)
-                            )
-
-                        print(
-                            "Replay coverage scoring reference: "
-                            f"{len(coverage_reference_initial_observations)} "
-                            "common full-buffer initial states."
-                        )
-
-                        # Preserve original/canonical behavior: the existing rank study
-                        # remains defined by the full corrected replay buffer.
-                        native_fqe_data = replay_coverage_data["full"]
-                    else:
-                        native_fqe_data = build_native_fqe_replay_data(
-                            model,
-                            finite_horizon_steps=fqe_finite_horizon_steps,
-                        )
-
-                    # The behavioral trust-region penalty uses one COMMON full
-                    # corrected replay reference for all coverage windows. This
-                    # keeps the coverage ablation scientifically clean: only FQE
-                    # training coverage changes across windows, not the support
-                    # metric itself.
-                    support_reference_data = native_fqe_data
-                else:
-                    native_fqe_data = None
-                    # d3rlpy still receives the same explicit behavior-support
-                    # penalty, built from the corrected replay semantics.
-                    support_reference_data = build_native_fqe_replay_data(
-                        model,
-                        finite_horizon_steps=fqe_finite_horizon_steps,
-                    )
-
-                replay_buffer_before_candidate_eval = replay_buffer_signature(model.replay_buffer)
-                print(
-                    "Rank-correlation study enabled: frozen one FQE dataset for all "
-                    f"{len(agents)} candidates in iteration {i}. "
-                    f"FQE backend: {FQE_BACKEND}"
-                )
-            else:
-                fqe_dataset = None
-                native_fqe_data = None
-                replay_coverage_data = None
-                support_reference_data = None
-                replay_buffer_before_candidate_eval = None
+            (
+                fqe_dataset,
+                native_fqe_data,
+                replay_coverage_data,
+                support_reference_data,
+                replay_buffer_before_candidate_eval,
+            ) = prepare_rank_correlation_study_iteration(
+                model=model,
+                agents=agents,
+                iteration=i,
+                fqe_finite_horizon_steps=fqe_finite_horizon_steps,
+                rank_correlation_study=rank_correlation_study,
+            )
 
             # Real 250-step -> top-10 -> continued-full selector.
             # When disabled, the historical candidate-evaluation code below is
             # entered unchanged.
-            if PREFIX_SHORTLIST_SELECTOR_ACTIVE:
-                shortlist_result = evaluate_prefix_shortlist_selector(
-                    model=model,
-                    agents=agents,
-                    env_name=env_name,
-                    seed=args.seed,
-                    prefix_steps=PREFIX_SHORTLIST_STEPS,
-                    top_k=PREFIX_SHORTLIST_TOP_K,
-                    n_eval_episodes=PREFIX_SHORTLIST_N_EVAL_EPISODES,
-                    full_horizon=_shortlist_full_horizon,
-                    iteration=i,
-                    evaluation_n_envs=int(
-                        getattr(args, "n_envs", 1)
-                    ),
-                )
-                prefix_shortlist_scores = shortlist_result[
-                    "prefix_scores"
-                ]
-                prefix_shortlist_indices = shortlist_result[
-                    "shortlist_indices"
-                ]
-                prefix_shortlist_full_returns = shortlist_result[
-                    "full_returns"
-                ]
-                shortlist_selection_scores = shortlist_result[
-                    "selection_scores"
-                ]
-                cum_rews = prefix_shortlist_full_returns.tolist()
-                prefixShortlistMetrics.append(
-                    shortlist_result["summary_row"]
-                )
-                prefixShortlistCandidateRows.extend(
-                    shortlist_result["candidate_rows"]
-                )
-
-            # Non-parallel historical evaluation.
-            elif not parallel_evaluation:
-                for j, a in enumerate(agents):
-                    model.policy.load_state_dict(a)
-                    model.policy.to(device)
-
-                    # Online evaluation
-                    if hasattr(args, 'n_envs') and args.n_envs > 1:
-                        # Create a list of environment functions
-                        dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
-                        dummy_env = SubprocVecEnv(dummy_env_fns)
-                    else:
-                        dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
-
-                        if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-                            dummy_env = FlattenObservation(dummy_env)
-
-                        dummy_env.reset(seed=args.seed)
-
-                    # The state-occupancy diagnostic is collected by a read-only
-                    # callback over the SAME evaluate_policy call. No additional
-                    # online rollout is introduced.
-                    need_readonly_online_callback = (
-                        PREFIX_BUDGET_STUDY
-                        or (
-                            rank_correlation_study
-                            and (
-                                OBJECTIVE_MISMATCH_STUDY
-                                or STATE_OCCUPANCY_KNN_STUDY
-                            )
-                        )
-                    )
-
-                    if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-                        if need_readonly_online_callback:
-                            diagnostic_result = (
-                                evaluate_policy_with_discounted_return(
-                                    model,
-                                    dummy_env,
-                                    n_eval_episodes=3,
-                                    gamma=model.gamma,
-                                    deterministic=True,
-                                    capture_trajectory=(
-                                        STATE_OCCUPANCY_KNN_STUDY
-                                    ),
-                                    capture_rewards=PREFIX_BUDGET_STUDY,
-                                    return_success_rate=True,
-                                )
-                            )
-                            if (
-                                STATE_OCCUPANCY_KNN_STUDY
-                                and PREFIX_BUDGET_STUDY
-                            ):
-                                (
-                                    eval_result,
-                                    discounted_return,
-                                    _,
-                                    trajectory_episodes,
-                                    reward_episodes,
-                                ) = diagnostic_result
-                                candidate_occupancy_trajectories.append(
-                                    trajectory_episodes
-                                )
-                                candidate_prefix_reward_episodes.append(
-                                    reward_episodes
-                                )
-                            elif STATE_OCCUPANCY_KNN_STUDY:
-                                (
-                                    eval_result,
-                                    discounted_return,
-                                    _,
-                                    trajectory_episodes,
-                                ) = diagnostic_result
-                                candidate_occupancy_trajectories.append(
-                                    trajectory_episodes
-                                )
-                            elif PREFIX_BUDGET_STUDY:
-                                (
-                                    eval_result,
-                                    discounted_return,
-                                    _,
-                                    reward_episodes,
-                                ) = diagnostic_result
-                                candidate_prefix_reward_episodes.append(
-                                    reward_episodes
-                                )
-                            else:
-                                (
-                                    eval_result,
-                                    discounted_return,
-                                    _,
-                                ) = diagnostic_result
-
-                            mean_rew, std_rew, success = eval_result
-                            if OBJECTIVE_MISMATCH_STUDY:
-                                cum_discounted_rews.append(
-                                    discounted_return
-                                )
-                        else:
-                            mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
-                        print(f'avg 3 return on policy: {mean_rew}, Success rate: {success:.2f}')
-                        if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
-                            print(
-                                f'avg gamma-discounted return on same 3 trajectories: '
-                                f'{cum_discounted_rews[-1]}'
-                            )
-                        cum_rews.append(mean_rew)
-                        cum_success.append(success)
-                    else:
-                        if need_readonly_online_callback:
-                            diagnostic_result = (
-                                evaluate_policy_with_discounted_return(
-                                    model,
-                                    dummy_env,
-                                    n_eval_episodes=3,
-                                    gamma=model.gamma,
-                                    deterministic=True,
-                                    capture_trajectory=(
-                                        STATE_OCCUPANCY_KNN_STUDY
-                                    ),
-                                    capture_rewards=PREFIX_BUDGET_STUDY,
-                                )
-                            )
-                            if (
-                                STATE_OCCUPANCY_KNN_STUDY
-                                and PREFIX_BUDGET_STUDY
-                            ):
-                                (
-                                    eval_result,
-                                    discounted_return,
-                                    _,
-                                    trajectory_episodes,
-                                    reward_episodes,
-                                ) = diagnostic_result
-                                candidate_occupancy_trajectories.append(
-                                    trajectory_episodes
-                                )
-                                candidate_prefix_reward_episodes.append(
-                                    reward_episodes
-                                )
-                            elif STATE_OCCUPANCY_KNN_STUDY:
-                                (
-                                    eval_result,
-                                    discounted_return,
-                                    _,
-                                    trajectory_episodes,
-                                ) = diagnostic_result
-                                candidate_occupancy_trajectories.append(
-                                    trajectory_episodes
-                                )
-                            elif PREFIX_BUDGET_STUDY:
-                                (
-                                    eval_result,
-                                    discounted_return,
-                                    _,
-                                    reward_episodes,
-                                ) = diagnostic_result
-                                candidate_prefix_reward_episodes.append(
-                                    reward_episodes
-                                )
-                            else:
-                                (
-                                    eval_result,
-                                    discounted_return,
-                                    _,
-                                ) = diagnostic_result
-
-                            returns_trains = eval_result[0]
-                            if OBJECTIVE_MISMATCH_STUDY:
-                                cum_discounted_rews.append(
-                                    discounted_return
-                                )
-                        else:
-                            returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
-                        print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
-                        if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
-                            print(
-                                f'avg gamma-discounted return on same 3 trajectories '
-                                f'of agent{j}: {cum_discounted_rews[-1]}'
-                            )
-                        cum_rews.append(returns_trains)
-
-                    close_env_safely(dummy_env)
-
-                    # Q-function / FQE evaluation.
-                    #
-                    # In rank_correlation_study mode, defer FQE until ALL
-                    # candidates have completed the exact same online evaluation.
-                    # The previous per-candidate FQE call preserved/restored RNG
-                    # and never mutated the replay buffer, so moving all shadow
-                    # FQE work after the online loop leaves the online oracle
-                    # trajectory unchanged while enabling one batched GPU fit.
-                    #
-                    # Keep the legacy offline-selection path unchanged.
-                    if not rank_correlation_study and not online_eval:
-                        fqe_exp_name = f"{'-'.join(DIR.split('/'))}"
-                        init_est = d3rl_evaluation(model, fqe_exp_name)
-                        if init_est is None:
-                            raise RuntimeError(
-                                f"FQE failed for iteration {i}, agent {j}."
-                            )
-                        init_est = float(np.asarray(init_est).reshape(-1)[0])
-                        advantage_rew.append(init_est)
-
-            # Parallel evaluation
-            else:
-                if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
-                    cum_rews, cum_discounted_rews = parallel_evaluate(
-                        agents=agents,
-                        env_name=env_name,
-                        n_eval_episodes=3,
-                        seed=args.seed,
-                        gamma=model.gamma,
-                        return_discounted=True,
-                    )
-                else:
-                    cum_rews = parallel_evaluate(
-                        agents=agents,
-                        env_name=env_name,
-                        n_eval_episodes=3,
-                        seed=args.seed
-                    )
+            (
+                cum_rews,
+                cum_discounted_rews,
+                prefix_shortlist_scores,
+                prefix_shortlist_indices,
+                prefix_shortlist_full_returns,
+                shortlist_selection_scores,
+                advantage_rew,
+            ) = evaluate_candidates_iteration(
+                model=model,
+                agents=agents,
+                env_name=env_name,
+                args=args,
+                iteration=i,
+                DIR=DIR,
+                online_eval=online_eval,
+                parallel_evaluation=parallel_evaluation,
+                rank_correlation_study=rank_correlation_study,
+                prefixShortlistMetrics=prefixShortlistMetrics,
+                prefixShortlistCandidateRows=prefixShortlistCandidateRows,
+                cum_rews=cum_rews,
+                cum_discounted_rews=cum_discounted_rews,
+                candidate_occupancy_trajectories=candidate_occupancy_trajectories,
+                candidate_prefix_reward_episodes=candidate_prefix_reward_episodes,
+                cum_success=cum_success,
+                advantage_rew=advantage_rew,
+                shortlist_full_horizon=_shortlist_full_horizon,
+                make_envs=make_envs,
+            )
 
                 # parallel_evaluate performs only the online ground-truth
                 # rollouts. The discounted diagnostic, when enabled, is
@@ -8577,51 +11506,15 @@ if __name__ == "__main__":
             # The full candidate episodes have ALREADY completed and cum_rews
             # has already been fixed. Reconstruct shorter prefix scores only
             # from callback-copied rewards; never use them for best_idx.
-            if PREFIX_BUDGET_STUDY:
-                if parallel_evaluation:
-                    raise NotImplementedError(
-                        "PREFIX_BUDGET_STUDY currently requires the active "
-                        "non-parallel evaluation path so it can reuse the exact "
-                        "same full SB3 evaluation episodes without extra rollouts."
-                    )
-                if len(candidate_prefix_reward_episodes) != len(agents):
-                    raise RuntimeError(
-                        "Prefix-budget reward trace count mismatch: "
-                        f"{len(candidate_prefix_reward_episodes)} traces for "
-                        f"{len(agents)} candidate policies."
-                    )
-
-                (
-                    prefix_iteration_rows,
-                    prefix_candidate_rows,
-                ) = compute_prefix_budget_study_metrics(
-                    full_online_scores=np.asarray(
-                        cum_rews, dtype=np.float64
-                    ),
-                    candidate_reward_episodes=(
-                        candidate_prefix_reward_episodes
-                    ),
-                    iteration=i,
-                )
-                prefixBudgetMetrics.extend(prefix_iteration_rows)
-                prefixBudgetCandidateRows.extend(prefix_candidate_rows)
-
-                print("---------------------------------")
-                print("ANALYSIS-ONLY PREFIX-BUDGET STUDY")
-                for prefix_row in prefix_iteration_rows:
-                    print(
-                        f"prefix={prefix_row['prefix_budget_steps']:>3} | "
-                        f"Spearman(full)="
-                        f"{prefix_row['spearman_vs_full']:+.4f} | "
-                        f"top1={int(prefix_row['top1_agreement'])} | "
-                        f"oracle_rank="
-                        f"{prefix_row['oracle_prefix_rank']} | "
-                        f"Recall@3="
-                        f"{int(prefix_row['oracle_recall_at_3'])} | "
-                        f"Recall@5="
-                        f"{int(prefix_row['oracle_recall_at_5'])} | "
-                        f"regret={prefix_row['selection_regret']:.4f}"
-                    )
+            run_prefix_budget_study_iteration(
+                agents=agents,
+                cum_rews=cum_rews,
+                candidate_prefix_reward_episodes=candidate_prefix_reward_episodes,
+                iteration=i,
+                parallel_evaluation=parallel_evaluation,
+                prefixBudgetMetrics=prefixBudgetMetrics,
+                prefixBudgetCandidateRows=prefixBudgetCandidateRows,
+            )
 
             # --------------------------------------------------------------
             # ANALYSIS-ONLY STATE-OCCUPANCY kNN DIAGNOSTIC
@@ -8629,1628 +11522,117 @@ if __name__ == "__main__":
             # Uses copies of states from the SAME completed online evaluation
             # trajectories. These states are not inserted into replay and are
             # not available to FQE training or the online selector.
-            state_occupancy_diagnostics = None
-            if STATE_OCCUPANCY_KNN_STUDY:
-                if len(candidate_occupancy_trajectories) != len(agents):
-                    raise RuntimeError(
-                        "State-occupancy trajectory count mismatch: "
-                        f"{len(candidate_occupancy_trajectories)} traces for "
-                        f"{len(agents)} candidate policies."
-                    )
-                state_occupancy_diagnostics = (
-                    compute_state_occupancy_knn_diagnostics(
-                        candidate_trajectory_episodes=(
-                            candidate_occupancy_trajectories
-                        ),
-                        replay_data=support_reference_data,
-                    )
-                )
-
-                print("---------------------------------")
-                print("STATE-OCCUPANCY kNN DIAGNOSTIC")
-                print(
-                    f"reference={state_occupancy_diagnostics['reference_count']}, "
-                    f"replay_queries="
-                    f"{state_occupancy_diagnostics['replay_query_count']}, "
-                    f"k={state_occupancy_diagnostics['k']}, "
-                    f"time_aware="
-                    f"{state_occupancy_diagnostics['include_time']}, "
-                    f"behavior_percentile="
-                    f"{state_occupancy_diagnostics['behavior_percentile']:.1f}"
-                )
-                print(
-                    "Replay leave-one-out kNN-radius threshold: "
-                    f"{state_occupancy_diagnostics['behavior_threshold_knn_radius']:.6f}"
-                )
-                print(
-                    "Candidate occupancy OOD fractions: "
-                    + np.array2string(
-                        state_occupancy_diagnostics[
-                            'candidate_ood_fraction'
-                        ],
-                        precision=4,
-                        separator=", ",
-                        max_line_width=160,
-                    )
-                )
-                print(
-                    "Candidate mean kNN radii: "
-                    + np.array2string(
-                        state_occupancy_diagnostics[
-                            'candidate_mean_knn_radius'
-                        ],
-                        precision=6,
-                        separator=", ",
-                        max_line_width=160,
-                    )
-                )
+            state_occupancy_diagnostics = run_state_occupancy_knn_study_iteration(
+                agents=agents,
+                candidate_occupancy_trajectories=candidate_occupancy_trajectories,
+                support_reference_data=support_reference_data,
+            )
 
             # Rank-correlation OPE is analysis-only and is evaluated after all
             # online candidate returns are already fixed. This preserves the
             # original online oracle. The new ranking score is:
             #   ordinary FQE value - lambda * replay action divergence.
-            if rank_correlation_study:
-                # Compute the behavioral trust-region term ONCE per outer
-                # iteration from the common frozen full-buffer support reference.
-                # Candidate online rollouts have already completed, but they are
-                # not stored in this replay buffer, and the leakage invariant below
-                # verifies that fact.
-                support_action_divergence = (
-                    compute_behavior_action_divergence_preserving_rng(
-                        model,
-                        agents,
-                        support_reference_data,
-                    )
-                )
-                support_reference_label = str(
-                    support_reference_data.get("coverage_label", "full")
-                )
-                support_reference_transitions = int(
-                    support_reference_data.get(
-                        "actual_transitions",
-                        len(support_reference_data["observations"]),
-                    )
-                )
-
-                knn_support_diagnostics = None
-                if KNN_SUPPORT_STUDY:
-                    knn_support_diagnostics = (
-                        compute_state_conditional_knn_support_preserving_rng(
-                            model, agents, support_reference_data
-                        )
-                    )
-                    print("---------------------------------")
-                    print("STATE-CONDITIONAL kNN SUPPORT ESTIMATOR")
-                    print(
-                        f"reference={knn_support_diagnostics['reference_count']}, "
-                        f"queries={knn_support_diagnostics['query_count']}, "
-                        f"k={knn_support_diagnostics['k']}, "
-                        f"behavior_percentile="
-                        f"{knn_support_diagnostics['behavior_percentile']:.1f}"
-                    )
-                    print(
-                        "Behavior leave-one-out local-action threshold "
-                        "(squared L2): "
-                        f"{knn_support_diagnostics['behavior_threshold_sq_l2']:.6f}"
-                    )
-                    print(
-                        "Candidate unsupported-state fractions: "
-                        + np.array2string(
-                            knn_support_diagnostics[
-                                'candidate_unsupported_fraction'
-                            ],
-                            precision=4,
-                            separator=", ",
-                            max_line_width=160,
-                        )
-                    )
-                    print(
-                        "Candidate mean nearest-local-action squared L2: "
-                        + np.array2string(
-                            knn_support_diagnostics['candidate_mean_sq_l2'],
-                            precision=6,
-                            separator=", ",
-                            max_line_width=160,
-                        )
-                    )
-
-                print("---------------------------------")
-                print("BEHAVIOR SUPPORT PENALTY")
-                print(
-                    f"lambda={FQE_SUPPORT_PENALTY_LAMBDA:g}, "
-                    f"reference={support_reference_label}, "
-                    f"transitions={support_reference_transitions}"
-                )
-                print(
-                    "Mean squared-L2 action divergence per candidate: "
-                    + np.array2string(
-                        support_action_divergence,
-                        precision=6,
-                        separator=", ",
-                        max_line_width=160,
-                    )
-                )
-
-                if FQE_BACKEND == "native_batched":
-                    replay_coverage_scores = None
-                    canonical_base_fqe_scores = None
-
-                    if REPLAY_COVERAGE_ABLATION:
-                        replay_coverage_scores = OrderedDict()
-
-                        print("---------------------------------")
-                        print("REPLAY COVERAGE ABLATION")
-                        print(
-                            "Windows: "
-                            + ", ".join(replay_coverage_data.keys())
-                        )
-
-                        for coverage_label, coverage_data in replay_coverage_data.items():
-                            print("---------------------------------")
-                            print(
-                                "Running FQE replay coverage window: "
-                                f"{coverage_label} "
-                                f"(actual complete transitions="
-                                f"{coverage_data['actual_transitions']}, "
-                                f"episodes={coverage_data['n_episodes']})"
-                            )
-                            base_fqe_scores = native_batched_fqe_preserving_rng(
-                                model,
-                                agents,
-                                fqe_dataset,
-                                native_data=coverage_data,
-                            )
-                            if coverage_label == "full":
-                                canonical_base_fqe_scores = base_fqe_scores
-                            replay_coverage_scores[coverage_label] = (
-                                build_support_penalized_scores(
-                                    base_fqe_scores=base_fqe_scores,
-                                    action_divergence=support_action_divergence,
-                                    support_reference_label=support_reference_label,
-                                    support_reference_transitions=(
-                                        support_reference_transitions
-                                    ),
-                                )
-                            )
-
-                        # CRITICAL: preserve original/canonical rank-study semantics.
-                        # Downstream rank metrics still use the FULL replay FQE
-                        # estimate, now augmented only by the explicit support term.
-                        advantage_rew = replay_coverage_scores["full"]
-                    else:
-                        base_fqe_scores = native_batched_fqe_preserving_rng(
-                            model,
-                            agents,
-                            fqe_dataset,
-                            native_data=native_fqe_data,
-                        )
-                        canonical_base_fqe_scores = base_fqe_scores
-                        advantage_rew = build_support_penalized_scores(
-                            base_fqe_scores=base_fqe_scores,
-                            action_divergence=support_action_divergence,
-                            support_reference_label=support_reference_label,
-                            support_reference_transitions=(
-                                support_reference_transitions
-                            ),
-                        )
-                    knn_support_fqe_scores = None
-
-                    # ----------------------------------------------------------
-                    # LONG-HORIZON FQE CONVERGENCE / PROPAGATION STUDY
-                    # ----------------------------------------------------------
-                    # Compare raw FQE on the SAME full replay data while varying
-                    # only optimization steps and target-network refresh interval.
-                    # The canonical 10k/100 fit is reused when present, avoiding a
-                    # redundant fit. Support penalties are deliberately excluded.
-                    if FQE_CONVERGENCE_STUDY:
-                        if canonical_base_fqe_scores is None:
-                            raise RuntimeError(
-                                "FQE convergence study could not locate the canonical "
-                                "full-replay base FQE fit."
-                            )
-
-                        print("---------------------------------")
-                        print("FQE LONG-HORIZON CONVERGENCE STUDY")
-                        print(
-                            "Configs: "
-                            + ", ".join(
-                                f"{steps} steps / target {target_interval}"
-                                for steps, target_interval in FQE_CONVERGENCE_CONFIGS
-                            )
-                        )
-
-                        for conv_steps, conv_target_interval in FQE_CONVERGENCE_CONFIGS:
-                            if (
-                                int(conv_steps) == int(FQE_N_STEPS)
-                                and int(conv_target_interval)
-                                == int(NATIVE_FQE_TARGET_UPDATE_INTERVAL)
-                            ):
-                                conv_scores = canonical_base_fqe_scores
-                                reused_canonical = True
-                            else:
-                                conv_scores = native_batched_fqe_preserving_rng(
-                                    model,
-                                    agents,
-                                    fqe_dataset,
-                                    native_data=native_fqe_data,
-                                    n_steps=int(conv_steps),
-                                    target_update_interval=int(conv_target_interval),
-                                )
-                                reused_canonical = False
-
-                            if (
-                                int(conv_steps) == int(KNN_SUPPORT_FQE_N_STEPS)
-                                and int(conv_target_interval)
-                                == int(KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL)
-                            ):
-                                knn_support_fqe_scores = conv_scores
-
-                            conv_raw_q = np.asarray(
-                                getattr(conv_scores, "mean_q", conv_scores),
-                                dtype=np.float64,
-                            )
-                            conv_metrics = compute_fqe_convergence_metrics(
-                                online_scores=np.asarray(cum_rews, dtype=np.float64),
-                                raw_fqe_scores=conv_raw_q,
-                                iteration=i,
-                                n_steps=int(conv_steps),
-                                target_update_interval=int(conv_target_interval),
-                                score_metadata=conv_scores,
-                            )
-                            conv_metrics["reused_canonical_fit"] = bool(
-                                reused_canonical
-                            )
-                            fqeConvergenceMetrics.append(conv_metrics)
-
-                            for candidate_idx in range(len(conv_raw_q)):
-                                fqeConvergenceCandidateRows.append({
-                                    "iteration": int(i),
-                                    "candidate": int(candidate_idx),
-                                    "config": conv_metrics["config"],
-                                    "fqe_n_steps": int(conv_steps),
-                                    "fqe_target_update_interval": int(
-                                        conv_target_interval
-                                    ),
-                                    "fqe_target_updates": int(
-                                        conv_metrics["fqe_target_updates"]
-                                    ),
-                                    "fqe_objective": conv_metrics["fqe_objective"],
-                                    "fqe_gamma": conv_metrics["fqe_gamma"],
-                                    "finite_horizon_steps": conv_metrics[
-                                        "finite_horizon_steps"
-                                    ],
-                                    "time_conditioned": conv_metrics[
-                                        "time_conditioned"
-                                    ],
-                                    "fqe_mean_q": float(conv_raw_q[candidate_idx]),
-                                    "final_fqe_loss": float(
-                                        np.asarray(
-                                            getattr(
-                                                conv_scores,
-                                                "final_loss_per_candidate",
-                                                np.full(len(conv_raw_q), np.nan),
-                                            ),
-                                            dtype=np.float64,
-                                        )[candidate_idx]
-                                    ),
-                                    "online": float(cum_rews[candidate_idx]),
-                                })
-
-                            print(
-                                f"{conv_metrics['config']} | "
-                                f"target_updates={conv_metrics['fqe_target_updates']} | "
-                                f"meanQ={conv_metrics['mean_fqe_q']:.3f} | "
-                                f"Qrange={conv_metrics['fqe_q_range']:.3f} | "
-                                f"final_loss={conv_metrics['mean_final_fqe_loss']:.4f} | "
-                                f"Pearson={conv_metrics['pearson']:+.4f} | "
-                                f"Spearman={conv_metrics['spearman']:+.4f} | "
-                                f"Kendall={conv_metrics['kendall']:+.4f} | "
-                                f"top1={int(conv_metrics['top1_agreement'])} | "
-                                f"regret={conv_metrics['selection_regret']:.4f}"
-                            )
-
-                    # ----------------------------------------------------------
-                    # STATE-CONDITIONAL kNN SUPPORT FILTER STUDY
-                    # ----------------------------------------------------------
-                    if KNN_SUPPORT_STUDY:
-                        if knn_support_diagnostics is None:
-                            raise RuntimeError(
-                                "kNN support study is missing support diagnostics."
-                            )
-
-                        # Reuse the canonical fit if the user has already made
-                        # it the requested 50k/100 support-FQE configuration.
-                        if (
-                            knn_support_fqe_scores is None
-                            and int(getattr(
-                                canonical_base_fqe_scores,
-                                'fqe_n_steps',
-                                FQE_N_STEPS,
-                            )) == int(KNN_SUPPORT_FQE_N_STEPS)
-                            and int(getattr(
-                                canonical_base_fqe_scores,
-                                'fqe_target_update_interval',
-                                NATIVE_FQE_TARGET_UPDATE_INTERVAL,
-                            )) == int(KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL)
-                        ):
-                            knn_support_fqe_scores = canonical_base_fqe_scores
-
-                        if knn_support_fqe_scores is None:
-                            print("---------------------------------")
-                            print(
-                                "Fitting primary FQE for kNN support filter: "
-                                f"{KNN_SUPPORT_FQE_N_STEPS} steps / target "
-                                f"{KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL}"
-                            )
-                            knn_support_fqe_scores = (
-                                native_batched_fqe_preserving_rng(
-                                    model,
-                                    agents,
-                                    fqe_dataset,
-                                    native_data=native_fqe_data,
-                                    n_steps=KNN_SUPPORT_FQE_N_STEPS,
-                                    target_update_interval=(
-                                        KNN_SUPPORT_FQE_TARGET_UPDATE_INTERVAL
-                                    ),
-                                )
-                            )
-
-                        knn_raw_fqe = np.asarray(
-                            getattr(
-                                knn_support_fqe_scores,
-                                'mean_q',
-                                knn_support_fqe_scores,
-                            ),
-                            dtype=np.float64,
-                        )
-                        knn_metrics, knn_candidate_details = (
-                            compute_knn_support_filter_metrics(
-                                online_scores=np.asarray(
-                                    cum_rews, dtype=np.float64
-                                ),
-                                raw_fqe_scores=knn_raw_fqe,
-                                support_diagnostics=knn_support_diagnostics,
-                                iteration=i,
-                                score_metadata=knn_support_fqe_scores,
-                            )
-                        )
-                        knnSupportMetrics.append(knn_metrics)
-
-                        for candidate_idx in range(len(knn_raw_fqe)):
-                            knnSupportCandidateRows.append({
-                                'iteration': int(i),
-                                'candidate': int(candidate_idx),
-                                'online': float(cum_rews[candidate_idx]),
-                                'fqe_mean_q': float(
-                                    knn_raw_fqe[candidate_idx]
-                                ),
-                                'fqe_n_steps': int(
-                                    knn_metrics['fqe_n_steps']
-                                ),
-                                'fqe_target_update_interval': int(
-                                    knn_metrics[
-                                        'fqe_target_update_interval'
-                                    ]
-                                ),
-                                'knn_k': int(
-                                    knn_support_diagnostics['k']
-                                ),
-                                'knn_query_states': int(
-                                    knn_support_diagnostics['query_count']
-                                ),
-                                'behavior_percentile': float(
-                                    knn_support_diagnostics[
-                                        'behavior_percentile'
-                                    ]
-                                ),
-                                'behavior_threshold_sq_l2': float(
-                                    knn_support_diagnostics[
-                                        'behavior_threshold_sq_l2'
-                                    ]
-                                ),
-                                'knn_mean_sq_l2': float(
-                                    knn_support_diagnostics[
-                                        'candidate_mean_sq_l2'
-                                    ][candidate_idx]
-                                ),
-                                'knn_median_sq_l2': float(
-                                    knn_support_diagnostics[
-                                        'candidate_median_sq_l2'
-                                    ][candidate_idx]
-                                ),
-                                'knn_p95_sq_l2': float(
-                                    knn_support_diagnostics[
-                                        'candidate_p95_sq_l2'
-                                    ][candidate_idx]
-                                ),
-                                'knn_mean_excess_sq_l2': float(
-                                    knn_support_diagnostics[
-                                        'candidate_mean_excess_sq_l2'
-                                    ][candidate_idx]
-                                ),
-                                'knn_mean_ratio_to_behavior': float(
-                                    knn_support_diagnostics[
-                                        'candidate_mean_ratio_to_behavior'
-                                    ][candidate_idx]
-                                ),
-                                'knn_unsupported_fraction': float(
-                                    knn_support_diagnostics[
-                                        'candidate_unsupported_fraction'
-                                    ][candidate_idx]
-                                ),
-                                'absolute_filter_pass': bool(
-                                    knn_candidate_details[
-                                        'threshold_pass'
-                                    ][candidate_idx]
-                                ),
-                                'effective_filter_keep': bool(
-                                    knn_candidate_details[
-                                        'effective_keep'
-                                    ][candidate_idx]
-                                ),
-                                'support_rank': int(
-                                    knn_candidate_details['support_rank'][
-                                        candidate_idx
-                                    ]
-                                ),
-                                'raw_fqe_rank': int(
-                                    knn_candidate_details['raw_fqe_rank'][
-                                        candidate_idx
-                                    ]
-                                ),
-                                'filtered_fqe_rank': int(
-                                    knn_candidate_details[
-                                        'filtered_fqe_rank'
-                                    ][candidate_idx]
-                                ),
-                            })
-
-                        print("---------------------------------")
-                        print("STATE-CONDITIONAL kNN SUPPORT FILTER")
-                        print(
-                            f"absolute_pass="
-                            f"{knn_metrics['threshold_keep_count']}/"
-                            f"{len(knn_raw_fqe)}, "
-                            f"effective_keep="
-                            f"{knn_metrics['effective_keep_count']}/"
-                            f"{len(knn_raw_fqe)}, "
-                            f"fallback_added="
-                            f"{knn_metrics['fallback_fill_count']}"
-                        )
-                        print(
-                            f"raw 50k/100 FQE idx="
-                            f"{knn_metrics['raw_fqe_idx']} | "
-                            f"regret="
-                            f"{knn_metrics['raw_fqe_selection_regret']:.4f}"
-                        )
-                        print(
-                            f"filtered FQE idx="
-                            f"{knn_metrics['filtered_fqe_idx']} | "
-                            f"regret="
-                            f"{knn_metrics['filtered_fqe_selection_regret']:.4f} | "
-                            f"oracle_survives_filter="
-                            f"{knn_metrics['oracle_survives_effective_filter']}"
-                        )
-                        for requested_k in HYBRID_TOPK_VALUES:
-                            print(
-                                f"  k={requested_k}: "
-                                f"raw Recall="
-                                f"{int(knn_metrics[f'raw_oracle_recall_at_{requested_k}'])}, "
-                                f"raw HReg="
-                                f"{knn_metrics[f'raw_hybrid_regret_at_{requested_k}']:.4f} | "
-                                f"filtered effective_k="
-                                f"{knn_metrics[f'filtered_effective_k_at_{requested_k}']}, "
-                                f"Recall="
-                                f"{int(knn_metrics[f'filtered_oracle_recall_at_{requested_k}'])}, "
-                                f"HReg="
-                                f"{knn_metrics[f'filtered_hybrid_regret_at_{requested_k}']:.4f}"
-                            )
-
-                    # ----------------------------------------------------------
-                    # STATE-OCCUPANCY kNN / FQE-ERROR DIAGNOSTIC
-                    # ----------------------------------------------------------
-                    if STATE_OCCUPANCY_KNN_STUDY:
-                        if state_occupancy_diagnostics is None:
-                            raise RuntimeError(
-                                "State-occupancy study is missing trajectory "
-                                "diagnostics."
-                            )
-
-                        occupancy_fqe_scores = None
-
-                        # Reuse any already-computed 50k/100 fit from the kNN
-                        # support/convergence diagnostics when it exactly matches
-                        # the occupancy study's requested estimator.
-                        if (
-                            knn_support_fqe_scores is not None
-                            and int(getattr(
-                                knn_support_fqe_scores,
-                                'fqe_n_steps',
-                                -1,
-                            )) == int(STATE_OCCUPANCY_FQE_N_STEPS)
-                            and int(getattr(
-                                knn_support_fqe_scores,
-                                'fqe_target_update_interval',
-                                -1,
-                            )) == int(
-                                STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL
-                            )
-                        ):
-                            occupancy_fqe_scores = knn_support_fqe_scores
-
-                        if (
-                            occupancy_fqe_scores is None
-                            and canonical_base_fqe_scores is not None
-                            and int(getattr(
-                                canonical_base_fqe_scores,
-                                'fqe_n_steps',
-                                FQE_N_STEPS,
-                            )) == int(STATE_OCCUPANCY_FQE_N_STEPS)
-                            and int(getattr(
-                                canonical_base_fqe_scores,
-                                'fqe_target_update_interval',
-                                NATIVE_FQE_TARGET_UPDATE_INTERVAL,
-                            )) == int(
-                                STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL
-                            )
-                        ):
-                            occupancy_fqe_scores = canonical_base_fqe_scores
-
-                        if occupancy_fqe_scores is None:
-                            print("---------------------------------")
-                            print(
-                                "Fitting primary FQE for state-occupancy "
-                                "diagnostic: "
-                                f"{STATE_OCCUPANCY_FQE_N_STEPS} steps / "
-                                f"target "
-                                f"{STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL}"
-                            )
-                            occupancy_fqe_scores = (
-                                native_batched_fqe_preserving_rng(
-                                    model,
-                                    agents,
-                                    fqe_dataset,
-                                    native_data=native_fqe_data,
-                                    n_steps=STATE_OCCUPANCY_FQE_N_STEPS,
-                                    target_update_interval=(
-                                        STATE_OCCUPANCY_FQE_TARGET_UPDATE_INTERVAL
-                                    ),
-                                )
-                            )
-
-                        occupancy_raw_fqe = np.asarray(
-                            getattr(
-                                occupancy_fqe_scores,
-                                'mean_q',
-                                occupancy_fqe_scores,
-                            ),
-                            dtype=np.float64,
-                        )
-                        (
-                            occupancy_metrics,
-                            occupancy_candidate_details,
-                        ) = compute_state_occupancy_fqe_metrics(
-                            online_scores=np.asarray(
-                                cum_rews, dtype=np.float64
-                            ),
-                            raw_fqe_scores=occupancy_raw_fqe,
-                            occupancy_diagnostics=(
-                                state_occupancy_diagnostics
-                            ),
-                            iteration=i,
-                            score_metadata=occupancy_fqe_scores,
-                        )
-                        stateOccupancyMetrics.append(occupancy_metrics)
-
-                        for candidate_idx in range(
-                            len(occupancy_raw_fqe)
-                        ):
-                            stateOccupancyCandidateRows.append({
-                                'iteration': int(i),
-                                'candidate': int(candidate_idx),
-                                'online': float(cum_rews[candidate_idx]),
-                                'fqe_mean_q': float(
-                                    occupancy_raw_fqe[candidate_idx]
-                                ),
-                                'fqe_n_steps': int(
-                                    occupancy_metrics['fqe_n_steps']
-                                ),
-                                'fqe_target_update_interval': int(
-                                    occupancy_metrics[
-                                        'fqe_target_update_interval'
-                                    ]
-                                ),
-                                'knn_k': int(
-                                    state_occupancy_diagnostics['k']
-                                ),
-                                'time_aware': bool(
-                                    state_occupancy_diagnostics[
-                                        'include_time'
-                                    ]
-                                ),
-                                'behavior_percentile': float(
-                                    state_occupancy_diagnostics[
-                                        'behavior_percentile'
-                                    ]
-                                ),
-                                'behavior_threshold_knn_radius': float(
-                                    state_occupancy_diagnostics[
-                                        'behavior_threshold_knn_radius'
-                                    ]
-                                ),
-                                'trajectory_total_states': int(
-                                    state_occupancy_diagnostics[
-                                        'candidate_total_states'
-                                    ][candidate_idx]
-                                ),
-                                'trajectory_query_states': int(
-                                    state_occupancy_diagnostics[
-                                        'candidate_query_states'
-                                    ][candidate_idx]
-                                ),
-                                'occupancy_mean_knn_radius': float(
-                                    state_occupancy_diagnostics[
-                                        'candidate_mean_knn_radius'
-                                    ][candidate_idx]
-                                ),
-                                'occupancy_median_knn_radius': float(
-                                    state_occupancy_diagnostics[
-                                        'candidate_median_knn_radius'
-                                    ][candidate_idx]
-                                ),
-                                'occupancy_p95_knn_radius': float(
-                                    state_occupancy_diagnostics[
-                                        'candidate_p95_knn_radius'
-                                    ][candidate_idx]
-                                ),
-                                'occupancy_max_knn_radius': float(
-                                    state_occupancy_diagnostics[
-                                        'candidate_max_knn_radius'
-                                    ][candidate_idx]
-                                ),
-                                'occupancy_mean_1nn_distance': float(
-                                    state_occupancy_diagnostics[
-                                        'candidate_mean_1nn_distance'
-                                    ][candidate_idx]
-                                ),
-                                'occupancy_p95_1nn_distance': float(
-                                    state_occupancy_diagnostics[
-                                        'candidate_p95_1nn_distance'
-                                    ][candidate_idx]
-                                ),
-                                'occupancy_ood_fraction': float(
-                                    state_occupancy_diagnostics[
-                                        'candidate_ood_fraction'
-                                    ][candidate_idx]
-                                ),
-                                'occupancy_mean_excess_knn_radius': float(
-                                    state_occupancy_diagnostics[
-                                        'candidate_mean_excess_knn_radius'
-                                    ][candidate_idx]
-                                ),
-                                'occupancy_mean_ratio_to_behavior': float(
-                                    state_occupancy_diagnostics[
-                                        'candidate_mean_ratio_to_behavior'
-                                    ][candidate_idx]
-                                ),
-                                'online_rank': int(
-                                    occupancy_candidate_details[
-                                        'online_rank'
-                                    ][candidate_idx]
-                                ),
-                                'fqe_rank': int(
-                                    occupancy_candidate_details[
-                                        'fqe_rank'
-                                    ][candidate_idx]
-                                ),
-                                'abs_fqe_rank_error': float(
-                                    occupancy_candidate_details[
-                                        'abs_fqe_rank_error'
-                                    ][candidate_idx]
-                                ),
-                                'abs_fqe_z_error': float(
-                                    occupancy_candidate_details[
-                                        'abs_fqe_z_error'
-                                    ][candidate_idx]
-                                ),
-                                'occupancy_rank': int(
-                                    occupancy_candidate_details[
-                                        'occupancy_rank'
-                                    ][candidate_idx]
-                                ),
-                            })
-
-                        print("---------------------------------")
-                        print("STATE-OCCUPANCY / FQE ERROR DIAGNOSTIC")
-                        print(
-                            "occupancy-vs-|FQE rank error| Spearman="
-                            f"{occupancy_metrics['occupancy_vs_abs_fqe_rank_error_spearman']:+.4f} | "
-                            "OOD-vs-|FQE rank error| Spearman="
-                            f"{occupancy_metrics['occupancy_ood_vs_abs_fqe_rank_error_spearman']:+.4f}"
-                        )
-                        print(
-                            "occupancy-vs-|z(FQE)-z(online)| Spearman="
-                            f"{occupancy_metrics['occupancy_vs_abs_fqe_z_error_spearman']:+.4f}"
-                        )
-                        print(
-                            "low-novelty quartile mean |rank error|="
-                            f"{occupancy_metrics['low_novelty_quartile_mean_abs_rank_error']:.3f} | "
-                            "high-novelty quartile="
-                            f"{occupancy_metrics['high_novelty_quartile_mean_abs_rank_error']:.3f} | "
-                            "difference="
-                            f"{occupancy_metrics['high_minus_low_novelty_rank_error']:+.3f}"
-                        )
-                        print(
-                            f"oracle occupancy rank="
-                            f"{occupancy_metrics['oracle_occupancy_rank']}/"
-                            f"{len(occupancy_raw_fqe)}, "
-                            f"oracle OOD fraction="
-                            f"{occupancy_metrics['oracle_ood_fraction']:.4f}"
-                        )
-
-                        # --------------------------------------------------
-                        # TIME-RESOLVED STATE-OCCUPANCY DIAGNOSTIC
-                        # --------------------------------------------------
-                        if TIME_RESOLVED_OCCUPANCY_STUDY:
-                            (
-                                time_resolved_rows,
-                                time_resolved_candidate_rows,
-                            ) = compute_time_resolved_state_occupancy_diagnostics(
-                                candidate_trajectory_episodes=(
-                                    candidate_occupancy_trajectories
-                                ),
-                                replay_data=support_reference_data,
-                                online_scores=np.asarray(
-                                    cum_rews, dtype=np.float64
-                                ),
-                                raw_fqe_scores=occupancy_raw_fqe,
-                                iteration=i,
-                                score_metadata=occupancy_fqe_scores,
-                            )
-                            timeResolvedOccupancyMetrics.extend(
-                                time_resolved_rows
-                            )
-                            timeResolvedOccupancyCandidateRows.extend(
-                                time_resolved_candidate_rows
-                            )
-
-                            print("---------------------------------")
-                            print("TIME-RESOLVED STATE-OCCUPANCY DIAGNOSTIC")
-                            for window_row in time_resolved_rows:
-                                print(
-                                    f"  [{window_row['window_start']},"
-                                    f"{window_row['window_end']}): "
-                                    f"mean_OOD="
-                                    f"{window_row['mean_candidate_ood_fraction']:.4f}, "
-                                    f"radius/behavior="
-                                    f"{window_row['mean_candidate_radius_ratio_to_behavior']:.3f}, "
-                                    f"rho(novelty,online)="
-                                    f"{window_row['occupancy_vs_online_spearman']:+.4f}, "
-                                    f"rho(novelty,FQE-overvaluation)="
-                                    f"{window_row['occupancy_vs_fqe_rank_overvaluation_spearman']:+.4f}"
-                                )
-
-                else:
-                    replay_coverage_scores = None
-                    base_fqe_scores = (
-                        sequential_d3rlpy_fqe_scores_preserving_rng(
-                            model,
-                            agents,
-                            fqe_dataset,
-                            DIR,
-                            i,
-                        )
-                    )
-                    advantage_rew = build_support_penalized_scores(
-                        base_fqe_scores=base_fqe_scores,
-                        action_divergence=support_action_divergence,
-                        support_reference_label=support_reference_label,
-                        support_reference_transitions=support_reference_transitions,
-                    )
-
-                if len(advantage_rew) != len(agents):
-                    raise RuntimeError(
-                        "FQE score count mismatch: "
-                        f"{len(advantage_rew)} scores for {len(agents)} agents."
-                    )
-
-                for j, init_est in enumerate(advantage_rew):
-                    if isinstance(advantage_rew, SupportPenalizedFQEScores):
-                        print(
-                            f"agent{j}: online_return={float(cum_rews[j]):.6f}, "
-                            f"FQE={float(advantage_rew.mean_q[j]):.6f}, "
-                            f"action_div={float(advantage_rew.action_divergence[j]):.6f}, "
-                            f"support_penalty={float(advantage_rew.support_penalty[j]):.6f}, "
-                            f"SupportPen_FQE={float(init_est):.6f}"
-                        )
-                    else:
-                        print(
-                            f"agent{j}: online_return={float(cum_rews[j]):.6f}, "
-                            f"FQE={float(init_est):.6f}"
-                        )
+            (
+                advantage_rew,
+                replay_coverage_scores,
+                knn_support_diagnostics,
+            ) = run_rank_correlation_fqe_studies_iteration(
+                model=model,
+                agents=agents,
+                fqe_dataset=fqe_dataset,
+                native_fqe_data=native_fqe_data,
+                replay_coverage_data=replay_coverage_data,
+                support_reference_data=support_reference_data,
+                state_occupancy_diagnostics=state_occupancy_diagnostics,
+                candidate_occupancy_trajectories=candidate_occupancy_trajectories,
+                cum_rews=cum_rews,
+                iteration=i,
+                DIR=DIR,
+                rank_correlation_study=rank_correlation_study,
+                advantage_rew=advantage_rew,
+                fqeConvergenceMetrics=fqeConvergenceMetrics,
+                fqeConvergenceCandidateRows=fqeConvergenceCandidateRows,
+                knnSupportMetrics=knnSupportMetrics,
+                knnSupportCandidateRows=knnSupportCandidateRows,
+                stateOccupancyMetrics=stateOccupancyMetrics,
+                stateOccupancyCandidateRows=stateOccupancyCandidateRows,
+                timeResolvedOccupancyMetrics=timeResolvedOccupancyMetrics,
+                timeResolvedOccupancyCandidateRows=timeResolvedOccupancyCandidateRows,
+            )
 
             # Candidate evaluation/FQE must not alter the PPO replay buffer. This check guards
             # against accidentally giving FQE access to the online ground-truth trajectories.
-            if rank_correlation_study:
-                replay_buffer_after_candidate_eval = replay_buffer_signature(model.replay_buffer)
-                if replay_buffer_after_candidate_eval != replay_buffer_before_candidate_eval:
-                    raise RuntimeError(
-                        "Replay buffer changed during candidate evaluation/FQE. This would leak "
-                        "online candidate interactions into the offline rank-correlation study."
-                    )
-                print("Replay-buffer leakage check: PASSED")
+            verify_rank_study_replay_integrity(
+                model=model,
+                rank_correlation_study=rank_correlation_study,
+                replay_buffer_before_candidate_eval=replay_buffer_before_candidate_eval,
+            )
 
             # -----------------------------------------------------------------------------------
 
-            if not online_eval:
-                # print(f'ave q losses: {np.mean(q_losses)}, std: {np.std(q_losses)}')
-                print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
-            
-            if PREFIX_SHORTLIST_SELECTOR_ACTIVE:
-                print(
-                    f'avg 250-step prefix return across all candidates: '
-                    f'{np.mean(prefix_shortlist_scores)}, '
-                    f'std: {np.std(prefix_shortlist_scores)}'
-                )
-                finalist_returns = prefix_shortlist_full_returns[
-                    prefix_shortlist_indices
-                ]
-                print(
-                    f'avg full return across top-{len(prefix_shortlist_indices)} '
-                    f'finalists: {np.mean(finalist_returns)}, '
-                    f'std: {np.std(finalist_returns)}'
-                )
-            else:
-                print(
-                    f'avg cum rews: {np.mean(cum_rews)}, '
-                    f'std: {np.std(cum_rews)}'
-                )
-            if OBJECTIVE_MISMATCH_STUDY and rank_correlation_study:
-                print(
-                    f'avg gamma-discounted cum rews: '
-                    f'{np.mean(cum_discounted_rews)}, '
-                    f'std: {np.std(cum_discounted_rews)}, '
-                    f'gamma: {float(model.gamma):.8f}'
-                )
-            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-                print(f'avg success rate: {np.mean(cum_success):.2f}, std: {np.std(cum_success):.2f}')
+            print_iteration_evaluation_summary(
+                online_eval=online_eval,
+                advantage_rew=advantage_rew,
+                prefix_shortlist_scores=prefix_shortlist_scores,
+                prefix_shortlist_indices=prefix_shortlist_indices,
+                prefix_shortlist_full_returns=prefix_shortlist_full_returns,
+                cum_rews=cum_rews,
+                cum_discounted_rews=cum_discounted_rews,
+                model=model,
+                rank_correlation_study=rank_correlation_study,
+                env_name=env_name,
+                cum_success=cum_success,
+            )
 
-            os.makedirs(f'logs/{DIR}', exist_ok=True)
-
-            np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents_to_cpu(agents))
-            if online_eval:
-                np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
-                if MATCHED_FULL_ONLINE_CONTROL:
-                    np.save(
-                        f'logs/{DIR}/full_online_control_returns_'
-                        f'{i}_{i + SEARCH_INTERV}.npy',
-                        np.asarray(cum_rews, dtype=np.float64),
-                    )
-                if PREFIX_SHORTLIST_SELECTOR_ACTIVE:
-                    np.save(
-                        f'logs/{DIR}/prefix_shortlist_prefix_returns_'
-                        f'{i}_{i + SEARCH_INTERV}.npy',
-                        prefix_shortlist_scores,
-                    )
-                    np.save(
-                        f'logs/{DIR}/prefix_shortlist_indices_'
-                        f'{i}_{i + SEARCH_INTERV}.npy',
-                        prefix_shortlist_indices,
-                    )
-                    np.save(
-                        f'logs/{DIR}/prefix_shortlist_selection_scores_'
-                        f'{i}_{i + SEARCH_INTERV}.npy',
-                        shortlist_selection_scores,
-                    )
-
-                if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-                    np.save(f'logs/{DIR}/success_{i}_{i + SEARCH_INTERV}.npy', cum_success)
-            if not online_eval:
-                np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
-            timeArray.append(time.time() - start_time)
+            save_iteration_evaluation_outputs(
+                DIR=DIR,
+                iteration=i,
+                SEARCH_INTERV=SEARCH_INTERV,
+                agents=agents,
+                online_eval=online_eval,
+                cum_rews=cum_rews,
+                env_name=env_name,
+                cum_success=cum_success,
+                prefix_shortlist_scores=prefix_shortlist_scores,
+                prefix_shortlist_indices=prefix_shortlist_indices,
+                shortlist_selection_scores=shortlist_selection_scores,
+                advantage_rew=advantage_rew,
+                timeArray=timeArray,
+                start_time=start_time,
+            )
 
             # Rank-correlation study: compare FQE ranking against the online oracle without
             # affecting the original online selection below. Metrics are computed per iteration
             # because the absolute FQE scale may drift as the offline dataset changes.
-            if rank_correlation_study:
-                online_scores = np.asarray(cum_rews, dtype=np.float64)
-                fqe_mean_q_scores = np.asarray(
-                    getattr(advantage_rew, "mean_q", advantage_rew),
-                    dtype=np.float64,
-                )
-                fqe_sigma_scores = np.asarray(
-                    getattr(
-                        advantage_rew,
-                        "mean_sigma",
-                        np.zeros(len(advantage_rew), dtype=np.float64),
-                    ),
-                    dtype=np.float64,
-                )
-                action_divergence_scores = np.asarray(
-                    getattr(
-                        advantage_rew,
-                        "action_divergence",
-                        np.zeros(len(advantage_rew), dtype=np.float64),
-                    ),
-                    dtype=np.float64,
-                )
-                support_penalty_scores = np.asarray(
-                    getattr(
-                        advantage_rew,
-                        "support_penalty",
-                        np.zeros(len(advantage_rew), dtype=np.float64),
-                    ),
-                    dtype=np.float64,
-                )
-                fqe_scores = np.asarray(advantage_rew, dtype=np.float64)
-
-                if len(online_scores) != len(fqe_scores):
-                    raise RuntimeError(
-                        f"Rank-study length mismatch: {len(online_scores)} online returns vs "
-                        f"{len(fqe_scores)} FQE scores."
-                    )
-
-                rank_df = pd.DataFrame({
-                    'fqe': fqe_scores,
-                    'online': online_scores,
-                })
-                pearson = float(rank_df.corr(method='pearson').loc['fqe', 'online'])
-                spearman = float(rank_df.corr(method='spearman').loc['fqe', 'online'])
-                kendall = float(rank_df.corr(method='kendall').loc['fqe', 'online'])
-
-                oracle_idx = int(np.argmax(online_scores))
-                fqe_idx = int(np.argmax(fqe_scores))
-                oracle_return = float(online_scores[oracle_idx])
-                fqe_selected_true_return = float(online_scores[fqe_idx])
-                selection_regret = float(oracle_return - fqe_selected_true_return)
-                online_order = np.argsort(online_scores)[::-1]
-                top1_agreement = bool(fqe_idx == oracle_idx)
-                top3_hit = bool(fqe_idx in online_order[:min(3, len(online_order))])
-                top5_hit = bool(fqe_idx in online_order[:min(5, len(online_order))])
-
-                is_support_penalized = isinstance(
-                    advantage_rew, SupportPenalizedFQEScores
-                )
-                score_label = (
-                    "Support-Penalized FQE"
-                    if is_support_penalized
-                    else "FQE"
-                )
-
-                rank_metrics = {
-                    'iteration': int(i),
-                    'fqe_score_type': (
-                        'support_penalized'
-                        if is_support_penalized
-                        else 'mean'
-                    ),
-                    'fqe_ensemble_size': int(
-                        getattr(advantage_rew, 'ensemble_size', 1)
-                    ),
-                    'support_penalty_lambda': float(
-                        getattr(advantage_rew, 'penalty_lambda', 0.0)
-                    ),
-                    'support_reference': str(
-                        getattr(
-                            advantage_rew,
-                            'support_reference_label',
-                            'none',
-                        )
-                    ),
-                    'support_reference_transitions': int(
-                        getattr(
-                            advantage_rew,
-                            'support_reference_transitions',
-                            0,
-                        )
-                    ),
-                    'fqe_objective': str(
-                        getattr(advantage_rew, 'fqe_objective', 'unknown')
-                    ),
-                    'fqe_gamma': float(
-                        getattr(advantage_rew, 'fqe_gamma', np.nan)
-                    ),
-                    'finite_horizon_steps': (
-                        -1
-                        if getattr(
-                            advantage_rew,
-                            'finite_horizon_steps',
-                            None,
-                        ) is None
-                        else int(
-                            getattr(
-                                advantage_rew,
-                                'finite_horizon_steps',
-                            )
-                        )
-                    ),
-                    'time_conditioned': bool(
-                        getattr(advantage_rew, 'time_conditioned', False)
-                    ),
-                    'fqe_n_steps': int(
-                        getattr(advantage_rew, 'fqe_n_steps', FQE_N_STEPS)
-                    ),
-                    'fqe_target_update_interval': int(
-                        getattr(
-                            advantage_rew,
-                            'fqe_target_update_interval',
-                            NATIVE_FQE_TARGET_UPDATE_INTERVAL,
-                        )
-                    ),
-                    'fqe_target_updates': int(
-                        getattr(
-                            advantage_rew,
-                            'fqe_target_updates',
-                            ((FQE_N_STEPS - 1) // NATIVE_FQE_TARGET_UPDATE_INTERVAL) + 1,
-                        )
-                    ),
-                    'pearson': pearson,
-                    'spearman': spearman,
-                    'kendall': kendall,
-                    'oracle_idx': oracle_idx,
-                    'fqe_idx': fqe_idx,
-                    'oracle_return': oracle_return,
-                    'fqe_selected_true_return': fqe_selected_true_return,
-                    'selection_regret': selection_regret,
-                    'top1_agreement': top1_agreement,
-                    'top3_hit': top3_hit,
-                    'top5_hit': top5_hit,
-                }
-                rankStudyMetrics.append(rank_metrics)
-                for candidate_idx, (fqe_score, online_score) in enumerate(
-                    zip(fqe_scores, online_scores)
-                ):
-                    rankStudyCandidateRows.append({
-                        'iteration': int(i),
-                        'candidate': int(candidate_idx),
-                        # Backward-compatible 'fqe' column is the actual ranking
-                        # score: FQE - lambda * behavioral action divergence.
-                        'fqe': float(fqe_score),
-                        'fqe_mean_q': float(fqe_mean_q_scores[candidate_idx]),
-                        'action_divergence': float(
-                            action_divergence_scores[candidate_idx]
-                        ),
-                        'support_penalty': float(
-                            support_penalty_scores[candidate_idx]
-                        ),
-                        'fqe_mean_sigma': float(fqe_sigma_scores[candidate_idx]),
-                        'fqe_objective': str(
-                            getattr(advantage_rew, 'fqe_objective', 'unknown')
-                        ),
-                        'fqe_gamma': float(
-                            getattr(advantage_rew, 'fqe_gamma', np.nan)
-                        ),
-                        'finite_horizon_steps': (
-                            -1
-                            if getattr(
-                                advantage_rew,
-                                'finite_horizon_steps',
-                                None,
-                            ) is None
-                            else int(
-                                getattr(
-                                    advantage_rew,
-                                    'finite_horizon_steps',
-                                )
-                            )
-                        ),
-                        'time_conditioned': bool(
-                            getattr(
-                                advantage_rew,
-                                'time_conditioned',
-                                False,
-                            )
-                        ),
-                        'fqe_n_steps': int(
-                            getattr(advantage_rew, 'fqe_n_steps', FQE_N_STEPS)
-                        ),
-                        'fqe_target_update_interval': int(
-                            getattr(
-                                advantage_rew,
-                                'fqe_target_update_interval',
-                                NATIVE_FQE_TARGET_UPDATE_INTERVAL,
-                            )
-                        ),
-                        'fqe_target_updates': int(
-                            getattr(
-                                advantage_rew,
-                                'fqe_target_updates',
-                                ((FQE_N_STEPS - 1) // NATIVE_FQE_TARGET_UPDATE_INTERVAL) + 1,
-                            )
-                        ),
-                        'online': float(online_score),
-                    })
-
-                print("---------------------------------")
-                print(f"{score_label} / ONLINE RANKING STUDY")
-                print(f"Pearson correlation:  {pearson:.4f}")
-                print(f"Spearman correlation: {spearman:.4f}")
-                print(f"Kendall tau:          {kendall:.4f}")
-                print(f"Online best agent:    {oracle_idx}")
-                print(f"{score_label} best agent:   {fqe_idx}")
-                print(f"Online best return:   {oracle_return:.4f}")
-                print(
-                    f"{score_label}-selected agent true return: "
-                    f"{fqe_selected_true_return:.4f}"
-                )
-                print(f"Selection regret:     {selection_regret:.4f}")
-                print(f"Exact top-1 agreement:       {top1_agreement}")
-                print(f"{score_label} choice in online top-3:  {top3_hit}")
-                print(f"{score_label} choice in online top-5:  {top5_hit}")
-
-                # Save raw paired scores and per-iteration metrics for later analysis.
-                np.save(
-                    f'logs/{DIR}/fqe_results_{i}_{i + SEARCH_INTERV}.npy',
-                    fqe_scores
-                )
-                # Save the raw components so lambda can be swept post-hoc
-                # without rerunning FQE or online candidate evaluation. Existing
-                # fqe_results_* remains the actual ranking score for backward
-                # compatibility.
-                np.save(
-                    f'logs/{DIR}/fqe_mean_q_results_{i}_{i + SEARCH_INTERV}.npy',
-                    fqe_mean_q_scores
-                )
-                np.save(
-                    f'logs/{DIR}/fqe_action_divergence_results_{i}_{i + SEARCH_INTERV}.npy',
-                    action_divergence_scores
-                )
-                np.save(
-                    f'logs/{DIR}/fqe_support_penalty_results_{i}_{i + SEARCH_INTERV}.npy',
-                    support_penalty_scores
-                )
-                np.save(
-                    f'logs/{DIR}/fqe_sigma_results_{i}_{i + SEARCH_INTERV}.npy',
-                    fqe_sigma_scores
-                )
-                if hasattr(advantage_rew, 'ensemble_member_values'):
-                    np.save(
-                        f'logs/{DIR}/fqe_ensemble_member_values_{i}_{i + SEARCH_INTERV}.npy',
-                        advantage_rew.ensemble_member_values
-                    )
-                np.save(
-                    f'logs/{DIR}/online_all_results_{i}_{i + SEARCH_INTERV}.npy',
-                    online_scores
-                )
-                if OBJECTIVE_MISMATCH_STUDY:
-                    np.save(
-                        f'logs/{DIR}/online_discounted_all_results_'
-                        f'{i}_{i + SEARCH_INTERV}.npy',
-                        np.asarray(cum_discounted_rews, dtype=np.float64),
-                    )
-                np.save(
-                    f'logs/{DIR}/rank_metrics_{i}_{i + SEARCH_INTERV}.npy',
-                    rank_metrics
-                )
-
-                if KNN_SUPPORT_STUDY and knn_support_diagnostics is not None:
-                    np.save(
-                        f'logs/{DIR}/knn_support_unsupported_fraction_'
-                        f'{i}_{i + SEARCH_INTERV}.npy',
-                        knn_support_diagnostics[
-                            'candidate_unsupported_fraction'
-                        ],
-                    )
-                    np.save(
-                        f'logs/{DIR}/knn_support_mean_sq_l2_'
-                        f'{i}_{i + SEARCH_INTERV}.npy',
-                        knn_support_diagnostics['candidate_mean_sq_l2'],
-                    )
-
-                # --------------------------------------------------------------
-                # OBJECTIVE MISMATCH STUDY (analysis only)
-                # --------------------------------------------------------------
-                # Compare RAW ordinary FQE (ensemble mean Q) to two online
-                # targets measured on the exact same evaluation trajectories:
-                #   1) original undiscounted episodic return (canonical selector)
-                #   2) PPO-gamma-discounted episodic return (historical diagnostic)
-                #
-                # With time-conditioned finite-horizon FQE enabled, target (1)
-                # is now the OBJECTIVE-ALIGNED comparison; target (2) remains
-                # only to show how the new evaluator differs from the previous
-                # discounted FQE objective. The support-penalized score is
-                # intentionally NOT used here.
-                if OBJECTIVE_MISMATCH_STUDY:
-                    discounted_online_scores = np.asarray(
-                        cum_discounted_rews, dtype=np.float64
-                    )
-                    if len(discounted_online_scores) != len(online_scores):
-                        raise RuntimeError(
-                            "Objective-mismatch diagnostic did not collect one "
-                            "discounted return per candidate: "
-                            f"discounted={len(discounted_online_scores)}, "
-                            f"undiscounted={len(online_scores)}."
-                        )
-
-                    objective_metrics = compute_objective_mismatch_metrics(
-                        online_undiscounted=online_scores,
-                        online_discounted=discounted_online_scores,
-                        fqe_mean_q=fqe_mean_q_scores,
-                        iteration=i,
-                        gamma=model.gamma,
-                    )
-                    objective_metrics["fqe_objective"] = str(
-                        getattr(advantage_rew, "fqe_objective", "unknown")
-                    )
-                    objective_metrics["fqe_gamma"] = float(
-                        getattr(advantage_rew, "fqe_gamma", np.nan)
-                    )
-                    objective_metrics["finite_horizon_steps"] = (
-                        -1
-                        if getattr(
-                            advantage_rew,
-                            "finite_horizon_steps",
-                            None,
-                        ) is None
-                        else int(
-                            getattr(
-                                advantage_rew,
-                                "finite_horizon_steps",
-                            )
-                        )
-                    )
-                    objective_metrics["time_conditioned"] = bool(
-                        getattr(advantage_rew, "time_conditioned", False)
-                    )
-                    objectiveMismatchMetrics.append(objective_metrics)
-
-                    for candidate_idx in range(len(online_scores)):
-                        objectiveMismatchCandidateRows.append({
-                            "iteration": int(i),
-                            "candidate": int(candidate_idx),
-                            "gamma": float(model.gamma),
-                            "fqe_objective": str(
-                                getattr(
-                                    advantage_rew,
-                                    "fqe_objective",
-                                    "unknown",
-                                )
-                            ),
-                            "fqe_gamma": float(
-                                getattr(
-                                    advantage_rew,
-                                    "fqe_gamma",
-                                    np.nan,
-                                )
-                            ),
-                            "finite_horizon_steps": (
-                                -1
-                                if getattr(
-                                    advantage_rew,
-                                    "finite_horizon_steps",
-                                    None,
-                                ) is None
-                                else int(
-                                    getattr(
-                                        advantage_rew,
-                                        "finite_horizon_steps",
-                                    )
-                                )
-                            ),
-                            "time_conditioned": bool(
-                                getattr(
-                                    advantage_rew,
-                                    "time_conditioned",
-                                    False,
-                                )
-                            ),
-                            "fqe_mean_q": float(
-                                fqe_mean_q_scores[candidate_idx]
-                            ),
-                            "online_undiscounted": float(
-                                online_scores[candidate_idx]
-                            ),
-                            "online_discounted": float(
-                                discounted_online_scores[candidate_idx]
-                            ),
-                        })
-
-                    print("---------------------------------")
-                    print("FQE OBJECTIVE-ALIGNMENT DIAGNOSTIC")
-                    print(
-                        "FQE evaluator: "
-                        f"{objective_metrics['fqe_objective']} | "
-                        f"OPE gamma={objective_metrics['fqe_gamma']:.8f} | "
-                        f"H={objective_metrics['finite_horizon_steps']} | "
-                        f"time_conditioned="
-                        f"{objective_metrics['time_conditioned']}"
-                    )
-                    print(
-                        "PPO / discounted-online diagnostic gamma: "
-                        f"{float(model.gamma):.8f}"
-                    )
-                    print(
-                        "FQE vs UNDISCOUNTED online: "
-                        f"Pearson="
-                        f"{objective_metrics['fqe_vs_undiscounted_pearson']:+.4f}, "
-                        f"Spearman="
-                        f"{objective_metrics['fqe_vs_undiscounted_spearman']:+.4f}, "
-                        f"Kendall="
-                        f"{objective_metrics['fqe_vs_undiscounted_kendall']:+.4f}"
-                    )
-                    print(
-                        "FQE vs DISCOUNTED online:   "
-                        f"Pearson="
-                        f"{objective_metrics['fqe_vs_discounted_pearson']:+.4f}, "
-                        f"Spearman="
-                        f"{objective_metrics['fqe_vs_discounted_spearman']:+.4f}, "
-                        f"Kendall="
-                        f"{objective_metrics['fqe_vs_discounted_kendall']:+.4f}"
-                    )
-                    print(
-                        "Discounted - undiscounted correlation delta: "
-                        f"Pearson="
-                        f"{objective_metrics['discounted_minus_undiscounted_pearson']:+.4f}, "
-                        f"Spearman="
-                        f"{objective_metrics['discounted_minus_undiscounted_spearman']:+.4f}, "
-                        f"Kendall="
-                        f"{objective_metrics['discounted_minus_undiscounted_kendall']:+.4f}"
-                    )
-                    print(
-                        "Online objective agreement: "
-                        f"Spearman="
-                        f"{objective_metrics['online_objectives_spearman']:+.4f}, "
-                        f"same top-1="
-                        f"{objective_metrics['online_oracle_top1_same']}"
-                    )
-                    print(
-                        "Raw FQE top-1 agreement: "
-                        f"undiscounted="
-                        f"{objective_metrics['fqe_top1_undiscounted']}, "
-                        f"discounted="
-                        f"{objective_metrics['fqe_top1_discounted']}"
-                    )
-                    print(
-                        "Raw FQE selection regret: "
-                        f"undiscounted="
-                        f"{objective_metrics['fqe_regret_undiscounted']:.4f}, "
-                        f"discounted="
-                        f"{objective_metrics['fqe_regret_discounted']:.4f}"
-                    )
-
-                    np.save(
-                        f'logs/{DIR}/objective_mismatch_metrics_'
-                        f'{i}_{i + SEARCH_INTERV}.npy',
-                        objective_metrics,
-                    )
+            record_rank_correlation_study_iteration(
+                model=model,
+                advantage_rew=advantage_rew,
+                cum_rews=cum_rews,
+                cum_discounted_rews=cum_discounted_rews,
+                knn_support_diagnostics=knn_support_diagnostics,
+                iteration=i,
+                DIR=DIR,
+                SEARCH_INTERV=SEARCH_INTERV,
+                rank_correlation_study=rank_correlation_study,
+                rankStudyMetrics=rankStudyMetrics,
+                rankStudyCandidateRows=rankStudyCandidateRows,
+                objectiveMismatchMetrics=objectiveMismatchMetrics,
+                objectiveMismatchCandidateRows=objectiveMismatchCandidateRows,
+            )
 
             # Replay-coverage ablation metrics are analysis-only. The canonical
             # rankStudyMetrics above remain the FULL-buffer scores exactly as before.
-            if (
-                rank_correlation_study
-                and FQE_BACKEND == "native_batched"
-                and REPLAY_COVERAGE_ABLATION
-            ):
-                online_scores_for_coverage = np.asarray(
-                    cum_rews, dtype=np.float64
-                )
-
-                print("---------------------------------")
-                print("REPLAY COVERAGE ABLATION RESULTS")
-
-                for coverage_label, coverage_scores in replay_coverage_scores.items():
-                    coverage_data = replay_coverage_data[coverage_label]
-                    coverage_metrics = compute_replay_coverage_rank_metrics(
-                        online_scores=online_scores_for_coverage,
-                        fqe_scores=coverage_scores,
-                        iteration=i,
-                        coverage_label=coverage_label,
-                        native_data=coverage_data,
-                    )
-                    replayCoverageMetrics.append(coverage_metrics)
-
-                    coverage_scores_np = np.asarray(
-                        coverage_scores, dtype=np.float64
-                    )
-                    coverage_mean_q_np = np.asarray(
-                        getattr(coverage_scores, "mean_q", coverage_scores_np),
-                        dtype=np.float64,
-                    )
-                    coverage_sigma_np = np.asarray(
-                        getattr(
-                            coverage_scores,
-                            "mean_sigma",
-                            np.zeros_like(coverage_scores_np),
-                        ),
-                        dtype=np.float64,
-                    )
-                    coverage_action_div_np = np.asarray(
-                        getattr(
-                            coverage_scores,
-                            "action_divergence",
-                            np.zeros_like(coverage_scores_np),
-                        ),
-                        dtype=np.float64,
-                    )
-                    coverage_support_penalty_np = np.asarray(
-                        getattr(
-                            coverage_scores,
-                            "support_penalty",
-                            np.zeros_like(coverage_scores_np),
-                        ),
-                        dtype=np.float64,
-                    )
-                    for candidate_idx, (coverage_fqe_score, online_score) in enumerate(
-                        zip(coverage_scores_np, online_scores_for_coverage)
-                    ):
-                        replayCoverageCandidateRows.append({
-                            "iteration": int(i),
-                            "coverage": str(coverage_label),
-                            "requested_max_transitions": (
-                                -1
-                                if coverage_data["requested_max_transitions"] is None
-                                else int(coverage_data["requested_max_transitions"])
-                            ),
-                            "actual_transitions": int(coverage_data["actual_transitions"]),
-                            "n_episodes": int(coverage_data["n_episodes"]),
-                            "training_initial_states": int(
-                                coverage_data.get(
-                                    "training_initial_states",
-                                    len(coverage_data["initial_observations"]),
-                                )
-                            ),
-                            "score_initial_states": int(
-                                coverage_data.get(
-                                    "score_initial_states",
-                                    len(coverage_data["initial_observations"]),
-                                )
-                            ),
-                            "candidate": int(candidate_idx),
-                            # 'fqe' remains the actual support-penalized
-                            # ranking score for backward compatibility.
-                            "fqe": float(coverage_fqe_score),
-                            "fqe_mean_q": float(
-                                coverage_mean_q_np[candidate_idx]
-                            ),
-                            "action_divergence": float(
-                                coverage_action_div_np[candidate_idx]
-                            ),
-                            "support_penalty": float(
-                                coverage_support_penalty_np[candidate_idx]
-                            ),
-                            "fqe_mean_sigma": float(
-                                coverage_sigma_np[candidate_idx]
-                            ),
-                            "fqe_ensemble_size": int(
-                                getattr(coverage_scores, "ensemble_size", 1)
-                            ),
-                            "support_penalty_lambda": float(
-                                getattr(
-                                    coverage_scores,
-                                    "penalty_lambda",
-                                    0.0,
-                                )
-                            ),
-                            "support_reference": str(
-                                getattr(
-                                    coverage_scores,
-                                    "support_reference_label",
-                                    "none",
-                                )
-                            ),
-                            "support_reference_transitions": int(
-                                getattr(
-                                    coverage_scores,
-                                    "support_reference_transitions",
-                                    0,
-                                )
-                            ),
-                            "fqe_objective": str(
-                                getattr(
-                                    coverage_scores,
-                                    "fqe_objective",
-                                    "unknown",
-                                )
-                            ),
-                            "fqe_gamma": float(
-                                getattr(
-                                    coverage_scores,
-                                    "fqe_gamma",
-                                    np.nan,
-                                )
-                            ),
-                            "finite_horizon_steps": (
-                                -1
-                                if getattr(
-                                    coverage_scores,
-                                    "finite_horizon_steps",
-                                    None,
-                                ) is None
-                                else int(
-                                    getattr(
-                                        coverage_scores,
-                                        "finite_horizon_steps",
-                                    )
-                                )
-                            ),
-                            "time_conditioned": bool(
-                                getattr(
-                                    coverage_scores,
-                                    "time_conditioned",
-                                    False,
-                                )
-                            ),
-                            "online": float(online_score),
-                        })
-
-                    direct_summary = (
-                        f"coverage={coverage_label:>5} | "
-                        f"actual={coverage_metrics['actual_transitions']:>6} | "
-                        f"episodes={coverage_metrics['n_episodes']:>3} | "
-                        f"score_s0={coverage_metrics['score_initial_states']:>3} | "
-                        f"Pearson={coverage_metrics['pearson']:+.4f} | "
-                        f"Spearman={coverage_metrics['spearman']:+.4f} | "
-                        f"Kendall={coverage_metrics['kendall']:+.4f} | "
-                        f"direct_top1={int(coverage_metrics['top1_agreement'])} | "
-                        f"direct_regret={coverage_metrics['selection_regret']:.4f}"
-                    )
-
-                    hybrid_parts = []
-                    for requested_k in HYBRID_TOPK_VALUES:
-                        hybrid_parts.append(
-                            f"Recall@{requested_k}="
-                            f"{int(coverage_metrics[f'oracle_recall_at_{requested_k}'])}, "
-                            f"HReg@{requested_k}="
-                            f"{coverage_metrics[f'hybrid_regret_at_{requested_k}']:.4f}"
-                        )
-
-                    print(
-                        direct_summary
-                        + " | "
-                        + " | ".join(hybrid_parts)
-                    )
-
-                replay_coverage_npz_payload = {
-                    "online": online_scores_for_coverage,
-                }
-                for coverage_label, scores in replay_coverage_scores.items():
-                    # Backward-compatible key: fqe_<window> is the actual
-                    # support-penalized ranking score. Save both raw components
-                    # so lambda can be swept post-hoc.
-                    replay_coverage_npz_payload[
-                        f"fqe_{coverage_label}"
-                    ] = np.asarray(scores, dtype=np.float64)
-                    replay_coverage_npz_payload[
-                        f"fqe_mean_q_{coverage_label}"
-                    ] = np.asarray(
-                        getattr(scores, "mean_q", scores),
-                        dtype=np.float64,
-                    )
-                    replay_coverage_npz_payload[
-                        f"action_divergence_{coverage_label}"
-                    ] = np.asarray(
-                        getattr(
-                            scores,
-                            "action_divergence",
-                            np.zeros(len(scores), dtype=np.float64),
-                        ),
-                        dtype=np.float64,
-                    )
-                    replay_coverage_npz_payload[
-                        f"support_penalty_{coverage_label}"
-                    ] = np.asarray(
-                        getattr(
-                            scores,
-                            "support_penalty",
-                            np.zeros(len(scores), dtype=np.float64),
-                        ),
-                        dtype=np.float64,
-                    )
-                    replay_coverage_npz_payload[
-                        f"fqe_sigma_{coverage_label}"
-                    ] = np.asarray(
-                        getattr(
-                            scores,
-                            "mean_sigma",
-                            np.zeros(len(scores), dtype=np.float64),
-                        ),
-                        dtype=np.float64,
-                    )
-
-                np.savez(
-                    f'logs/{DIR}/replay_coverage_scores_{i}_{i + SEARCH_INTERV}.npz',
-                    **replay_coverage_npz_payload,
-                )
+            record_replay_coverage_study_iteration(
+                cum_rews=cum_rews,
+                replay_coverage_scores=replay_coverage_scores,
+                replay_coverage_data=replay_coverage_data,
+                iteration=i,
+                DIR=DIR,
+                SEARCH_INTERV=SEARCH_INTERV,
+                rank_correlation_study=rank_correlation_study,
+                replayCoverageMetrics=replayCoverageMetrics,
+                replayCoverageCandidateRows=replayCoverageCandidateRows,
+            )
 
             # Correlation calculation used by the original offline-selection path.
             if not online_eval:
@@ -10343,6 +11725,7 @@ if __name__ == "__main__":
                             n_eval_episodes=3,
                             evaluation_n_envs=int(getattr(args, "n_envs", 1)),
                             full_horizon=_control_full_horizon,
+                            environment=env_name,
                         )
                     )
                     if int(control_summary_row["selected_idx"]) != int(best_idx):
@@ -10355,651 +11738,55 @@ if __name__ == "__main__":
                         control_candidate_rows
                     )
 
-        if MATCHED_FULL_ONLINE_CONTROL and fullOnlineControlMetrics:
-            full_control_summary_df = pd.DataFrame(
-                fullOnlineControlMetrics
-            )
-            full_control_candidates_df = pd.DataFrame(
-                fullOnlineControlCandidateRows
-            )
-            full_control_summary_df.to_csv(
-                f'logs/{DIR}/full_online_control_summary.csv',
-                index=False,
-            )
-            full_control_candidates_df.to_csv(
-                f'logs/{DIR}/full_online_control_candidates.csv',
-                index=False,
-            )
-            np.save(
-                f'logs/{DIR}/full_online_control_summary.npy',
-                np.array(fullOnlineControlMetrics, dtype=object),
-                allow_pickle=True,
-            )
+        save_matched_full_online_control_results(
+            MATCHED_FULL_ONLINE_CONTROL, fullOnlineControlMetrics,
+            fullOnlineControlCandidateRows, DIR
+        )
 
-            print("---------------------------------")
-            print("MATCHED FULL-ONLINE CONTROL SUMMARY")
-            print(
-                "Mean selected full return: "
-                f"{full_control_summary_df['selected_full_return'].mean():.4f}"
-            )
-            print(
-                "Mean full return across all candidates: "
-                f"{full_control_summary_df['mean_full_return_all_candidates'].mean():.4f}"
-            )
-            print(
-                "Nominal candidate-evaluation step reduction vs the full "
-                "control itself: 0.000"
-            )
-            print(
-                "Matched hybrid nominal reduction for 250->top-10: "
-                f"{full_control_summary_df['nominal_matched_hybrid_reduction_vs_control'].mean():.3f}"
-            )
+        save_prefix_shortlist_results(
+            PREFIX_SHORTLIST_SELECTOR_ACTIVE, prefixShortlistMetrics,
+            prefixShortlistCandidateRows, DIR, env_name
+        )
 
-        if PREFIX_SHORTLIST_SELECTOR_ACTIVE and prefixShortlistMetrics:
-            prefix_shortlist_summary_df = pd.DataFrame(
-                prefixShortlistMetrics
-            )
-            prefix_shortlist_candidates_df = pd.DataFrame(
-                prefixShortlistCandidateRows
-            )
-            prefix_shortlist_summary_df.to_csv(
-                f'logs/{DIR}/prefix_shortlist_summary.csv',
-                index=False,
-            )
-            prefix_shortlist_candidates_df.to_csv(
-                f'logs/{DIR}/prefix_shortlist_candidates.csv',
-                index=False,
-            )
-            np.save(
-                f'logs/{DIR}/prefix_shortlist_summary.npy',
-                np.array(prefixShortlistMetrics, dtype=object),
-                allow_pickle=True,
-            )
+        save_prefix_budget_study_results(
+            PREFIX_BUDGET_STUDY, prefixBudgetMetrics,
+            prefixBudgetCandidateRows, DIR
+        )
 
-            print("---------------------------------")
-            print("250-STEP -> TOP-10 -> FULL SELECTOR SUMMARY")
-            print(
-                "Mean selected full return: "
-                f"{prefix_shortlist_summary_df['selected_full_return'].mean():.4f}"
-            )
-            print(
-                "Mean selected prefix rank: "
-                f"{prefix_shortlist_summary_df['selected_prefix_rank'].mean():.2f}"
-            )
-            print(
-                "Mean nominal environment-step reduction vs full 1000-step "
-                "evaluation of every candidate: "
-                f"{prefix_shortlist_summary_df['nominal_step_reduction_vs_full_cap'].mean():.3f}"
-            )
+        save_rank_correlation_study_results(
+            rank_correlation_study, rankStudyMetrics,
+            rankStudyCandidateRows, DIR
+        )
 
-        if PREFIX_BUDGET_STUDY and prefixBudgetMetrics:
-            prefix_summary_df = pd.DataFrame(prefixBudgetMetrics)
-            prefix_candidates_df = pd.DataFrame(
-                prefixBudgetCandidateRows
-            )
+        save_objective_mismatch_study_results(
+            OBJECTIVE_MISMATCH_STUDY, objectiveMismatchMetrics,
+            objectiveMismatchCandidateRows, DIR
+        )
 
-            prefix_summary_df.to_csv(
-                f'logs/{DIR}/prefix_budget_summary.csv',
-                index=False,
-            )
-            prefix_candidates_df.to_csv(
-                f'logs/{DIR}/prefix_budget_candidates.csv',
-                index=False,
-            )
-            np.save(
-                f'logs/{DIR}/prefix_budget_summary.npy',
-                np.array(prefixBudgetMetrics, dtype=object),
-                allow_pickle=True,
-            )
+        save_fqe_convergence_study_results(
+            FQE_CONVERGENCE_STUDY, fqeConvergenceMetrics,
+            fqeConvergenceCandidateRows, DIR
+        )
 
-            print("---------------------------------")
-            print("PREFIX-BUDGET STUDY SUMMARY (FULL 1000-STEP ORACLE UNCHANGED)")
-            for budget in PREFIX_BUDGET_STEPS:
-                group = prefix_summary_df[
-                    prefix_summary_df["prefix_budget_steps"] == int(budget)
-                ]
-                if group.empty:
-                    continue
-                print(
-                    f"prefix={int(budget):>3} | "
-                    f"Spearman={group['spearman_vs_full'].mean():+.4f} +/- "
-                    f"{group['spearman_vs_full'].std(ddof=0):.4f} | "
-                    f"top1={group['top1_agreement'].mean():.3f} | "
-                    f"Recall@3={group['oracle_recall_at_3'].mean():.3f} | "
-                    f"Recall@5={group['oracle_recall_at_5'].mean():.3f} | "
-                    f"mean oracle rank={group['oracle_prefix_rank'].mean():.2f} | "
-                    f"regret={group['selection_regret'].mean():.4f} +/- "
-                    f"{group['selection_regret'].std(ddof=0):.4f} | "
-                    f"mean step reduction="
-                    f"{group['mean_step_reduction_vs_oracle'].mean():.3f}"
-                )
+        save_knn_support_study_results(
+            KNN_SUPPORT_STUDY, knnSupportMetrics, knnSupportCandidateRows, DIR,
+            len(agents)
+        )
 
-        if rank_correlation_study and rankStudyMetrics:
-            rank_summary_df = pd.DataFrame(rankStudyMetrics)
-            rank_summary_df.to_csv(f'logs/{DIR}/rank_study_summary.csv', index=False)
-            pd.DataFrame(rankStudyCandidateRows).to_csv(
-                f'logs/{DIR}/rank_study_candidates.csv', index=False
-            )
-            np.save(
-                f'logs/{DIR}/rank_study_summary.npy',
-                np.array(rankStudyMetrics, dtype=object),
-                allow_pickle=True
-            )
+        save_state_occupancy_study_results(
+            STATE_OCCUPANCY_KNN_STUDY, stateOccupancyMetrics,
+            stateOccupancyCandidateRows, DIR, len(agents)
+        )
 
-            print("---------------------------------")
-            summary_score_label = (
-                "Support-Penalized FQE"
-                if (
-                    rank_summary_df["fqe_score_type"]
-                    == "support_penalized"
-                ).all()
-                else "FQE"
-            )
-            print(f"{summary_score_label} / ONLINE RANKING STUDY SUMMARY")
-            print(
-                f"Mean Pearson:  {rank_summary_df['pearson'].mean():.4f} "
-                f"+/- {rank_summary_df['pearson'].std(ddof=0):.4f}"
-            )
-            print(
-                f"Mean Spearman: {rank_summary_df['spearman'].mean():.4f} "
-                f"+/- {rank_summary_df['spearman'].std(ddof=0):.4f}"
-            )
-            print(
-                f"Mean Kendall:  {rank_summary_df['kendall'].mean():.4f} "
-                f"+/- {rank_summary_df['kendall'].std(ddof=0):.4f}"
-            )
-            print(
-                f"Top-1 agreement rate: "
-                f"{rank_summary_df['top1_agreement'].mean():.3f}"
-            )
-            print(
-                f"Top-3 hit rate: "
-                f"{rank_summary_df['top3_hit'].mean():.3f}"
-            )
-            print(
-                f"Top-5 hit rate: "
-                f"{rank_summary_df['top5_hit'].mean():.3f}"
-            )
-            print(
-                f"Mean selection regret: "
-                f"{rank_summary_df['selection_regret'].mean():.4f}"
-            )
+        save_time_resolved_occupancy_study_results(
+            TIME_RESOLVED_OCCUPANCY_STUDY, timeResolvedOccupancyMetrics,
+            timeResolvedOccupancyCandidateRows, DIR
+        )
 
-        if OBJECTIVE_MISMATCH_STUDY and objectiveMismatchMetrics:
-            objective_summary_df = pd.DataFrame(objectiveMismatchMetrics)
-            objective_candidates_df = pd.DataFrame(
-                objectiveMismatchCandidateRows
-            )
-
-            objective_summary_df.to_csv(
-                f'logs/{DIR}/objective_mismatch_summary.csv',
-                index=False,
-            )
-            objective_candidates_df.to_csv(
-                f'logs/{DIR}/objective_mismatch_candidates.csv',
-                index=False,
-            )
-            np.save(
-                f'logs/{DIR}/objective_mismatch_summary.npy',
-                np.array(objectiveMismatchMetrics, dtype=object),
-                allow_pickle=True,
-            )
-
-            print("---------------------------------")
-            print("FQE OBJECTIVE-ALIGNMENT STUDY SUMMARY")
-            if "fqe_objective" in objective_summary_df.columns:
-                print(
-                    "FQE evaluator: "
-                    f"{objective_summary_df['fqe_objective'].iloc[0]} | "
-                    f"OPE gamma="
-                    f"{objective_summary_df['fqe_gamma'].iloc[0]:.8f} | "
-                    f"H="
-                    f"{int(objective_summary_df['finite_horizon_steps'].iloc[0])} | "
-                    f"time_conditioned="
-                    f"{bool(objective_summary_df['time_conditioned'].iloc[0])}"
-                )
-            print(
-                "PPO / discounted-online diagnostic gamma: "
-                f"{objective_summary_df['gamma'].iloc[0]:.8f}"
-            )
-            print(
-                "FQE vs UNDISCOUNTED online -- "
-                f"Pearson: "
-                f"{objective_summary_df['fqe_vs_undiscounted_pearson'].mean():+.4f} "
-                f"+/- "
-                f"{objective_summary_df['fqe_vs_undiscounted_pearson'].std(ddof=0):.4f} | "
-                f"Spearman: "
-                f"{objective_summary_df['fqe_vs_undiscounted_spearman'].mean():+.4f} "
-                f"+/- "
-                f"{objective_summary_df['fqe_vs_undiscounted_spearman'].std(ddof=0):.4f} | "
-                f"Kendall: "
-                f"{objective_summary_df['fqe_vs_undiscounted_kendall'].mean():+.4f} "
-                f"+/- "
-                f"{objective_summary_df['fqe_vs_undiscounted_kendall'].std(ddof=0):.4f}"
-            )
-            print(
-                "FQE vs DISCOUNTED online   -- "
-                f"Pearson: "
-                f"{objective_summary_df['fqe_vs_discounted_pearson'].mean():+.4f} "
-                f"+/- "
-                f"{objective_summary_df['fqe_vs_discounted_pearson'].std(ddof=0):.4f} | "
-                f"Spearman: "
-                f"{objective_summary_df['fqe_vs_discounted_spearman'].mean():+.4f} "
-                f"+/- "
-                f"{objective_summary_df['fqe_vs_discounted_spearman'].std(ddof=0):.4f} | "
-                f"Kendall: "
-                f"{objective_summary_df['fqe_vs_discounted_kendall'].mean():+.4f} "
-                f"+/- "
-                f"{objective_summary_df['fqe_vs_discounted_kendall'].std(ddof=0):.4f}"
-            )
-            print(
-                "Mean DISCOUNTED - UNDISCOUNTED correlation difference -- "
-                f"Pearson: "
-                f"{objective_summary_df['discounted_minus_undiscounted_pearson'].mean():+.4f} | "
-                f"Spearman: "
-                f"{objective_summary_df['discounted_minus_undiscounted_spearman'].mean():+.4f} | "
-                f"Kendall: "
-                f"{objective_summary_df['discounted_minus_undiscounted_kendall'].mean():+.4f}"
-            )
-            print(
-                "Raw FQE top-1 agreement -- "
-                f"undiscounted: "
-                f"{objective_summary_df['fqe_top1_undiscounted'].mean():.3f} | "
-                f"discounted: "
-                f"{objective_summary_df['fqe_top1_discounted'].mean():.3f}"
-            )
-            print(
-                "Online discounted/undiscounted oracle top-1 same rate: "
-                f"{objective_summary_df['online_oracle_top1_same'].mean():.3f}"
-            )
-            print(
-                "Mean raw-FQE selection regret -- "
-                f"undiscounted: "
-                f"{objective_summary_df['fqe_regret_undiscounted'].mean():.4f} | "
-                f"discounted: "
-                f"{objective_summary_df['fqe_regret_discounted'].mean():.4f}"
-            )
-
-        if FQE_CONVERGENCE_STUDY and fqeConvergenceMetrics:
-            convergence_summary_df = pd.DataFrame(fqeConvergenceMetrics)
-            convergence_candidates_df = pd.DataFrame(
-                fqeConvergenceCandidateRows
-            )
-
-            convergence_summary_df.to_csv(
-                f'logs/{DIR}/fqe_convergence_summary.csv',
-                index=False,
-            )
-            convergence_candidates_df.to_csv(
-                f'logs/{DIR}/fqe_convergence_candidates.csv',
-                index=False,
-            )
-            np.save(
-                f'logs/{DIR}/fqe_convergence_summary.npy',
-                np.array(fqeConvergenceMetrics, dtype=object),
-                allow_pickle=True,
-            )
-
-            print("---------------------------------")
-            print("FQE LONG-HORIZON CONVERGENCE STUDY SUMMARY")
-            for conv_steps, conv_target_interval in FQE_CONVERGENCE_CONFIGS:
-                config_label = (
-                    f"{int(conv_steps)}_steps_target"
-                    f"{int(conv_target_interval)}"
-                )
-                group = convergence_summary_df[
-                    convergence_summary_df["config"] == config_label
-                ]
-                if group.empty:
-                    continue
-
-                print(
-                    f"steps={int(conv_steps):>6}, "
-                    f"target={int(conv_target_interval):>3}, "
-                    f"target_updates={int(group['fqe_target_updates'].iloc[0]):>5} | "
-                    f"meanQ={group['mean_fqe_q'].mean():.3f} "
-                    f"+/- {group['mean_fqe_q'].std(ddof=0):.3f} | "
-                    f"Qrange={group['fqe_q_range'].mean():.3f} | "
-                    f"final_loss={group['mean_final_fqe_loss'].mean():.4f} | "
-                    f"online_mean={group['mean_online_return'].mean():.3f} | "
-                    f"Pearson={group['pearson'].mean():+.4f} "
-                    f"+/- {group['pearson'].std(ddof=0):.4f} | "
-                    f"Spearman={group['spearman'].mean():+.4f} "
-                    f"+/- {group['spearman'].std(ddof=0):.4f} | "
-                    f"Kendall={group['kendall'].mean():+.4f} "
-                    f"+/- {group['kendall'].std(ddof=0):.4f} | "
-                    f"top1={group['top1_agreement'].mean():.3f} | "
-                    f"top3={group['top3_hit'].mean():.3f} | "
-                    f"top5={group['top5_hit'].mean():.3f} | "
-                    f"regret={group['selection_regret'].mean():.4f}"
-                )
-
-        if KNN_SUPPORT_STUDY and knnSupportMetrics:
-            knn_summary_df = pd.DataFrame(knnSupportMetrics)
-            knn_candidates_df = pd.DataFrame(knnSupportCandidateRows)
-
-            knn_summary_df.to_csv(
-                f'logs/{DIR}/knn_support_summary.csv',
-                index=False,
-            )
-            knn_candidates_df.to_csv(
-                f'logs/{DIR}/knn_support_candidates.csv',
-                index=False,
-            )
-            np.save(
-                f'logs/{DIR}/knn_support_summary.npy',
-                np.array(knnSupportMetrics, dtype=object),
-                allow_pickle=True,
-            )
-
-            print("---------------------------------")
-            print("STATE-CONDITIONAL kNN SUPPORT FILTER SUMMARY")
-            print(
-                f"FQE config: "
-                f"{int(knn_summary_df['fqe_n_steps'].iloc[0])} steps / "
-                f"target "
-                f"{int(knn_summary_df['fqe_target_update_interval'].iloc[0])}"
-            )
-            print(
-                f"k={int(knn_summary_df['knn_k'].iloc[0])}, "
-                f"mean query states="
-                f"{knn_summary_df['query_states'].mean():.1f}, "
-                f"behavior percentile="
-                f"{knn_summary_df['behavior_percentile'].iloc[0]:.1f}, "
-                f"max unsupported fraction="
-                f"{knn_summary_df['max_unsupported_fraction'].iloc[0]:.3f}, "
-                f"min keep={int(knn_summary_df['min_keep'].iloc[0])}"
-            )
-            print(
-                "Mean raw 50k/100 FQE Spearman: "
-                f"{knn_summary_df['raw_fqe_spearman'].mean():+.4f} "
-                f"+/- {knn_summary_df['raw_fqe_spearman'].std(ddof=0):.4f}"
-            )
-            print(
-                "Mean support-score Spearman vs online: "
-                f"{knn_summary_df['support_score_spearman'].mean():+.4f} "
-                f"+/- "
-                f"{knn_summary_df['support_score_spearman'].std(ddof=0):.4f}"
-            )
-            print(
-                "Mean absolute-threshold keep count: "
-                f"{knn_summary_df['threshold_keep_count'].mean():.2f} / "
-                f"{len(agents)}"
-            )
-            print(
-                "Mean effective keep count: "
-                f"{knn_summary_df['effective_keep_count'].mean():.2f} / "
-                f"{len(agents)} | "
-                f"mean fallback additions="
-                f"{knn_summary_df['fallback_fill_count'].mean():.2f}"
-            )
-            print(
-                "Oracle survives effective support filter: "
-                f"{knn_summary_df['oracle_survives_effective_filter'].mean():.3f}"
-            )
-            print(
-                "Direct raw FQE top-1 / regret: "
-                f"{knn_summary_df['raw_fqe_top1'].mean():.3f} / "
-                f"{knn_summary_df['raw_fqe_selection_regret'].mean():.4f}"
-            )
-            print(
-                "Direct filtered-FQE top-1 / regret: "
-                f"{knn_summary_df['filtered_fqe_top1'].mean():.3f} / "
-                f"{knn_summary_df['filtered_fqe_selection_regret'].mean():.4f}"
-            )
-            for requested_k in HYBRID_TOPK_VALUES:
-                print(
-                    f"k={requested_k}: raw Recall="
-                    f"{knn_summary_df[f'raw_oracle_recall_at_{requested_k}'].mean():.3f}, "
-                    f"raw HReg="
-                    f"{knn_summary_df[f'raw_hybrid_regret_at_{requested_k}'].mean():.4f} | "
-                    f"filtered Recall="
-                    f"{knn_summary_df[f'filtered_oracle_recall_at_{requested_k}'].mean():.3f}, "
-                    f"filtered HReg="
-                    f"{knn_summary_df[f'filtered_hybrid_regret_at_{requested_k}'].mean():.4f}, "
-                    f"effective_k="
-                    f"{knn_summary_df[f'filtered_effective_k_at_{requested_k}'].mean():.2f}"
-                )
-
-        if STATE_OCCUPANCY_KNN_STUDY and stateOccupancyMetrics:
-            occupancy_summary_df = pd.DataFrame(stateOccupancyMetrics)
-            occupancy_candidates_df = pd.DataFrame(
-                stateOccupancyCandidateRows
-            )
-
-            occupancy_summary_df.to_csv(
-                f'logs/{DIR}/state_occupancy_knn_summary.csv',
-                index=False,
-            )
-            occupancy_candidates_df.to_csv(
-                f'logs/{DIR}/state_occupancy_knn_candidates.csv',
-                index=False,
-            )
-            np.save(
-                f'logs/{DIR}/state_occupancy_knn_summary.npy',
-                np.array(stateOccupancyMetrics, dtype=object),
-                allow_pickle=True,
-            )
-
-            print("---------------------------------")
-            print("STATE-OCCUPANCY kNN DIAGNOSTIC SUMMARY")
-            print(
-                f"FQE config: "
-                f"{int(occupancy_summary_df['fqe_n_steps'].iloc[0])} "
-                f"steps / target "
-                f"{int(occupancy_summary_df['fqe_target_update_interval'].iloc[0])}"
-            )
-            print(
-                f"k={int(occupancy_summary_df['knn_k'].iloc[0])}, "
-                f"time_aware="
-                f"{bool(occupancy_summary_df['include_time'].iloc[0])}, "
-                f"mean replay queries="
-                f"{occupancy_summary_df['replay_query_states'].mean():.1f}, "
-                f"behavior percentile="
-                f"{occupancy_summary_df['behavior_percentile'].iloc[0]:.1f}"
-            )
-            print(
-                "Mean candidate occupancy OOD fraction: "
-                f"{occupancy_summary_df['mean_candidate_ood_fraction'].mean():.4f} "
-                f"+/- "
-                f"{occupancy_summary_df['mean_candidate_ood_fraction'].std(ddof=0):.4f}"
-            )
-            print(
-                "Occupancy radius vs |FQE rank error| Spearman: "
-                f"{occupancy_summary_df['occupancy_vs_abs_fqe_rank_error_spearman'].mean():+.4f} "
-                f"+/- "
-                f"{occupancy_summary_df['occupancy_vs_abs_fqe_rank_error_spearman'].std(ddof=0):.4f}"
-            )
-            print(
-                "Occupancy OOD fraction vs |FQE rank error| Spearman: "
-                f"{occupancy_summary_df['occupancy_ood_vs_abs_fqe_rank_error_spearman'].mean():+.4f} "
-                f"+/- "
-                f"{occupancy_summary_df['occupancy_ood_vs_abs_fqe_rank_error_spearman'].std(ddof=0):.4f}"
-            )
-            print(
-                "Occupancy radius vs |z(FQE)-z(online)| Spearman: "
-                f"{occupancy_summary_df['occupancy_vs_abs_fqe_z_error_spearman'].mean():+.4f} "
-                f"+/- "
-                f"{occupancy_summary_df['occupancy_vs_abs_fqe_z_error_spearman'].std(ddof=0):.4f}"
-            )
-            print(
-                "Occupancy radius vs online return Spearman: "
-                f"{occupancy_summary_df['occupancy_vs_online_spearman'].mean():+.4f} "
-                f"+/- "
-                f"{occupancy_summary_df['occupancy_vs_online_spearman'].std(ddof=0):.4f}"
-            )
-            print(
-                "Mean |FQE rank error|, low-novelty quartile / "
-                "high-novelty quartile: "
-                f"{occupancy_summary_df['low_novelty_quartile_mean_abs_rank_error'].mean():.3f} / "
-                f"{occupancy_summary_df['high_novelty_quartile_mean_abs_rank_error'].mean():.3f} "
-                f"(high-low="
-                f"{occupancy_summary_df['high_minus_low_novelty_rank_error'].mean():+.3f})"
-            )
-            print(
-                "Mean oracle occupancy rank: "
-                f"{occupancy_summary_df['oracle_occupancy_rank'].mean():.2f} / "
-                f"{len(agents)}"
-            )
-
-        if (
-            TIME_RESOLVED_OCCUPANCY_STUDY
-            and timeResolvedOccupancyMetrics
-        ):
-            time_occ_summary_df = pd.DataFrame(
-                timeResolvedOccupancyMetrics
-            )
-            time_occ_candidates_df = pd.DataFrame(
-                timeResolvedOccupancyCandidateRows
-            )
-
-            time_occ_summary_df.to_csv(
-                f'logs/{DIR}/time_resolved_occupancy_summary.csv',
-                index=False,
-            )
-            time_occ_candidates_df.to_csv(
-                f'logs/{DIR}/time_resolved_occupancy_candidates.csv',
-                index=False,
-            )
-            np.save(
-                f'logs/{DIR}/time_resolved_occupancy_summary.npy',
-                np.array(timeResolvedOccupancyMetrics, dtype=object),
-                allow_pickle=True,
-            )
-
-            print("---------------------------------")
-            print("TIME-RESOLVED STATE-OCCUPANCY SUMMARY")
-            window_order = (
-                time_occ_summary_df[
-                    ["window_index", "window_label", "window_start", "window_end"]
-                ]
-                .drop_duplicates()
-                .sort_values("window_index")
-            )
-            for _, window_meta in window_order.iterrows():
-                window_label = window_meta["window_label"]
-                group = time_occ_summary_df[
-                    time_occ_summary_df["window_label"] == window_label
-                ]
-                print(
-                    f"[{int(window_meta['window_start'])},"
-                    f"{int(window_meta['window_end'])}): "
-                    f"mean OOD="
-                    f"{group['mean_candidate_ood_fraction'].mean():.4f} +/- "
-                    f"{group['mean_candidate_ood_fraction'].std(ddof=0):.4f} | "
-                    f"radius/behavior="
-                    f"{group['mean_candidate_radius_ratio_to_behavior'].mean():.3f} | "
-                    f"rho(novelty,online)="
-                    f"{group['occupancy_vs_online_spearman'].mean():+.4f} +/- "
-                    f"{group['occupancy_vs_online_spearman'].std(ddof=0):.4f} | "
-                    f"rho(novelty,FQE-overvaluation)="
-                    f"{group['occupancy_vs_fqe_rank_overvaluation_spearman'].mean():+.4f} +/- "
-                    f"{group['occupancy_vs_fqe_rank_overvaluation_spearman'].std(ddof=0):.4f}"
-                )
-
-        if REPLAY_COVERAGE_ABLATION and replayCoverageMetrics:
-            coverage_summary_df = pd.DataFrame(replayCoverageMetrics)
-            coverage_candidates_df = pd.DataFrame(replayCoverageCandidateRows)
-
-            coverage_summary_df.to_csv(
-                f'logs/{DIR}/replay_coverage_ablation.csv',
-                index=False,
-            )
-            coverage_candidates_df.to_csv(
-                f'logs/{DIR}/replay_coverage_candidates.csv',
-                index=False,
-            )
-
-            coverage_order = [
-                "full" if w is None else str(int(w))
-                for w in REPLAY_COVERAGE_WINDOWS
-            ]
-
-            # Compact one-row-per-window summary focused on the hybrid selector.
-            hybrid_summary_rows = []
-            for coverage_label in coverage_order:
-                group = coverage_summary_df[
-                    coverage_summary_df["coverage"] == coverage_label
-                ]
-                if group.empty:
-                    continue
-
-                row = {
-                    "coverage": coverage_label,
-                    "mean_actual_transitions": float(
-                        group["actual_transitions"].mean()
-                    ),
-                    "mean_episodes": float(group["n_episodes"].mean()),
-                    "mean_pearson": float(group["pearson"].mean()),
-                    "mean_spearman": float(group["spearman"].mean()),
-                    "mean_kendall": float(group["kendall"].mean()),
-                    "direct_top1_rate": float(
-                        group["top1_agreement"].mean()
-                    ),
-                    "direct_mean_regret": float(
-                        group["selection_regret"].mean()
-                    ),
-                }
-                for requested_k in HYBRID_TOPK_VALUES:
-                    row[f"oracle_recall_at_{requested_k}"] = float(
-                        group[f"oracle_recall_at_{requested_k}"].mean()
-                    )
-                    row[f"hybrid_mean_regret_at_{requested_k}"] = float(
-                        group[f"hybrid_regret_at_{requested_k}"].mean()
-                    )
-                    row[f"online_reduction_at_{requested_k}"] = float(
-                        group[
-                            f"hybrid_online_reduction_at_{requested_k}"
-                        ].mean()
-                    )
-                hybrid_summary_rows.append(row)
-
-            pd.DataFrame(hybrid_summary_rows).to_csv(
-                f'logs/{DIR}/replay_coverage_hybrid_summary.csv',
-                index=False,
-            )
-
-            print("---------------------------------")
-            print("REPLAY COVERAGE ABLATION SUMMARY")
-
-            for coverage_label in coverage_order:
-                group = coverage_summary_df[
-                    coverage_summary_df["coverage"] == coverage_label
-                ]
-                if group.empty:
-                    continue
-
-                direct_summary = (
-                    f"coverage={coverage_label:>5} | "
-                    f"mean actual transitions={group['actual_transitions'].mean():.1f} | "
-                    f"mean episodes={group['n_episodes'].mean():.1f} | "
-                    f"score_s0={group['score_initial_states'].mean():.1f} | "
-                    f"Pearson={group['pearson'].mean():+.4f} "
-                    f"+/- {group['pearson'].std(ddof=0):.4f} | "
-                    f"Spearman={group['spearman'].mean():+.4f} "
-                    f"+/- {group['spearman'].std(ddof=0):.4f} | "
-                    f"Kendall={group['kendall'].mean():+.4f} "
-                    f"+/- {group['kendall'].std(ddof=0):.4f} | "
-                    f"direct_top1={group['top1_agreement'].mean():.3f} | "
-                    f"direct_mean_regret={group['selection_regret'].mean():.4f}"
-                )
-
-                hybrid_parts = []
-                for requested_k in HYBRID_TOPK_VALUES:
-                    hybrid_parts.append(
-                        f"Recall@{requested_k}="
-                        f"{group[f'oracle_recall_at_{requested_k}'].mean():.3f}, "
-                        f"HReg@{requested_k}="
-                        f"{group[f'hybrid_regret_at_{requested_k}'].mean():.4f}, "
-                        f"online_reduction="
-                        f"{group[f'hybrid_online_reduction_at_{requested_k}'].mean():.3f}"
-                    )
-
-                print(
-                    direct_summary
-                    + " | "
-                    + " | ".join(hybrid_parts)
-                )
+        save_replay_coverage_study_results(
+            REPLAY_COVERAGE_ABLATION, replayCoverageMetrics,
+            replayCoverageCandidateRows, DIR
+        )
 
         np.save(f'logs/{DIR}/distance.npy', distanceArray)
         np.save(f'logs/{DIR}/time.npy', timeArray)
@@ -11010,9 +11797,9 @@ if __name__ == "__main__":
         for i in range(START_ITER, NUM_ITERS, SEARCH_INTERV):
             print(i)
             model.learn(total_timesteps=SEARCH_INTERV*n_steps_per_rollout*vec_env.num_envs,
-                        log_interval=1, 
-                        tb_log_name=exp, 
-                        reset_num_timesteps=True if i == START_ITER else False, 
+                        log_interval=1,
+                        tb_log_name=exp,
+                        reset_num_timesteps=True if i == START_ITER else False,
                         first_iteration=True if i == START_ITER else False,
                         )
 
@@ -11033,7 +11820,7 @@ if __name__ == "__main__":
                     dummy_env = FlattenObservation(dummy_env)
 
                 dummy_env.reset(seed=args.seed)
-            
+
             if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
                 mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
                 print(f'avg 3 return on policy: {mean_rew}')
@@ -11051,7 +11838,7 @@ if __name__ == "__main__":
             if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
                 np.save(f'logs/{DIR}/success_{i}_{i + SEARCH_INTERV}.npy', cum_success)
             timeArray.append(time.time() - start_time)
-        
+
         np.save(f'logs/{DIR}/time.npy', timeArray)
         print("Time taken for each iteration:", timeArray)
 
