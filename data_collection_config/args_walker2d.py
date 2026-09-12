@@ -22,7 +22,7 @@ def get_args(rest_args):
     parser.add_argument('--device', default='cpu', type=str, help='Device to use: cpu or cuda')
     parser.add_argument('--tensorboard-log', default='logs/Walker2d-v5/', type=str, help='Tensorboard log directory base')
 
-    parser.add_argument('--init-model-path', default='full_exp_on_ppo/models/Walker2d-v5/ppo_walker2d_1M', type=str, help='Base directory for init model')
+    parser.add_argument('--init-model-path', default='full_exp_on_ppo2/models/Walker2d-v5/ppo_walker2d_1M', type=str, help='Base directory for init model')
 
     args = parser.parse_args(rest_args)
 

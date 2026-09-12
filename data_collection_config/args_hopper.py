@@ -24,7 +24,7 @@ def get_args(rest_args):
     parser.add_argument('--device', default='cpu', type=str, help='Device to use: cpu or cuda')
     parser.add_argument('--tensorboard-log', default='logs/Hopper-v5/', type=str, help='Base directory for tensorboard logs')
 
-    parser.add_argument('--init-model-path', default='full_exp_on_ppo/models/Hopper-v5/ppo_hopper_1M', type=str, help='Base directory for init model')
+    parser.add_argument('--init-model-path', default='full_exp_on_ppo2/models/Hopper-v5/ppo_hopper_1M', type=str, help='Base directory for init model')
 
     # Policy kwargs
     parser.add_argument('--use-policy-kwargs', default=True, type=bool, help='Enable custom policy_kwargs')
