@@ -605,19 +605,33 @@ if any(budget >= PREFIX_BUDGET_ORACLE_STEPS for budget in PREFIX_BUDGET_STEPS):
     )
 PREFIX_BUDGET_STEPS = tuple(sorted(PREFIX_BUDGET_STEPS))
 
-# Online 250-step -> top-10 -> full-horizon shortlist selector.
+# Environment-specific online prefix -> top-10 -> full-horizon shortlist selector.
 #
-# This is the deployment experiment motivated by the completed Ant-v5
-# prefix-budget study. For the cross-environment generalization test, the SAME
-# Ant-derived selector (250-step prefix, top-10 shortlist, 3 evaluation episodes)
-# is carried unchanged to the standard Gymnasium MuJoCo locomotion tasks below.
-# Every candidate is evaluated on seed-aligned episode starts for at most
-# PREFIX_SHORTLIST_STEPS. Only the top-k candidates remain alive; their exact
-# same episode environments are then continued from the prefix boundary to the
-# normal environment termination/TimeLimit.
+# The staged selector itself is unchanged:
+#   1) evaluate every candidate on the same seed-aligned episode starts up to
+#      an environment-specific prefix budget;
+#   2) keep the top-k prefix candidates;
+#   3) continue ONLY those exact paused finalist episodes to termination/horizon;
+#   4) select the best finalist by its ordinary full online return.
+#
+# Only the prefix budget is now environment-specific. This addresses the
+# cross-environment failure of a single absolute 250-step cutoff:
+#   * Ant-v5: 250 remains the validated baseline.
+#   * Hopper-v5 / Walker2d-v5: use a longer 500-step prefix so survival-driven
+#     return differences have more time to emerge. Candidates that terminate
+#     earlier still stop naturally, so 500 is only a cap, not forced interaction.
+#   * Humanoid-v5: use 100 steps because 250 was usually beyond natural episode
+#     termination and therefore provided essentially no shortlist-specific saving.
+#   * HalfCheetah-v5 / Swimmer-v5: retain the historical 250-step default until
+#     environment-specific evidence is available.
+#
+# These are experiment defaults, not claimed oracle-optimal budgets. Setting
+# PREFIX_SHORTLIST_STEPS explicitly still forces one global budget and therefore
+# reproduces the previous fixed-budget behavior for controlled ablations.
 #
 # PPO training, ESA candidate generation, replay-buffer collection, checkpoint
-# handling, and the candidate policy parameters are untouched.
+# handling, top-k logic, continuation semantics, and candidate policy parameters
+# are untouched.
 PREFIX_SHORTLIST_SUPPORTED_ENVS = (
     "Ant-v5",
     "HalfCheetah-v5",
@@ -627,12 +641,28 @@ PREFIX_SHORTLIST_SUPPORTED_ENVS = (
     "Swimmer-v5",
 )
 
+PREFIX_SHORTLIST_DEFAULT_STEPS_BY_ENV = {
+    "Ant-v5": 250,
+    "HalfCheetah-v5": 250,
+    "Hopper-v5": 500,
+    "Walker2d-v5": 500,
+    "Humanoid-v5": 100,
+    "Swimmer-v5": 250,
+}
+
 PREFIX_SHORTLIST_SELECTOR = (
     os.environ.get("PREFIX_SHORTLIST_SELECTOR", "1") == "1"
 )
+
+# Backward-compatible global override. If unset, the runtime environment selects
+# its default from PREFIX_SHORTLIST_DEFAULT_STEPS_BY_ENV.
+_PREFIX_SHORTLIST_STEPS_OVERRIDE = os.environ.get("PREFIX_SHORTLIST_STEPS")
 PREFIX_SHORTLIST_STEPS = int(
-    os.environ.get("PREFIX_SHORTLIST_STEPS", "250")
+    _PREFIX_SHORTLIST_STEPS_OVERRIDE
+    if _PREFIX_SHORTLIST_STEPS_OVERRIDE is not None
+    else "250"
 )
+
 PREFIX_SHORTLIST_TOP_K = int(
     os.environ.get("PREFIX_SHORTLIST_TOP_K", "10")
 )
@@ -640,9 +670,36 @@ PREFIX_SHORTLIST_N_EVAL_EPISODES = int(
     os.environ.get("PREFIX_SHORTLIST_N_EVAL_EPISODES", "3")
 )
 
+
+def resolve_prefix_shortlist_steps(env_name):
+    """Resolve only the staged selector's prefix cap for the chosen environment.
+
+    An explicit PREFIX_SHORTLIST_STEPS environment variable has highest
+    priority so prior fixed-250 experiments remain exactly reproducible.
+    Otherwise use the environment-specific defaults above.
+    """
+    if _PREFIX_SHORTLIST_STEPS_OVERRIDE is not None:
+        resolved = int(PREFIX_SHORTLIST_STEPS)
+        source = "global PREFIX_SHORTLIST_STEPS override"
+    else:
+        if env_name not in PREFIX_SHORTLIST_DEFAULT_STEPS_BY_ENV:
+            raise NotImplementedError(
+                "No environment-specific prefix budget is configured for "
+                f"{env_name!r}. Supported defaults: "
+                f"{tuple(PREFIX_SHORTLIST_DEFAULT_STEPS_BY_ENV.keys())}."
+            )
+        resolved = int(PREFIX_SHORTLIST_DEFAULT_STEPS_BY_ENV[env_name])
+        source = "environment-specific default"
+
+    if resolved <= 0:
+        raise ValueError(
+            f"Resolved prefix-shortlist budget must be > 0, got {resolved}."
+        )
+    return resolved, source
+
 # Analysis-only shadow oracle for the deployed prefix shortlist selector.
 #
-# The selector itself remains EXACTLY 250-step -> top-k -> full continuation:
+# The selector itself remains EXACTLY prefix -> top-k -> full continuation:
 # only shortlisted candidates participate in selection. After that selection
 # score vector has been fixed, this diagnostic optionally resumes the paused
 # non-shortlisted candidate episodes to the same full horizon. Those extra
@@ -664,7 +721,7 @@ if PREFIX_SHORTLIST_TOP_K <= 0:
 if PREFIX_SHORTLIST_N_EVAL_EPISODES <= 0:
     raise ValueError("PREFIX_SHORTLIST_N_EVAL_EPISODES must be > 0.")
 
-# Matched full-online control for the deployed 250-step -> top-10 experiment.
+# Matched full-online control for the deployed environment-specific prefix -> top-10 experiment.
 #
 # When enabled, this mode deliberately BYPASSES the shortlist selector and
 # enters the pre-existing historical full-online evaluation path unchanged:
@@ -6946,8 +7003,8 @@ def _advance_prefix_shortlist_episode(
 
     ``stop_after_steps`` is an absolute within-episode step count. Passing None
     continues until the environment terminates/truncates. No reset is performed
-    here, which is what makes the second stage a true continuation of the 250-
-    step prefix rather than a restarted full evaluation.
+    here, which is what makes the second stage a true continuation of the
+    configured prefix rather than a restarted full evaluation.
     """
     if episode_state["done"]:
         return
@@ -7129,7 +7186,7 @@ def evaluate_prefix_shortlist_selector(
     iteration,
     evaluation_n_envs=1,
 ):
-    """Run the real 250-step -> top-k -> continued-full evaluation selector.
+    """Run the real environment-specific prefix -> top-k -> continued-full evaluation selector.
 
     Stage 1 evaluates every candidate for at most ``prefix_steps`` on the same
     seeded episode starts used by the historical non-parallel evaluator.
@@ -9173,7 +9230,7 @@ def print_iteration_evaluation_summary(online_eval, advantage_rew, prefix_shortl
 
     if PREFIX_SHORTLIST_SELECTOR_ACTIVE:
         print(
-            f'avg 250-step prefix return across all candidates: '
+            f'avg {PREFIX_SHORTLIST_STEPS}-step prefix return across all candidates: '
             f'{np.mean(prefix_shortlist_scores)}, '
             f'std: {np.std(prefix_shortlist_scores)}'
         )
@@ -10652,6 +10709,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--env_name",
+        "--env-name",
         default=os.environ.get("ENV_NAME", "Humanoid-v5"),
         choices=[
             "Ant-v5",
@@ -10676,8 +10734,8 @@ if __name__ == "__main__":
 
     env_name = launcher_args.env_name
 
-    # Standard MuJoCo locomotion environments supported by the transferred
-    # 250-step -> top-10 selector:
+    # Standard MuJoCo locomotion environments supported by the
+    # environment-specific prefix -> top-10 selector:
     # Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5, Swimmer-v5.
 
     # env_name = "CartPole-v1" # For cartpole (single goal task)
@@ -10728,6 +10786,19 @@ if __name__ == "__main__":
 
     print(f"Selected environment: {env_name}")
 
+    # Resolve the shortlist prefix only after the runtime environment is known.
+    # This changes no selector mechanics; it only replaces the former universal
+    # 250-step cap with the configured environment-specific cap.
+    if PREFIX_SHORTLIST_SELECTOR_ACTIVE or MATCHED_FULL_ONLINE_CONTROL:
+        PREFIX_SHORTLIST_STEPS, _prefix_shortlist_steps_source = (
+            resolve_prefix_shortlist_steps(env_name)
+        )
+        print(
+            "Resolved prefix-shortlist budget: "
+            f"{PREFIX_SHORTLIST_STEPS} steps "
+            f"({_prefix_shortlist_steps_source})."
+        )
+
     # The matched control and the deployed shortlist selector are both
     # selection experiments, not FQE/occupancy diagnostics. Disable the
     # completed analysis blocks in either mode so the control differs from the
@@ -10763,7 +10834,7 @@ if __name__ == "__main__":
 
         if not (0 < PREFIX_SHORTLIST_STEPS < _shortlist_full_horizon):
             raise ValueError(
-                "PREFIX_SHORTLIST_STEPS must be strictly between 0 and the "
+                "Resolved prefix-shortlist steps must be strictly between 0 and the "
                 f"environment horizon {_shortlist_full_horizon}."
             )
         print(
@@ -11082,27 +11153,27 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    print("Starting Initial training")
-    os.makedirs(f'full_exp_on_ppo2/models/'+env_name, exist_ok=True)
-    os.makedirs(f'full_exp_on_ppo2/replay_buffers/'+env_name, exist_ok=True)
+    # print("Starting Initial training")
+    # os.makedirs(f'full_exp_on_ppo2/models/'+env_name, exist_ok=True)
+    # os.makedirs(f'full_exp_on_ppo2/replay_buffers/'+env_name, exist_ok=True)
 
-    model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    model.save("full_exp_on_ppo2/models/"+env_name+"/ppo_humanoid_1M"+'_'+str(args.seed))
+    # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
+    # model.save("full_exp_on_ppo2/models/"+env_name+"/ppo_hopper_1M"+'_'+str(args.seed))
 
-    print("Initial training done")
+    # print("Initial training done")
 
-    # Correct replay-buffer save format + corrected replay semantics for later FQE.
-    # IMPORTANT: buffers created before FQE_REPLAY_SEMANTICS_VERSION=2 must be
-    # regenerated once. Uncomment the initial-training block and this save block
-    # together so the saved PPO model and its replay buffer come from the same run.
-    print("Saving replay buffer for later use")
-    replay_buffer_path = (
-        f'full_exp_on_ppo2/replay_buffers/{env_name}/'
-        f'replay_buffer_{args.seed}.npz'
-    )
-    save_replay_buffer_npz(model, replay_buffer_path)
+    # # Correct replay-buffer save format + corrected replay semantics for later FQE.
+    # # IMPORTANT: buffers created before FQE_REPLAY_SEMANTICS_VERSION=2 must be
+    # # regenerated once. Uncomment the initial-training block and this save block
+    # # together so the saved PPO model and its replay buffer come from the same run.
+    # print("Saving replay buffer for later use")
+    # replay_buffer_path = (
+    #     f'full_exp_on_ppo2/replay_buffers/{env_name}/'
+    #     f'replay_buffer_{args.seed}.npz'
+    # )
+    # save_replay_buffer_npz(model, replay_buffer_path)
 
-    quit()
+    # quit()
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -11183,7 +11254,7 @@ if __name__ == "__main__":
     prefixBudgetMetrics = []
     prefixBudgetCandidateRows = []
 
-    # Real online 250-step -> top-10 -> continued-full selector diagnostics.
+    # Real online environment-specific prefix -> top-10 -> continued-full selector diagnostics.
     # These rows describe the selector that actually chooses the next policy;
     # they never feed back into PPO/ESA beyond the intended best-agent choice.
     prefixShortlistMetrics = []
@@ -11462,7 +11533,7 @@ if __name__ == "__main__":
                 rank_correlation_study=rank_correlation_study,
             )
 
-            # Real 250-step -> top-10 -> continued-full selector.
+            # Real environment-specific prefix -> top-10 -> continued-full selector.
             # When disabled, the historical candidate-evaluation code below is
             # entered unchanged.
             (
