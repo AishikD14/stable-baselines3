@@ -17,7 +17,7 @@ import pandas as pd
 # from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_breakout_no_frameskip, args_point_maze_dense
+from data_collection_config import args_ant_dir, args_ant, args_ant_maze_dense, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_breakout_no_frameskip, args_point_maze_dense
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
 from d3rlpy.dataset import MDPDataset
@@ -41,14 +41,14 @@ import math
 
 warnings.filterwarnings("ignore")
 
-# PointMaze uses a goal-conditioned Dict observation space.  The existing
+# PointMaze and AntMaze use goal-conditioned Dict observation spaces.  The existing
 # Empty Space pipeline is built around MlpPolicy / flat Box observations, so
-# flatten PointMaze observations while leaving every existing environment
-# unchanged.
-POINT_MAZE_ENVS = {"PointMaze_UMazeDense-v3"}
+# flatten maze observations while leaving every existing environment unchanged.
+GOAL_MAZE_ENVS = {"PointMaze_UMazeDense-v3", "AntMaze_UMazeDense-v5"}
 
 def wrap_pointmaze_observation(env, env_name):
-    if env_name in POINT_MAZE_ENVS:
+    # Keep the existing helper name/call sites so the original training logic is unchanged.
+    if env_name in GOAL_MAZE_ENVS:
         return FlattenObservation(env)
     return env
 
@@ -952,7 +952,8 @@ if __name__ == "__main__":
     # env_name = "FetchPush-v4" # For FetchPush (single goal task) sparse rewards
     # env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
 
-    env_name = "PointMaze_UMazeDense-v3" # PointMaze U-Maze dense reward (goal-conditioned)
+    # env_name = "PointMaze_UMazeDense-v3" # PointMaze U-Maze dense reward (goal-conditioned)
+    env_name = "AntMaze_UMazeDense-v5" # AntMaze U-Maze dense reward (goal-conditioned)
 
     # env_name = "BreakoutNoFrameskip-v4" # For Breakout Atari (single goal task)
 
@@ -962,6 +963,8 @@ if __name__ == "__main__":
         args = args_ant_dir.get_args(rest_args)
     elif env_name == "Ant-v5":
         args = args_ant.get_args(rest_args)
+    elif env_name == "AntMaze_UMazeDense-v5":
+        args = args_ant_maze_dense.get_args(rest_args)
     elif env_name == "Hopper-v5":
         args = args_hopper.get_args(rest_args)
     elif env_name == "HalfCheetah-v5":
@@ -1034,7 +1037,7 @@ if __name__ == "__main__":
                 wrapper_kwargs=dict(terminal_on_life_loss=False),
             )
         else:
-            env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5, PointMaze
+            env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5, PointMaze, AntMaze
             env = wrap_pointmaze_observation(env, env_name)
             env.reset(seed=args.seed)
     
@@ -1077,7 +1080,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_pretrain" # For standard PPO training (single goal tasks)
+    exp = "PPO_init" # For standard PPO training (single goal tasks)
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -1177,7 +1180,7 @@ if __name__ == "__main__":
     # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
 
     # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_pointmaze_1M"+'_'+str(args.seed))
+    # model.save(args.init_model_path+'_'+str(args.seed))
 
     # print("Initial training done") 
 
