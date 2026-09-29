@@ -45,12 +45,65 @@ warnings.filterwarnings("ignore")
 # Empty Space pipeline is built around MlpPolicy / flat Box observations, so
 # flatten maze observations while leaving every existing environment unchanged.
 GOAL_MAZE_ENVS = {"PointMaze_UMazeDense-v3", "AntMaze_UMazeDense-v5"}
+MAZE_SUCCESS_ENVS = {"PointMaze_UMazeDense-v3", "AntMaze_UMazeDense-v5"}
 
 def wrap_pointmaze_observation(env, env_name):
     # Keep the existing helper name/call sites so the original training logic is unchanged.
     if env_name in GOAL_MAZE_ENVS:
         return FlattenObservation(env)
     return env
+
+def evaluate_policy_with_goal_success(model, env, n_eval_episodes=3, deterministic=True):
+    """Evaluate with the existing SB3 return calculation and additionally track goal success.
+
+    The return value used by the training/selection logic is still produced by the
+    same evaluate_policy() call.  The callback only observes the per-step info dict
+    and records whether the goal was reached at least once in each episode.
+    PointMaze and AntMaze report this as info["success"]; Fetch-style info["is_success"] is
+    accepted as a fallback for compatibility.
+    """
+    episode_successes = []
+    current_success = {}
+
+    def _success_callback(local_vars, global_vars):
+        env_idx = int(local_vars.get("i", 0))
+
+        info = local_vars.get("info")
+        if info is None and "infos" in local_vars:
+            infos = local_vars["infos"]
+            if len(infos) > env_idx:
+                info = infos[env_idx]
+        if info is None:
+            info = {}
+
+        success_value = info.get("success", info.get("is_success", False))
+        try:
+            step_success = bool(np.asarray(success_value).astype(bool).any())
+        except Exception:
+            step_success = bool(success_value)
+
+        current_success[env_idx] = current_success.get(env_idx, False) or step_success
+
+        done = local_vars.get("done")
+        if done is None and "dones" in local_vars:
+            dones = local_vars["dones"]
+            if len(dones) > env_idx:
+                done = dones[env_idx]
+
+        if bool(done):
+            episode_successes.append(float(current_success.get(env_idx, False)))
+            current_success[env_idx] = False
+
+    mean_reward, std_reward = evaluate_policy(
+        model,
+        env,
+        n_eval_episodes=n_eval_episodes,
+        deterministic=deterministic,
+        callback=_success_callback,
+    )[:2]
+
+    success_rate = float(np.mean(episode_successes)) if episode_successes else float("nan")
+    return mean_reward, std_reward, success_rate
 
 device = "cpu"
 
@@ -858,31 +911,43 @@ def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_nu
     return agent_list, 0.0
 
 # Rollout policy to get average reward
-def rollout_policy(policy, env, n_eval=3, deterministic=True):
+def rollout_policy(policy, env, n_eval=3, deterministic=True, return_success_rate=False):
     episode_rewards = []
+    episode_successes = []
 
     for _ in range(n_eval):
         obs, _ = env.reset()
         done = False
         total_reward = 0.0
+        episode_success = False
 
         while not done:
             # SB3 uses: policy.predict(obs, deterministic)
             action, _ = policy.predict(obs, deterministic=deterministic)
             
-            obs, reward, terminated, truncated, _ = env.step(action)
+            obs, reward, terminated, truncated, info = env.step(action)
             done = terminated or truncated
 
             total_reward += reward
+            success_value = info.get("success", info.get("is_success", False))
+            try:
+                episode_success = episode_success or bool(np.asarray(success_value).astype(bool).any())
+            except Exception:
+                episode_success = episode_success or bool(success_value)
 
         episode_rewards.append(total_reward)
+        episode_successes.append(float(episode_success))
 
-    # SB3 returns the mean reward
-    return sum(episode_rewards) / len(episode_rewards)
+    avg_return = sum(episode_rewards) / len(episode_rewards)
+    if return_success_rate:
+        return avg_return, float(np.mean(episode_successes))
+
+    # Preserve the original return-only API for all existing call sites/environments.
+    return avg_return
 
 # Evaluation function for a single candidate agent
 def evaluate_candidate(args):
-    idx, agent_state_dict, env_name, seed, n_eval = args
+    idx, agent_state_dict, env_name, seed, n_eval, return_success_rate = args
 
     dummy_env = wrap_pointmaze_observation(gym.make(env_name), env_name)
     dummy_env.reset(seed=seed)
@@ -897,6 +962,13 @@ def evaluate_candidate(args):
     )
     policy.load_state_dict(agent_state_dict)
 
+    if return_success_rate:
+        avg_return, success_rate = rollout_policy(
+            policy, dummy_env, n_eval=n_eval, deterministic=True, return_success_rate=True
+        )
+        print(f"avg return on {n_eval} trajectories of agent{idx}: {avg_return}, Success rate: {success_rate:.2f}")
+        return idx, avg_return, success_rate
+
     avg_return = rollout_policy(policy, dummy_env, n_eval=n_eval, deterministic=True)
 
     # Evaluate policy
@@ -904,12 +976,12 @@ def evaluate_candidate(args):
     return idx, avg_return
 
 # Parallel Evaluation of multiple agents
-def parallel_evaluate(agents, env_name, seed, n_eval_episodes=3):
+def parallel_evaluate(agents, env_name, seed, n_eval_episodes=3, return_success_rate=False):
     print("Evaluating", len(agents), "agents in parallel...")
 
     # Prepare job arguments
     job_args = [
-        (j, agents[j], env_name, seed, n_eval_episodes)
+        (j, agents[j], env_name, seed, n_eval_episodes, return_success_rate)
         for j in range(len(agents))
     ]
 
@@ -922,8 +994,10 @@ def parallel_evaluate(agents, env_name, seed, n_eval_episodes=3):
     # Sort by index
     results = sorted(results, key=lambda x: x[0])
 
-    # Only return returns
     returns = [r[1] for r in results]
+    if return_success_rate:
+        successes = [r[2] for r in results]
+        return returns, successes
 
     return returns
 
@@ -952,8 +1026,8 @@ if __name__ == "__main__":
     # env_name = "FetchPush-v4" # For FetchPush (single goal task) sparse rewards
     # env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
 
-    # env_name = "PointMaze_UMazeDense-v3" # PointMaze U-Maze dense reward (goal-conditioned)
-    env_name = "AntMaze_UMazeDense-v5" # AntMaze U-Maze dense reward (goal-conditioned)
+    env_name = "PointMaze_UMazeDense-v3" # PointMaze U-Maze dense reward (goal-conditioned)
+    # env_name = "AntMaze_UMazeDense-v5" # AntMaze U-Maze dense reward (goal-conditioned)
 
     # env_name = "BreakoutNoFrameskip-v4" # For Breakout Atari (single goal task)
 
@@ -1080,7 +1154,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_init" # For standard PPO training (single goal tasks)
+    exp = "PPO_upper_bound" # For standard PPO training (single goal tasks)
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -1232,7 +1306,7 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = True
+    normal_train = False
     use_ANN = False
     ANN_lib = "Annoy"
     online_eval = True
@@ -1336,13 +1410,22 @@ if __name__ == "__main__":
                     dummy_env = wrap_pointmaze_observation(gym.make(env_name), env_name) # Existing envs unchanged; PointMaze flattened
                     dummy_env.reset(seed=args.seed)
 
-                returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
-                print(f'avg return on 3 trajectories of agent: {returns_trains}')
+                if env_name in MAZE_SUCCESS_ENVS:
+                    returns_trains, _, success = evaluate_policy_with_goal_success(
+                        model, dummy_env, n_eval_episodes=3, deterministic=True
+                    )
+                    print(f'avg return on 3 trajectories of agent: {returns_trains}, Success rate: {success:.2f}')
+                    cum_success.append(success)
+                else:
+                    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                    print(f'avg return on 3 trajectories of agent: {returns_trains}')
                 cum_rews.append(returns_trains)
 
                 os.makedirs(f'logs/{DIR}', exist_ok=True)
                 np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
                 np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
+                if env_name in MAZE_SUCCESS_ENVS:
+                    np.save(f'logs/{DIR}/success_{i}_{i + SEARCH_INTERV}.npy', cum_success)
                 timeArray.append(time.time() - start_time)
 
                 load_state_dict(model, agents[0])
@@ -1432,6 +1515,13 @@ if __name__ == "__main__":
                         print(f'avg 3 return on policy: {mean_rew}, Success rate: {success:.2f}')
                         cum_rews.append(mean_rew)
                         cum_success.append(success)
+                    elif env_name in MAZE_SUCCESS_ENVS:
+                        mean_rew, std_rew, success = evaluate_policy_with_goal_success(
+                            model, dummy_env, n_eval_episodes=3, deterministic=True
+                        )
+                        print(f'avg return on 3 trajectories of agent{j}: {mean_rew}, Success rate: {success:.2f}')
+                        cum_rews.append(mean_rew)
+                        cum_success.append(success)
                     else:
                         returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
                         print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
@@ -1450,12 +1540,21 @@ if __name__ == "__main__":
 
             # Parallel evaluation
             else:
-                cum_rews = parallel_evaluate(
-                    agents=agents,
-                    env_name=env_name,
-                    n_eval_episodes=3,
-                    seed=args.seed
-                )
+                if env_name in MAZE_SUCCESS_ENVS:
+                    cum_rews, cum_success = parallel_evaluate(
+                        agents=agents,
+                        env_name=env_name,
+                        n_eval_episodes=3,
+                        seed=args.seed,
+                        return_success_rate=True
+                    )
+                else:
+                    cum_rews = parallel_evaluate(
+                        agents=agents,
+                        env_name=env_name,
+                        n_eval_episodes=3,
+                        seed=args.seed
+                    )
 
             # -----------------------------------------------------------------------------------
 
@@ -1464,7 +1563,7 @@ if __name__ == "__main__":
                 print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
             
             print(f'avg cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
-            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] or env_name in MAZE_SUCCESS_ENVS:
                 print(f'avg success rate: {np.mean(cum_success):.2f}, std: {np.std(cum_success):.2f}')
 
             os.makedirs(f'logs/{DIR}', exist_ok=True)
@@ -1473,7 +1572,7 @@ if __name__ == "__main__":
             if online_eval:
                 np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
 
-                if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+                if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] or env_name in MAZE_SUCCESS_ENVS:
                     np.save(f'logs/{DIR}/success_{i}_{i + SEARCH_INTERV}.npy', cum_success)
             if not online_eval:
                 np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
@@ -1542,7 +1641,8 @@ if __name__ == "__main__":
                     best_idx = np.argsort(cum_rews)[-1]
 
                 best_agent = agents[best_idx]
-                print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}, best agent success rate: {cum_success[best_idx] if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] else "N/A"}')
+                report_success = env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] or env_name in MAZE_SUCCESS_ENVS
+                print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}, best agent success rate: {cum_success[best_idx] if report_success else "N/A"}')
                 best_agent_index.append(best_idx)
                 np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
                 load_state_dict(model, best_agent)
@@ -1584,13 +1684,21 @@ if __name__ == "__main__":
                 print(f'Success rate: {success:.2f}')
                 cum_rews.append(mean_rew)
                 cum_success.append(success)
+            elif env_name in MAZE_SUCCESS_ENVS:
+                mean_rew, std_rew, success = evaluate_policy_with_goal_success(
+                    model, dummy_env, n_eval_episodes=3, deterministic=True
+                )
+                print(f'avg return on 3 trajectories: {mean_rew}')
+                print(f'Success rate: {success:.2f}')
+                cum_rews.append(mean_rew)
+                cum_success.append(success)
             else:
                 returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
                 print(f'avg return on 3 trajectories: {returns_trains}')
                 cum_rews.append(returns_trains)
 
             np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
-            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] or env_name in MAZE_SUCCESS_ENVS:
                 np.save(f'logs/{DIR}/success_{i}_{i + SEARCH_INTERV}.npy', cum_success)
             timeArray.append(time.time() - start_time)
         
