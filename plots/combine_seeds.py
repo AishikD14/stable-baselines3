@@ -5,14 +5,14 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_point_maze_dense
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
-env = "Hopper-v5"
+# env = "Hopper-v5"
 # env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
@@ -23,6 +23,7 @@ env = "Hopper-v5"
 # env = "FetchReachDense-v4"
 # env = "FetchPush-v4"
 # env = "FetchPushDense-v4"
+env = "PointMaze_UMazeDense-v3"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -50,7 +51,8 @@ elif env == "FetchPush-v4":
     args = args_fetch_push.get_args(rest_args)
 elif env == "FetchPushDense-v4":
     args = args_fetch_push_dense.get_args(rest_args)
-
+elif env == "PointMaze_UMazeDense-v3":
+    args = args_point_maze_dense.get_args(rest_args)
 if not hasattr(args, 'n_envs'):
     args.n_envs = 1
 
@@ -64,16 +66,16 @@ start_iteration = 1
 # seed_list = [0]
 # seed_list = [0, 1]
 # seed_list = [0, 1, 2]
-# seed_list = [0, 1, 2, 3]
-seed_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+seed_list = [0, 1, 2, 3]
+# seed_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 # file_name = "PPO_normal_training"
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
-    ["PPO_normal_training", "PPO Normal Training"],
+    # ["PPO_normal_training", "PPO Normal Training"],
     # ["SAC_normal_training", "SAC Normal Training"],
     # ["SAC_upper_bound", "SAC Upper Bound"],
-    # ["PPO_upper_bound", "PPO Upper Bound"],
+    ["PPO_upper_bound", "PPO Upper Bound"],
     # ["TRPO_normal_training", "TRPO Normal Training"],
     # ["TRPO_upper_bound", "TRPO Upper Bound"],
     # ["PPO_Ablation1", "PPO_Ablation1"],

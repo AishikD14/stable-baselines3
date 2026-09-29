@@ -5,14 +5,14 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_point_maze_dense
 import re
 from matplotlib.ticker import MaxNLocator
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
 
-env = "Ant-v5"
+# env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
 # env = "Walker2d-v5"
@@ -25,6 +25,7 @@ env = "Ant-v5"
 # env = "FetchReachDense-v4"
 # env = "FetchPush-v4"
 # env = "FetchPushDense-v4"
+env = "PointMaze_UMazeDense-v3"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -52,6 +53,8 @@ elif env == "FetchPush-v4":
     args = args_fetch_push.get_args(rest_args)
 elif env == "FetchPushDense-v4":
     args = args_fetch_push_dense.get_args(rest_args)
+elif env == "PointMaze_UMazeDense-v3":
+    args = args_point_maze_dense.get_args(rest_args)
 
 # start_iteration = 1000000 // args.n_steps_per_rollout*1
 start_iteration = 1
@@ -269,6 +272,16 @@ elif env == "HalfCheetah-v5":
         ["TRPO_neghrand_interpolated", "Random Search"],
         
     ]
+
+# ==================================================================================================
+
+# For PointMaze_UMazeDense-v3
+if env == "PointMaze_UMazeDense-v3":
+    plot_list = [
+        ["PPO_upper_bound", "ExploRLer-P"],
+        ["PPO_normal_training", "PPO"],
+    ]
+
 # ==================================================================================================
 
 plot_metrics = []
@@ -367,6 +380,6 @@ legend = plt.legend(fontsize=16, loc="lower right")
 for spine in ax.spines.values():
     spine.set_visible(False)
 
-plt.savefig('../paper_plots/'+env+'_NeghRand.pdf', format='pdf', bbox_inches='tight', dpi=300)
-plt.savefig('../paper_plots/'+env+'_NeghRand.png', bbox_inches='tight', dpi=300)
-plt.savefig('../paper_plots/'+env+'_NeghRand.svg', format='svg', bbox_inches='tight')
+plt.savefig('../paper_plots/'+env+'.pdf', format='pdf', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'.png', bbox_inches='tight', dpi=300)
+plt.savefig('../paper_plots/'+env+'.svg', format='svg', bbox_inches='tight')

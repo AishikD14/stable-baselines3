@@ -1,6 +1,7 @@
 import copy
 import gymnasium as gym
-# import gymnasium_robotics
+import gymnasium_robotics
+gym.register_envs(gymnasium_robotics)
 from stable_baselines3 import PPO
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
@@ -16,7 +17,7 @@ import pandas as pd
 # from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_breakout_no_frameskip
+from data_collection_config import args_ant_dir, args_ant, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_breakout_no_frameskip, args_point_maze_dense
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
 from d3rlpy.dataset import MDPDataset
@@ -39,6 +40,17 @@ from stable_baselines3.common.policies import ActorCriticPolicy
 import math
 
 warnings.filterwarnings("ignore")
+
+# PointMaze uses a goal-conditioned Dict observation space.  The existing
+# Empty Space pipeline is built around MlpPolicy / flat Box observations, so
+# flatten PointMaze observations while leaving every existing environment
+# unchanged.
+POINT_MAZE_ENVS = {"PointMaze_UMazeDense-v3"}
+
+def wrap_pointmaze_observation(env, env_name):
+    if env_name in POINT_MAZE_ENVS:
+        return FlattenObservation(env)
+    return env
 
 device = "cpu"
 
@@ -745,7 +757,7 @@ def search_guided_es_policies(algo, directory, start, end, env, saved_agents, ag
 
     # Get PPO gradient (already computed during model.learn)
     algo.policy.zero_grad()
-    dummy_env = DummyVecEnv([lambda: gym.make(env_name)])
+    dummy_env = DummyVecEnv([lambda: wrap_pointmaze_observation(gym.make(env_name), env_name)])
     obs = dummy_env.reset()
     obs_tensor = torch.as_tensor(obs, dtype=torch.float32).to(device)
     obs_tensor = obs_tensor.unsqueeze(0)  # [1, obs_dim]
@@ -820,7 +832,7 @@ def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_nu
     original_state = copy.deepcopy(algo.policy.state_dict())
 
     # Get one observation to condition value function
-    dummy_env = DummyVecEnv([lambda: gym.make(env_name)])
+    dummy_env = DummyVecEnv([lambda: wrap_pointmaze_observation(gym.make(env_name), env_name)])
     obs = dummy_env.reset()
     obs_tensor = torch.as_tensor(obs, dtype=torch.float32).to(device).unsqueeze(0)
 
@@ -872,7 +884,7 @@ def rollout_policy(policy, env, n_eval=3, deterministic=True):
 def evaluate_candidate(args):
     idx, agent_state_dict, env_name, seed, n_eval = args
 
-    dummy_env = gym.make(env_name)
+    dummy_env = wrap_pointmaze_observation(gym.make(env_name), env_name)
     dummy_env.reset(seed=seed)
     obs_space = dummy_env.observation_space
     act_space = dummy_env.action_space
@@ -924,7 +936,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args, rest_args = parser.parse_known_args()
 
-    env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
+    # env_name = "Ant-v5" # For standard ant locomotion task (single goal task)
     # env_name = "HalfCheetah-v5" # For standard half-cheetah locomotion task (single goal task)
     # env_name = "Hopper-v5" # For standard hopper locomotion task (single goal task)
     # env_name = "Walker2d-v5" # For standard walker locomotion task (single goal task)
@@ -939,6 +951,8 @@ if __name__ == "__main__":
     # env_name = "FetchReachDense-v4" # For FetchReach (single goal task) dense rewards
     # env_name = "FetchPush-v4" # For FetchPush (single goal task) sparse rewards
     # env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
+
+    env_name = "PointMaze_UMazeDense-v3" # PointMaze U-Maze dense reward (goal-conditioned)
 
     # env_name = "BreakoutNoFrameskip-v4" # For Breakout Atari (single goal task)
 
@@ -972,6 +986,8 @@ if __name__ == "__main__":
         args = args_fetch_push.get_args(rest_args)
     elif env_name == "FetchPushDense-v4":
         args = args_fetch_push_dense.get_args(rest_args)
+    elif env_name == "PointMaze_UMazeDense-v3":
+        args = args_point_maze_dense.get_args(rest_args)
     elif env_name == "BreakoutNoFrameskip-v4":
         args = args_breakout_no_frameskip.get_args(rest_args)
 
@@ -990,6 +1006,7 @@ if __name__ == "__main__":
         def _init(seed_offset):
             def _thunk():
                 env = gym.make(env_name)
+                env = wrap_pointmaze_observation(env, env_name)
                 env.reset(seed=seed + seed_offset)
                 return env
             return _thunk
@@ -1017,7 +1034,8 @@ if __name__ == "__main__":
                 wrapper_kwargs=dict(terminal_on_life_loss=False),
             )
         else:
-            env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+            env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5, PointMaze
+            env = wrap_pointmaze_observation(env, env_name)
             env.reset(seed=args.seed)
     
     if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
@@ -1059,7 +1077,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_upper_bound" # For standard PPO training (single goal tasks)
+    exp = "PPO_pretrain" # For standard PPO training (single goal tasks)
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -1159,7 +1177,7 @@ if __name__ == "__main__":
     # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
 
     # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_hopper_1M"+'_'+str(args.seed))
+    # model.save("full_exp_on_ppo/models/"+env_name+"/ppo_pointmaze_1M"+'_'+str(args.seed))
 
     # print("Initial training done") 
 
@@ -1211,7 +1229,7 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = False
+    normal_train = True
     use_ANN = False
     ANN_lib = "Annoy"
     online_eval = True
@@ -1312,7 +1330,7 @@ if __name__ == "__main__":
                     dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
                     dummy_env = SubprocVecEnv(dummy_env_fns)
                 else:
-                    dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+                    dummy_env = wrap_pointmaze_observation(gym.make(env_name), env_name) # Existing envs unchanged; PointMaze flattened
                     dummy_env.reset(seed=args.seed)
 
                 returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
@@ -1361,7 +1379,7 @@ if __name__ == "__main__":
                         dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=z) for z in range(args.n_envs)]
                         dummy_env = SubprocVecEnv(dummy_env_fns)
                     else:
-                        dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+                        dummy_env = wrap_pointmaze_observation(gym.make(env_name), env_name) # Existing envs unchanged; PointMaze flattened
                         dummy_env.reset(seed=args.seed)
 
                     returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
@@ -1399,7 +1417,7 @@ if __name__ == "__main__":
                         dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
                         dummy_env = SubprocVecEnv(dummy_env_fns)
                     else:
-                        dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+                        dummy_env = wrap_pointmaze_observation(gym.make(env_name), env_name) # Existing envs unchanged; PointMaze flattened
 
                         if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
                             dummy_env = FlattenObservation(dummy_env)
@@ -1550,7 +1568,7 @@ if __name__ == "__main__":
                 dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
                 dummy_env = SubprocVecEnv(dummy_env_fns)
             else:
-                dummy_env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
+                dummy_env = wrap_pointmaze_observation(gym.make(env_name), env_name) # Existing envs unchanged; PointMaze flattened
 
                 if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
                     dummy_env = FlattenObservation(dummy_env)

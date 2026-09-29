@@ -26,6 +26,19 @@ from gymnasium.wrappers import FlattenObservation
 SelfOnPolicyAlgorithm = TypeVar("SelfOnPolicyAlgorithm", bound="OnPolicyAlgorithm")
 
 
+def _match_eval_observation_space(env, model_observation_space):
+    """Match raw goal-conditioned eval envs to models trained on flattened observations.
+
+    This is a no-op for existing Box-observation environments. If the raw eval
+    environment exposes a Dict observation but the PPO model was constructed
+    with a Box observation space (for example via FlattenObservation in main.py),
+    apply the same FlattenObservation wrapper to the eval environment.
+    """
+    if isinstance(env.observation_space, spaces.Dict) and isinstance(model_observation_space, spaces.Box):
+        env = FlattenObservation(env)
+    return env
+
+
 class OnPolicyAlgorithm(BaseAlgorithm):
     """
     The base for On-Policy algorithms (ex: A2C/PPO).
@@ -433,10 +446,16 @@ class OnPolicyAlgorithm(BaseAlgorithm):
             self.train()
 
             if init_call:
+                # The training env may have wrappers applied in main.py (for example
+                # FlattenObservation for PointMaze/Fetch).  Fresh evaluation envs
+                # created here must expose the same observation representation.
+                eval_observation_space = self.observation_space
+
                 def make_envs(env_name, seed):
                     def _init(seed_offset):
                         def _thunk():
                             env = gymnasium.make(env_name)
+                            env = _match_eval_observation_space(env, eval_observation_space)
                             env.reset(seed=seed + seed_offset)
                             return env
                         return _thunk
@@ -452,10 +471,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                     # self.env_name = self.env.spec.id
                     self.env_name = self.env.envs[0].spec.id
                     dummy_env = gymnasium.make(self.env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
-                    
-                    if self.env_name in ["FetchReach-v4", "FetchPush-v4"]:
-                        dummy_env = FlattenObservation(dummy_env)
-
+                    dummy_env = _match_eval_observation_space(dummy_env, eval_observation_space)
                     dummy_env.reset(seed=self.seed)
 
                 returns_trains = evaluate_policy(self, dummy_env, n_eval_episodes=3, deterministic=True)[0]

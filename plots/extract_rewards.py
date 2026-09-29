@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense
+from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_point_maze_dense
 import re
 
 parser = argparse.ArgumentParser()
@@ -14,7 +14,7 @@ args, rest_args = parser.parse_known_args()
 # env = "Ant-v5"
 # env = "HalfCheetah-v5"
 # env = "Hopper-v5"
-env = "Walker2d-v5"
+# env = "Walker2d-v5"
 # env = "Humanoid-v5"
 # env = "Swimmer-v5"
 # env = "Pendulum-v1"
@@ -24,6 +24,7 @@ env = "Walker2d-v5"
 # env = "FetchReachDense-v4"
 # env = "FetchPush-v4"
 # env = "FetchPushDense-v4"
+env = "PointMaze_UMazeDense-v3"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -51,6 +52,8 @@ elif env == "FetchPush-v4":
     args = args_fetch_push.get_args(rest_args)
 elif env == "FetchPushDense-v4":
     args = args_fetch_push_dense.get_args(rest_args)
+elif env == "PointMaze_UMazeDense-v3":
+    args = args_point_maze_dense.get_args(rest_args)
 
 # Pendulum-v1
 file_name_list = [
@@ -82,17 +85,21 @@ file_name_list = [
     # ["PPO_normal_training_2"],
     # ["PPO_normal_training_3"],
     # ["PPO_normal_training_4"],
-    ["PPO_normal_training_5"],
-    ["PPO_normal_training_6"],
-    ["PPO_normal_training_7"],
-    ["PPO_normal_training_8"],
-    ["PPO_normal_training_9"],
+    # ["PPO_normal_training_5"],
+    # ["PPO_normal_training_6"],
+    # ["PPO_normal_training_7"],
+    # ["PPO_normal_training_8"],
+    # ["PPO_normal_training_9"],
     # ["PPO_normal_training_10"],
     # ["SAC_normal_training_1"],
     # ["SAC_normal_training_2"],
     # ["SAC_normal_training_3"],
     # ["SAC_normal_training_4"],
     # ["PPO_normal_training_7", "PPO_normal_training_4"],
+    ["PPO_pretrain_1"],
+    ["PPO_pretrain_2"],
+    ["PPO_pretrain_3"],
+    ["PPO_pretrain_4"],
     # ["PPO_upper_bound_1"],
     # ["PPO_upper_bound_2"],
     # ["PPO_upper_bound_3"],
