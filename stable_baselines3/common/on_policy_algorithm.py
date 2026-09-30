@@ -39,6 +39,31 @@ def _match_eval_observation_space(env, model_observation_space):
     return env
 
 
+def _make_compatible_eval_env(env_name, seed, model_observation_space):
+    """Create an internal evaluation env matching the training task/observation space.
+
+    Meta-World MT1 cannot be recreated from its Gymnasium spec ID alone:
+    gymnasium.make("Meta-World/MT1") also requires env_name="reach-v3".
+    All non-Meta-World environments retain the original gymnasium.make(env_name)
+    behavior.
+    """
+    if env_name in {"Meta-World/MT1", "MetaWorldReach-v0"}:
+        # Local import also guarantees registration in spawned subprocesses.
+        import metaworld  # noqa: F401
+
+        env = gymnasium.make(
+            "Meta-World/MT1",
+            env_name="reach-v3",
+            seed=seed,
+        )
+    else:
+        env = gymnasium.make(env_name)
+
+    env = _match_eval_observation_space(env, model_observation_space)
+    env.reset(seed=seed)
+    return env
+
+
 class OnPolicyAlgorithm(BaseAlgorithm):
     """
     The base for On-Policy algorithms (ex: A2C/PPO).
@@ -454,10 +479,11 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 def make_envs(env_name, seed):
                     def _init(seed_offset):
                         def _thunk():
-                            env = gymnasium.make(env_name)
-                            env = _match_eval_observation_space(env, eval_observation_space)
-                            env.reset(seed=seed + seed_offset)
-                            return env
+                            return _make_compatible_eval_env(
+                                env_name,
+                                seed + seed_offset,
+                                eval_observation_space,
+                            )
                         return _thunk
                     return _init
     
@@ -470,12 +496,15 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 else:
                     # self.env_name = self.env.spec.id
                     self.env_name = self.env.envs[0].spec.id
-                    dummy_env = gymnasium.make(self.env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5
-                    dummy_env = _match_eval_observation_space(dummy_env, eval_observation_space)
-                    dummy_env.reset(seed=self.seed)
+                    dummy_env = _make_compatible_eval_env(
+                        self.env_name,
+                        self.seed,
+                        eval_observation_space,
+                    )
 
                 returns_trains = evaluate_policy(self, dummy_env, n_eval_episodes=3, deterministic=True)[0]
                 print(f'avg 3 return on policy: {returns_trains}')
+                dummy_env.close()
 
         callback.on_training_end()
 

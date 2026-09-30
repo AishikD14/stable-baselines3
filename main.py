@@ -2,6 +2,8 @@ import copy
 import gymnasium as gym
 import gymnasium_robotics
 gym.register_envs(gymnasium_robotics)
+import metaworld  # Registers the Meta-World Gymnasium environments
+from gymnasium.envs.registration import register, registry
 from stable_baselines3 import PPO
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
@@ -17,7 +19,7 @@ import pandas as pd
 # from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_ant_maze_dense, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_breakout_no_frameskip, args_point_maze_dense
+from data_collection_config import args_ant_dir, args_ant, args_ant_maze_dense, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_breakout_no_frameskip, args_point_maze_dense, args_metaworld_reach
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
 from d3rlpy.dataset import MDPDataset
@@ -41,16 +43,44 @@ import math
 
 warnings.filterwarnings("ignore")
 
+# Stable single-task Gymnasium ID for Meta-World MT1 Reach. The official API is
+# gym.make("Meta-World/MT1", env_name="reach-v3", seed=...), but several places
+# in this project recreate environments from env.spec.id only. Registering an
+# alias keeps those existing code paths working without changing PPO/Empty Space logic.
+METAWORLD_REACH_ENV_ID = "MetaWorldReach-v0"
+
+def _make_metaworld_reach_env(seed=None, **kwargs):
+    return gym.make("Meta-World/MT1", env_name="reach-v3", seed=seed, **kwargs)
+
+if METAWORLD_REACH_ENV_ID not in registry:
+    register(
+        id=METAWORLD_REACH_ENV_ID,
+        entry_point=_make_metaworld_reach_env,
+    )
+
 # PointMaze and AntMaze use goal-conditioned Dict observation spaces.  The existing
 # Empty Space pipeline is built around MlpPolicy / flat Box observations, so
 # flatten maze observations while leaving every existing environment unchanged.
 GOAL_MAZE_ENVS = {"PointMaze_UMazeDense-v3", "AntMaze_UMazeDense-v5"}
 MAZE_SUCCESS_ENVS = {"PointMaze_UMazeDense-v3", "AntMaze_UMazeDense-v5"}
+METAWORLD_SUCCESS_ENVS = {METAWORLD_REACH_ENV_ID}
+INFO_SUCCESS_ENVS = MAZE_SUCCESS_ENVS | METAWORLD_SUCCESS_ENVS
 
 def wrap_pointmaze_observation(env, env_name):
     # Keep the existing helper name/call sites so the original training logic is unchanged.
     if env_name in GOAL_MAZE_ENVS:
         return FlattenObservation(env)
+    return env
+
+def make_project_env(env_name, seed=None):
+    """Create an environment while preserving all existing environment behavior."""
+    if env_name == METAWORLD_REACH_ENV_ID:
+        # Meta-World uses this constructor seed when creating its MT1 task variants.
+        env = gym.make(env_name, seed=seed)
+    else:
+        env = gym.make(env_name)
+
+    env = wrap_pointmaze_observation(env, env_name)
     return env
 
 def evaluate_policy_with_goal_success(model, env, n_eval_episodes=3, deterministic=True):
@@ -59,8 +89,8 @@ def evaluate_policy_with_goal_success(model, env, n_eval_episodes=3, determinist
     The return value used by the training/selection logic is still produced by the
     same evaluate_policy() call.  The callback only observes the per-step info dict
     and records whether the goal was reached at least once in each episode.
-    PointMaze and AntMaze report this as info["success"]; Fetch-style info["is_success"] is
-    accepted as a fallback for compatibility.
+    PointMaze, AntMaze, and Meta-World report this as info["success"]; Fetch-style
+    info["is_success"] is accepted as a fallback for compatibility.
     """
     episode_successes = []
     current_success = {}
@@ -810,7 +840,7 @@ def search_guided_es_policies(algo, directory, start, end, env, saved_agents, ag
 
     # Get PPO gradient (already computed during model.learn)
     algo.policy.zero_grad()
-    dummy_env = DummyVecEnv([lambda: wrap_pointmaze_observation(gym.make(env_name), env_name)])
+    dummy_env = DummyVecEnv([lambda: make_project_env(env_name)])
     obs = dummy_env.reset()
     obs_tensor = torch.as_tensor(obs, dtype=torch.float32).to(device)
     obs_tensor = obs_tensor.unsqueeze(0)  # [1, obs_dim]
@@ -885,7 +915,7 @@ def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_nu
     original_state = copy.deepcopy(algo.policy.state_dict())
 
     # Get one observation to condition value function
-    dummy_env = DummyVecEnv([lambda: wrap_pointmaze_observation(gym.make(env_name), env_name)])
+    dummy_env = DummyVecEnv([lambda: make_project_env(env_name)])
     obs = dummy_env.reset()
     obs_tensor = torch.as_tensor(obs, dtype=torch.float32).to(device).unsqueeze(0)
 
@@ -949,7 +979,7 @@ def rollout_policy(policy, env, n_eval=3, deterministic=True, return_success_rat
 def evaluate_candidate(args):
     idx, agent_state_dict, env_name, seed, n_eval, return_success_rate = args
 
-    dummy_env = wrap_pointmaze_observation(gym.make(env_name), env_name)
+    dummy_env = make_project_env(env_name, seed=seed)
     dummy_env.reset(seed=seed)
     obs_space = dummy_env.observation_space
     act_space = dummy_env.action_space
@@ -1026,8 +1056,9 @@ if __name__ == "__main__":
     # env_name = "FetchPush-v4" # For FetchPush (single goal task) sparse rewards
     # env_name = "FetchPushDense-v4" # For FetchPush (single goal task) dense rewards
 
-    env_name = "PointMaze_UMazeDense-v3" # PointMaze U-Maze dense reward (goal-conditioned)
+    # env_name = "PointMaze_UMazeDense-v3" # PointMaze U-Maze dense reward (goal-conditioned)
     # env_name = "AntMaze_UMazeDense-v5" # AntMaze U-Maze dense reward (goal-conditioned)
+    env_name = METAWORLD_REACH_ENV_ID # Meta-World MT1 reach-v3 (dense reward)
 
     # env_name = "BreakoutNoFrameskip-v4" # For Breakout Atari (single goal task)
 
@@ -1065,6 +1096,8 @@ if __name__ == "__main__":
         args = args_fetch_push_dense.get_args(rest_args)
     elif env_name == "PointMaze_UMazeDense-v3":
         args = args_point_maze_dense.get_args(rest_args)
+    elif env_name == METAWORLD_REACH_ENV_ID:
+        args = args_metaworld_reach.get_args(rest_args)
     elif env_name == "BreakoutNoFrameskip-v4":
         args = args_breakout_no_frameskip.get_args(rest_args)
 
@@ -1082,8 +1115,7 @@ if __name__ == "__main__":
     def make_envs(env_name, seed):
         def _init(seed_offset):
             def _thunk():
-                env = gym.make(env_name)
-                env = wrap_pointmaze_observation(env, env_name)
+                env = make_project_env(env_name, seed=seed + seed_offset)
                 env.reset(seed=seed + seed_offset)
                 return env
             return _thunk
@@ -1111,8 +1143,7 @@ if __name__ == "__main__":
                 wrapper_kwargs=dict(terminal_on_life_loss=False),
             )
         else:
-            env = gym.make(env_name) # For Ant-v5, HalfCheetah-v5, Hopper-v5, Walker2d-v5, Humanoid-v5, PointMaze, AntMaze
-            env = wrap_pointmaze_observation(env, env_name)
+            env = make_project_env(env_name, seed=args.seed) # Existing envs unchanged; Meta-World uses constructor seed
             env.reset(seed=args.seed)
     
     if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
@@ -1154,7 +1185,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_upper_bound" # For standard PPO training (single goal tasks)
+    exp = "PPO_init" # For standard PPO training (single goal tasks)
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -1250,28 +1281,28 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    # print("Starting Initial training")
-    # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
+    print("Starting Initial training")
+    os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
 
-    # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save(args.init_model_path+'_'+str(args.seed))
+    model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
+    model.save(args.init_model_path+'_'+str(args.seed))
 
-    # print("Initial training done") 
+    print("Initial training done") 
 
-    # # print("Saving replay buffer for later use")
-    # # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
+    # print("Saving replay buffer for later use")
+    # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
 
-    # # # Save the replay buffer
-    # # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
-    # #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
-    # #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
-    # #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
-    # #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
-    # # )
+    # # Save the replay buffer
+    # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
+    #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
+    #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
+    #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
+    #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+    # )
     
-    # # print("Replay buffer saved")
+    # print("Replay buffer saved")
 
-    # quit()
+    quit()
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -1306,7 +1337,7 @@ if __name__ == "__main__":
 
     print("Starting evaluation")
 
-    normal_train = False
+    normal_train = True
     use_ANN = False
     ANN_lib = "Annoy"
     online_eval = True
@@ -1407,10 +1438,10 @@ if __name__ == "__main__":
                     dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
                     dummy_env = SubprocVecEnv(dummy_env_fns)
                 else:
-                    dummy_env = wrap_pointmaze_observation(gym.make(env_name), env_name) # Existing envs unchanged; PointMaze flattened
+                    dummy_env = make_project_env(env_name, seed=args.seed) # Existing envs unchanged; Meta-World uses constructor seed
                     dummy_env.reset(seed=args.seed)
 
-                if env_name in MAZE_SUCCESS_ENVS:
+                if env_name in INFO_SUCCESS_ENVS:
                     returns_trains, _, success = evaluate_policy_with_goal_success(
                         model, dummy_env, n_eval_episodes=3, deterministic=True
                     )
@@ -1424,7 +1455,7 @@ if __name__ == "__main__":
                 os.makedirs(f'logs/{DIR}', exist_ok=True)
                 np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
                 np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
-                if env_name in MAZE_SUCCESS_ENVS:
+                if env_name in INFO_SUCCESS_ENVS:
                     np.save(f'logs/{DIR}/success_{i}_{i + SEARCH_INTERV}.npy', cum_success)
                 timeArray.append(time.time() - start_time)
 
@@ -1465,7 +1496,7 @@ if __name__ == "__main__":
                         dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=z) for z in range(args.n_envs)]
                         dummy_env = SubprocVecEnv(dummy_env_fns)
                     else:
-                        dummy_env = wrap_pointmaze_observation(gym.make(env_name), env_name) # Existing envs unchanged; PointMaze flattened
+                        dummy_env = make_project_env(env_name, seed=args.seed) # Existing envs unchanged; Meta-World uses constructor seed
                         dummy_env.reset(seed=args.seed)
 
                     returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
@@ -1503,7 +1534,7 @@ if __name__ == "__main__":
                         dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
                         dummy_env = SubprocVecEnv(dummy_env_fns)
                     else:
-                        dummy_env = wrap_pointmaze_observation(gym.make(env_name), env_name) # Existing envs unchanged; PointMaze flattened
+                        dummy_env = make_project_env(env_name, seed=args.seed) # Existing envs unchanged; Meta-World uses constructor seed
 
                         if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
                             dummy_env = FlattenObservation(dummy_env)
@@ -1515,7 +1546,7 @@ if __name__ == "__main__":
                         print(f'avg 3 return on policy: {mean_rew}, Success rate: {success:.2f}')
                         cum_rews.append(mean_rew)
                         cum_success.append(success)
-                    elif env_name in MAZE_SUCCESS_ENVS:
+                    elif env_name in INFO_SUCCESS_ENVS:
                         mean_rew, std_rew, success = evaluate_policy_with_goal_success(
                             model, dummy_env, n_eval_episodes=3, deterministic=True
                         )
@@ -1540,7 +1571,7 @@ if __name__ == "__main__":
 
             # Parallel evaluation
             else:
-                if env_name in MAZE_SUCCESS_ENVS:
+                if env_name in INFO_SUCCESS_ENVS:
                     cum_rews, cum_success = parallel_evaluate(
                         agents=agents,
                         env_name=env_name,
@@ -1563,7 +1594,7 @@ if __name__ == "__main__":
                 print(f'ave advantage rew: {np.mean(advantage_rew)}, std: {np.std(advantage_rew)}')
             
             print(f'avg cum rews: {np.mean(cum_rews)}, std: {np.std(cum_rews)}')    
-            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] or env_name in MAZE_SUCCESS_ENVS:
+            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] or env_name in INFO_SUCCESS_ENVS:
                 print(f'avg success rate: {np.mean(cum_success):.2f}, std: {np.std(cum_success):.2f}')
 
             os.makedirs(f'logs/{DIR}', exist_ok=True)
@@ -1572,7 +1603,7 @@ if __name__ == "__main__":
             if online_eval:
                 np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
 
-                if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] or env_name in MAZE_SUCCESS_ENVS:
+                if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] or env_name in INFO_SUCCESS_ENVS:
                     np.save(f'logs/{DIR}/success_{i}_{i + SEARCH_INTERV}.npy', cum_success)
             if not online_eval:
                 np.save(f'logs/{DIR}/adv_results_{i}_{i + SEARCH_INTERV}.npy', advantage_rew)
@@ -1641,7 +1672,7 @@ if __name__ == "__main__":
                     best_idx = np.argsort(cum_rews)[-1]
 
                 best_agent = agents[best_idx]
-                report_success = env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] or env_name in MAZE_SUCCESS_ENVS
+                report_success = env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] or env_name in INFO_SUCCESS_ENVS
                 print(f'the best agent: {best_idx}, best agent cum rewards: {cum_rews[best_idx]}, best agent success rate: {cum_success[best_idx] if report_success else "N/A"}')
                 best_agent_index.append(best_idx)
                 np.save(f'logs/{DIR}/best_agent_{i}_{i + SEARCH_INTERV}.npy', best_agent_index)
@@ -1671,7 +1702,7 @@ if __name__ == "__main__":
                 dummy_env_fns = [make_envs(env_name, seed=args.seed)(seed_offset=i) for i in range(args.n_envs)]
                 dummy_env = SubprocVecEnv(dummy_env_fns)
             else:
-                dummy_env = wrap_pointmaze_observation(gym.make(env_name), env_name) # Existing envs unchanged; PointMaze flattened
+                dummy_env = make_project_env(env_name, seed=args.seed) # Existing envs unchanged; Meta-World uses constructor seed
 
                 if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
                     dummy_env = FlattenObservation(dummy_env)
@@ -1684,7 +1715,7 @@ if __name__ == "__main__":
                 print(f'Success rate: {success:.2f}')
                 cum_rews.append(mean_rew)
                 cum_success.append(success)
-            elif env_name in MAZE_SUCCESS_ENVS:
+            elif env_name in INFO_SUCCESS_ENVS:
                 mean_rew, std_rew, success = evaluate_policy_with_goal_success(
                     model, dummy_env, n_eval_episodes=3, deterministic=True
                 )
@@ -1698,7 +1729,7 @@ if __name__ == "__main__":
                 cum_rews.append(returns_trains)
 
             np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
-            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] or env_name in MAZE_SUCCESS_ENVS:
+            if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] or env_name in INFO_SUCCESS_ENVS:
                 np.save(f'logs/{DIR}/success_{i}_{i + SEARCH_INTERV}.npy', cum_success)
             timeArray.append(time.time() - start_time)
         
