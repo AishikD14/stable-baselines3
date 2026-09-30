@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_point_maze_dense
+from data_collection_config import args_ant, args_ant_maze_dense, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_point_maze_dense
 import re
 from matplotlib.ticker import MaxNLocator
 
@@ -25,6 +25,7 @@ args, rest_args = parser.parse_known_args()
 # env = "FetchReachDense-v4"
 # env = "FetchPush-v4"
 # env = "FetchPushDense-v4"
+# env = "AntMaze_UMazeDense-v5"
 env = "PointMaze_UMazeDense-v3"
 
 if env == "Ant-v5":
@@ -55,6 +56,12 @@ elif env == "FetchPushDense-v4":
     args = args_fetch_push_dense.get_args(rest_args)
 elif env == "PointMaze_UMazeDense-v3":
     args = args_point_maze_dense.get_args(rest_args)
+elif env == "AntMaze_UMazeDense-v5":
+    args = args_ant_maze_dense.get_args(rest_args)
+
+# Maze environments keep return as the primary/original paper plot and add
+# a separate success-rate paper plot from the aligned combined success files.
+MAZE_SUCCESS_ENVS = {"PointMaze_UMazeDense-v3", "AntMaze_UMazeDense-v5"}
 
 # start_iteration = 1000000 // args.n_steps_per_rollout*1
 start_iteration = 1
@@ -275,8 +282,8 @@ elif env == "HalfCheetah-v5":
 
 # ==================================================================================================
 
-# For PointMaze_UMazeDense-v3
-if env == "PointMaze_UMazeDense-v3":
+# For PointMaze_UMazeDense-v3 and AntMaze_UMazeDense-v5
+if env in MAZE_SUCCESS_ENVS:
     plot_list = [
         ["PPO_upper_bound", "ExploRLer-P"],
         ["PPO_normal_training", "PPO"],
@@ -383,3 +390,83 @@ for spine in ax.spines.values():
 plt.savefig('../paper_plots/'+env+'.pdf', format='pdf', bbox_inches='tight', dpi=300)
 plt.savefig('../paper_plots/'+env+'.png', bbox_inches='tight', dpi=300)
 plt.savefig('../paper_plots/'+env+'.svg', format='svg', bbox_inches='tight')
+
+# ==================================================================================================
+# Maze success-rate paper plot
+#
+# Keep the original reward figure above unchanged. For PointMaze/AntMaze, create
+# an additional figure from the aligned combined *_success.npy files produced by
+# combine_seeds_maze_success.py.
+if env in MAZE_SUCCESS_ENVS:
+    success_plot_metrics = []
+
+    for plot_item in plot_list:
+        success_file_path = "../combined_results/"+env+"/"+plot_item[0]+"_success.npy"
+        print("------------------------------------")
+        print("Working on "+plot_item[0]+" success directory")
+
+        if not os.path.exists(success_file_path):
+            raise FileNotFoundError(f"Missing matching maze success file: {success_file_path}")
+
+        successes = np.load(success_file_path)
+        print("Success shape: ", successes.shape)
+
+        # Use the same smoothing window as the reward plot so reward and success
+        # figures have matching iteration alignment and visual treatment.
+        success_window = 100
+        if env in ["Pendulum-v1", "BipedalWalker-v3", "Swimmer-v5", "FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
+            success_window = 10
+
+        smoothed_success = np.convolve(
+            successes, np.ones(success_window) / success_window, mode='valid'
+        )
+
+        success_stds = np.array([
+            np.std(successes[i:i+success_window]) if i+success_window <= len(successes) else 0
+            for i in range(len(smoothed_success))
+        ])
+
+        success_x = np.arange(start_iteration, start_iteration+len(smoothed_success))
+        success_plot_metrics.append(
+            [success_x, smoothed_success, success_stds, len(smoothed_success)]
+        )
+
+    plt.figure(figsize=(10, 6))
+    success_min_length = min([len(x) for x, _, _, _ in success_plot_metrics])
+
+    for i, plot_metric in enumerate(success_plot_metrics):
+        x, smoothed_success, success_stds, length = plot_metric
+        x = x[:success_min_length]
+        smoothed_success = smoothed_success[:success_min_length]
+        success_stds = success_stds[:success_min_length]
+
+        plt.plot(
+            x,
+            smoothed_success,
+            label=plot_list[i][1],
+            linestyle=line_styles[i],
+        )
+        plt.fill_between(
+            x,
+            smoothed_success - success_stds,
+            smoothed_success + success_stds,
+            alpha=0.2,
+        )
+
+    ax = plt.gca()
+    ax.set_facecolor('#f5f5f5')
+
+    plt.xlabel('Iterations', fontsize=25)
+    plt.ylabel('Average Success Rate', fontsize=20)
+    plt.title(env + ' Success Rate', fontsize=30)
+    plt.grid(True, color='white')
+    plt.xticks(fontsize=20)
+    plt.yticks(fontsize=20)
+    plt.legend(fontsize=16, loc="lower right")
+
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+
+    plt.savefig('../paper_plots/'+env+'_success.pdf', format='pdf', bbox_inches='tight', dpi=300)
+    plt.savefig('../paper_plots/'+env+'_success.png', bbox_inches='tight', dpi=300)
+    plt.savefig('../paper_plots/'+env+'_success.svg', format='svg', bbox_inches='tight')

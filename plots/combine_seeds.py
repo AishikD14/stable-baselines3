@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_point_maze_dense
+from data_collection_config import args_ant, args_ant_maze_dense, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_point_maze_dense
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
@@ -23,6 +23,7 @@ args, rest_args = parser.parse_known_args()
 # env = "FetchReachDense-v4"
 # env = "FetchPush-v4"
 # env = "FetchPushDense-v4"
+# env = "AntMaze_UMazeDense-v5"
 env = "PointMaze_UMazeDense-v3"
 
 if env == "Ant-v5":
@@ -53,8 +54,14 @@ elif env == "FetchPushDense-v4":
     args = args_fetch_push_dense.get_args(rest_args)
 elif env == "PointMaze_UMazeDense-v3":
     args = args_point_maze_dense.get_args(rest_args)
+elif env == "AntMaze_UMazeDense-v5":
+    args = args_ant_maze_dense.get_args(rest_args)
 if not hasattr(args, 'n_envs'):
     args.n_envs = 1
+
+# PointMaze and AntMaze keep reward/return as the primary metric. Success is
+# combined only as an additional aligned reporting metric.
+MAZE_SUCCESS_ENVS = {"PointMaze_UMazeDense-v3", "AntMaze_UMazeDense-v5"}
 
 # if env in ["Pendulum-v1", "BipedalWalker-v3"]:
 #     start_iteration = 1 // args.n_steps_per_rollout*args.n_envs
@@ -72,7 +79,7 @@ seed_list = [0, 1, 2, 3]
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
-    # ["PPO_normal_training", "PPO Normal Training"],
+    ["PPO_normal_training", "PPO Normal Training"],
     # ["SAC_normal_training", "SAC Normal Training"],
     # ["SAC_upper_bound", "SAC Upper Bound"],
     ["PPO_upper_bound", "PPO Upper Bound"],
@@ -119,6 +126,7 @@ plot_metrics = []
 for plot_item in plot_list:
 
     all_rewards = []
+    all_successes = []
 
     for i in seed_list:
         directory = "../final_results/"+env+"/"+plot_item[0]+"_"+str(i+1)
@@ -128,23 +136,64 @@ for plot_item in plot_list:
         results = np.load(directory + ".npy")
         print(results.shape)
 
+        # Maze success is a parallel reporting metric. Loading it here does not
+        # change any of the existing reward-combination logic below.
+        if env in MAZE_SUCCESS_ENVS:
+            success_path = directory + "_success.npy"
+            if not os.path.exists(success_path):
+                raise FileNotFoundError(f"Missing matching maze success file: {success_path}")
+            successes = np.load(success_path)
+            if np.asarray(successes).shape != np.asarray(results).shape:
+                raise ValueError(
+                    f"Mismatched reward/success shapes for seed {i}: "
+                    f"{np.asarray(results).shape} rewards vs {np.asarray(successes).shape} successes"
+                )
+
         if env not in ["Pendulum-v1", "BipedalWalker-v3", "LunarLander-v3", "FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] and plot_item[0] not in ["PPO_NoPretrain", "TRPO_NoPretrain"]:
             # Load pretrained rewards
             if "PPO" in plot_item[0]:
-                pretrain_rewards = np.load("../final_results/"+env+"/PPO_pretrain_"+str(i+1)+".npy")
+                pretrain_prefix = "PPO_pretrain_"
+                pretrain_rewards = np.load("../final_results/"+env+"/"+pretrain_prefix+str(i+1)+".npy")
             elif "TRPO" in plot_item[0]:
-                pretrain_rewards = np.load("../final_results/"+env+"/TRPO_pretrain_"+str(i+1)+".npy")
+                pretrain_prefix = "TRPO_pretrain_"
+                pretrain_rewards = np.load("../final_results/"+env+"/"+pretrain_prefix+str(i+1)+".npy")
             elif "SAC" in plot_item[0]:
-                pretrain_rewards = np.load("../final_results/"+env+"/SAC_pretrain_"+str(i+1)+".npy")
+                pretrain_prefix = "SAC_pretrain_"
+                pretrain_rewards = np.load("../final_results/"+env+"/"+pretrain_prefix+str(i+1)+".npy")
 
             # Add pretrain rewards to the beginning of results
             results = np.concatenate((pretrain_rewards, results))
             print(results.shape)
 
+            # Apply the exact same concatenation boundary to maze success.
+            if env in MAZE_SUCCESS_ENVS:
+                pretrain_success_path = "../final_results/"+env+"/"+pretrain_prefix+str(i+1)+"_success.npy"
+                if not os.path.exists(pretrain_success_path):
+                    raise FileNotFoundError(
+                        f"Missing matching maze pretrain success file: {pretrain_success_path}"
+                    )
+                pretrain_successes = np.load(pretrain_success_path)
+                if np.asarray(pretrain_successes).shape != np.asarray(pretrain_rewards).shape:
+                    raise ValueError(
+                        f"Mismatched pretrain reward/success shapes for seed {i}: "
+                        f"{np.asarray(pretrain_rewards).shape} rewards vs "
+                        f"{np.asarray(pretrain_successes).shape} successes"
+                    )
+                successes = np.concatenate((pretrain_successes, successes))
+                if np.asarray(successes).shape != np.asarray(results).shape:
+                    raise ValueError(
+                        f"Mismatched combined reward/success shapes for seed {i}: "
+                        f"{np.asarray(results).shape} rewards vs {np.asarray(successes).shape} successes"
+                    )
+
         # results = pretrain_rewards
 
         # Append the rewards to all_rewards
         all_rewards.append(results)
+
+        # Maze-only parallel metric; rewards remain the primary/original path.
+        if env in MAZE_SUCCESS_ENVS:
+            all_successes.append(successes)
 
     # Convert all_rewards to numpy array for easier math
     all_rewards_np = np.stack(all_rewards)
@@ -167,6 +216,33 @@ for plot_item in plot_list:
     # Save the mean rewards
     os.makedirs("../combined_results/"+env, exist_ok=True)
     np.save("../combined_results/"+env+"/"+plot_item[0]+".npy", mean_rewards)
+
+    # For maze environments, combine success across seeds in parallel with rewards.
+    # This is reporting-only and does not alter reward averaging, smoothing, or plotting.
+    if env in MAZE_SUCCESS_ENVS:
+        all_successes_np = np.stack(all_successes)
+        if all_successes_np.shape != all_rewards_np.shape:
+            raise ValueError(
+                f"Mismatched stacked reward/success shapes for {plot_item[0]}: "
+                f"{all_rewards_np.shape} rewards vs {all_successes_np.shape} successes"
+            )
+        print("Success stack shape: ", all_successes_np.shape)
+
+        mean_successes = np.mean(all_successes_np, axis=0)
+        std_successes = np.std(all_successes_np, axis=0)
+
+        max_success_idx = np.argmax(mean_successes)
+        max_avg_success = mean_successes[max_success_idx]
+        std_success_at_max = std_successes[max_success_idx]
+        print(
+            f"Max average success: {max_avg_success:.2f} ± "
+            f"{std_success_at_max:.2f} at timestep {max_success_idx}"
+        )
+
+        np.save(
+            "../combined_results/"+env+"/"+plot_item[0]+"_success.npy",
+            mean_successes,
+        )
 
     # Smoothing window
     window = 10
