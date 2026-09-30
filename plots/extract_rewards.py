@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_point_maze_dense
+from data_collection_config import args_ant, args_ant_maze_dense, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_point_maze_dense
 import re
 
 parser = argparse.ArgumentParser()
@@ -24,7 +24,8 @@ args, rest_args = parser.parse_known_args()
 # env = "FetchReachDense-v4"
 # env = "FetchPush-v4"
 # env = "FetchPushDense-v4"
-env = "PointMaze_UMazeDense-v3"
+env = "AntMaze_UMazeDense-v5"
+# env = "PointMaze_UMazeDense-v3"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -54,6 +55,23 @@ elif env == "FetchPushDense-v4":
     args = args_fetch_push_dense.get_args(rest_args)
 elif env == "PointMaze_UMazeDense-v3":
     args = args_point_maze_dense.get_args(rest_args)
+elif env == "AntMaze_UMazeDense-v5":
+    args = args_ant_maze_dense.get_args(rest_args)
+
+# PointMaze and AntMaze keep dense return as the primary metric. Success is
+# extracted only as an additional aligned reporting metric.
+MAZE_SUCCESS_ENVS = {"PointMaze_UMazeDense-v3", "AntMaze_UMazeDense-v5"}
+
+def metric_file_sort_key(filename):
+    """Sort results/success files by their saved iteration range.
+
+    This preserves the intended chronological extraction order instead of relying
+    on the filesystem-dependent order returned by os.listdir().
+    """
+    match = re.match(r"^(?:results|success)_(-?\d+)_(-?\d+)\.npy$", filename)
+    if match:
+        return (0, int(match.group(1)), int(match.group(2)), filename)
+    return (1, filename)
 
 # Pendulum-v1
 file_name_list = [
@@ -81,10 +99,10 @@ file_name_list = [
     # ["SAC_plot_2", "sac_plot_2_out", "SAC_pretrain_2"],
     # ["SAC_plot_3", "sac_plot_3_out", "SAC_pretrain_3"],
     # ["SAC_plot_4", "sac_plot_4_out", "SAC_pretrain_4"],
-    # ["PPO_normal_training_1"],
-    # ["PPO_normal_training_2"],
-    # ["PPO_normal_training_3"],
-    # ["PPO_normal_training_4"],
+    ["PPO_normal_training_1"],
+    ["PPO_normal_training_2"],
+    ["PPO_normal_training_3"],
+    ["PPO_normal_training_4"],
     # ["PPO_normal_training_5"],
     # ["PPO_normal_training_6"],
     # ["PPO_normal_training_7"],
@@ -249,31 +267,66 @@ for file_name in file_name_list:
         print("------------------------------------")
         print("Working on "+file_name[0]+" directory")
         reward_values = []
+        success_values = []
         searchString = "results"
 
         if env in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
             searchString = "success"
 
-        for filename in os.listdir(directory):
-            # Check if the filename starts with "results"
+        for filename in sorted(os.listdir(directory), key=metric_file_sort_key):
+            # Keep the original metric-file selection logic unchanged.
             if filename.startswith(searchString):
-                # Load the rewards
+                # Load the same metric as before.
                 results = np.load(directory + "/" + filename)
-                # Find the maximum reward
+                # Preserve the original max extraction behavior.
                 max_reward = np.max(results)
-                # Append the maximum reward to the rewards list
                 reward_values.append(max_reward)
+
+                # For maze environments, also extract the success rate belonging to
+                # the SAME max-return candidate. This adds reporting only and does not
+                # change the return-based candidate-selection logic.
+                if env in MAZE_SUCCESS_ENVS and searchString == "results":
+                    success_filename = "success" + filename[len("results"):]
+                    success_path = directory + "/" + success_filename
+
+                    if not os.path.exists(success_path):
+                        raise FileNotFoundError(
+                            f"Missing matching maze success file for {filename}: {success_path}"
+                        )
+
+                    success_results = np.load(success_path)
+                    flat_results = np.asarray(results).reshape(-1)
+                    flat_success = np.asarray(success_results).reshape(-1)
+
+                    if flat_results.size != flat_success.size:
+                        raise ValueError(
+                            f"Mismatched result/success sizes for {filename}: "
+                            f"{flat_results.size} rewards vs {flat_success.size} successes"
+                        )
+
+                    # Match the training selector exactly. Maze policies are selected with
+                    # np.argsort(cum_rews)[-1], so ties must use the same index convention.
+                    best_idx = int(np.argsort(flat_results)[-1])
+                    success_values.append(float(flat_success[best_idx]))
 
         # Convert reward_values to numpy array
         reward_values_np = np.array(reward_values)
         print(reward_values_np.shape)
 
-        # Save the rewards
+        # Save rewards using the exact same output naming logic as before.
         os.makedirs("../final_results/"+env, exist_ok=True)
         if len(file_name) > 1:
-            np.save("../final_results/"+env+"/"+file_name[1]+".npy", reward_values_np)
+            output_name = file_name[1]
         else:
-            np.save("../final_results/"+env+"/"+file_name[0]+".npy", reward_values_np)
+            output_name = file_name[0]
+
+        np.save("../final_results/"+env+"/"+output_name+".npy", reward_values_np)
+
+        # Additional maze-only output; reward files remain unchanged.
+        if env in MAZE_SUCCESS_ENVS:
+            success_values_np = np.array(success_values)
+            print("Success shape: ", success_values_np.shape)
+            np.save("../final_results/"+env+"/"+output_name+"_success.npy", success_values_np)
     else:
         print("------------------------------------")
         print("Working on "+file_name[0]+" directory")
@@ -286,6 +339,7 @@ for file_name in file_name_list:
         file = "../base_job_output/"+env_proxy+"/"+file_name[1]+".txt"
 
         reward_values = []
+        success_values = []
 
         with open(file, "r") as f:
             lines = f.readlines()
@@ -293,18 +347,53 @@ for file_name in file_name_list:
         # Go through each line and extract the reward if it's a reward line
         for line in lines:
             if line.startswith("avg 3 return on policy"):
-                match = re.findall(r"[-+]?\d*\.\d+|\d+", line)
+                # Existing environments keep the original parser. If maze success is
+                # printed on the same line, exclude that field from reward parsing.
+                reward_text = line
+                if env in MAZE_SUCCESS_ENVS and "Success rate" in line:
+                    reward_text = line.split("Success rate", 1)[0]
+
+                match = re.findall(r"[-+]?\d*\.\d+|\d+", reward_text)
                 if match:
-                    reward = float(match[-1])  # get the last number in the line
+                    reward = float(match[-1])
                     reward_values.append(reward)
+
+                if env in MAZE_SUCCESS_ENVS and "Success rate" in line:
+                    success_match = re.search(
+                        r"Success rate\s*:?\s*([-+]?(?:\d+(?:\.\d*)?|\.\d+))",
+                        line,
+                    )
+                    if success_match:
+                        success_values.append(float(success_match.group(1)))
+
+            elif env in MAZE_SUCCESS_ENVS and line.startswith("Success rate"):
+                success_match = re.search(
+                    r"Success rate\s*:?\s*([-+]?(?:\d+(?:\.\d*)?|\.\d+))",
+                    line,
+                )
+                if success_match:
+                    success_values.append(float(success_match.group(1)))
 
         # Convert rewards to numpy array for easier math
         reward_values_np = np.array(reward_values)
         print("Rewards shape: ", reward_values_np.shape)
 
-        # Save the rewards
+        # Save rewards using the exact same output naming logic as before.
         os.makedirs("../final_results/"+env, exist_ok=True)
         if len(file_name) > 2:
-            np.save("../final_results/"+env+"/"+file_name[2]+".npy", reward_values_np)
+            output_name = file_name[2]
         else:
-            np.save("../final_results/"+env+"/"+file_name[0]+".npy", reward_values_np)
+            output_name = file_name[0]
+
+        np.save("../final_results/"+env+"/"+output_name+".npy", reward_values_np)
+
+        # Save maze success only when success values were actually present in the log.
+        if env in MAZE_SUCCESS_ENVS and success_values:
+            if len(success_values) != len(reward_values):
+                raise ValueError(
+                    f"Mismatched reward/success counts in {file}: "
+                    f"{len(reward_values)} rewards vs {len(success_values)} successes"
+                )
+            success_values_np = np.array(success_values)
+            print("Success shape: ", success_values_np.shape)
+            np.save("../final_results/"+env+"/"+output_name+"_success.npy", success_values_np)
