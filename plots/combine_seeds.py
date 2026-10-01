@@ -82,7 +82,7 @@ seed_list = [0, 1, 2, 3]
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
-    ["PPO_normal_training", "PPO Normal Training"],
+    # ["PPO_normal_training", "PPO Normal Training"],
     # ["SAC_normal_training", "SAC Normal Training"],
     # ["SAC_upper_bound", "SAC Upper Bound"],
     ["PPO_upper_bound", "PPO Upper Bound"],
