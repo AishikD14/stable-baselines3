@@ -1,0 +1,745 @@
+No devices were found
+Setting seed -  3
+---------------------------------
+Environment created
+Box(-1.0, 1.0, (4,), float32) Box([-0.525   0.348  -0.0525 -1.        -inf    -inf    -inf    -inf    -inf
+    -inf    -inf    -inf    -inf    -inf    -inf    -inf    -inf    -inf
+ -0.525   0.348  -0.0525 -1.        -inf    -inf    -inf    -inf    -inf
+    -inf    -inf    -inf    -inf    -inf    -inf    -inf    -inf    -inf
+  0.      0.      0.    ], [0.525 1.025 0.7   1.      inf   inf   inf   inf   inf   inf   inf   inf
+   inf   inf   inf   inf   inf   inf 0.525 1.025 0.7   1.      inf   inf
+   inf   inf   inf   inf   inf   inf   inf   inf   inf   inf   inf   inf
+ 0.    0.    0.   ], (39,), float64)
+Using env_name:  MetaWorldPush-v0
+Starting training from scratch
+Starting evaluation
+1
+avg return on 3 trajectories: 27.757113407055538
+Success rate: 0.00
+2
+avg return on 3 trajectories: 21.86352198633055
+Success rate: 0.00
+3
+avg return on 3 trajectories: 113.49509953831632
+Success rate: 0.00
+4
+avg return on 3 trajectories: 218.80168806809252
+Success rate: 0.00
+5
+avg return on 3 trajectories: 39.382014418020844
+Success rate: 0.00
+6
+avg return on 3 trajectories: 66.1839840305078
+Success rate: 0.00
+7
+avg return on 3 trajectories: 84.82789391030867
+Success rate: 0.00
+8
+avg return on 3 trajectories: 92.9304162042099
+Success rate: 0.00
+9
+avg return on 3 trajectories: 235.1160802265879
+Success rate: 0.00
+10
+avg return on 3 trajectories: 1207.4950817649562
+Success rate: 0.33
+11
+avg return on 3 trajectories: 112.37469531719883
+Success rate: 0.00
+12
+avg return on 3 trajectories: 24.722497401138146
+Success rate: 0.00
+13
+avg return on 3 trajectories: 23.906478721648455
+Success rate: 0.00
+14
+avg return on 3 trajectories: 23.015015525122482
+Success rate: 0.00
+15
+avg return on 3 trajectories: 32.497983618328966
+Success rate: 0.00
+16
+avg return on 3 trajectories: 123.25773724293533
+Success rate: 0.00
+17
+avg return on 3 trajectories: 155.08754562264463
+Success rate: 0.00
+18
+avg return on 3 trajectories: 120.01642792216781
+Success rate: 0.00
+19
+avg return on 3 trajectories: 103.90079531200995
+Success rate: 0.00
+20
+avg return on 3 trajectories: 81.87352677704378
+Success rate: 0.00
+21
+avg return on 3 trajectories: 100.68494172640753
+Success rate: 0.00
+22
+avg return on 3 trajectories: 155.2895837948972
+Success rate: 0.00
+23
+avg return on 3 trajectories: 161.3321734298952
+Success rate: 0.00
+24
+avg return on 3 trajectories: 55.05018726671202
+Success rate: 0.00
+25
+avg return on 3 trajectories: 39.87723606452346
+Success rate: 0.00
+26
+avg return on 3 trajectories: 231.2804782815499
+Success rate: 0.00
+27
+avg return on 3 trajectories: 1244.063055097892
+Success rate: 0.33
+28
+avg return on 3 trajectories: 104.80457812920213
+Success rate: 0.00
+29
+avg return on 3 trajectories: 1203.0731235262162
+Success rate: 0.33
+30
+avg return on 3 trajectories: 332.05320615693927
+Success rate: 0.00
+31
+avg return on 3 trajectories: 1117.216058054318
+Success rate: 0.00
+32
+avg return on 3 trajectories: 257.2593134122192
+Success rate: 0.00
+33
+avg return on 3 trajectories: 743.8463736724283
+Success rate: 0.00
+34
+avg return on 3 trajectories: 337.63129444982974
+Success rate: 0.00
+35
+avg return on 3 trajectories: 162.60390498796167
+Success rate: 0.00
+36
+avg return on 3 trajectories: 237.07209926843643
+Success rate: 0.00
+37
+avg return on 3 trajectories: 132.40408247453323
+Success rate: 0.00
+38
+avg return on 3 trajectories: 676.2514805259416
+Success rate: 0.00
+39
+avg return on 3 trajectories: 1527.0848702241976
+Success rate: 0.33
+40
+avg return on 3 trajectories: 292.4443926053743
+Success rate: 0.00
+41
+avg return on 3 trajectories: 805.8071723845327
+Success rate: 0.00
+42
+avg return on 3 trajectories: 363.4632831445294
+Success rate: 0.00
+43
+avg return on 3 trajectories: 158.7217222799809
+Success rate: 0.00
+44
+avg return on 3 trajectories: 50.901235452426285
+Success rate: 0.00
+45
+avg return on 3 trajectories: 68.63823977982004
+Success rate: 0.00
+46
+avg return on 3 trajectories: 86.06145779072443
+Success rate: 0.00
+47
+avg return on 3 trajectories: 198.64520805498833
+Success rate: 0.00
+48
+avg return on 3 trajectories: 134.8904331034281
+Success rate: 0.00
+49
+avg return on 3 trajectories: 1458.092047467818
+Success rate: 0.33
+50
+avg return on 3 trajectories: 455.5461218342186
+Success rate: 0.00
+51
+avg return on 3 trajectories: 259.85782102120965
+Success rate: 0.00
+52
+avg return on 3 trajectories: 264.8455288903412
+Success rate: 0.00
+53
+avg return on 3 trajectories: 194.4609096094015
+Success rate: 0.00
+54
+avg return on 3 trajectories: 118.48920434340835
+Success rate: 0.00
+55
+avg return on 3 trajectories: 55.67394477998217
+Success rate: 0.00
+56
+avg return on 3 trajectories: 130.2324785205225
+Success rate: 0.00
+57
+avg return on 3 trajectories: 198.14847239748875
+Success rate: 0.00
+58
+avg return on 3 trajectories: 210.44782137410948
+Success rate: 0.00
+59
+avg return on 3 trajectories: 462.56696462762676
+Success rate: 0.00
+60
+avg return on 3 trajectories: 756.2675799338273
+Success rate: 0.33
+61
+avg return on 3 trajectories: 376.466473089143
+Success rate: 0.00
+62
+avg return on 3 trajectories: 552.6699881285398
+Success rate: 0.00
+63
+avg return on 3 trajectories: 596.442986187108
+Success rate: 0.00
+64
+avg return on 3 trajectories: 602.9985971349524
+Success rate: 0.00
+65
+avg return on 3 trajectories: 510.0666837623964
+Success rate: 0.00
+66
+avg return on 3 trajectories: 281.4521454423802
+Success rate: 0.00
+67
+avg return on 3 trajectories: 379.3252128621889
+Success rate: 0.00
+68
+avg return on 3 trajectories: 314.8464252714305
+Success rate: 0.00
+69
+avg return on 3 trajectories: 630.3951243079621
+Success rate: 0.00
+70
+avg return on 3 trajectories: 340.33208850016064
+Success rate: 0.00
+71
+avg return on 3 trajectories: 277.9591742344871
+Success rate: 0.00
+72
+avg return on 3 trajectories: 275.12718147561344
+Success rate: 0.00
+73
+avg return on 3 trajectories: 769.5345599874503
+Success rate: 0.33
+74
+avg return on 3 trajectories: 323.9748665327206
+Success rate: 0.00
+75
+avg return on 3 trajectories: 801.2729614405276
+Success rate: 0.33
+76
+avg return on 3 trajectories: 1058.3432386432735
+Success rate: 0.33
+77
+avg return on 3 trajectories: 563.9252808763622
+Success rate: 0.33
+78
+avg return on 3 trajectories: 301.54219508368215
+Success rate: 0.00
+79
+avg return on 3 trajectories: 510.0246858375872
+Success rate: 0.00
+80
+avg return on 3 trajectories: 468.74965824800347
+Success rate: 0.00
+81
+avg return on 3 trajectories: 419.6389165711589
+Success rate: 0.33
+82
+avg return on 3 trajectories: 777.3785467839334
+Success rate: 0.00
+83
+avg return on 3 trajectories: 277.2549303177123
+Success rate: 0.00
+84
+avg return on 3 trajectories: 259.5122439927306
+Success rate: 0.00
+85
+avg return on 3 trajectories: 1252.1809158269316
+Success rate: 0.33
+86
+avg return on 3 trajectories: 2237.3833134127003
+Success rate: 0.00
+87
+avg return on 3 trajectories: 2221.2762042761315
+Success rate: 0.33
+88
+avg return on 3 trajectories: 1888.4700115708013
+Success rate: 0.33
+89
+avg return on 3 trajectories: 1333.7625104586148
+Success rate: 0.00
+90
+avg return on 3 trajectories: 1033.3570607329166
+Success rate: 0.00
+91
+avg return on 3 trajectories: 1536.7366931767926
+Success rate: 0.33
+92
+avg return on 3 trajectories: 1336.632361432227
+Success rate: 0.33
+93
+avg return on 3 trajectories: 1220.9773766010496
+Success rate: 0.33
+94
+avg return on 3 trajectories: 1040.694862721625
+Success rate: 0.00
+95
+avg return on 3 trajectories: 1065.9700887110084
+Success rate: 0.33
+96
+avg return on 3 trajectories: 1722.5266257551991
+Success rate: 0.33
+97
+avg return on 3 trajectories: 1113.8700897893207
+Success rate: 0.33
+98
+avg return on 3 trajectories: 371.800962664337
+Success rate: 0.00
+99
+avg return on 3 trajectories: 1210.4397287331637
+Success rate: 0.33
+100
+avg return on 3 trajectories: 1508.6643362749564
+Success rate: 0.33
+101
+avg return on 3 trajectories: 1814.8281652080007
+Success rate: 0.33
+102
+avg return on 3 trajectories: 638.8364602370808
+Success rate: 0.00
+103
+avg return on 3 trajectories: 445.75730340005407
+Success rate: 0.00
+104
+avg return on 3 trajectories: 305.340375856186
+Success rate: 0.00
+105
+avg return on 3 trajectories: 756.7865422868636
+Success rate: 0.00
+106
+avg return on 3 trajectories: 686.1494612784687
+Success rate: 0.00
+107
+avg return on 3 trajectories: 362.9459878145996
+Success rate: 0.00
+108
+avg return on 3 trajectories: 434.5642023276508
+Success rate: 0.00
+109
+avg return on 3 trajectories: 406.9259650421529
+Success rate: 0.00
+110
+avg return on 3 trajectories: 421.8933805714964
+Success rate: 0.00
+111
+avg return on 3 trajectories: 479.78708945997096
+Success rate: 0.00
+112
+avg return on 3 trajectories: 332.70566463786525
+Success rate: 0.00
+113
+avg return on 3 trajectories: 435.2236791871255
+Success rate: 0.00
+114
+avg return on 3 trajectories: 455.4876351136093
+Success rate: 0.00
+115
+avg return on 3 trajectories: 478.0146827126543
+Success rate: 0.00
+116
+avg return on 3 trajectories: 857.4850968793035
+Success rate: 0.00
+117
+avg return on 3 trajectories: 505.75773450856076
+Success rate: 0.00
+118
+avg return on 3 trajectories: 1417.961787045285
+Success rate: 0.33
+119
+avg return on 3 trajectories: 301.0896631853296
+Success rate: 0.00
+120
+avg return on 3 trajectories: 790.5582072340961
+Success rate: 0.00
+121
+avg return on 3 trajectories: 389.409398509888
+Success rate: 0.00
+122
+avg return on 3 trajectories: 900.4506531261432
+Success rate: 0.00
+123
+avg return on 3 trajectories: 602.3980544697716
+Success rate: 0.00
+124
+avg return on 3 trajectories: 996.6075288852322
+Success rate: 0.00
+125
+avg return on 3 trajectories: 187.04452990609562
+Success rate: 0.00
+126
+avg return on 3 trajectories: 643.434640754485
+Success rate: 0.00
+127
+avg return on 3 trajectories: 711.1074456627417
+Success rate: 0.00
+128
+avg return on 3 trajectories: 770.2132067971397
+Success rate: 0.00
+129
+avg return on 3 trajectories: 664.3805643726358
+Success rate: 0.00
+130
+avg return on 3 trajectories: 1499.0033964096583
+Success rate: 0.00
+131
+avg return on 3 trajectories: 1523.5791826907487
+Success rate: 0.00
+132
+avg return on 3 trajectories: 1593.5605513523915
+Success rate: 0.33
+133
+avg return on 3 trajectories: 1835.9846250863047
+Success rate: 0.33
+134
+avg return on 3 trajectories: 1799.8414785975208
+Success rate: 0.33
+135
+avg return on 3 trajectories: 1232.5328185685585
+Success rate: 0.00
+136
+avg return on 3 trajectories: 461.1407066042763
+Success rate: 0.00
+137
+avg return on 3 trajectories: 733.3251152689239
+Success rate: 0.00
+138
+avg return on 3 trajectories: 300.83500876339775
+Success rate: 0.00
+139
+avg return on 3 trajectories: 247.06510605644758
+Success rate: 0.00
+140
+avg return on 3 trajectories: 261.69412914556784
+Success rate: 0.00
+141
+avg return on 3 trajectories: 913.8623577886556
+Success rate: 0.00
+142
+avg return on 3 trajectories: 1054.1303982082268
+Success rate: 0.00
+143
+avg return on 3 trajectories: 973.3871897028379
+Success rate: 0.00
+144
+avg return on 3 trajectories: 751.7006202971328
+Success rate: 0.00
+145
+avg return on 3 trajectories: 1312.6658922775096
+Success rate: 0.33
+146
+avg return on 3 trajectories: 922.4778698523975
+Success rate: 0.00
+147
+avg return on 3 trajectories: 485.5892947356236
+Success rate: 0.00
+148
+avg return on 3 trajectories: 422.8738899973808
+Success rate: 0.00
+149
+avg return on 3 trajectories: 654.0505603557818
+Success rate: 0.00
+150
+avg return on 3 trajectories: 584.8847916760596
+Success rate: 0.00
+151
+avg return on 3 trajectories: 582.8910958484533
+Success rate: 0.00
+152
+avg return on 3 trajectories: 466.1319493652384
+Success rate: 0.00
+153
+avg return on 3 trajectories: 650.3552568850573
+Success rate: 0.00
+154
+avg return on 3 trajectories: 487.9498380862817
+Success rate: 0.00
+155
+avg return on 3 trajectories: 530.9454166887417
+Success rate: 0.00
+156
+avg return on 3 trajectories: 236.3410896162259
+Success rate: 0.00
+157
+avg return on 3 trajectories: 244.1373328064391
+Success rate: 0.00
+158
+avg return on 3 trajectories: 233.68272629706826
+Success rate: 0.00
+159
+avg return on 3 trajectories: 330.14141355162826
+Success rate: 0.00
+160
+avg return on 3 trajectories: 343.1130000678565
+Success rate: 0.00
+161
+avg return on 3 trajectories: 411.97021619633205
+Success rate: 0.00
+162
+avg return on 3 trajectories: 303.9237879099431
+Success rate: 0.00
+163
+avg return on 3 trajectories: 221.89425543459825
+Success rate: 0.00
+164
+avg return on 3 trajectories: 260.0094291616451
+Success rate: 0.00
+165
+avg return on 3 trajectories: 181.96797563474092
+Success rate: 0.00
+166
+avg return on 3 trajectories: 195.81320169942947
+Success rate: 0.00
+167
+avg return on 3 trajectories: 184.81890210668385
+Success rate: 0.00
+168
+avg return on 3 trajectories: 181.9067176459417
+Success rate: 0.00
+169
+avg return on 3 trajectories: 233.85826810542198
+Success rate: 0.00
+170
+avg return on 3 trajectories: 305.7142254944613
+Success rate: 0.00
+171
+avg return on 3 trajectories: 328.79075768895746
+Success rate: 0.00
+172
+avg return on 3 trajectories: 383.0444134513056
+Success rate: 0.00
+173
+avg return on 3 trajectories: 421.888759435871
+Success rate: 0.00
+174
+avg return on 3 trajectories: 662.9267248307978
+Success rate: 0.00
+175
+avg return on 3 trajectories: 891.3386470241849
+Success rate: 0.00
+176
+avg return on 3 trajectories: 578.6993643016152
+Success rate: 0.00
+177
+avg return on 3 trajectories: 560.9287009244273
+Success rate: 0.00
+178
+avg return on 3 trajectories: 906.7403604946466
+Success rate: 0.00
+179
+avg return on 3 trajectories: 440.40096753881545
+Success rate: 0.00
+180
+avg return on 3 trajectories: 420.64247038844314
+Success rate: 0.00
+181
+avg return on 3 trajectories: 471.51450380076557
+Success rate: 0.00
+182
+avg return on 3 trajectories: 577.0340027108572
+Success rate: 0.00
+183
+avg return on 3 trajectories: 1055.004906416082
+Success rate: 0.00
+184
+avg return on 3 trajectories: 1070.538037504272
+Success rate: 0.33
+185
+avg return on 3 trajectories: 916.3600078072268
+Success rate: 0.00
+186
+avg return on 3 trajectories: 922.0275748770682
+Success rate: 0.00
+187
+avg return on 3 trajectories: 994.5235727673967
+Success rate: 0.00
+188
+avg return on 3 trajectories: 1018.7769430297363
+Success rate: 0.00
+189
+avg return on 3 trajectories: 486.84313828959574
+Success rate: 0.00
+190
+avg return on 3 trajectories: 293.27114590033034
+Success rate: 0.00
+191
+avg return on 3 trajectories: 961.1730533363176
+Success rate: 0.00
+192
+avg return on 3 trajectories: 873.0632359408505
+Success rate: 0.00
+193
+avg return on 3 trajectories: 870.0829725847325
+Success rate: 0.00
+194
+avg return on 3 trajectories: 908.510032532487
+Success rate: 0.00
+195
+avg return on 3 trajectories: 257.9041877993498
+Success rate: 0.00
+196
+avg return on 3 trajectories: 1012.9727214411474
+Success rate: 0.00
+197
+avg return on 3 trajectories: 923.6575520802544
+Success rate: 0.00
+198
+avg return on 3 trajectories: 947.1515466085774
+Success rate: 0.00
+199
+avg return on 3 trajectories: 884.2829344554196
+Success rate: 0.00
+200
+avg return on 3 trajectories: 874.0236988755224
+Success rate: 0.00
+201
+avg return on 3 trajectories: 887.7942529427546
+Success rate: 0.00
+202
+avg return on 3 trajectories: 817.7383913819826
+Success rate: 0.00
+203
+avg return on 3 trajectories: 844.8193627517179
+Success rate: 0.00
+204
+avg return on 3 trajectories: 873.3215708345424
+Success rate: 0.00
+205
+avg return on 3 trajectories: 177.9891062991234
+Success rate: 0.00
+206
+avg return on 3 trajectories: 204.97184481770032
+Success rate: 0.00
+207
+avg return on 3 trajectories: 199.1852759159383
+Success rate: 0.00
+208
+avg return on 3 trajectories: 199.67503135747484
+Success rate: 0.00
+209
+avg return on 3 trajectories: 238.49330003899016
+Success rate: 0.00
+210
+avg return on 3 trajectories: 927.8875209123179
+Success rate: 0.00
+211
+avg return on 3 trajectories: 891.8074586212443
+Success rate: 0.00
+212
+avg return on 3 trajectories: 254.35979671124005
+Success rate: 0.00
+213
+avg return on 3 trajectories: 955.0127191090119
+Success rate: 0.00
+214
+avg return on 3 trajectories: 285.03821823894395
+Success rate: 0.00
+215
+avg return on 3 trajectories: 940.6424847311791
+Success rate: 0.00
+216
+avg return on 3 trajectories: 889.6326585779644
+Success rate: 0.00
+217
+avg return on 3 trajectories: 857.9863620115211
+Success rate: 0.00
+218
+avg return on 3 trajectories: 801.5700655780511
+Success rate: 0.00
+219
+avg return on 3 trajectories: 879.6464127108599
+Success rate: 0.00
+220
+avg return on 3 trajectories: 931.7909068326093
+Success rate: 0.00
+221
+avg return on 3 trajectories: 867.7922658648307
+Success rate: 0.00
+222
+avg return on 3 trajectories: 840.5262442180943
+Success rate: 0.00
+223
+avg return on 3 trajectories: 812.6595004595935
+Success rate: 0.00
+224
+avg return on 3 trajectories: 779.5501365943604
+Success rate: 0.00
+225
+avg return on 3 trajectories: 764.6732771717838
+Success rate: 0.00
+226
+avg return on 3 trajectories: 768.4257966662548
+Success rate: 0.00
+227
+avg return on 3 trajectories: 703.20329131063
+Success rate: 0.00
+228
+avg return on 3 trajectories: 719.1603441476926
+Success rate: 0.00
+229
+avg return on 3 trajectories: 808.1625178942091
+Success rate: 0.00
+230
+avg return on 3 trajectories: 789.107471120767
+Success rate: 0.00
+231
+avg return on 3 trajectories: 787.7167847032639
+Success rate: 0.00
+232
+avg return on 3 trajectories: 630.5528418538955
+Success rate: 0.00
+233
+avg return on 3 trajectories: 561.3573165685565
+Success rate: 0.00
+234
+avg return on 3 trajectories: 588.9752461715092
+Success rate: 0.00
+235
+avg return on 3 trajectories: 590.0208216883929
+Success rate: 0.00
+236
+avg return on 3 trajectories: 621.8148247314791
+Success rate: 0.00
+237
+avg return on 3 trajectories: 800.603092541307
+Success rate: 0.00
+238
+avg return on 3 trajectories: 776.985593323746
+Success rate: 0.00
+239
+avg return on 3 trajectories: 1892.149822745582
+Success rate: 0.33
+240
+avg return on 3 trajectories: 819.2060520833198
+Success rate: 0.00
+241
+avg return on 3 trajectories: 821.896421768956
+Success rate: 0.00
+242
+avg return on 3 trajectories: 896.6162117028434
+Success rate: 0.00
+243
+avg return on 3 trajectories: 909.6692835127445
+Success rate: 0.00
+Time taken for each iteration: [12.709155559539795, 25.284587860107422, 37.91823410987854, 50.54589581489563, 63.18385362625122, 75.83293628692627, 88.62933945655823, 101.39941000938416, 114.01577138900757, 126.5589611530304, 139.10499095916748, 151.78132963180542, 164.4633433818817, 177.0821931362152, 189.70534205436707, 202.37172722816467, 214.95164489746094, 227.55136466026306, 240.38888716697693, 253.22580885887146, 265.99388909339905, 278.71092653274536, 291.3560724258423, 304.0711944103241, 316.76358294487, 329.6485824584961, 342.35596442222595, 355.0331835746765, 367.7489068508148, 380.50391364097595, 393.3213155269623, 406.2030565738678, 419.2340307235718, 432.2803168296814, 445.15702509880066, 458.11252617836, 471.0593400001526, 484.0223662853241, 496.8949258327484, 509.85025334358215, 522.9268732070923, 535.9697470664978, 548.9139249324799, 561.8325772285461, 574.6995143890381, 587.5109190940857, 600.5137214660645, 613.3987469673157, 626.378237247467, 639.3151385784149, 652.1187512874603, 664.917592048645, 677.6301515102386, 690.2766208648682, 702.9977164268494, 715.7916815280914, 728.5306503772736, 741.3414866924286, 754.0822076797485, 767.0414664745331, 780.0081911087036, 792.9034888744354, 805.8467960357666, 818.6769218444824, 831.426974773407, 844.3409039974213, 857.1167585849762, 869.9905788898468, 882.817624092102, 895.580459356308, 908.6450397968292, 921.6312084197998, 934.7848002910614, 947.7627532482147, 960.775120973587, 973.6119780540466, 986.3969902992249, 999.2728209495544, 1012.2384719848633, 1025.2204475402832, 1038.0718264579773, 1051.0617425441742, 1063.9249057769775, 1076.8688411712646, 1089.6848216056824, 1102.5210568904877, 1115.3562381267548, 1128.209477186203, 1141.0307426452637, 1153.8436923027039, 1166.708001613617, 1179.5180132389069, 1192.3709037303925, 1205.3336567878723, 1218.2542884349823, 1231.1122524738312, 1244.0418713092804, 1256.9173820018768, 1269.7501230239868, 1282.6923105716705, 1295.7638103961945, 1308.644305229187, 1321.4166240692139, 1334.0342864990234, 1346.7766704559326, 1359.5899786949158, 1372.384598016739, 1385.219443321228, 1398.088278055191, 1410.9511110782623, 1423.873025894165, 1436.6669738292694, 1449.374353170395, 1462.072970867157, 1474.8527719974518, 1487.7371034622192, 1500.5637633800507, 1513.3478109836578, 1526.0275781154633, 1538.7949886322021, 1551.5256831645966, 1564.3820519447327, 1577.1800844669342, 1590.057255268097, 1602.8526022434235, 1615.7663674354553, 1628.6056475639343, 1641.3007934093475, 1654.1184661388397, 1666.9229061603546, 1679.7853589057922, 1692.6800723075867, 1705.514306306839, 1718.434741973877, 1731.3470981121063, 1744.2058732509613, 1757.1732649803162, 1770.0085644721985, 1782.9201667308807, 1795.8801798820496, 1808.759387254715, 1821.960499048233, 1835.1506583690643, 1848.0312104225159, 1860.8673136234283, 1873.7040405273438, 1886.5977370738983, 1899.4794454574585, 1912.4253282546997, 1925.3119323253632, 1938.1308472156525, 1950.8587338924408, 1963.5566456317902, 1976.1836771965027, 1988.9362208843231, 2001.7849125862122, 2014.591598033905, 2027.4955139160156, 2040.239398241043, 2053.1222348213196, 2065.941296815872, 2078.770719051361, 2091.524168252945, 2104.432699203491, 2117.2032375335693, 2130.156779050827, 2143.16170501709, 2156.0537526607513, 2168.9859852790833, 2182.142784833908, 2195.1283102035522, 2208.028101682663, 2220.966599225998, 2233.936037302017, 2246.975928544998, 2259.8863458633423, 2272.855656862259, 2285.7925255298615, 2298.8421363830566, 2311.8220098018646, 2324.7337176799774, 2337.7752771377563, 2350.9233169555664, 2364.0416634082794, 2377.0795249938965, 2390.05193567276, 2403.2387351989746, 2416.211090564728, 2429.136415243149, 2442.1447563171387, 2455.085537672043, 2467.957668066025, 2480.980875968933, 2493.7494518756866, 2506.726217508316, 2519.6476912498474, 2532.466603040695, 2545.354972600937, 2558.3226845264435, 2571.280362844467, 2584.2144079208374, 2597.1158475875854, 2610.154144525528, 2623.1819608211517, 2636.175991296768, 2648.975697994232, 2661.902895450592, 2674.8607420921326, 2687.7481603622437, 2700.6186537742615, 2713.607053756714, 2726.748466730118, 2739.6051123142242, 2752.46852350235, 2765.33607506752, 2778.1532776355743, 2791.2981865406036, 2804.2451832294464, 2817.3421454429626, 2830.243680000305, 2843.3024382591248, 2856.2282276153564, 2869.1352429389954, 2882.276714324951, 2895.416226387024, 2908.4564876556396, 2921.5808341503143, 2934.6773381233215, 2947.8236887454987, 2961.1102256774902, 2974.2956097126007, 2987.55709028244, 3000.711989879608, 3013.865683078766, 3027.1163330078125, 3040.2605333328247, 3053.476258277893, 3066.676265478134, 3080.0940279960632, 3093.262084722519, 3106.894342660904, 3120.174740552902, 3133.3300824165344]
