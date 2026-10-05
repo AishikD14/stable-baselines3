@@ -19,7 +19,7 @@ import pandas as pd
 # from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_ant_maze_dense, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_breakout_no_frameskip, args_point_maze_dense, args_metaworld_reach, args_metaworld_push
+from data_collection_config import args_ant_dir, args_ant, args_ant_maze_dense, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_breakout_no_frameskip, args_point_maze_dense, args_metaworld_reach, args_metaworld_push, args_metaworld_pick_place
 
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
@@ -50,13 +50,17 @@ warnings.filterwarnings("ignore")
 # keeps those existing code paths working without changing PPO/Empty Space logic.
 METAWORLD_REACH_ENV_ID = "MetaWorldReach-v0"
 METAWORLD_PUSH_ENV_ID = "MetaWorldPush-v0"
-METAWORLD_ENVS = {METAWORLD_REACH_ENV_ID, METAWORLD_PUSH_ENV_ID}
+METAWORLD_PICK_PLACE_ENV_ID = "MetaWorldPickPlace-v0"
+METAWORLD_ENVS = {METAWORLD_REACH_ENV_ID, METAWORLD_PUSH_ENV_ID, METAWORLD_PICK_PLACE_ENV_ID}
 
 def _make_metaworld_reach_env(seed=None, **kwargs):
     return gym.make("Meta-World/MT1", env_name="reach-v3", seed=seed, **kwargs)
 
 def _make_metaworld_push_env(seed=None, **kwargs):
     return gym.make("Meta-World/MT1", env_name="push-v3", seed=seed, **kwargs)
+
+def _make_metaworld_pick_place_env(seed=None, **kwargs):
+    return gym.make("Meta-World/MT1", env_name="pick-place-v3", seed=seed, **kwargs)
 
 if METAWORLD_REACH_ENV_ID not in registry:
     register(
@@ -68,6 +72,12 @@ if METAWORLD_PUSH_ENV_ID not in registry:
     register(
         id=METAWORLD_PUSH_ENV_ID,
         entry_point=_make_metaworld_push_env,
+    )
+
+if METAWORLD_PICK_PLACE_ENV_ID not in registry:
+    register(
+        id=METAWORLD_PICK_PLACE_ENV_ID,
+        entry_point=_make_metaworld_pick_place_env,
     )
 
 # PointMaze and AntMaze use goal-conditioned Dict observation spaces.  The existing
@@ -1071,7 +1081,8 @@ if __name__ == "__main__":
     # env_name = "PointMaze_UMazeDense-v3" # PointMaze U-Maze dense reward (goal-conditioned)
     # env_name = "AntMaze_UMazeDense-v5" # AntMaze U-Maze dense reward (goal-conditioned)
     # env_name = METAWORLD_REACH_ENV_ID # Meta-World MT1 reach-v3 (dense reward)
-    env_name = METAWORLD_PUSH_ENV_ID # Meta-World MT1 push-v3 (dense shaped reward)
+    # env_name = METAWORLD_PUSH_ENV_ID # Meta-World MT1 push-v3 (dense shaped reward)
+    env_name = METAWORLD_PICK_PLACE_ENV_ID # Meta-World MT1 pick-place-v3 (dense shaped reward)
 
     # env_name = "BreakoutNoFrameskip-v4" # For Breakout Atari (single goal task)
 
@@ -1113,6 +1124,8 @@ if __name__ == "__main__":
         args = args_metaworld_reach.get_args(rest_args)
     elif env_name == METAWORLD_PUSH_ENV_ID:
         args = args_metaworld_push.get_args(rest_args)
+    elif env_name == METAWORLD_PICK_PLACE_ENV_ID:
+        args = args_metaworld_pick_place.get_args(rest_args)
     elif env_name == "BreakoutNoFrameskip-v4":
         args = args_breakout_no_frameskip.get_args(rest_args)
 
@@ -1293,6 +1306,8 @@ if __name__ == "__main__":
 
     if env_name == "Hopper-v5":
         SEARCH_INTERV = 2
+
+    print("Using env_name: ", env_name)
 
     # ---------------------------------------------------------------------------------------------------------------
 
