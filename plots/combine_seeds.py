@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_ant_maze_dense, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_point_maze_dense, args_metaworld_reach
+from data_collection_config import args_ant, args_ant_maze_dense, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_point_maze_dense, args_metaworld_reach, args_metaworld_push
 
 parser = argparse.ArgumentParser()
 args, rest_args = parser.parse_known_args()
@@ -25,7 +25,8 @@ args, rest_args = parser.parse_known_args()
 # env = "FetchPushDense-v4"
 # env = "AntMaze_UMazeDense-v5"
 # env = "PointMaze_UMazeDense-v3"
-env = "MetaWorldReach-v0"
+# env = "MetaWorldReach-v0"
+env = "MetaWorldPush-v0"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -59,12 +60,15 @@ elif env == "AntMaze_UMazeDense-v5":
     args = args_ant_maze_dense.get_args(rest_args)
 elif env == "MetaWorldReach-v0":
     args = args_metaworld_reach.get_args(rest_args)
+elif env == "MetaWorldPush-v0":
+    args = args_metaworld_push.get_args(rest_args)
+
 if not hasattr(args, 'n_envs'):
     args.n_envs = 1
 
 # PointMaze, AntMaze, and MetaWorldReach keep reward/return as the primary metric. Success is
 # combined only as an additional aligned reporting metric.
-MAZE_SUCCESS_ENVS = {"PointMaze_UMazeDense-v3", "AntMaze_UMazeDense-v5", "MetaWorldReach-v0"}
+MAZE_SUCCESS_ENVS = {"PointMaze_UMazeDense-v3", "AntMaze_UMazeDense-v5", "MetaWorldReach-v0", "MetaWorldPush-v0"}
 
 # if env in ["Pendulum-v1", "BipedalWalker-v3"]:
 #     start_iteration = 1 // args.n_steps_per_rollout*args.n_envs
@@ -82,7 +86,7 @@ seed_list = [0, 1, 2, 3]
 
 plot_list = [
     # ["PPO_FQE", "PPO FQE with 60 iterations & every other point; gamma=0.3"],
-    # ["PPO_normal_training", "PPO Normal Training"],
+    ["PPO_normal_training", "PPO Normal Training"],
     # ["SAC_normal_training", "SAC Normal Training"],
     # ["SAC_upper_bound", "SAC Upper Bound"],
     ["PPO_upper_bound", "PPO Upper Bound"],
