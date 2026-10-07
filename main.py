@@ -3,7 +3,7 @@ import gymnasium as gym
 import gymnasium_robotics
 gym.register_envs(gymnasium_robotics)
 import metaworld  # Registers the Meta-World Gymnasium environments
-from gymnasium.envs.registration import register, registry
+from gymnasium.envs.registration import EnvSpec, register, registry
 from stable_baselines3 import PPO
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
@@ -19,7 +19,7 @@ import pandas as pd
 # from stable_baselines3.common.fqe import FQE
 import torch.nn as nn
 import argparse
-from data_collection_config import args_ant_dir, args_ant, args_ant_maze_dense, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_breakout_no_frameskip, args_point_maze_dense, args_metaworld_reach, args_metaworld_push, args_metaworld_pick_place
+from data_collection_config import args_ant_dir, args_ant, args_ant_maze_dense, args_hopper, args_half_cheetah, args_walker2d, args_humanoid, args_cartpole, args_mountain_car, args_pendulum, args_swimmer, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_breakout_no_frameskip, args_point_maze_dense, args_metaworld_reach, args_metaworld_push, args_metaworld_pick_place, args_metaworld_mt10
 
 from stable_baselines3.common.vec_env import SubprocVecEnv
 import d3rlpy
@@ -44,14 +44,75 @@ import math
 
 warnings.filterwarnings("ignore")
 
-# Stable single-task Gymnasium IDs for Meta-World MT1 tasks. The official API is
-# gym.make("Meta-World/MT1", env_name="<task>-v3", seed=...), but several places
-# in this project recreate environments from env.spec.id only. Registering aliases
-# keeps those existing code paths working without changing PPO/Empty Space logic.
+# Stable project IDs for Meta-World tasks. MT1 tasks are registered as ordinary
+# Gymnasium aliases because several existing code paths recreate environments from
+# a string ID. MT10 itself is represented by a project ID and is built below from
+# ten MT1 task environments inside the existing SB3 SubprocVecEnv pathway.
 METAWORLD_REACH_ENV_ID = "MetaWorldReach-v0"
 METAWORLD_PUSH_ENV_ID = "MetaWorldPush-v0"
 METAWORLD_PICK_PLACE_ENV_ID = "MetaWorldPickPlace-v0"
-METAWORLD_ENVS = {METAWORLD_REACH_ENV_ID, METAWORLD_PUSH_ENV_ID, METAWORLD_PICK_PLACE_ENV_ID}
+METAWORLD_MT10_ENV_ID = "MetaWorldMT10-v0"
+
+METAWORLD_MT1_ENVS = {METAWORLD_REACH_ENV_ID, METAWORLD_PUSH_ENV_ID, METAWORLD_PICK_PLACE_ENV_ID}
+METAWORLD_ENVS = METAWORLD_MT1_ENVS | {METAWORLD_MT10_ENV_ID}
+
+# Official Meta-World MT10 task set/order.
+METAWORLD_MT10_TASKS = (
+    "reach-v3",
+    "push-v3",
+    "pick-place-v3",
+    "door-open-v3",
+    "drawer-open-v3",
+    "drawer-close-v3",
+    "button-press-topdown-v3",
+    "peg-insert-side-v3",
+    "window-open-v3",
+    "window-close-v3",
+)
+METAWORLD_MT10_NUM_TASKS = len(METAWORLD_MT10_TASKS)
+METAWORLD_MT10_EVAL_EPISODES_PER_TASK = 3
+
+
+class PickleableEnvSpecWrapper(gym.Wrapper):
+    """Expose a pickle-safe EnvSpec for subprocess-based MT10 environments.
+
+    Meta-World registers its generic MT1 environment with a locally defined lambda
+    as the Gymnasium EnvSpec entry point. That EnvSpec cannot be sent through a
+    multiprocessing pipe when SB3 calls SubprocVecEnv.get_attr("spec"). This
+    wrapper changes metadata only; observations, rewards, actions, tasks, and
+    dynamics are untouched.
+    """
+
+    def __init__(self, env, project_env_id):
+        super().__init__(env)
+
+        source_spec = getattr(env, "spec", None)
+        if source_spec is not None:
+            safe_spec = copy.copy(source_spec)
+            safe_spec.id = project_env_id
+
+            # Remove callable entry points that may contain Meta-World local lambdas.
+            if hasattr(safe_spec, "entry_point"):
+                safe_spec.entry_point = None
+            if hasattr(safe_spec, "vector_entry_point"):
+                safe_spec.vector_entry_point = None
+
+            # EnvSpec caches namespace/name/version from id in __post_init__.
+            # Refresh them after changing the ID so the spec remains internally consistent.
+            if hasattr(safe_spec, "__post_init__"):
+                safe_spec.__post_init__()
+        else:
+            # Directly constructed Meta-World sub-environments may not carry a Gymnasium
+            # spec. Custom SB3 only needs spec.id, but using a real EnvSpec keeps the
+            # standard interface intact.
+            safe_spec = EnvSpec(id=project_env_id, entry_point=None)
+
+        self._project_spec = safe_spec
+
+    @property
+    def spec(self):
+        return self._project_spec
+
 
 def _make_metaworld_reach_env(seed=None, **kwargs):
     return gym.make("Meta-World/MT1", env_name="reach-v3", seed=seed, **kwargs)
@@ -61,6 +122,48 @@ def _make_metaworld_push_env(seed=None, **kwargs):
 
 def _make_metaworld_pick_place_env(seed=None, **kwargs):
     return gym.make("Meta-World/MT1", env_name="pick-place-v3", seed=seed, **kwargs)
+
+def _make_metaworld_mt10_task_env(task_index, seed=None, **kwargs):
+    """Create one scalar worker from Meta-World's official MT10 benchmark task pool."""
+    if task_index < 0 or task_index >= METAWORLD_MT10_NUM_TASKS:
+        raise ValueError(f"Invalid MT10 task index {task_index}")
+
+    # Build the official MT10 benchmark once inside this worker. This generates the
+    # same 50-goal-per-task training pool that Meta-World's native MT10 vector
+    # constructor uses for the requested seed.
+    benchmark = metaworld.MT10(seed=seed)
+    benchmark_items = list(benchmark.train_classes.items())
+    benchmark_task_names = tuple(name for name, _ in benchmark_items)
+
+    # Guard against a future Meta-World release changing the benchmark composition/order.
+    if benchmark_task_names != METAWORLD_MT10_TASKS:
+        raise RuntimeError(
+            "Installed Meta-World MT10 task order differs from the expected project order: "
+            f"{benchmark_task_names}"
+        )
+
+    task_name, env_cls = benchmark_items[task_index]
+    tasks = [task for task in benchmark.train_tasks if task.env_name == task_name]
+
+    # Meta-World's native MT10 vector constructor calls this same scalar initializer
+    # for each of the ten task environments. Using it here lets the existing SB3
+    # SubprocVecEnv remain unchanged while preserving official MT10 task semantics.
+    init_each_env = getattr(metaworld, "_init_each_env", None)
+    if init_each_env is None:
+        raise RuntimeError(
+            "This Meta-World installation does not expose _init_each_env, which is "
+            "required to adapt the official MT10 benchmark to SB3 SubprocVecEnv."
+        )
+
+    return init_each_env(
+        env_cls=env_cls,
+        tasks=tasks,
+        seed=seed,
+        use_one_hot=True,
+        env_id=task_index,
+        num_tasks=METAWORLD_MT10_NUM_TASKS,
+        **kwargs,
+    )
 
 if METAWORLD_REACH_ENV_ID not in registry:
     register(
@@ -94,9 +197,17 @@ def wrap_pointmaze_observation(env, env_name):
         return FlattenObservation(env)
     return env
 
-def make_project_env(env_name, seed=None):
+def make_project_env(env_name, seed=None, mt10_task_index=0):
     """Create an environment while preserving all existing environment behavior."""
-    if env_name in METAWORLD_ENVS:
+    if env_name == METAWORLD_MT10_ENV_ID:
+        # A scalar MT10 task is used by each worker/evaluator. The training vector
+        # is assembled from all ten task indices by make_envs() below.
+        env = _make_metaworld_mt10_task_env(mt10_task_index, seed=seed)
+        # Only the externally visible EnvSpec is sanitized. This avoids the
+        # Meta-World local-lambda pickling failure when custom SB3 code asks a
+        # SubprocVecEnv worker for env.spec; observations/rewards/actions are untouched.
+        env = PickleableEnvSpecWrapper(env, METAWORLD_MT10_ENV_ID)
+    elif env_name in METAWORLD_MT1_ENVS:
         # Meta-World uses this constructor seed when creating its MT1 task variants.
         env = gym.make(env_name, seed=seed)
     else:
@@ -104,6 +215,13 @@ def make_project_env(env_name, seed=None):
 
     env = wrap_pointmaze_observation(env, env_name)
     return env
+
+
+def get_eval_episode_count(env_name, episodes_per_task=3):
+    """Keep the existing 3-episode evaluation, interpreted as 3 episodes per MT10 task."""
+    if env_name == METAWORLD_MT10_ENV_ID:
+        return episodes_per_task * METAWORLD_MT10_NUM_TASKS
+    return episodes_per_task
 
 def evaluate_policy_with_goal_success(model, env, n_eval_episodes=3, deterministic=True):
     """Evaluate with the existing SB3 return calculation and additionally track goal success.
@@ -480,7 +598,7 @@ def fit_gaussian_model(data):
 
 #  Randomly sample from a Gaussian distribution of points
 def random_search_policies(algo, directory, start, end, env, agent_num=10):
-    dt = load_weights(range(start, end), directory, env)
+    dt = load_weights(range(start, end), directory, env, saved_agents=False)
     print(dt.shape)
 
     # Fit the Gaussian model to the training data with MLE
@@ -581,7 +699,7 @@ def neighbor_search_random_walk(algo, directory, start, end, env, saved_agents=F
 
 # Random Sampling plus empty space search
 def random_search_empty_space_policies(algo, directory, start, end, env, agent_num=10):
-    dt = load_weights(range(start, end), directory, env)
+    dt = load_weights(range(start, end), directory, env, saved_agents=False)
     print(dt.shape)
     neigh = NearestNeighbors(n_neighbors=6)
     neigh.fit(dt)
@@ -600,7 +718,7 @@ def random_search_empty_space_policies(algo, directory, start, end, env, agent_n
     policies = []
     print(len(points))
     for p in points:
-        a = empty_center(dt, p.reshape(1, -1), neigh, use_momentum=True, movestep=0.001, numiter=400)
+        a = empty_center(dt, p.reshape(1, -1), neigh, use_ANN=False, use_momentum=True, movestep=0.001, numiter=400)
         policies.append(a[1])
     policies = np.concatenate(policies)
     print(policies.shape)
@@ -627,7 +745,7 @@ def random_search_empty_space_policies(algo, directory, start, end, env, agent_n
 
 # Random Sampling plus random walk
 def random_search_random_walk(algo, directory, start, end, env, agent_num=10):
-    dt = load_weights(range(start, end), directory, env)
+    dt = load_weights(range(start, end), directory, env, saved_agents=False)
     print(dt.shape)
     neigh = NearestNeighbors(n_neighbors=6)
     neigh.fit(dt)
@@ -862,7 +980,7 @@ def search_guided_es_policies(algo, directory, start, end, env, saved_agents, ag
 
     # Get PPO gradient (already computed during model.learn)
     algo.policy.zero_grad()
-    dummy_env = DummyVecEnv([lambda: make_project_env(env_name)])
+    dummy_env = DummyVecEnv([lambda: make_project_env(env_name, mt10_task_index=0)])
     obs = dummy_env.reset()
     obs_tensor = torch.as_tensor(obs, dtype=torch.float32).to(device)
     obs_tensor = obs_tensor.unsqueeze(0)  # [1, obs_dim]
@@ -902,7 +1020,15 @@ def search_guided_es_policies(algo, directory, start, end, env, saved_agents, ag
                     pivot += sp
             algo.policy.load_state_dict(policy)
             algo.policy.to(device)
-            R = evaluate_policy(algo, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+            if env_name == METAWORLD_MT10_ENV_ID:
+                R = rollout_mt10_policy(
+                    algo,
+                    seed=0,
+                    n_eval_episodes=METAWORLD_MT10_EVAL_EPISODES_PER_TASK * METAWORLD_MT10_NUM_TASKS,
+                    deterministic=True,
+                )
+            else:
+                R = evaluate_policy(algo, dummy_env, n_eval_episodes=3, deterministic=True)[0]
             rewards.append(R)
 
         R_plus, R_minus = rewards
@@ -925,6 +1051,7 @@ def search_guided_es_policies(algo, directory, start, end, env, saved_agents, ag
             pivot += sp
 
     agent_list = [new_policy]  # we return one updated agent
+    dummy_env.close()
     return agent_list, 0.0  # dummy distance value for compatibility
 
 # Value Function Search
@@ -937,7 +1064,7 @@ def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_nu
     original_state = copy.deepcopy(algo.policy.state_dict())
 
     # Get one observation to condition value function
-    dummy_env = DummyVecEnv([lambda: make_project_env(env_name)])
+    dummy_env = DummyVecEnv([lambda: make_project_env(env_name, mt10_task_index=0)])
     obs = dummy_env.reset()
     obs_tensor = torch.as_tensor(obs, dtype=torch.float32).to(device).unsqueeze(0)
 
@@ -959,6 +1086,7 @@ def search_vfs_policies(algo, directory, start, end, env, saved_agents, agent_nu
 
     # Restore original policy weights to avoid affecting main model
     algo.policy.load_state_dict(original_state)
+    dummy_env.close()
 
     return agent_list, 0.0
 
@@ -997,11 +1125,61 @@ def rollout_policy(policy, env, n_eval=3, deterministic=True, return_success_rat
     # Preserve the original return-only API for all existing call sites/environments.
     return avg_return
 
+
+def rollout_mt10_policy(policy, seed, n_eval_episodes=30, deterministic=True, return_success_rate=False):
+    """Evaluate a shared MT10 policy uniformly over all ten tasks without nested VecEnvs."""
+    if n_eval_episodes % METAWORLD_MT10_NUM_TASKS != 0:
+        raise ValueError("MT10 evaluation episodes must be divisible by the number of MT10 tasks")
+
+    episodes_per_task = n_eval_episodes // METAWORLD_MT10_NUM_TASKS
+    episode_rewards = []
+    episode_successes = []
+
+    for task_index in range(METAWORLD_MT10_NUM_TASKS):
+        eval_env = make_project_env(
+            METAWORLD_MT10_ENV_ID,
+            seed=seed,
+            mt10_task_index=task_index,
+        )
+
+        try:
+            for episode_index in range(episodes_per_task):
+                if episode_index == 0:
+                    obs, _ = eval_env.reset(seed=seed + task_index)
+                else:
+                    obs, _ = eval_env.reset()
+
+                done = False
+                total_reward = 0.0
+                episode_success = False
+
+                while not done:
+                    action, _ = policy.predict(obs, deterministic=deterministic)
+                    obs, reward, terminated, truncated, info = eval_env.step(action)
+                    done = terminated or truncated
+                    total_reward += reward
+
+                    success_value = info.get("success", info.get("is_success", False))
+                    try:
+                        episode_success = episode_success or bool(np.asarray(success_value).astype(bool).any())
+                    except Exception:
+                        episode_success = episode_success or bool(success_value)
+
+                episode_rewards.append(total_reward)
+                episode_successes.append(float(episode_success))
+        finally:
+            eval_env.close()
+
+    avg_return = float(np.mean(episode_rewards))
+    if return_success_rate:
+        return avg_return, float(np.mean(episode_successes))
+    return avg_return
+
 # Evaluation function for a single candidate agent
 def evaluate_candidate(args):
     idx, agent_state_dict, env_name, seed, n_eval, return_success_rate = args
 
-    dummy_env = make_project_env(env_name, seed=seed)
+    dummy_env = make_project_env(env_name, seed=seed, mt10_task_index=0)
     dummy_env.reset(seed=seed)
     obs_space = dummy_env.observation_space
     act_space = dummy_env.action_space
@@ -1014,14 +1192,35 @@ def evaluate_candidate(args):
     )
     policy.load_state_dict(agent_state_dict)
 
+    if env_name == METAWORLD_MT10_ENV_ID:
+        # The task-0 environment above is only needed to construct the policy with
+        # the correct MT10 observation/action spaces. MT10 evaluation itself must
+        # cover all ten tasks.
+        dummy_env.close()
+
+        if return_success_rate:
+            avg_return, success_rate = rollout_mt10_policy(
+                policy, seed=seed, n_eval_episodes=n_eval, deterministic=True, return_success_rate=True
+            )
+            print(f"avg return on {n_eval} MT10 trajectories of agent{idx}: {avg_return}, Success rate: {success_rate:.2f}")
+            return idx, avg_return, success_rate
+
+        avg_return = rollout_mt10_policy(policy, seed=seed, n_eval_episodes=n_eval, deterministic=True)
+        print(f"avg return on {n_eval} MT10 trajectories of agent{idx}: {avg_return}")
+        return idx, avg_return
+
+    # Preserve the original evaluation path for every non-MT10 environment:
+    # use the same seeded environment that supplied obs/action spaces above.
     if return_success_rate:
         avg_return, success_rate = rollout_policy(
             policy, dummy_env, n_eval=n_eval, deterministic=True, return_success_rate=True
         )
+        dummy_env.close()
         print(f"avg return on {n_eval} trajectories of agent{idx}: {avg_return}, Success rate: {success_rate:.2f}")
         return idx, avg_return, success_rate
 
     avg_return = rollout_policy(policy, dummy_env, n_eval=n_eval, deterministic=True)
+    dummy_env.close()
 
     # Evaluate policy
     print(f"avg return on {n_eval} trajectories of agent{idx}: {avg_return}")
@@ -1082,7 +1281,8 @@ if __name__ == "__main__":
     # env_name = "AntMaze_UMazeDense-v5" # AntMaze U-Maze dense reward (goal-conditioned)
     # env_name = METAWORLD_REACH_ENV_ID # Meta-World MT1 reach-v3 (dense reward)
     # env_name = METAWORLD_PUSH_ENV_ID # Meta-World MT1 push-v3 (dense shaped reward)
-    env_name = METAWORLD_PICK_PLACE_ENV_ID # Meta-World MT1 pick-place-v3 (dense shaped reward)
+    # env_name = METAWORLD_PICK_PLACE_ENV_ID # Meta-World MT1 pick-place-v3 (dense shaped reward)
+    env_name = METAWORLD_MT10_ENV_ID # Meta-World MT10 multi-task benchmark
 
     # env_name = "BreakoutNoFrameskip-v4" # For Breakout Atari (single goal task)
 
@@ -1126,6 +1326,8 @@ if __name__ == "__main__":
         args = args_metaworld_push.get_args(rest_args)
     elif env_name == METAWORLD_PICK_PLACE_ENV_ID:
         args = args_metaworld_pick_place.get_args(rest_args)
+    elif env_name == METAWORLD_MT10_ENV_ID:
+        args = args_metaworld_mt10.get_args(rest_args)
     elif env_name == "BreakoutNoFrameskip-v4":
         args = args_breakout_no_frameskip.get_args(rest_args)
 
@@ -1143,12 +1345,27 @@ if __name__ == "__main__":
     def make_envs(env_name, seed):
         def _init(seed_offset):
             def _thunk():
-                env = make_project_env(env_name, seed=seed + seed_offset)
+                if env_name == METAWORLD_MT10_ENV_ID:
+                    # Each worker is one of the ten official MT10 tasks. Keeping the
+                    # existing seed-offset behavior preserves this project's vector-env logic.
+                    env = make_project_env(
+                        env_name,
+                        seed=seed,
+                        mt10_task_index=seed_offset % METAWORLD_MT10_NUM_TASKS,
+                    )
+                else:
+                    env = make_project_env(env_name, seed=seed + seed_offset)
                 env.reset(seed=seed + seed_offset)
                 return env
             return _thunk
         return _init
     
+    if env_name == METAWORLD_MT10_ENV_ID and getattr(args, 'n_envs', None) != METAWORLD_MT10_NUM_TASKS:
+        raise ValueError(
+            f"MT10 requires n_envs={METAWORLD_MT10_NUM_TASKS} so every task is represented once; "
+            f"got {getattr(args, 'n_envs', None)}"
+        )
+
     if hasattr(args, 'n_envs') and args.n_envs > 1:
         print("Creating multiple envs - ", args.n_envs)
         if env_name in ["BreakoutNoFrameskip-v4"]:
@@ -1192,6 +1409,9 @@ if __name__ == "__main__":
     # print(env.action_space, env.observation_space)
 
     n_steps_per_rollout = args.n_steps_per_rollout
+    n_eval_episodes = get_eval_episode_count(
+        env_name, episodes_per_task=METAWORLD_MT10_EVAL_EPISODES_PER_TASK
+    )
 
     # --------------------------------------------------------------------------------------------------------------
 
@@ -1213,7 +1433,7 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    exp = "PPO_normal_training" # For standard PPO training (single goal tasks)
+    exp = "PPO_init" # For standard PPO training (single goal tasks)
     DIR = env_name + "/" + exp + "_" + str(get_latest_run_id('logs/'+env_name+"/", exp)+1)
     ckp_dir = f'logs/{DIR}/models'
 
@@ -1311,28 +1531,28 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------------------------------------------------------------
 
-    # print("Starting Initial training")
-    # os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
+    print("Starting Initial training")
+    os.makedirs(f'full_exp_on_ppo/models/'+env_name, exist_ok=True)
 
-    # model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
-    # model.save(args.init_model_path+'_'+str(args.seed))
+    model.learn(total_timesteps=1000000, log_interval=50, tb_log_name=exp, init_call=True)
+    model.save(args.init_model_path+'_'+str(args.seed))
 
-    # print("Initial training done") 
+    print("Initial training done") 
 
-    # # print("Saving replay buffer for later use")
-    # # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
+    # print("Saving replay buffer for later use")
+    # os.makedirs(f'full_exp_on_ppo/replay_buffers/'+env_name, exist_ok=True)
 
-    # # # Save the replay buffer
-    # # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
-    # #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
-    # #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
-    # #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
-    # #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
-    # # )
+    # # Save the replay buffer
+    # np.savez(f'full_exp_on_ppo/replay_buffers/'+env_name+'/replay_buffer_'+str(args.seed)+'.npz',
+    #     observations=model.replay_buffer.observations.reshape(-1, model.replay_buffer.observations.shape[-1]),
+    #     actions=model.replay_buffer.actions.reshape(-1, model.replay_buffer.actions.shape[-1]),
+    #     rewards=model.replay_buffer.rewards.reshape(-1, model.replay_buffer.rewards.shape[-1]),
+    #     terminals=model.replay_buffer.dones.reshape(-1, model.replay_buffer.dones.shape[-1])
+    # )
     
-    # # print("Replay buffer saved")
+    # print("Replay buffer saved")
 
-    # quit()
+    quit()
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -1473,14 +1693,15 @@ if __name__ == "__main__":
 
                 if env_name in INFO_SUCCESS_ENVS:
                     returns_trains, _, success = evaluate_policy_with_goal_success(
-                        model, dummy_env, n_eval_episodes=3, deterministic=True
+                        model, dummy_env, n_eval_episodes=n_eval_episodes, deterministic=True
                     )
-                    print(f'avg return on 3 trajectories of agent: {returns_trains}, Success rate: {success:.2f}')
+                    print(f'avg return on {n_eval_episodes} trajectories of agent: {returns_trains}, Success rate: {success:.2f}')
                     cum_success.append(success)
                 else:
-                    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=n_eval_episodes, deterministic=True)[0]
                     print(f'avg return on 3 trajectories of agent: {returns_trains}')
                 cum_rews.append(returns_trains)
+                dummy_env.close()
 
                 os.makedirs(f'logs/{DIR}', exist_ok=True)
                 np.save(f'logs/{DIR}/agents_{i}_{i + SEARCH_INTERV}.npy', agents)
@@ -1529,8 +1750,9 @@ if __name__ == "__main__":
                         dummy_env = make_project_env(env_name, seed=args.seed) # Existing envs unchanged; Meta-World uses constructor seed
                         dummy_env.reset(seed=args.seed)
 
-                    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                    returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=n_eval_episodes, deterministic=True)[0]
                     rewards.append(returns_trains)
+                    dummy_env.close()
 
                 rewards = np.array(rewards)
                 top_indices = rewards.argsort()[-5:]
@@ -1572,21 +1794,23 @@ if __name__ == "__main__":
                         dummy_env.reset(seed=args.seed)
 
                     if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-                        mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
+                        mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=n_eval_episodes, deterministic=True, return_success_rate=True)
                         print(f'avg 3 return on policy: {mean_rew}, Success rate: {success:.2f}')
                         cum_rews.append(mean_rew)
                         cum_success.append(success)
                     elif env_name in INFO_SUCCESS_ENVS:
                         mean_rew, std_rew, success = evaluate_policy_with_goal_success(
-                            model, dummy_env, n_eval_episodes=3, deterministic=True
+                            model, dummy_env, n_eval_episodes=n_eval_episodes, deterministic=True
                         )
-                        print(f'avg return on 3 trajectories of agent{j}: {mean_rew}, Success rate: {success:.2f}')
+                        print(f'avg return on {n_eval_episodes} trajectories of agent{j}: {mean_rew}, Success rate: {success:.2f}')
                         cum_rews.append(mean_rew)
                         cum_success.append(success)
                     else:
-                        returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                        returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=n_eval_episodes, deterministic=True)[0]
                         print(f'avg return on 3 trajectories of agent{j}: {returns_trains}')
                         cum_rews.append(returns_trains)
+
+                    dummy_env.close()
 
                     # Q-function evaluation
                     if not online_eval:
@@ -1605,7 +1829,7 @@ if __name__ == "__main__":
                     cum_rews, cum_success = parallel_evaluate(
                         agents=agents,
                         env_name=env_name,
-                        n_eval_episodes=3,
+                        n_eval_episodes=n_eval_episodes,
                         seed=args.seed,
                         return_success_rate=True
                     )
@@ -1613,7 +1837,7 @@ if __name__ == "__main__":
                     cum_rews = parallel_evaluate(
                         agents=agents,
                         env_name=env_name,
-                        n_eval_episodes=3,
+                        n_eval_episodes=n_eval_episodes,
                         seed=args.seed
                     )
 
@@ -1740,23 +1964,25 @@ if __name__ == "__main__":
                 dummy_env.reset(seed=args.seed)
             
             if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"]:
-                mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True, return_success_rate=True)
+                mean_rew, std_rew, success = evaluate_policy(model, dummy_env, n_eval_episodes=n_eval_episodes, deterministic=True, return_success_rate=True)
                 print(f'avg 3 return on policy: {mean_rew}')
                 print(f'Success rate: {success:.2f}')
                 cum_rews.append(mean_rew)
                 cum_success.append(success)
             elif env_name in INFO_SUCCESS_ENVS:
                 mean_rew, std_rew, success = evaluate_policy_with_goal_success(
-                    model, dummy_env, n_eval_episodes=3, deterministic=True
+                    model, dummy_env, n_eval_episodes=n_eval_episodes, deterministic=True
                 )
-                print(f'avg return on 3 trajectories: {mean_rew}')
+                print(f'avg return on {n_eval_episodes} trajectories: {mean_rew}')
                 print(f'Success rate: {success:.2f}')
                 cum_rews.append(mean_rew)
                 cum_success.append(success)
             else:
-                returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=3, deterministic=True)[0]
+                returns_trains = evaluate_policy(model, dummy_env, n_eval_episodes=n_eval_episodes, deterministic=True)[0]
                 print(f'avg return on 3 trajectories: {returns_trains}')
                 cum_rews.append(returns_trains)
+
+            dummy_env.close()
 
             np.save(f'logs/{DIR}/results_{i}_{i + SEARCH_INTERV}.npy', cum_rews)
             if env_name in ["FetchReach-v4", "FetchReachDense-v4", "FetchPush-v4", "FetchPushDense-v4"] or env_name in INFO_SUCCESS_ENVS:

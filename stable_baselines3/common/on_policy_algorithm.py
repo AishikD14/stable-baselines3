@@ -26,6 +26,26 @@ from gymnasium.wrappers import FlattenObservation
 SelfOnPolicyAlgorithm = TypeVar("SelfOnPolicyAlgorithm", bound="OnPolicyAlgorithm")
 
 
+# Project ID exposed by the MT10 training environment in main.py.
+# This is intentionally not registered as a scalar Gymnasium environment:
+# one MT10 worker must correspond to one of the ten benchmark tasks.
+METAWORLD_MT10_ENV_ID = "MetaWorldMT10-v0"
+METAWORLD_MT10_TASKS = (
+    "reach-v3",
+    "push-v3",
+    "pick-place-v3",
+    "door-open-v3",
+    "drawer-open-v3",
+    "drawer-close-v3",
+    "button-press-topdown-v3",
+    "peg-insert-side-v3",
+    "window-open-v3",
+    "window-close-v3",
+)
+METAWORLD_MT10_NUM_TASKS = len(METAWORLD_MT10_TASKS)
+
+
+
 def _match_eval_observation_space(env, model_observation_space):
     """Match raw goal-conditioned eval envs to models trained on flattened observations.
 
@@ -39,16 +59,65 @@ def _match_eval_observation_space(env, model_observation_space):
     return env
 
 
-def _make_compatible_eval_env(env_name, seed, model_observation_space):
+def _make_compatible_eval_env(
+    env_name,
+    seed,
+    model_observation_space,
+    mt10_task_index=None,
+    mt10_benchmark_seed=None,
+):
     """Create an internal evaluation env matching the training task/observation space.
 
-    Meta-World MT1 cannot be recreated from its Gymnasium spec ID alone:
-    gymnasium.make("Meta-World/MT1") also requires env_name="reach-v3".
-    All non-Meta-World environments retain the original gymnasium.make(env_name)
-    behavior.
+    Existing environments preserve the original construction behavior.
+
+    Meta-World MT10 is different from an ordinary Gymnasium scalar environment:
+    ``MetaWorldMT10-v0`` is the stable project ID exposed by main.py, while each
+    subprocess must actually contain one of the ten official MT10 task environments.
+    The MT10 branch below mirrors the benchmark construction used by main.py without
+    changing PPO training, rollout collection, checkpointing, or any non-MT10 path.
     """
-    if env_name in {"Meta-World/MT1", "MetaWorldReach-v0"}:
-        # Local import also guarantees registration in spawned subprocesses.
+    if env_name == METAWORLD_MT10_ENV_ID:
+        # Local import is required because this function also runs inside spawned
+        # SubprocVecEnv workers.
+        import metaworld
+
+        if mt10_task_index is None:
+            raise ValueError("MT10 evaluation requires mt10_task_index")
+        if mt10_task_index < 0 or mt10_task_index >= METAWORLD_MT10_NUM_TASKS:
+            raise ValueError(f"Invalid MT10 task index {mt10_task_index}")
+
+        benchmark_seed = seed if mt10_benchmark_seed is None else mt10_benchmark_seed
+        benchmark = metaworld.MT10(seed=benchmark_seed)
+        benchmark_items = list(benchmark.train_classes.items())
+        benchmark_task_names = tuple(name for name, _ in benchmark_items)
+
+        if benchmark_task_names != METAWORLD_MT10_TASKS:
+            raise RuntimeError(
+                "Installed Meta-World MT10 task order differs from the expected project order: "
+                f"{benchmark_task_names}"
+            )
+
+        task_name, env_cls = benchmark_items[mt10_task_index]
+        tasks = [task for task in benchmark.train_tasks if task.env_name == task_name]
+
+        init_each_env = getattr(metaworld, "_init_each_env", None)
+        if init_each_env is None:
+            raise RuntimeError(
+                "This Meta-World installation does not expose _init_each_env, which is "
+                "required to adapt the official MT10 benchmark to SB3 SubprocVecEnv."
+            )
+
+        env = init_each_env(
+            env_cls=env_cls,
+            tasks=tasks,
+            seed=benchmark_seed,
+            use_one_hot=True,
+            env_id=mt10_task_index,
+            num_tasks=METAWORLD_MT10_NUM_TASKS,
+        )
+
+    elif env_name in {"Meta-World/MT1", "MetaWorldReach-v0"}:
+        # Preserve the existing Meta-World Reach compatibility path unchanged.
         import metaworld  # noqa: F401
 
         env = gymnasium.make(
@@ -57,6 +126,7 @@ def _make_compatible_eval_env(env_name, seed, model_observation_space):
             seed=seed,
         )
     else:
+        # Preserve the original behavior for every other environment.
         env = gymnasium.make(env_name)
 
     env = _match_eval_observation_space(env, model_observation_space)
@@ -479,6 +549,19 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 def make_envs(env_name, seed):
                     def _init(seed_offset):
                         def _thunk():
+                            if env_name == METAWORLD_MT10_ENV_ID:
+                                # All ten workers come from one MT10 benchmark seed,
+                                # while reset seeds retain the existing per-worker offset.
+                                return _make_compatible_eval_env(
+                                    env_name,
+                                    seed + seed_offset,
+                                    eval_observation_space,
+                                    mt10_task_index=seed_offset % METAWORLD_MT10_NUM_TASKS,
+                                    mt10_benchmark_seed=seed,
+                                )
+
+                            # Preserve the original evaluation-env construction for
+                            # every non-MT10 environment.
                             return _make_compatible_eval_env(
                                 env_name,
                                 seed + seed_offset,
@@ -490,6 +573,13 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 if self.n_envs > 1:
                     # Create a list of environment functions
                     self.env_name = self.env.get_attr("spec")[0].id
+
+                    if self.env_name == METAWORLD_MT10_ENV_ID and self.n_envs != METAWORLD_MT10_NUM_TASKS:
+                        raise ValueError(
+                            f"MT10 internal evaluation requires {METAWORLD_MT10_NUM_TASKS} environments "
+                            f"so every task is represented once; got {self.n_envs}"
+                        )
+
                     print("Creating multiple envs - ", self.n_envs)
                     dummy_env_fns = [make_envs(self.env_name, seed=self.seed)(seed_offset=i) for i in range(self.n_envs)]
                     dummy_env = SubprocVecEnv(dummy_env_fns)
@@ -502,8 +592,21 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                         eval_observation_space,
                     )
 
-                returns_trains = evaluate_policy(self, dummy_env, n_eval_episodes=3, deterministic=True)[0]
-                print(f'avg 3 return on policy: {returns_trains}')
+                # Preserve the original 3-episode evaluation for all existing
+                # environments. For MT10, interpret it as 3 episodes per task so
+                # all ten tasks are represented uniformly in the diagnostic metric.
+                eval_episodes = (
+                    3 * METAWORLD_MT10_NUM_TASKS
+                    if self.env_name == METAWORLD_MT10_ENV_ID
+                    else 3
+                )
+                returns_trains = evaluate_policy(
+                    self,
+                    dummy_env,
+                    n_eval_episodes=eval_episodes,
+                    deterministic=True,
+                )[0]
+                print(f'avg {eval_episodes} return on policy: {returns_trains}')
                 dummy_env.close()
 
         callback.on_training_end()
