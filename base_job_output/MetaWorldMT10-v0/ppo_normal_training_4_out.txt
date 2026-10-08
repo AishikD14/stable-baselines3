@@ -1,0 +1,167 @@
+No devices were found
+Setting seed -  3
+Creating multiple envs -  10
+---------------------------------
+Environment created
+Box(-1.0, 1.0, (4,), float32) Box([-0.525   0.348  -0.0525 -1.        -inf    -inf    -inf    -inf    -inf
+    -inf    -inf    -inf    -inf    -inf    -inf    -inf    -inf    -inf
+ -0.525   0.348  -0.0525 -1.        -inf    -inf    -inf    -inf    -inf
+    -inf    -inf    -inf    -inf    -inf    -inf    -inf    -inf    -inf
+  0.      0.      0.      0.      0.      0.      0.      0.      0.
+  0.      0.      0.      0.    ], [0.525 1.025 0.7   1.      inf   inf   inf   inf   inf   inf   inf   inf
+   inf   inf   inf   inf   inf   inf 0.525 1.025 0.7   1.      inf   inf
+   inf   inf   inf   inf   inf   inf   inf   inf   inf   inf   inf   inf
+ 0.    0.    0.    1.    1.    1.    1.    1.    1.    1.    1.    1.
+ 1.   ], (49,), float32)
+Using env_name:  MetaWorldMT10-v0
+Loading Initial saved model
+Model loaded
+Starting evaluation
+24
+avg return on 30 trajectories: 982.3811587738272
+Success rate: 0.07
+25
+avg return on 30 trajectories: 994.6917263788291
+Success rate: 0.07
+26
+avg return on 30 trajectories: 1080.0657142784314
+Success rate: 0.07
+27
+avg return on 30 trajectories: 1266.9919145552908
+Success rate: 0.13
+28
+avg return on 30 trajectories: 1244.8290655693827
+Success rate: 0.13
+29
+avg return on 30 trajectories: 1312.912466634992
+Success rate: 0.23
+30
+avg return on 30 trajectories: 1398.6995427937863
+Success rate: 0.20
+31
+avg return on 30 trajectories: 1445.627723503569
+Success rate: 0.23
+32
+avg return on 30 trajectories: 1740.3221569918667
+Success rate: 0.23
+33
+avg return on 30 trajectories: 1212.1305203777154
+Success rate: 0.20
+34
+avg return on 30 trajectories: 1217.6242629118906
+Success rate: 0.20
+35
+avg return on 30 trajectories: 1232.0678644213344
+Success rate: 0.17
+36
+avg return on 30 trajectories: 1247.5219425449104
+Success rate: 0.20
+37
+avg return on 30 trajectories: 1236.0722005598436
+Success rate: 0.20
+38
+avg return on 30 trajectories: 1227.533790334353
+Success rate: 0.10
+39
+avg return on 30 trajectories: 1286.5210082573442
+Success rate: 0.20
+40
+avg return on 30 trajectories: 1268.8419269843905
+Success rate: 0.20
+41
+avg return on 30 trajectories: 1260.1437668816693
+Success rate: 0.17
+42
+avg return on 30 trajectories: 1435.0114908112685
+Success rate: 0.17
+43
+avg return on 30 trajectories: 1221.5928141696904
+Success rate: 0.10
+44
+avg return on 30 trajectories: 1207.1468598839658
+Success rate: 0.07
+45
+avg return on 30 trajectories: 1229.8603174523935
+Success rate: 0.07
+46
+avg return on 30 trajectories: 1210.2891572869182
+Success rate: 0.07
+47
+avg return on 30 trajectories: 1214.5461642522191
+Success rate: 0.07
+48
+avg return on 30 trajectories: 1321.2599527469795
+Success rate: 0.20
+49
+avg return on 30 trajectories: 1283.989833804508
+Success rate: 0.07
+50
+avg return on 30 trajectories: 1280.352149592528
+Success rate: 0.20
+51
+avg return on 30 trajectories: 1258.6288987996916
+Success rate: 0.20
+52
+avg return on 30 trajectories: 1525.1857961933008
+Success rate: 0.30
+53
+avg return on 30 trajectories: 1752.1414336541445
+Success rate: 0.30
+54
+avg return on 30 trajectories: 1768.212598187083
+Success rate: 0.30
+55
+avg return on 30 trajectories: 1884.8359579295698
+Success rate: 0.37
+56
+avg return on 30 trajectories: 1929.8913850359515
+Success rate: 0.40
+57
+avg return on 30 trajectories: 1949.31152611911
+Success rate: 0.30
+58
+avg return on 30 trajectories: 1947.5717502149325
+Success rate: 0.30
+59
+avg return on 30 trajectories: 1986.416310808087
+Success rate: 0.33
+60
+avg return on 30 trajectories: 2059.338791829313
+Success rate: 0.40
+61
+avg return on 30 trajectories: 2043.7314266518413
+Success rate: 0.40
+62
+avg return on 30 trajectories: 2111.697448184953
+Success rate: 0.40
+63
+avg return on 30 trajectories: 2147.302757122631
+Success rate: 0.40
+64
+avg return on 30 trajectories: 2140.0527952117313
+Success rate: 0.40
+65
+avg return on 30 trajectories: 2098.0374500075172
+Success rate: 0.40
+66
+avg return on 30 trajectories: 2084.858810832429
+Success rate: 0.40
+67
+avg return on 30 trajectories: 2067.992384461422
+Success rate: 0.40
+68
+avg return on 30 trajectories: 2066.4870083352243
+Success rate: 0.40
+69
+avg return on 30 trajectories: 2101.409048630168
+Success rate: 0.37
+70
+avg return on 30 trajectories: 2015.900916646034
+Success rate: 0.27
+71
+avg return on 30 trajectories: 2177.622339576546
+Success rate: 0.40
+72
+avg return on 30 trajectories: 2184.654360391566
+Success rate: 0.40
+Time taken for each iteration: [174.15842413902283, 349.1998782157898, 523.6926324367523, 699.0885741710663, 874.4716582298279, 1051.8052220344543, 1229.40296459198, 1405.4974210262299, 1584.5209305286407, 1763.6371998786926, 1941.0432300567627, 2119.554003238678, 2296.6141426563263, 2473.6119010448456, 2650.1281933784485, 2827.837349653244, 3004.766541481018, 3183.0805525779724, 3370.412797689438, 3555.128231048584, 3736.928482532501, 3918.2534699440002, 4104.225358724594, 4287.478671550751, 4472.947110414505, 4658.805379390717, 4843.684357643127, 5028.943502902985, 5214.776720285416, 5399.9576671123505, 5586.069359540939, 5777.462560892105, 5969.89016699791, 6161.82407951355, 6355.06129693985, 6529.152973651886, 6697.825164556503, 6866.456428766251, 7034.644794464111, 7203.491626024246, 7373.371823549271, 7543.729165792465, 7713.466904640198, 7885.786404132843, 8060.951860904694, 8230.904915332794, 8401.112606287003, 8570.429145097733, 8739.41748046875]
