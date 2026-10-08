@@ -5,7 +5,7 @@ import sys
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
-from data_collection_config import args_ant, args_ant_maze_dense, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_point_maze_dense, args_metaworld_reach, args_metaworld_push, args_metaworld_pick_place
+from data_collection_config import args_ant, args_ant_maze_dense, args_half_cheetah, args_walker2d, args_humanoid, args_swimmer, args_pendulum, args_bipedal_walker, args_lunarlander, args_hopper, args_fetch_reach, args_fetch_reach_dense, args_fetch_push, args_fetch_push_dense, args_point_maze_dense, args_metaworld_reach, args_metaworld_push, args_metaworld_pick_place, args_metaworld_mt10
 import re
 
 parser = argparse.ArgumentParser()
@@ -28,7 +28,8 @@ args, rest_args = parser.parse_known_args()
 # env = "PointMaze_UMazeDense-v3"
 # env = "MetaWorldReach-v0"
 # env = "MetaWorldPush-v0"
-env = "MetaWorldPickPlace-v0"
+# env = "MetaWorldPickPlace-v0"
+env = "MetaWorldMT10-v0"
 
 if env == "Ant-v5":
     args = args_ant.get_args(rest_args)
@@ -66,10 +67,12 @@ elif env == "MetaWorldPush-v0":
     args = args_metaworld_push.get_args(rest_args)
 elif env == "MetaWorldPickPlace-v0":
     args = args_metaworld_pick_place.get_args(rest_args)
+elif env == "MetaWorldMT10-v0":
+    args = args_metaworld_mt10.get_args(rest_args)
 
 # PointMaze, AntMaze, and MetaWorldReach keep dense return as the primary metric. Success is
 # extracted only as an additional aligned reporting metric.
-MAZE_SUCCESS_ENVS = {"PointMaze_UMazeDense-v3", "AntMaze_UMazeDense-v5","MetaWorldReach-v0", "MetaWorldPush-v0", "MetaWorldPickPlace-v0"}
+MAZE_SUCCESS_ENVS = {"PointMaze_UMazeDense-v3", "AntMaze_UMazeDense-v5", "MetaWorldReach-v0", "MetaWorldPush-v0", "MetaWorldPickPlace-v0", "MetaWorldMT10-v0"}
 
 def metric_file_sort_key(filename):
     """Sort results/success files by their saved iteration range.
@@ -108,10 +111,10 @@ file_name_list = [
     # ["SAC_plot_2", "sac_plot_2_out", "SAC_pretrain_2"],
     # ["SAC_plot_3", "sac_plot_3_out", "SAC_pretrain_3"],
     # ["SAC_plot_4", "sac_plot_4_out", "SAC_pretrain_4"],
-    ["PPO_normal_training_1"],
-    ["PPO_normal_training_2"],
-    ["PPO_normal_training_3"],
-    ["PPO_normal_training_4"],
+    # ["PPO_normal_training_1"],
+    # ["PPO_normal_training_2"],
+    # ["PPO_normal_training_3"],
+    # ["PPO_normal_training_4"],
     # ["PPO_normal_training_5"],
     # ["PPO_normal_training_6"],
     # ["PPO_normal_training_7"],
@@ -125,8 +128,8 @@ file_name_list = [
     # ["PPO_normal_training_7", "PPO_normal_training_4"],
     ["PPO_pretrain_1"],
     ["PPO_pretrain_2"],
-    ["PPO_pretrain_3"],
-    ["PPO_pretrain_4"],
+    # ["PPO_pretrain_3"],
+    # ["PPO_pretrain_4"],
     # ["PPO_upper_bound_1"],
     # ["PPO_upper_bound_2"],
     # ["PPO_upper_bound_3"],
@@ -355,7 +358,9 @@ for file_name in file_name_list:
 
         # Go through each line and extract the reward if it's a reward line
         for line in lines:
-            if line.startswith("avg 3 return on policy"):
+            if line.startswith("avg 3 return on policy") or (
+                env == "MetaWorldMT10-v0" and line.startswith("avg 30 return on policy")
+            ):
                 # Existing environments keep the original parser. If maze success is
                 # printed on the same line, exclude that field from reward parsing.
                 reward_text = line
