@@ -1,0 +1,1491 @@
+No devices were found
+Setting seed -  3
+Creating multiple envs -  10
+---------------------------------
+Environment created
+Box(-1.0, 1.0, (4,), float32) Box([-0.525   0.348  -0.0525 -1.        -inf    -inf    -inf    -inf    -inf
+    -inf    -inf    -inf    -inf    -inf    -inf    -inf    -inf    -inf
+ -0.525   0.348  -0.0525 -1.        -inf    -inf    -inf    -inf    -inf
+    -inf    -inf    -inf    -inf    -inf    -inf    -inf    -inf    -inf
+  0.      0.      0.      0.      0.      0.      0.      0.      0.
+  0.      0.      0.      0.    ], [0.525 1.025 0.7   1.      inf   inf   inf   inf   inf   inf   inf   inf
+   inf   inf   inf   inf   inf   inf 0.525 1.025 0.7   1.      inf   inf
+   inf   inf   inf   inf   inf   inf   inf   inf   inf   inf   inf   inf
+ 0.    0.    0.    1.    1.    1.    1.    1.    1.    1.    1.    1.
+ 1.   ], (49,), float32)
+Using env_name:  MetaWorldMT10-v0
+Loading Initial saved model
+Model loaded
+Starting evaluation
+24
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.018624590763919008
+avg return on 30 trajectories of agent0: 1086.3415611996506, Success rate: 0.10
+avg return on 30 trajectories of agent1: 1087.9245456363692, Success rate: 0.13
+avg return on 30 trajectories of agent2: 1093.4114872871965, Success rate: 0.13
+avg return on 30 trajectories of agent3: 1078.6810120048058, Success rate: 0.20
+avg return on 30 trajectories of agent4: 1119.1125076637243, Success rate: 0.13
+avg return on 30 trajectories of agent5: 1123.175567874587, Success rate: 0.10
+avg return on 30 trajectories of agent6: 1094.8502621825116, Success rate: 0.17
+avg return on 30 trajectories of agent7: 1086.9002880702571, Success rate: 0.17
+avg return on 30 trajectories of agent8: 1069.8987379699536, Success rate: 0.13
+avg return on 30 trajectories of agent9: 1028.114943192961, Success rate: 0.13
+avg return on 30 trajectories of agent10: 954.7155809666684, Success rate: 0.13
+avg return on 30 trajectories of agent11: 935.5352092363753, Success rate: 0.07
+avg return on 30 trajectories of agent12: 1056.033740377078, Success rate: 0.07
+avg return on 30 trajectories of agent13: 1084.5453963081482, Success rate: 0.07
+avg return on 30 trajectories of agent14: 1067.1037087905784, Success rate: 0.10
+avg return on 30 trajectories of agent15: 1061.917022473734, Success rate: 0.10
+avg return on 30 trajectories of agent16: 1052.4830608160266, Success rate: 0.10
+avg return on 30 trajectories of agent17: 1088.1407678519108, Success rate: 0.07
+avg return on 30 trajectories of agent18: 1066.573791496119, Success rate: 0.10
+avg return on 30 trajectories of agent19: 1058.5029526447709, Success rate: 0.10
+avg cum rews: 1064.6981072021713, std: 45.375253216671105
+avg success rate: 0.12, std: 0.04
+the best agent: 5, best agent cum rewards: 1123.175567874587, best agent success rate: 0.1
+25
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.02777543178593251
+avg return on 30 trajectories of agent0: 1121.5447375423148, Success rate: 0.07
+avg return on 30 trajectories of agent1: 1273.0105349358855, Success rate: 0.13
+avg return on 30 trajectories of agent2: 1264.5881867300466, Success rate: 0.13
+avg return on 30 trajectories of agent3: 1093.8939961008432, Success rate: 0.13
+avg return on 30 trajectories of agent4: 1076.8646440789103, Success rate: 0.07
+avg return on 30 trajectories of agent5: 1054.1110281818005, Success rate: 0.13
+avg return on 30 trajectories of agent6: 1057.1257279096287, Success rate: 0.13
+avg return on 30 trajectories of agent7: 1041.944611770675, Success rate: 0.13
+avg return on 30 trajectories of agent8: 1437.1506248311894, Success rate: 0.17
+avg return on 30 trajectories of agent9: 1118.0302222837379, Success rate: 0.07
+avg return on 30 trajectories of agent10: 1113.6780898789564, Success rate: 0.07
+avg return on 30 trajectories of agent11: 1102.1296516968168, Success rate: 0.07
+avg return on 30 trajectories of agent12: 1074.0809438977124, Success rate: 0.07
+avg return on 30 trajectories of agent13: 1059.119983492533, Success rate: 0.07
+avg return on 30 trajectories of agent14: 1036.471700086396, Success rate: 0.03
+avg return on 30 trajectories of agent15: 1018.4160404264753, Success rate: 0.03
+avg return on 30 trajectories of agent16: 1104.314834946298, Success rate: 0.10
+avg return on 30 trajectories of agent17: 1400.243412331629, Success rate: 0.10
+avg return on 30 trajectories of agent18: 1363.886640294018, Success rate: 0.10
+avg return on 30 trajectories of agent19: 1350.1352881151265, Success rate: 0.10
+avg cum rews: 1158.0370449765499, std: 131.8327808167281
+avg success rate: 0.10, std: 0.04
+the best agent: 8, best agent cum rewards: 1437.1506248311894, best agent success rate: 0.16666666666666666
+26
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.029837621127234586
+avg return on 30 trajectories of agent0: 1627.2781353740777, Success rate: 0.23
+avg return on 30 trajectories of agent1: 1454.8691975242677, Success rate: 0.23
+avg return on 30 trajectories of agent2: 1301.908035899816, Success rate: 0.23
+avg return on 30 trajectories of agent3: 1423.800720885703, Success rate: 0.23
+avg return on 30 trajectories of agent4: 1415.450187208261, Success rate: 0.23
+avg return on 30 trajectories of agent5: 1235.5934794466457, Success rate: 0.17
+avg return on 30 trajectories of agent6: 1146.252538815545, Success rate: 0.13
+avg return on 30 trajectories of agent7: 989.1571598294792, Success rate: 0.13
+avg return on 30 trajectories of agent8: 1102.4827970016677, Success rate: 0.17
+avg return on 30 trajectories of agent9: 1291.2664977855798, Success rate: 0.23
+avg return on 30 trajectories of agent10: 1097.0004283759285, Success rate: 0.13
+avg return on 30 trajectories of agent11: 1097.8297333981525, Success rate: 0.13
+avg return on 30 trajectories of agent12: 1432.9636163048954, Success rate: 0.23
+avg return on 30 trajectories of agent13: 1462.5510173985524, Success rate: 0.23
+avg return on 30 trajectories of agent14: 1294.7665635951346, Success rate: 0.20
+avg return on 30 trajectories of agent15: 1483.0798747569147, Success rate: 0.20
+avg return on 30 trajectories of agent16: 1408.442047088746, Success rate: 0.27
+avg return on 30 trajectories of agent17: 1391.8754909005154, Success rate: 0.23
+avg return on 30 trajectories of agent18: 1058.492046374729, Success rate: 0.17
+avg return on 30 trajectories of agent19: 1041.3933052662915, Success rate: 0.17
+avg cum rews: 1287.822643661545, std: 176.83629290499584
+avg success rate: 0.20, std: 0.04
+the best agent: 0, best agent cum rewards: 1627.2781353740777, best agent success rate: 0.23333333333333334
+27
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.030873509326061373
+avg return on 30 trajectories of agent0: 1148.3929142354375, Success rate: 0.17
+avg return on 30 trajectories of agent1: 1314.7469599897204, Success rate: 0.20
+avg return on 30 trajectories of agent2: 1647.8047677456036, Success rate: 0.27
+avg return on 30 trajectories of agent3: 1378.17889034659, Success rate: 0.23
+avg return on 30 trajectories of agent4: 1453.3001791119896, Success rate: 0.20
+avg return on 30 trajectories of agent5: 1618.0989647064189, Success rate: 0.23
+avg return on 30 trajectories of agent6: 1291.2142420964578, Success rate: 0.17
+avg return on 30 trajectories of agent7: 1290.7381450446517, Success rate: 0.17
+avg return on 30 trajectories of agent8: 1328.6201463535815, Success rate: 0.20
+avg return on 30 trajectories of agent9: 1171.183747599479, Success rate: 0.17
+avg return on 30 trajectories of agent10: 1332.0929322140664, Success rate: 0.20
+avg return on 30 trajectories of agent11: 1328.0758611591748, Success rate: 0.20
+avg return on 30 trajectories of agent12: 1286.0086873081646, Success rate: 0.13
+avg return on 30 trajectories of agent13: 1261.2772647645472, Success rate: 0.10
+avg return on 30 trajectories of agent14: 1067.4170968733358, Success rate: 0.07
+avg return on 30 trajectories of agent15: 1043.0859838141255, Success rate: 0.07
+avg return on 30 trajectories of agent16: 1659.8883628224794, Success rate: 0.27
+avg return on 30 trajectories of agent17: 1491.6631679816996, Success rate: 0.23
+avg return on 30 trajectories of agent18: 1476.8791829183892, Success rate: 0.23
+avg return on 30 trajectories of agent19: 1468.2736935849841, Success rate: 0.23
+avg cum rews: 1352.8470595335448, std: 171.19570246817696
+avg success rate: 0.19, std: 0.06
+the best agent: 16, best agent cum rewards: 1659.8883628224794, best agent success rate: 0.26666666666666666
+28
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.025015546696284696
+avg return on 30 trajectories of agent0: 1136.3871630847648, Success rate: 0.07
+avg return on 30 trajectories of agent1: 1153.4372440363154, Success rate: 0.10
+avg return on 30 trajectories of agent2: 1178.2311938949426, Success rate: 0.13
+avg return on 30 trajectories of agent3: 1185.9647222360743, Success rate: 0.17
+avg return on 30 trajectories of agent4: 1296.9005153836579, Success rate: 0.13
+avg return on 30 trajectories of agent5: 1182.0666545220033, Success rate: 0.17
+avg return on 30 trajectories of agent6: 1362.2990739949119, Success rate: 0.20
+avg return on 30 trajectories of agent7: 1195.0661494495907, Success rate: 0.17
+avg return on 30 trajectories of agent8: 1152.7147946061175, Success rate: 0.10
+avg return on 30 trajectories of agent9: 1167.1112141658184, Success rate: 0.13
+avg return on 30 trajectories of agent10: 1384.695218672083, Success rate: 0.20
+avg return on 30 trajectories of agent11: 1395.2816838387996, Success rate: 0.20
+avg return on 30 trajectories of agent12: 1193.9899365389836, Success rate: 0.17
+avg return on 30 trajectories of agent13: 1142.8752761365308, Success rate: 0.17
+avg return on 30 trajectories of agent14: 1127.8782596339636, Success rate: 0.10
+avg return on 30 trajectories of agent15: 1273.5114278639091, Success rate: 0.10
+avg return on 30 trajectories of agent16: 1541.4440271748442, Success rate: 0.23
+avg return on 30 trajectories of agent17: 1536.2673746037558, Success rate: 0.23
+avg return on 30 trajectories of agent18: 1531.6806424000247, Success rate: 0.23
+avg return on 30 trajectories of agent19: 1514.1604262677051, Success rate: 0.23
+avg cum rews: 1282.5981499252398, std: 147.36881604714796
+avg success rate: 0.16, std: 0.05
+the best agent: 16, best agent cum rewards: 1541.4440271748442, best agent success rate: 0.23333333333333334
+29
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.028885665299863673
+avg return on 30 trajectories of agent0: 1307.5169191005714, Success rate: 0.13
+avg return on 30 trajectories of agent1: 1137.3478182947144, Success rate: 0.10
+avg return on 30 trajectories of agent2: 1127.1677647229974, Success rate: 0.10
+avg return on 30 trajectories of agent3: 1257.6977519554646, Success rate: 0.10
+avg return on 30 trajectories of agent4: 1488.18430547317, Success rate: 0.13
+avg return on 30 trajectories of agent5: 1652.6644796755909, Success rate: 0.17
+avg return on 30 trajectories of agent6: 1494.4533599197932, Success rate: 0.13
+avg return on 30 trajectories of agent7: 1501.1613586043413, Success rate: 0.13
+avg return on 30 trajectories of agent8: 1181.6525355150127, Success rate: 0.20
+avg return on 30 trajectories of agent9: 1509.3911647560199, Success rate: 0.27
+avg return on 30 trajectories of agent10: 1548.7832765197898, Success rate: 0.27
+avg return on 30 trajectories of agent11: 1720.6739615041345, Success rate: 0.30
+avg return on 30 trajectories of agent12: 1376.9113936866593, Success rate: 0.23
+avg return on 30 trajectories of agent13: 1506.9448826656476, Success rate: 0.27
+avg return on 30 trajectories of agent14: 1501.5455972817872, Success rate: 0.23
+avg return on 30 trajectories of agent15: 1325.2938551201378, Success rate: 0.20
+avg return on 30 trajectories of agent16: 1159.944952949688, Success rate: 0.17
+avg return on 30 trajectories of agent17: 1489.4737985759748, Success rate: 0.23
+avg return on 30 trajectories of agent18: 1274.4265668428754, Success rate: 0.10
+avg return on 30 trajectories of agent19: 1097.0666061767954, Success rate: 0.07
+avg cum rews: 1382.9151174670583, std: 179.2766116022222
+avg success rate: 0.18, std: 0.07
+the best agent: 11, best agent cum rewards: 1720.6739615041345, best agent success rate: 0.3
+30
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.030928463080251233
+avg return on 30 trajectories of agent0: 1332.6459226854386, Success rate: 0.13
+avg return on 30 trajectories of agent1: 1341.453412887182, Success rate: 0.13
+avg return on 30 trajectories of agent2: 1188.8725654346695, Success rate: 0.17
+avg return on 30 trajectories of agent3: 1362.8778623255994, Success rate: 0.23
+avg return on 30 trajectories of agent4: 1172.418850130384, Success rate: 0.10
+avg return on 30 trajectories of agent5: 1310.7895102242692, Success rate: 0.17
+avg return on 30 trajectories of agent6: 1315.9027698149205, Success rate: 0.20
+avg return on 30 trajectories of agent7: 1326.224108705225, Success rate: 0.23
+avg return on 30 trajectories of agent8: 1349.853828240178, Success rate: 0.17
+avg return on 30 trajectories of agent9: 1186.212651080208, Success rate: 0.07
+avg return on 30 trajectories of agent10: 1349.79411673181, Success rate: 0.10
+avg return on 30 trajectories of agent11: 1523.9774995942562, Success rate: 0.17
+avg return on 30 trajectories of agent12: 1349.6169254450315, Success rate: 0.20
+avg return on 30 trajectories of agent13: 1183.2944325806334, Success rate: 0.10
+avg return on 30 trajectories of agent14: 1160.2970916476772, Success rate: 0.10
+avg return on 30 trajectories of agent15: 1460.3794838255203, Success rate: 0.13
+avg return on 30 trajectories of agent16: 1350.3229853006785, Success rate: 0.17
+avg return on 30 trajectories of agent17: 1178.452107755561, Success rate: 0.07
+avg return on 30 trajectories of agent18: 1316.8402353694182, Success rate: 0.10
+avg return on 30 trajectories of agent19: 1130.2175655221386, Success rate: 0.07
+avg cum rews: 1294.5221962650398, std: 102.86780927464729
+avg success rate: 0.14, std: 0.05
+the best agent: 11, best agent cum rewards: 1523.9774995942562, best agent success rate: 0.16666666666666666
+31
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.027939534540559186
+avg return on 30 trajectories of agent0: 1242.8076860551666, Success rate: 0.17
+avg return on 30 trajectories of agent1: 1395.0737238020695, Success rate: 0.20
+avg return on 30 trajectories of agent2: 1230.149355295034, Success rate: 0.17
+avg return on 30 trajectories of agent3: 1386.6542220606964, Success rate: 0.17
+avg return on 30 trajectories of agent4: 1230.3026130697328, Success rate: 0.17
+avg return on 30 trajectories of agent5: 1383.2383258951884, Success rate: 0.17
+avg return on 30 trajectories of agent6: 1381.0655726816233, Success rate: 0.10
+avg return on 30 trajectories of agent7: 1231.648819678397, Success rate: 0.10
+avg return on 30 trajectories of agent8: 1295.7066831304494, Success rate: 0.27
+avg return on 30 trajectories of agent9: 1415.821095822244, Success rate: 0.20
+avg return on 30 trajectories of agent10: 1428.1321589124634, Success rate: 0.23
+avg return on 30 trajectories of agent11: 1555.3347347661593, Success rate: 0.23
+avg return on 30 trajectories of agent12: 1541.2412257142935, Success rate: 0.20
+avg return on 30 trajectories of agent13: 1542.0052795023116, Success rate: 0.17
+avg return on 30 trajectories of agent14: 1399.6003992618212, Success rate: 0.17
+avg return on 30 trajectories of agent15: 1508.3938239387417, Success rate: 0.13
+avg return on 30 trajectories of agent16: 1415.0921320140997, Success rate: 0.23
+avg return on 30 trajectories of agent17: 1433.4943898555503, Success rate: 0.27
+avg return on 30 trajectories of agent18: 1411.03804229211, Success rate: 0.27
+avg return on 30 trajectories of agent19: 1549.4052787049238, Success rate: 0.23
+avg cum rews: 1398.8102781226537, std: 105.64483212223602
+avg success rate: 0.19, std: 0.05
+the best agent: 11, best agent cum rewards: 1555.3347347661593, best agent success rate: 0.23333333333333334
+32
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.026017688438371232
+avg return on 30 trajectories of agent0: 1579.6413291549004, Success rate: 0.27
+avg return on 30 trajectories of agent1: 1440.2944850003385, Success rate: 0.27
+avg return on 30 trajectories of agent2: 1410.5178784038474, Success rate: 0.23
+avg return on 30 trajectories of agent3: 1578.6435859531928, Success rate: 0.27
+avg return on 30 trajectories of agent4: 1590.145654868358, Success rate: 0.27
+avg return on 30 trajectories of agent5: 1449.9433756928386, Success rate: 0.27
+avg return on 30 trajectories of agent6: 1290.7482457590836, Success rate: 0.20
+avg return on 30 trajectories of agent7: 1270.3936641534906, Success rate: 0.17
+avg return on 30 trajectories of agent8: 1441.4864526980814, Success rate: 0.27
+avg return on 30 trajectories of agent9: 1419.4290817193687, Success rate: 0.23
+avg return on 30 trajectories of agent10: 1590.43927518731, Success rate: 0.27
+avg return on 30 trajectories of agent11: 1245.8807464988156, Success rate: 0.20
+avg return on 30 trajectories of agent12: 1446.4037135882484, Success rate: 0.23
+avg return on 30 trajectories of agent13: 1300.3529929421882, Success rate: 0.23
+avg return on 30 trajectories of agent14: 1445.1308593300585, Success rate: 0.23
+avg return on 30 trajectories of agent15: 1300.6865450317414, Success rate: 0.20
+avg return on 30 trajectories of agent16: 1605.9959019605978, Success rate: 0.30
+avg return on 30 trajectories of agent17: 1449.624048944792, Success rate: 0.23
+avg return on 30 trajectories of agent18: 1443.3517184117566, Success rate: 0.23
+avg return on 30 trajectories of agent19: 1303.084545579345, Success rate: 0.20
+avg cum rews: 1430.1097050439178, std: 113.45494266964296
+avg success rate: 0.24, std: 0.03
+the best agent: 16, best agent cum rewards: 1605.9959019605978, best agent success rate: 0.3
+33
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.023915484221404073
+avg return on 30 trajectories of agent0: 1270.0377775248865, Success rate: 0.20
+avg return on 30 trajectories of agent1: 1454.6507999414343, Success rate: 0.27
+avg return on 30 trajectories of agent2: 1460.6380905355552, Success rate: 0.27
+avg return on 30 trajectories of agent3: 1288.438306801496, Success rate: 0.17
+avg return on 30 trajectories of agent4: 1437.2388752993693, Success rate: 0.23
+avg return on 30 trajectories of agent5: 1280.719931915692, Success rate: 0.20
+avg return on 30 trajectories of agent6: 1283.5185019788655, Success rate: 0.20
+avg return on 30 trajectories of agent7: 1222.9084031491072, Success rate: 0.20
+avg return on 30 trajectories of agent8: 1454.26185110493, Success rate: 0.27
+avg return on 30 trajectories of agent9: 1296.6332922656743, Success rate: 0.23
+avg return on 30 trajectories of agent10: 1209.510004216732, Success rate: 0.20
+avg return on 30 trajectories of agent11: 1334.0406182658148, Success rate: 0.23
+avg return on 30 trajectories of agent12: 1436.2706084359118, Success rate: 0.23
+avg return on 30 trajectories of agent13: 1298.6503046016421, Success rate: 0.27
+avg return on 30 trajectories of agent14: 1450.0192929302352, Success rate: 0.30
+avg return on 30 trajectories of agent15: 1423.606392091983, Success rate: 0.27
+avg return on 30 trajectories of agent16: 1445.231062759788, Success rate: 0.23
+avg return on 30 trajectories of agent17: 1440.3948873782256, Success rate: 0.23
+avg return on 30 trajectories of agent18: 1431.3094334332047, Success rate: 0.23
+avg return on 30 trajectories of agent19: 1409.1873271664804, Success rate: 0.23
+avg cum rews: 1366.3632880898513, std: 85.89820965732653
+avg success rate: 0.23, std: 0.03
+the best agent: 2, best agent cum rewards: 1460.6380905355552, best agent success rate: 0.26666666666666666
+34
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.02784396862864592
+avg return on 30 trajectories of agent0: 1455.1517062915345, Success rate: 0.23
+avg return on 30 trajectories of agent1: 1282.8092621179342, Success rate: 0.17
+avg return on 30 trajectories of agent2: 1249.0693404451215, Success rate: 0.17
+avg return on 30 trajectories of agent3: 1219.7092255622658, Success rate: 0.20
+avg return on 30 trajectories of agent4: 1462.4754338111495, Success rate: 0.23
+avg return on 30 trajectories of agent5: 1285.2654272877892, Success rate: 0.17
+avg return on 30 trajectories of agent6: 1249.3245397392166, Success rate: 0.17
+avg return on 30 trajectories of agent7: 1185.5500151404963, Success rate: 0.20
+avg return on 30 trajectories of agent8: 1599.2317770284658, Success rate: 0.23
+avg return on 30 trajectories of agent9: 1455.2941764239602, Success rate: 0.27
+avg return on 30 trajectories of agent10: 1618.1248758630454, Success rate: 0.30
+avg return on 30 trajectories of agent11: 1435.745374803065, Success rate: 0.23
+avg return on 30 trajectories of agent12: 1733.70111309728, Success rate: 0.27
+avg return on 30 trajectories of agent13: 1570.6313996177525, Success rate: 0.23
+avg return on 30 trajectories of agent14: 1707.3376425568329, Success rate: 0.27
+avg return on 30 trajectories of agent15: 1491.4463097471694, Success rate: 0.23
+avg return on 30 trajectories of agent16: 1431.3792207880642, Success rate: 0.23
+avg return on 30 trajectories of agent17: 1408.0314340651437, Success rate: 0.20
+avg return on 30 trajectories of agent18: 1400.8128975417724, Success rate: 0.20
+avg return on 30 trajectories of agent19: 1578.9238384642235, Success rate: 0.27
+avg cum rews: 1441.000750519614, std: 156.86920196469958
+avg success rate: 0.22, std: 0.04
+the best agent: 12, best agent cum rewards: 1733.70111309728, best agent success rate: 0.26666666666666666
+35
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.032662528115496935
+avg return on 30 trajectories of agent0: 1231.5221773401606, Success rate: 0.20
+avg return on 30 trajectories of agent1: 1216.6704026571701, Success rate: 0.20
+avg return on 30 trajectories of agent2: 1216.8901319400393, Success rate: 0.20
+avg return on 30 trajectories of agent3: 1214.2703332212475, Success rate: 0.20
+avg return on 30 trajectories of agent4: 1383.3017071262789, Success rate: 0.20
+avg return on 30 trajectories of agent5: 1216.789366563123, Success rate: 0.17
+avg return on 30 trajectories of agent6: 1212.3108726096405, Success rate: 0.17
+avg return on 30 trajectories of agent7: 1191.6951143249685, Success rate: 0.17
+avg return on 30 trajectories of agent8: 1267.5645362026846, Success rate: 0.17
+avg return on 30 trajectories of agent9: 1268.2208270635058, Success rate: 0.20
+avg return on 30 trajectories of agent10: 1221.1371014107965, Success rate: 0.27
+avg return on 30 trajectories of agent11: 1180.1461473658162, Success rate: 0.23
+avg return on 30 trajectories of agent12: 1404.7189146436074, Success rate: 0.20
+avg return on 30 trajectories of agent13: 1231.0325503141503, Success rate: 0.17
+avg return on 30 trajectories of agent14: 1381.9554430954918, Success rate: 0.20
+avg return on 30 trajectories of agent15: 1376.7142271603575, Success rate: 0.20
+avg return on 30 trajectories of agent16: 1283.66615127107, Success rate: 0.17
+avg return on 30 trajectories of agent17: 1221.596084667351, Success rate: 0.20
+avg return on 30 trajectories of agent18: 1220.2981331145286, Success rate: 0.20
+avg return on 30 trajectories of agent19: 1220.071688596459, Success rate: 0.20
+avg cum rews: 1258.028595534422, std: 68.58057153198266
+avg success rate: 0.20, std: 0.02
+the best agent: 12, best agent cum rewards: 1404.7189146436074, best agent success rate: 0.2
+36
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.02667200702912175
+avg return on 30 trajectories of agent0: 1765.0643156795818, Success rate: 0.27
+avg return on 30 trajectories of agent1: 1465.0350773105872, Success rate: 0.23
+avg return on 30 trajectories of agent2: 1441.5170449249522, Success rate: 0.23
+avg return on 30 trajectories of agent3: 1599.687886212497, Success rate: 0.27
+avg return on 30 trajectories of agent4: 1756.3867294059596, Success rate: 0.27
+avg return on 30 trajectories of agent5: 1600.0155272254694, Success rate: 0.23
+avg return on 30 trajectories of agent6: 1442.1253721890748, Success rate: 0.20
+avg return on 30 trajectories of agent7: 1763.117253898047, Success rate: 0.27
+avg return on 30 trajectories of agent8: 1622.8164794346808, Success rate: 0.27
+avg return on 30 trajectories of agent9: 1580.0184282359337, Success rate: 0.27
+avg return on 30 trajectories of agent10: 1702.0008699661241, Success rate: 0.27
+avg return on 30 trajectories of agent11: 1556.7775439433933, Success rate: 0.27
+avg return on 30 trajectories of agent12: 1261.7022889097848, Success rate: 0.17
+avg return on 30 trajectories of agent13: 1262.3140878859629, Success rate: 0.17
+avg return on 30 trajectories of agent14: 1261.9594522963937, Success rate: 0.17
+avg return on 30 trajectories of agent15: 1586.4480131304545, Success rate: 0.23
+avg return on 30 trajectories of agent16: 1278.3153168025676, Success rate: 0.20
+avg return on 30 trajectories of agent17: 1423.3306460272024, Success rate: 0.20
+avg return on 30 trajectories of agent18: 1262.524634323929, Success rate: 0.17
+avg return on 30 trajectories of agent19: 1439.8502886056729, Success rate: 0.23
+avg cum rews: 1503.5503628204137, std: 171.88245189089773
+avg success rate: 0.23, std: 0.04
+the best agent: 0, best agent cum rewards: 1765.0643156795818, best agent success rate: 0.26666666666666666
+37
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.03137645044827256
+avg return on 30 trajectories of agent0: 1430.5429365936934, Success rate: 0.20
+avg return on 30 trajectories of agent1: 1273.2472364645294, Success rate: 0.17
+avg return on 30 trajectories of agent2: 1434.218897017959, Success rate: 0.20
+avg return on 30 trajectories of agent3: 1722.9996662503718, Success rate: 0.27
+avg return on 30 trajectories of agent4: 1431.714034695308, Success rate: 0.20
+avg return on 30 trajectories of agent5: 1595.1568070796084, Success rate: 0.23
+avg return on 30 trajectories of agent6: 1596.0765552760424, Success rate: 0.23
+avg return on 30 trajectories of agent7: 1597.2889703593978, Success rate: 0.23
+avg return on 30 trajectories of agent8: 1259.5289727505105, Success rate: 0.17
+avg return on 30 trajectories of agent9: 1258.235806721628, Success rate: 0.17
+avg return on 30 trajectories of agent10: 1260.1540311138353, Success rate: 0.17
+avg return on 30 trajectories of agent11: 1423.2858536484657, Success rate: 0.20
+avg return on 30 trajectories of agent12: 1411.7146669326353, Success rate: 0.20
+avg return on 30 trajectories of agent13: 1736.8063075721632, Success rate: 0.27
+avg return on 30 trajectories of agent14: 1571.8627610903693, Success rate: 0.23
+avg return on 30 trajectories of agent15: 1404.1990596488129, Success rate: 0.17
+avg return on 30 trajectories of agent16: 1435.005605667787, Success rate: 0.20
+avg return on 30 trajectories of agent17: 1606.0646293074174, Success rate: 0.23
+avg return on 30 trajectories of agent18: 1282.7548643590994, Success rate: 0.17
+avg return on 30 trajectories of agent19: 1414.9121420446609, Success rate: 0.20
+avg cum rews: 1457.2884902297149, std: 147.31524776245624
+avg success rate: 0.20, std: 0.03
+the best agent: 13, best agent cum rewards: 1736.8063075721632, best agent success rate: 0.26666666666666666
+38
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.02859977842943177
+avg return on 30 trajectories of agent0: 1607.5732405315996, Success rate: 0.23
+avg return on 30 trajectories of agent1: 1604.6832052705624, Success rate: 0.23
+avg return on 30 trajectories of agent2: 1449.4612144763512, Success rate: 0.23
+avg return on 30 trajectories of agent3: 1585.5972732277114, Success rate: 0.23
+avg return on 30 trajectories of agent4: 1612.158229842205, Success rate: 0.23
+avg return on 30 trajectories of agent5: 1460.6091106545534, Success rate: 0.23
+avg return on 30 trajectories of agent6: 1446.6114723366918, Success rate: 0.20
+avg return on 30 trajectories of agent7: 1287.250884174858, Success rate: 0.17
+avg return on 30 trajectories of agent8: 1583.6575180556283, Success rate: 0.23
+avg return on 30 trajectories of agent9: 1256.7984715108964, Success rate: 0.17
+avg return on 30 trajectories of agent10: 1249.0159942315788, Success rate: 0.13
+avg return on 30 trajectories of agent11: 1230.8995495739139, Success rate: 0.13
+avg return on 30 trajectories of agent12: 1606.7778876292386, Success rate: 0.23
+avg return on 30 trajectories of agent13: 1446.2387101778063, Success rate: 0.20
+avg return on 30 trajectories of agent14: 1242.445694272931, Success rate: 0.17
+avg return on 30 trajectories of agent15: 1391.572646406817, Success rate: 0.23
+avg return on 30 trajectories of agent16: 1597.0700219417413, Success rate: 0.23
+avg return on 30 trajectories of agent17: 1591.5262383927154, Success rate: 0.23
+avg return on 30 trajectories of agent18: 1539.8855051443331, Success rate: 0.23
+avg return on 30 trajectories of agent19: 1195.4301187623605, Success rate: 0.17
+avg cum rews: 1449.2631493307247, std: 149.8766341018729
+avg success rate: 0.21, std: 0.04
+the best agent: 4, best agent cum rewards: 1612.158229842205, best agent success rate: 0.23333333333333334
+39
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.028659326009415814
+avg return on 30 trajectories of agent0: 1436.449349733068, Success rate: 0.20
+avg return on 30 trajectories of agent1: 1425.7608315681787, Success rate: 0.20
+avg return on 30 trajectories of agent2: 1260.9568814430895, Success rate: 0.17
+avg return on 30 trajectories of agent3: 1253.0182954382124, Success rate: 0.17
+avg return on 30 trajectories of agent4: 1450.919673318748, Success rate: 0.20
+avg return on 30 trajectories of agent5: 1607.1099771841684, Success rate: 0.23
+avg return on 30 trajectories of agent6: 1446.8297533742052, Success rate: 0.20
+avg return on 30 trajectories of agent7: 1462.751438960612, Success rate: 0.23
+avg return on 30 trajectories of agent8: 1326.8649286564462, Success rate: 0.20
+avg return on 30 trajectories of agent9: 1616.5437447968552, Success rate: 0.23
+avg return on 30 trajectories of agent10: 1613.669872510882, Success rate: 0.23
+avg return on 30 trajectories of agent11: 1545.0396377434931, Success rate: 0.27
+avg return on 30 trajectories of agent12: 1447.5035657517185, Success rate: 0.20
+avg return on 30 trajectories of agent13: 1465.746320804267, Success rate: 0.23
+avg return on 30 trajectories of agent14: 1448.5491555540798, Success rate: 0.20
+avg return on 30 trajectories of agent15: 1267.978528773969, Success rate: 0.17
+avg return on 30 trajectories of agent16: 1284.5210594212083, Success rate: 0.17
+avg return on 30 trajectories of agent17: 1445.875316139024, Success rate: 0.20
+avg return on 30 trajectories of agent18: 1282.195499868042, Success rate: 0.17
+avg return on 30 trajectories of agent19: 1279.7154303070515, Success rate: 0.17
+avg cum rews: 1418.399963067366, std: 117.65607630474965
+avg success rate: 0.20, std: 0.03
+the best agent: 9, best agent cum rewards: 1616.5437447968552, best agent success rate: 0.23333333333333334
+40
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.03253433635683101
+avg return on 30 trajectories of agent0: 1455.59720150185, Success rate: 0.20
+avg return on 30 trajectories of agent1: 1617.0681457209052, Success rate: 0.23
+avg return on 30 trajectories of agent2: 1618.0229101586888, Success rate: 0.27
+avg return on 30 trajectories of agent3: 1618.6013567616305, Success rate: 0.27
+avg return on 30 trajectories of agent4: 1482.6074060259466, Success rate: 0.23
+avg return on 30 trajectories of agent5: 1456.3848433124797, Success rate: 0.20
+avg return on 30 trajectories of agent6: 1622.3094202286322, Success rate: 0.23
+avg return on 30 trajectories of agent7: 1622.0142181680944, Success rate: 0.23
+avg return on 30 trajectories of agent8: 1610.9079668196105, Success rate: 0.23
+avg return on 30 trajectories of agent9: 1280.3131090181155, Success rate: 0.17
+avg return on 30 trajectories of agent10: 1299.2257999049027, Success rate: 0.20
+avg return on 30 trajectories of agent11: 1425.2133270306513, Success rate: 0.20
+avg return on 30 trajectories of agent12: 1455.2101188065644, Success rate: 0.20
+avg return on 30 trajectories of agent13: 1290.4765366141478, Success rate: 0.17
+avg return on 30 trajectories of agent14: 1288.673785132861, Success rate: 0.17
+avg return on 30 trajectories of agent15: 1287.0345019030647, Success rate: 0.17
+avg return on 30 trajectories of agent16: 1451.0970629448107, Success rate: 0.20
+avg return on 30 trajectories of agent17: 1292.6816993979328, Success rate: 0.17
+avg return on 30 trajectories of agent18: 1293.7327893190509, Success rate: 0.17
+avg return on 30 trajectories of agent19: 1294.5809640270768, Success rate: 0.17
+avg cum rews: 1438.087658139851, std: 136.30157245778375
+avg success rate: 0.20, std: 0.03
+the best agent: 6, best agent cum rewards: 1622.3094202286322, best agent success rate: 0.23333333333333334
+41
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.031962779073387966
+avg return on 30 trajectories of agent0: 1767.0367677640265, Success rate: 0.27
+avg return on 30 trajectories of agent1: 1764.9944320677566, Success rate: 0.27
+avg return on 30 trajectories of agent2: 1604.8495945478105, Success rate: 0.23
+avg return on 30 trajectories of agent3: 1443.6491885745572, Success rate: 0.20
+avg return on 30 trajectories of agent4: 1608.7879852065753, Success rate: 0.23
+avg return on 30 trajectories of agent5: 1447.8591881830653, Success rate: 0.20
+avg return on 30 trajectories of agent6: 1289.316105180129, Success rate: 0.17
+avg return on 30 trajectories of agent7: 1290.4175213816613, Success rate: 0.17
+avg return on 30 trajectories of agent8: 1446.791075921353, Success rate: 0.20
+avg return on 30 trajectories of agent9: 1447.535590110593, Success rate: 0.20
+avg return on 30 trajectories of agent10: 1603.4411151118316, Success rate: 0.23
+avg return on 30 trajectories of agent11: 1761.8417098163961, Success rate: 0.27
+avg return on 30 trajectories of agent12: 1448.434412091667, Success rate: 0.20
+avg return on 30 trajectories of agent13: 1448.858330536576, Success rate: 0.20
+avg return on 30 trajectories of agent14: 1604.9954437516358, Success rate: 0.23
+avg return on 30 trajectories of agent15: 1764.043863129369, Success rate: 0.27
+avg return on 30 trajectories of agent16: 1762.8331471761726, Success rate: 0.27
+avg return on 30 trajectories of agent17: 1604.1303529955246, Success rate: 0.23
+avg return on 30 trajectories of agent18: 1445.2269973101038, Success rate: 0.20
+avg return on 30 trajectories of agent19: 1285.1824227390466, Success rate: 0.17
+avg cum rews: 1542.0112621797925, std: 161.7405674105305
+avg success rate: 0.22, std: 0.03
+the best agent: 0, best agent cum rewards: 1767.0367677640265, best agent success rate: 0.26666666666666666
+42
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.027076066140826038
+avg return on 30 trajectories of agent0: 1631.917501598393, Success rate: 0.27
+avg return on 30 trajectories of agent1: 1492.0231340999746, Success rate: 0.27
+avg return on 30 trajectories of agent2: 1624.4341124313219, Success rate: 0.27
+avg return on 30 trajectories of agent3: 1618.8175674426734, Success rate: 0.27
+avg return on 30 trajectories of agent4: 1633.3803142583427, Success rate: 0.27
+avg return on 30 trajectories of agent5: 1632.015841191281, Success rate: 0.27
+avg return on 30 trajectories of agent6: 1615.151653153946, Success rate: 0.27
+avg return on 30 trajectories of agent7: 1456.6978312443514, Success rate: 0.27
+avg return on 30 trajectories of agent8: 1769.275005237957, Success rate: 0.27
+avg return on 30 trajectories of agent9: 1768.4261267559823, Success rate: 0.27
+avg return on 30 trajectories of agent10: 1766.4259686494013, Success rate: 0.27
+avg return on 30 trajectories of agent11: 1760.201831350822, Success rate: 0.27
+avg return on 30 trajectories of agent12: 1621.2025804417867, Success rate: 0.27
+avg return on 30 trajectories of agent13: 1769.2090131935827, Success rate: 0.27
+avg return on 30 trajectories of agent14: 1623.2669483321722, Success rate: 0.27
+avg return on 30 trajectories of agent15: 1773.2238497207195, Success rate: 0.27
+avg return on 30 trajectories of agent16: 1622.3346145106223, Success rate: 0.27
+avg return on 30 trajectories of agent17: 1771.407380887446, Success rate: 0.27
+avg return on 30 trajectories of agent18: 1772.70362076787, Success rate: 0.27
+avg return on 30 trajectories of agent19: 1626.1050367299888, Success rate: 0.27
+avg cum rews: 1667.4109965999317, std: 93.82121303036345
+avg success rate: 0.27, std: 0.00
+the best agent: 15, best agent cum rewards: 1773.2238497207195, best agent success rate: 0.26666666666666666
+43
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.026352980349816767
+avg return on 30 trajectories of agent0: 1389.490757830067, Success rate: 0.20
+avg return on 30 trajectories of agent1: 1704.862817839445, Success rate: 0.27
+avg return on 30 trajectories of agent2: 1544.4041478700892, Success rate: 0.27
+avg return on 30 trajectories of agent3: 1531.7130958385922, Success rate: 0.27
+avg return on 30 trajectories of agent4: 1237.7621459960426, Success rate: 0.17
+avg return on 30 trajectories of agent5: 1400.6973699762732, Success rate: 0.20
+avg return on 30 trajectories of agent6: 1406.7797689764002, Success rate: 0.20
+avg return on 30 trajectories of agent7: 1268.0492041697387, Success rate: 0.17
+avg return on 30 trajectories of agent8: 1454.5838951393428, Success rate: 0.20
+avg return on 30 trajectories of agent9: 1282.5952958251305, Success rate: 0.17
+avg return on 30 trajectories of agent10: 1457.3968304679192, Success rate: 0.20
+avg return on 30 trajectories of agent11: 1298.7079283573232, Success rate: 0.17
+avg return on 30 trajectories of agent12: 1770.7279863449837, Success rate: 0.27
+avg return on 30 trajectories of agent13: 1758.4071219189666, Success rate: 0.27
+avg return on 30 trajectories of agent14: 1610.49042310843, Success rate: 0.27
+avg return on 30 trajectories of agent15: 1609.71733365689, Success rate: 0.27
+avg return on 30 trajectories of agent16: 1451.1536702443075, Success rate: 0.20
+avg return on 30 trajectories of agent17: 1452.0881785782103, Success rate: 0.20
+avg return on 30 trajectories of agent18: 1451.4315018348445, Success rate: 0.23
+avg return on 30 trajectories of agent19: 1450.9303175388345, Success rate: 0.23
+avg cum rews: 1476.5994895755916, std: 150.4577733013761
+avg success rate: 0.22, std: 0.04
+the best agent: 12, best agent cum rewards: 1770.7279863449837, best agent success rate: 0.26666666666666666
+44
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.029968999099950166
+avg return on 30 trajectories of agent0: 1443.5753184547996, Success rate: 0.23
+avg return on 30 trajectories of agent1: 1446.3342445940061, Success rate: 0.23
+avg return on 30 trajectories of agent2: 1448.7514314863095, Success rate: 0.23
+avg return on 30 trajectories of agent3: 1294.1718719085673, Success rate: 0.20
+avg return on 30 trajectories of agent4: 1441.508367289442, Success rate: 0.23
+avg return on 30 trajectories of agent5: 1441.7697597411584, Success rate: 0.23
+avg return on 30 trajectories of agent6: 1442.148331153356, Success rate: 0.23
+avg return on 30 trajectories of agent7: 1440.2565536674488, Success rate: 0.23
+avg return on 30 trajectories of agent8: 1440.690132890941, Success rate: 0.23
+avg return on 30 trajectories of agent9: 1424.0978857147452, Success rate: 0.23
+avg return on 30 trajectories of agent10: 1288.7765489320263, Success rate: 0.20
+avg return on 30 trajectories of agent11: 1289.6707006865363, Success rate: 0.20
+avg return on 30 trajectories of agent12: 1290.0021431015632, Success rate: 0.20
+avg return on 30 trajectories of agent13: 1288.9832575754106, Success rate: 0.20
+avg return on 30 trajectories of agent14: 1288.400776826133, Success rate: 0.20
+avg return on 30 trajectories of agent15: 1289.4974503835251, Success rate: 0.20
+avg return on 30 trajectories of agent16: 1427.525023007897, Success rate: 0.23
+avg return on 30 trajectories of agent17: 1288.3018802949775, Success rate: 0.20
+avg return on 30 trajectories of agent18: 1266.5694164934462, Success rate: 0.20
+avg return on 30 trajectories of agent19: 1229.1349063428413, Success rate: 0.20
+avg cum rews: 1360.5083000272566, std: 80.43523982135807
+avg success rate: 0.22, std: 0.02
+the best agent: 2, best agent cum rewards: 1448.7514314863095, best agent success rate: 0.23333333333333334
+45
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.022333046172428546
+avg return on 30 trajectories of agent0: 1582.3419124319578, Success rate: 0.27
+avg return on 30 trajectories of agent1: 1284.957898231733, Success rate: 0.20
+avg return on 30 trajectories of agent2: 1444.5005706217232, Success rate: 0.23
+avg return on 30 trajectories of agent3: 1288.453653139152, Success rate: 0.20
+avg return on 30 trajectories of agent4: 1293.2271644502148, Success rate: 0.20
+avg return on 30 trajectories of agent5: 1447.846422124918, Success rate: 0.23
+avg return on 30 trajectories of agent6: 1447.8326075431253, Success rate: 0.23
+avg return on 30 trajectories of agent7: 1293.609494156018, Success rate: 0.20
+avg return on 30 trajectories of agent8: 1439.557818189219, Success rate: 0.23
+avg return on 30 trajectories of agent9: 1441.1274716818568, Success rate: 0.23
+avg return on 30 trajectories of agent10: 1290.0884724116454, Success rate: 0.20
+avg return on 30 trajectories of agent11: 1290.970716903525, Success rate: 0.20
+avg return on 30 trajectories of agent12: 1288.7760713744183, Success rate: 0.20
+avg return on 30 trajectories of agent13: 1287.66755211127, Success rate: 0.20
+avg return on 30 trajectories of agent14: 1286.5989285074706, Success rate: 0.20
+avg return on 30 trajectories of agent15: 1284.409992872899, Success rate: 0.20
+avg return on 30 trajectories of agent16: 1593.773661024007, Success rate: 0.23
+avg return on 30 trajectories of agent17: 1288.0583451575258, Success rate: 0.20
+avg return on 30 trajectories of agent18: 1287.3372135313823, Success rate: 0.20
+avg return on 30 trajectories of agent19: 1285.8409544573246, Success rate: 0.20
+avg cum rews: 1357.3488460460694, std: 101.50347620561877
+avg success rate: 0.21, std: 0.02
+the best agent: 16, best agent cum rewards: 1593.773661024007, best agent success rate: 0.23333333333333334
+46
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.03169466869459116
+avg return on 30 trajectories of agent0: 1239.3416731030454, Success rate: 0.17
+avg return on 30 trajectories of agent1: 1266.0823324813646, Success rate: 0.17
+avg return on 30 trajectories of agent2: 1276.5136134092631, Success rate: 0.17
+avg return on 30 trajectories of agent3: 1281.1478416578607, Success rate: 0.17
+avg return on 30 trajectories of agent4: 1251.6312748300327, Success rate: 0.17
+avg return on 30 trajectories of agent5: 1268.377812294789, Success rate: 0.17
+avg return on 30 trajectories of agent6: 1275.0971567025247, Success rate: 0.17
+avg return on 30 trajectories of agent7: 1278.9504746052257, Success rate: 0.17
+avg return on 30 trajectories of agent8: 1233.9150291842464, Success rate: 0.13
+avg return on 30 trajectories of agent9: 1224.1496973221833, Success rate: 0.10
+avg return on 30 trajectories of agent10: 1219.9081653406224, Success rate: 0.10
+avg return on 30 trajectories of agent11: 1372.9750599319457, Success rate: 0.10
+avg return on 30 trajectories of agent12: 1250.6530054179848, Success rate: 0.17
+avg return on 30 trajectories of agent13: 1246.9578054264268, Success rate: 0.17
+avg return on 30 trajectories of agent14: 1236.7551618601078, Success rate: 0.13
+avg return on 30 trajectories of agent15: 1230.3085994134226, Success rate: 0.10
+avg return on 30 trajectories of agent16: 1270.6975345168244, Success rate: 0.17
+avg return on 30 trajectories of agent17: 1273.331971567801, Success rate: 0.17
+avg return on 30 trajectories of agent18: 1275.5641707598106, Success rate: 0.17
+avg return on 30 trajectories of agent19: 1276.1045805182334, Success rate: 0.17
+avg cum rews: 1262.423148017186, std: 32.09599874146785
+avg success rate: 0.15, std: 0.03
+the best agent: 11, best agent cum rewards: 1372.9750599319457, best agent success rate: 0.1
+47
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.027312541363863203
+avg return on 30 trajectories of agent0: 1275.6545758651264, Success rate: 0.17
+avg return on 30 trajectories of agent1: 1429.1034198525888, Success rate: 0.20
+avg return on 30 trajectories of agent2: 1421.081929636079, Success rate: 0.20
+avg return on 30 trajectories of agent3: 1404.8922331338633, Success rate: 0.20
+avg return on 30 trajectories of agent4: 1437.5369241571639, Success rate: 0.20
+avg return on 30 trajectories of agent5: 1429.58184945592, Success rate: 0.20
+avg return on 30 trajectories of agent6: 1423.5876041580643, Success rate: 0.20
+avg return on 30 trajectories of agent7: 1293.4176425763321, Success rate: 0.20
+avg return on 30 trajectories of agent8: 1422.7841296275303, Success rate: 0.23
+avg return on 30 trajectories of agent9: 1423.7496004636644, Success rate: 0.23
+avg return on 30 trajectories of agent10: 1266.3160021036867, Success rate: 0.20
+avg return on 30 trajectories of agent11: 1266.9789884586066, Success rate: 0.20
+avg return on 30 trajectories of agent12: 1425.893727076633, Success rate: 0.23
+avg return on 30 trajectories of agent13: 1429.0678854340333, Success rate: 0.23
+avg return on 30 trajectories of agent14: 1433.0681782254953, Success rate: 0.23
+avg return on 30 trajectories of agent15: 1435.9896535493615, Success rate: 0.23
+avg return on 30 trajectories of agent16: 1421.524481900705, Success rate: 0.23
+avg return on 30 trajectories of agent17: 1427.167716517133, Success rate: 0.23
+avg return on 30 trajectories of agent18: 1431.1856223772515, Success rate: 0.23
+avg return on 30 trajectories of agent19: 1435.1127846746342, Success rate: 0.23
+avg cum rews: 1396.6847474621936, std: 61.12193718422304
+avg success rate: 0.21, std: 0.02
+the best agent: 4, best agent cum rewards: 1437.5369241571639, best agent success rate: 0.2
+48
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.031114475012755678
+avg return on 30 trajectories of agent0: 1438.909964331911, Success rate: 0.20
+avg return on 30 trajectories of agent1: 1441.5312659221224, Success rate: 0.20
+avg return on 30 trajectories of agent2: 1670.7421701759008, Success rate: 0.27
+avg return on 30 trajectories of agent3: 1547.8327122959572, Success rate: 0.23
+avg return on 30 trajectories of agent4: 1293.2590870441395, Success rate: 0.17
+avg return on 30 trajectories of agent5: 1285.3432500322426, Success rate: 0.17
+avg return on 30 trajectories of agent6: 1287.0197377304935, Success rate: 0.17
+avg return on 30 trajectories of agent7: 1447.4363523723855, Success rate: 0.20
+avg return on 30 trajectories of agent8: 1552.2773686370194, Success rate: 0.23
+avg return on 30 trajectories of agent9: 1550.1077776432687, Success rate: 0.27
+avg return on 30 trajectories of agent10: 1439.3997770158026, Success rate: 0.20
+avg return on 30 trajectories of agent11: 1438.071582942292, Success rate: 0.20
+avg return on 30 trajectories of agent12: 1459.7206837134208, Success rate: 0.20
+avg return on 30 trajectories of agent13: 1319.6397732191535, Success rate: 0.20
+avg return on 30 trajectories of agent14: 1457.685052250664, Success rate: 0.20
+avg return on 30 trajectories of agent15: 1457.3431997842447, Success rate: 0.20
+avg return on 30 trajectories of agent16: 1578.0732256576052, Success rate: 0.23
+avg return on 30 trajectories of agent17: 1700.0578267809499, Success rate: 0.27
+avg return on 30 trajectories of agent18: 1402.6504245622214, Success rate: 0.20
+avg return on 30 trajectories of agent19: 1451.9820561041536, Success rate: 0.23
+avg cum rews: 1460.9541644107974, std: 112.5738862784409
+avg success rate: 0.21, std: 0.03
+the best agent: 17, best agent cum rewards: 1700.0578267809499, best agent success rate: 0.26666666666666666
+49
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.030386044519532425
+avg return on 30 trajectories of agent0: 1285.262169488818, Success rate: 0.20
+avg return on 30 trajectories of agent1: 1288.1978850460366, Success rate: 0.20
+avg return on 30 trajectories of agent2: 1291.9154250025665, Success rate: 0.17
+avg return on 30 trajectories of agent3: 1300.0490974711895, Success rate: 0.20
+avg return on 30 trajectories of agent4: 1285.1354563263797, Success rate: 0.17
+avg return on 30 trajectories of agent5: 1286.2243251514833, Success rate: 0.17
+avg return on 30 trajectories of agent6: 1285.3972773738267, Success rate: 0.17
+avg return on 30 trajectories of agent7: 1432.270458891744, Success rate: 0.20
+avg return on 30 trajectories of agent8: 1548.448817549993, Success rate: 0.23
+avg return on 30 trajectories of agent9: 1549.0131077992492, Success rate: 0.23
+avg return on 30 trajectories of agent10: 1548.9636980355722, Success rate: 0.27
+avg return on 30 trajectories of agent11: 1543.6876606334934, Success rate: 0.27
+avg return on 30 trajectories of agent12: 1417.9471797694039, Success rate: 0.20
+avg return on 30 trajectories of agent13: 1555.009417393806, Success rate: 0.27
+avg return on 30 trajectories of agent14: 1560.6974365108993, Success rate: 0.27
+avg return on 30 trajectories of agent15: 1707.7585045384683, Success rate: 0.27
+avg return on 30 trajectories of agent16: 1543.9443529977045, Success rate: 0.23
+avg return on 30 trajectories of agent17: 1543.6739665908285, Success rate: 0.23
+avg return on 30 trajectories of agent18: 1688.4185173646272, Success rate: 0.27
+avg return on 30 trajectories of agent19: 1677.4429183104537, Success rate: 0.27
+avg cum rews: 1466.9728836123272, std: 146.87287030365724
+avg success rate: 0.22, std: 0.04
+the best agent: 15, best agent cum rewards: 1707.7585045384683, best agent success rate: 0.26666666666666666
+50
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.03152755935820235
+avg return on 30 trajectories of agent0: 1439.9148354199403, Success rate: 0.23
+avg return on 30 trajectories of agent1: 1443.7627503238182, Success rate: 0.23
+avg return on 30 trajectories of agent2: 1555.0958785472135, Success rate: 0.23
+avg return on 30 trajectories of agent3: 1576.2034075202505, Success rate: 0.23
+avg return on 30 trajectories of agent4: 1419.7346801927558, Success rate: 0.20
+avg return on 30 trajectories of agent5: 1291.847586954348, Success rate: 0.20
+avg return on 30 trajectories of agent6: 1392.4085892185537, Success rate: 0.23
+avg return on 30 trajectories of agent7: 1288.7094128018616, Success rate: 0.20
+avg return on 30 trajectories of agent8: 1315.3968994289787, Success rate: 0.23
+avg return on 30 trajectories of agent9: 1442.5298333225742, Success rate: 0.23
+avg return on 30 trajectories of agent10: 1460.4027878077254, Success rate: 0.23
+avg return on 30 trajectories of agent11: 1460.9365822188206, Success rate: 0.23
+avg return on 30 trajectories of agent12: 1282.7235265703525, Success rate: 0.20
+avg return on 30 trajectories of agent13: 1280.4372914167545, Success rate: 0.20
+avg return on 30 trajectories of agent14: 1277.424165474926, Success rate: 0.20
+avg return on 30 trajectories of agent15: 1278.38970127756, Success rate: 0.20
+avg return on 30 trajectories of agent16: 1410.8814998814107, Success rate: 0.20
+avg return on 30 trajectories of agent17: 1482.3270867419944, Success rate: 0.27
+avg return on 30 trajectories of agent18: 1334.291797782041, Success rate: 0.23
+avg return on 30 trajectories of agent19: 1297.4698723593729, Success rate: 0.23
+avg cum rews: 1386.5444092630628, std: 93.65805130903968
+avg success rate: 0.22, std: 0.02
+the best agent: 3, best agent cum rewards: 1576.2034075202505, best agent success rate: 0.23333333333333334
+51
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.02987613610863447
+avg return on 30 trajectories of agent0: 1739.4619459778949, Success rate: 0.30
+avg return on 30 trajectories of agent1: 1736.8842258084283, Success rate: 0.30
+avg return on 30 trajectories of agent2: 1731.8032955067297, Success rate: 0.30
+avg return on 30 trajectories of agent3: 1726.2495002979351, Success rate: 0.30
+avg return on 30 trajectories of agent4: 1736.9937771265318, Success rate: 0.30
+avg return on 30 trajectories of agent5: 1600.977679441204, Success rate: 0.30
+avg return on 30 trajectories of agent6: 1595.404179961288, Success rate: 0.30
+avg return on 30 trajectories of agent7: 1769.9138187765247, Success rate: 0.30
+avg return on 30 trajectories of agent8: 1745.1686716251136, Success rate: 0.30
+avg return on 30 trajectories of agent9: 1743.9717848865162, Success rate: 0.30
+avg return on 30 trajectories of agent10: 1743.8494378129567, Success rate: 0.30
+avg return on 30 trajectories of agent11: 1743.896254035333, Success rate: 0.30
+avg return on 30 trajectories of agent12: 1743.9369153881485, Success rate: 0.30
+avg return on 30 trajectories of agent13: 1740.3949337318759, Success rate: 0.30
+avg return on 30 trajectories of agent14: 1735.3909372815656, Success rate: 0.30
+avg return on 30 trajectories of agent15: 1724.8126940104014, Success rate: 0.30
+avg return on 30 trajectories of agent16: 1747.8026465624137, Success rate: 0.30
+avg return on 30 trajectories of agent17: 1744.9923245773812, Success rate: 0.30
+avg return on 30 trajectories of agent18: 1742.7928798245223, Success rate: 0.30
+avg return on 30 trajectories of agent19: 1740.3063252457812, Success rate: 0.30
+avg cum rews: 1726.7502113939274, std: 43.77664521675848
+avg success rate: 0.30, std: 0.00
+the best agent: 7, best agent cum rewards: 1769.9138187765247, best agent success rate: 0.3
+52
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.026331884919346543
+avg return on 30 trajectories of agent0: 1948.630119518494, Success rate: 0.33
+avg return on 30 trajectories of agent1: 1943.6721166634488, Success rate: 0.37
+avg return on 30 trajectories of agent2: 1921.291833526939, Success rate: 0.33
+avg return on 30 trajectories of agent3: 1884.7630665337392, Success rate: 0.33
+avg return on 30 trajectories of agent4: 1949.5683740667348, Success rate: 0.37
+avg return on 30 trajectories of agent5: 1902.7980645680425, Success rate: 0.33
+avg return on 30 trajectories of agent6: 1901.5801435505882, Success rate: 0.33
+avg return on 30 trajectories of agent7: 1895.7079480563402, Success rate: 0.33
+avg return on 30 trajectories of agent8: 1938.863584679355, Success rate: 0.37
+avg return on 30 trajectories of agent9: 1963.7728025538242, Success rate: 0.33
+avg return on 30 trajectories of agent10: 1961.3395035003268, Success rate: 0.33
+avg return on 30 trajectories of agent11: 1923.19976253257, Success rate: 0.33
+avg return on 30 trajectories of agent12: 1954.9406543465834, Success rate: 0.33
+avg return on 30 trajectories of agent13: 1977.1265808790529, Success rate: 0.33
+avg return on 30 trajectories of agent14: 1990.3057002721143, Success rate: 0.37
+avg return on 30 trajectories of agent15: 1966.4642637870843, Success rate: 0.37
+avg return on 30 trajectories of agent16: 1952.3193904694201, Success rate: 0.37
+avg return on 30 trajectories of agent17: 1983.7069565134384, Success rate: 0.37
+avg return on 30 trajectories of agent18: 1973.6798213956056, Success rate: 0.33
+avg return on 30 trajectories of agent19: 1966.7312288036933, Success rate: 0.37
+avg cum rews: 1945.0230958108696, std: 29.954547368511705
+avg success rate: 0.35, std: 0.02
+the best agent: 14, best agent cum rewards: 1990.3057002721143, best agent success rate: 0.36666666666666664
+53
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.03179093249514489
+avg return on 30 trajectories of agent0: 2008.1678960382587, Success rate: 0.37
+avg return on 30 trajectories of agent1: 2021.557675004509, Success rate: 0.37
+avg return on 30 trajectories of agent2: 2011.4070932270056, Success rate: 0.37
+avg return on 30 trajectories of agent3: 2017.3119218609902, Success rate: 0.37
+avg return on 30 trajectories of agent4: 2002.4794943320535, Success rate: 0.37
+avg return on 30 trajectories of agent5: 1980.3387851746977, Success rate: 0.37
+avg return on 30 trajectories of agent6: 1984.6498119102757, Success rate: 0.33
+avg return on 30 trajectories of agent7: 1932.2057825851564, Success rate: 0.33
+avg return on 30 trajectories of agent8: 2016.794443160286, Success rate: 0.40
+avg return on 30 trajectories of agent9: 1991.144441543659, Success rate: 0.37
+avg return on 30 trajectories of agent10: 1984.204273621366, Success rate: 0.37
+avg return on 30 trajectories of agent11: 1948.4579817353092, Success rate: 0.37
+avg return on 30 trajectories of agent12: 1920.4946134418615, Success rate: 0.33
+avg return on 30 trajectories of agent13: 1904.9216184497332, Success rate: 0.33
+avg return on 30 trajectories of agent14: 1882.9073999928228, Success rate: 0.33
+avg return on 30 trajectories of agent15: 1608.158078810682, Success rate: 0.27
+avg return on 30 trajectories of agent16: 2008.836940080055, Success rate: 0.40
+avg return on 30 trajectories of agent17: 1973.2198991265172, Success rate: 0.40
+avg return on 30 trajectories of agent18: 1956.5822419091467, Success rate: 0.33
+avg return on 30 trajectories of agent19: 1928.725976650059, Success rate: 0.33
+avg cum rews: 1954.1283184327226, std: 88.80881992889339
+avg success rate: 0.35, std: 0.03
+the best agent: 1, best agent cum rewards: 2021.557675004509, best agent success rate: 0.36666666666666664
+54
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.02890764387158981
+avg return on 30 trajectories of agent0: 2072.3320318561287, Success rate: 0.37
+avg return on 30 trajectories of agent1: 2063.110814897284, Success rate: 0.37
+avg return on 30 trajectories of agent2: 2047.8310467214212, Success rate: 0.37
+avg return on 30 trajectories of agent3: 2029.8106705479165, Success rate: 0.37
+avg return on 30 trajectories of agent4: 1999.3514213995015, Success rate: 0.37
+avg return on 30 trajectories of agent5: 1989.0257568803986, Success rate: 0.40
+avg return on 30 trajectories of agent6: 1968.7409353998457, Success rate: 0.40
+avg return on 30 trajectories of agent7: 1946.7795772989664, Success rate: 0.37
+avg return on 30 trajectories of agent8: 2034.8713615666127, Success rate: 0.33
+avg return on 30 trajectories of agent9: 2019.7136899035056, Success rate: 0.37
+avg return on 30 trajectories of agent10: 2020.6045546271837, Success rate: 0.37
+avg return on 30 trajectories of agent11: 2017.0479432515756, Success rate: 0.37
+avg return on 30 trajectories of agent12: 2009.9367718669032, Success rate: 0.37
+avg return on 30 trajectories of agent13: 2011.1746854563646, Success rate: 0.40
+avg return on 30 trajectories of agent14: 1994.081567956517, Success rate: 0.40
+avg return on 30 trajectories of agent15: 1965.226183023786, Success rate: 0.40
+avg return on 30 trajectories of agent16: 2014.2766019817932, Success rate: 0.37
+avg return on 30 trajectories of agent17: 2015.00650217682, Success rate: 0.37
+avg return on 30 trajectories of agent18: 2021.1716430476586, Success rate: 0.40
+avg return on 30 trajectories of agent19: 2009.2179114036974, Success rate: 0.40
+avg cum rews: 2012.465583563194, std: 29.96987664294053
+avg success rate: 0.38, std: 0.02
+the best agent: 0, best agent cum rewards: 2072.3320318561287, best agent success rate: 0.36666666666666664
+55
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.03241005626726116
+avg return on 30 trajectories of agent0: 2016.0641264851802, Success rate: 0.37
+avg return on 30 trajectories of agent1: 1973.7190037827606, Success rate: 0.37
+avg return on 30 trajectories of agent2: 1942.5415826935384, Success rate: 0.30
+avg return on 30 trajectories of agent3: 1934.569561006694, Success rate: 0.30
+avg return on 30 trajectories of agent4: 1997.2907307237404, Success rate: 0.33
+avg return on 30 trajectories of agent5: 1972.0360769434953, Success rate: 0.33
+avg return on 30 trajectories of agent6: 1941.3923324140462, Success rate: 0.30
+avg return on 30 trajectories of agent7: 1921.0222046150332, Success rate: 0.30
+avg return on 30 trajectories of agent8: 2012.272179525772, Success rate: 0.33
+avg return on 30 trajectories of agent9: 2013.5267035823515, Success rate: 0.37
+avg return on 30 trajectories of agent10: 2012.813105180816, Success rate: 0.40
+avg return on 30 trajectories of agent11: 1991.444731188567, Success rate: 0.40
+avg return on 30 trajectories of agent12: 2024.5153384012892, Success rate: 0.37
+avg return on 30 trajectories of agent13: 2035.091819202852, Success rate: 0.40
+avg return on 30 trajectories of agent14: 2037.9835110070403, Success rate: 0.40
+avg return on 30 trajectories of agent15: 2044.1017359867883, Success rate: 0.40
+avg return on 30 trajectories of agent16: 1971.6522181132796, Success rate: 0.33
+avg return on 30 trajectories of agent17: 1970.0353046023072, Success rate: 0.33
+avg return on 30 trajectories of agent18: 1967.3066903176004, Success rate: 0.33
+avg return on 30 trajectories of agent19: 1964.8335452381032, Success rate: 0.33
+avg cum rews: 1987.2106250505628, std: 35.72098452283388
+avg success rate: 0.35, std: 0.04
+the best agent: 15, best agent cum rewards: 2044.1017359867883, best agent success rate: 0.4
+56
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.033716349731711434
+avg return on 30 trajectories of agent0: 1956.1626274575153, Success rate: 0.37
+avg return on 30 trajectories of agent1: 1970.9225366546927, Success rate: 0.37
+avg return on 30 trajectories of agent2: 1977.9245697091312, Success rate: 0.37
+avg return on 30 trajectories of agent3: 1979.5808806566822, Success rate: 0.37
+avg return on 30 trajectories of agent4: 1961.9288362362927, Success rate: 0.37
+avg return on 30 trajectories of agent5: 1972.234222242673, Success rate: 0.37
+avg return on 30 trajectories of agent6: 1993.7093635131935, Success rate: 0.37
+avg return on 30 trajectories of agent7: 1966.7840816279647, Success rate: 0.37
+avg return on 30 trajectories of agent8: 1962.897686171953, Success rate: 0.37
+avg return on 30 trajectories of agent9: 1948.8515316082876, Success rate: 0.37
+avg return on 30 trajectories of agent10: 1948.9900162847189, Success rate: 0.37
+avg return on 30 trajectories of agent11: 1951.0376581437856, Success rate: 0.37
+avg return on 30 trajectories of agent12: 1947.6705432480676, Success rate: 0.33
+avg return on 30 trajectories of agent13: 1946.7162193685988, Success rate: 0.33
+avg return on 30 trajectories of agent14: 1950.3690864525377, Success rate: 0.33
+avg return on 30 trajectories of agent15: 1952.5484291522132, Success rate: 0.37
+avg return on 30 trajectories of agent16: 1923.4505372941464, Success rate: 0.33
+avg return on 30 trajectories of agent17: 1916.031253007669, Success rate: 0.33
+avg return on 30 trajectories of agent18: 1902.8917104382256, Success rate: 0.30
+avg return on 30 trajectories of agent19: 1900.8566643970642, Success rate: 0.30
+avg cum rews: 1951.5779226832706, std: 24.0782370100744
+avg success rate: 0.35, std: 0.02
+the best agent: 6, best agent cum rewards: 1993.7093635131935, best agent success rate: 0.36666666666666664
+57
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.025161109411223976
+avg return on 30 trajectories of agent0: 1950.4881318030805, Success rate: 0.37
+avg return on 30 trajectories of agent1: 1957.67075213432, Success rate: 0.37
+avg return on 30 trajectories of agent2: 1950.2293388781839, Success rate: 0.37
+avg return on 30 trajectories of agent3: 1955.851436092815, Success rate: 0.37
+avg return on 30 trajectories of agent4: 1956.5643007602432, Success rate: 0.37
+avg return on 30 trajectories of agent5: 1951.4036031942217, Success rate: 0.37
+avg return on 30 trajectories of agent6: 1952.154636626847, Success rate: 0.37
+avg return on 30 trajectories of agent7: 1950.3760478520749, Success rate: 0.37
+avg return on 30 trajectories of agent8: 1951.366253590931, Success rate: 0.33
+avg return on 30 trajectories of agent9: 1941.3422569273762, Success rate: 0.33
+avg return on 30 trajectories of agent10: 1929.8991236898135, Success rate: 0.30
+avg return on 30 trajectories of agent11: 1917.2278385754032, Success rate: 0.30
+avg return on 30 trajectories of agent12: 1932.904039958706, Success rate: 0.33
+avg return on 30 trajectories of agent13: 1927.3572566237747, Success rate: 0.33
+avg return on 30 trajectories of agent14: 1947.0793895694358, Success rate: 0.33
+avg return on 30 trajectories of agent15: 1992.048242828616, Success rate: 0.37
+avg return on 30 trajectories of agent16: 1933.3096461485688, Success rate: 0.37
+avg return on 30 trajectories of agent17: 1935.1895147343196, Success rate: 0.33
+avg return on 30 trajectories of agent18: 1930.0459225594414, Success rate: 0.33
+avg return on 30 trajectories of agent19: 1946.4633080927454, Success rate: 0.33
+avg cum rews: 1945.4485520320457, std: 15.44979961522638
+avg success rate: 0.35, std: 0.02
+the best agent: 15, best agent cum rewards: 1992.048242828616, best agent success rate: 0.36666666666666664
+58
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.030456647611759213
+avg return on 30 trajectories of agent0: 1980.4801268288766, Success rate: 0.33
+avg return on 30 trajectories of agent1: 1967.3313874314872, Success rate: 0.33
+avg return on 30 trajectories of agent2: 1962.4350087679159, Success rate: 0.33
+avg return on 30 trajectories of agent3: 1954.9975675638611, Success rate: 0.30
+avg return on 30 trajectories of agent4: 1981.1571546280734, Success rate: 0.33
+avg return on 30 trajectories of agent5: 1971.9532600234174, Success rate: 0.33
+avg return on 30 trajectories of agent6: 1922.1562098007357, Success rate: 0.30
+avg return on 30 trajectories of agent7: 1888.4483086976936, Success rate: 0.30
+avg return on 30 trajectories of agent8: 1995.060979871256, Success rate: 0.33
+avg return on 30 trajectories of agent9: 1994.0882855116809, Success rate: 0.33
+avg return on 30 trajectories of agent10: 1991.9474431759081, Success rate: 0.33
+avg return on 30 trajectories of agent11: 2001.3993721533325, Success rate: 0.33
+avg return on 30 trajectories of agent12: 1966.7393845686036, Success rate: 0.33
+avg return on 30 trajectories of agent13: 1953.6643336625789, Success rate: 0.30
+avg return on 30 trajectories of agent14: 1945.408678278938, Success rate: 0.30
+avg return on 30 trajectories of agent15: 1940.6915519228141, Success rate: 0.30
+avg return on 30 trajectories of agent16: 1962.760953842315, Success rate: 0.30
+avg return on 30 trajectories of agent17: 1945.3574743553295, Success rate: 0.30
+avg return on 30 trajectories of agent18: 1928.246401816388, Success rate: 0.30
+avg return on 30 trajectories of agent19: 1910.703011335434, Success rate: 0.30
+avg cum rews: 1958.251344711832, std: 29.191530544380235
+avg success rate: 0.32, std: 0.02
+the best agent: 11, best agent cum rewards: 2001.3993721533325, best agent success rate: 0.3333333333333333
+59
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.0323836079860957
+avg return on 30 trajectories of agent0: 1982.202677721392, Success rate: 0.30
+avg return on 30 trajectories of agent1: 1956.9790407338155, Success rate: 0.30
+avg return on 30 trajectories of agent2: 1960.4375650091754, Success rate: 0.30
+avg return on 30 trajectories of agent3: 1959.1144623111288, Success rate: 0.30
+avg return on 30 trajectories of agent4: 1979.6930254739198, Success rate: 0.33
+avg return on 30 trajectories of agent5: 1982.8576685106616, Success rate: 0.33
+avg return on 30 trajectories of agent6: 2019.2383665304944, Success rate: 0.33
+avg return on 30 trajectories of agent7: 2031.846589678099, Success rate: 0.33
+avg return on 30 trajectories of agent8: 1995.6311434841748, Success rate: 0.33
+avg return on 30 trajectories of agent9: 1990.9835877224616, Success rate: 0.33
+avg return on 30 trajectories of agent10: 1954.6383964297552, Success rate: 0.33
+avg return on 30 trajectories of agent11: 1960.2091490612993, Success rate: 0.30
+avg return on 30 trajectories of agent12: 2023.7670881483375, Success rate: 0.33
+avg return on 30 trajectories of agent13: 2025.8701022349633, Success rate: 0.33
+avg return on 30 trajectories of agent14: 2025.7573627443012, Success rate: 0.37
+avg return on 30 trajectories of agent15: 2027.0856310628503, Success rate: 0.37
+avg return on 30 trajectories of agent16: 1998.0280441689506, Success rate: 0.33
+avg return on 30 trajectories of agent17: 1987.5650943410121, Success rate: 0.33
+avg return on 30 trajectories of agent18: 1980.741204603756, Success rate: 0.30
+avg return on 30 trajectories of agent19: 1970.1353004014184, Success rate: 0.30
+avg cum rews: 1990.6390750185988, std: 26.015641241959255
+avg success rate: 0.32, std: 0.02
+the best agent: 7, best agent cum rewards: 2031.846589678099, best agent success rate: 0.3333333333333333
+60
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.03221298675758765
+avg return on 30 trajectories of agent0: 2043.1343163299014, Success rate: 0.33
+avg return on 30 trajectories of agent1: 2046.080762874376, Success rate: 0.37
+avg return on 30 trajectories of agent2: 2048.0450229650937, Success rate: 0.37
+avg return on 30 trajectories of agent3: 2048.949761199097, Success rate: 0.37
+avg return on 30 trajectories of agent4: 2018.6394341324296, Success rate: 0.33
+avg return on 30 trajectories of agent5: 2036.5374298686738, Success rate: 0.33
+avg return on 30 trajectories of agent6: 2038.8282428190194, Success rate: 0.33
+avg return on 30 trajectories of agent7: 2040.80185000462, Success rate: 0.33
+avg return on 30 trajectories of agent8: 2049.065773083228, Success rate: 0.37
+avg return on 30 trajectories of agent9: 2070.6868198511825, Success rate: 0.37
+avg return on 30 trajectories of agent10: 2062.9886786034926, Success rate: 0.37
+avg return on 30 trajectories of agent11: 2016.8434875467399, Success rate: 0.40
+avg return on 30 trajectories of agent12: 2019.8987265512503, Success rate: 0.33
+avg return on 30 trajectories of agent13: 1999.08899119482, Success rate: 0.33
+avg return on 30 trajectories of agent14: 2004.3543980420689, Success rate: 0.33
+avg return on 30 trajectories of agent15: 2010.8234974211564, Success rate: 0.33
+avg return on 30 trajectories of agent16: 2042.413334958759, Success rate: 0.33
+avg return on 30 trajectories of agent17: 2041.706424585214, Success rate: 0.33
+avg return on 30 trajectories of agent18: 2042.4401524493542, Success rate: 0.33
+avg return on 30 trajectories of agent19: 2042.992644963324, Success rate: 0.37
+avg cum rews: 2036.2159874721904, std: 18.28577636726186
+avg success rate: 0.35, std: 0.02
+the best agent: 9, best agent cum rewards: 2070.6868198511825, best agent success rate: 0.36666666666666664
+61
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.02816964657714476
+avg return on 30 trajectories of agent0: 1996.0858106181745, Success rate: 0.30
+avg return on 30 trajectories of agent1: 1996.0600322533041, Success rate: 0.30
+avg return on 30 trajectories of agent2: 1994.2432434862249, Success rate: 0.30
+avg return on 30 trajectories of agent3: 1990.1539934674365, Success rate: 0.30
+avg return on 30 trajectories of agent4: 1996.3660602409998, Success rate: 0.30
+avg return on 30 trajectories of agent5: 1996.8251709954566, Success rate: 0.30
+avg return on 30 trajectories of agent6: 1996.3214623386773, Success rate: 0.30
+avg return on 30 trajectories of agent7: 1995.368314579043, Success rate: 0.30
+avg return on 30 trajectories of agent8: 2000.3612561201326, Success rate: 0.30
+avg return on 30 trajectories of agent9: 2001.0780565125306, Success rate: 0.30
+avg return on 30 trajectories of agent10: 2000.0876947695176, Success rate: 0.30
+avg return on 30 trajectories of agent11: 1996.734898862648, Success rate: 0.30
+avg return on 30 trajectories of agent12: 1999.8693567272085, Success rate: 0.30
+avg return on 30 trajectories of agent13: 2002.5033991243347, Success rate: 0.30
+avg return on 30 trajectories of agent14: 2003.4829841526166, Success rate: 0.30
+avg return on 30 trajectories of agent15: 2004.3405402235833, Success rate: 0.33
+avg return on 30 trajectories of agent16: 2004.0264925575898, Success rate: 0.33
+avg return on 30 trajectories of agent17: 2003.3892955829244, Success rate: 0.30
+avg return on 30 trajectories of agent18: 2004.6903114047166, Success rate: 0.33
+avg return on 30 trajectories of agent19: 2005.255188804929, Success rate: 0.33
+avg cum rews: 1999.362178141102, std: 4.1084912952500146
+avg success rate: 0.31, std: 0.01
+the best agent: 19, best agent cum rewards: 2005.255188804929, best agent success rate: 0.3333333333333333
+62
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.03187362839118361
+avg return on 30 trajectories of agent0: 2028.8879726360647, Success rate: 0.33
+avg return on 30 trajectories of agent1: 2035.7492854449608, Success rate: 0.33
+avg return on 30 trajectories of agent2: 2035.1605501416932, Success rate: 0.33
+avg return on 30 trajectories of agent3: 2033.0015225544082, Success rate: 0.33
+avg return on 30 trajectories of agent4: 2027.6175397071906, Success rate: 0.33
+avg return on 30 trajectories of agent5: 2035.051719807983, Success rate: 0.33
+avg return on 30 trajectories of agent6: 2034.3304656150542, Success rate: 0.33
+avg return on 30 trajectories of agent7: 2031.6897642673277, Success rate: 0.33
+avg return on 30 trajectories of agent8: 2006.16814126482, Success rate: 0.30
+avg return on 30 trajectories of agent9: 2005.6923245600333, Success rate: 0.33
+avg return on 30 trajectories of agent10: 2004.68650520487, Success rate: 0.33
+avg return on 30 trajectories of agent11: 2002.718659527783, Success rate: 0.33
+avg return on 30 trajectories of agent12: 2020.0965618657835, Success rate: 0.33
+avg return on 30 trajectories of agent13: 2024.2988083105051, Success rate: 0.33
+avg return on 30 trajectories of agent14: 2018.0199013158829, Success rate: 0.33
+avg return on 30 trajectories of agent15: 2007.8945627625665, Success rate: 0.33
+avg return on 30 trajectories of agent16: 2047.7551661077375, Success rate: 0.33
+avg return on 30 trajectories of agent17: 2058.2077760839843, Success rate: 0.33
+avg return on 30 trajectories of agent18: 2066.6893990090994, Success rate: 0.37
+avg return on 30 trajectories of agent19: 2072.8846905936057, Success rate: 0.37
+avg cum rews: 2029.8300658390676, std: 19.653130978482633
+avg success rate: 0.33, std: 0.01
+the best agent: 19, best agent cum rewards: 2072.8846905936057, best agent success rate: 0.36666666666666664
+63
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.02598560566494265
+avg return on 30 trajectories of agent0: 2098.2359084938803, Success rate: 0.40
+avg return on 30 trajectories of agent1: 2088.39656734807, Success rate: 0.40
+avg return on 30 trajectories of agent2: 2074.594675502594, Success rate: 0.40
+avg return on 30 trajectories of agent3: 2055.385374548624, Success rate: 0.40
+avg return on 30 trajectories of agent4: 2087.279958117007, Success rate: 0.40
+avg return on 30 trajectories of agent5: 2072.195423026868, Success rate: 0.40
+avg return on 30 trajectories of agent6: 2048.372512024407, Success rate: 0.40
+avg return on 30 trajectories of agent7: 2035.0075220548993, Success rate: 0.33
+avg return on 30 trajectories of agent8: 2092.7451633402816, Success rate: 0.40
+avg return on 30 trajectories of agent9: 2098.762650189797, Success rate: 0.40
+avg return on 30 trajectories of agent10: 2103.7512644025796, Success rate: 0.40
+avg return on 30 trajectories of agent11: 2108.093569541148, Success rate: 0.40
+avg return on 30 trajectories of agent12: 2092.4022550593413, Success rate: 0.40
+avg return on 30 trajectories of agent13: 2088.0539874750875, Success rate: 0.40
+avg return on 30 trajectories of agent14: 2090.646733498515, Success rate: 0.40
+avg return on 30 trajectories of agent15: 2103.194614625916, Success rate: 0.40
+avg return on 30 trajectories of agent16: 2088.6555625160972, Success rate: 0.40
+avg return on 30 trajectories of agent17: 2091.724638353832, Success rate: 0.40
+avg return on 30 trajectories of agent18: 2096.218994725951, Success rate: 0.40
+avg return on 30 trajectories of agent19: 2098.7740140040255, Success rate: 0.40
+avg cum rews: 2085.624569442446, std: 18.85436439950434
+avg success rate: 0.40, std: 0.01
+the best agent: 11, best agent cum rewards: 2108.093569541148, best agent success rate: 0.4
+64
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.029639732316381128
+avg return on 30 trajectories of agent0: 2116.5686895612253, Success rate: 0.40
+avg return on 30 trajectories of agent1: 2114.8020125907874, Success rate: 0.40
+avg return on 30 trajectories of agent2: 2110.389195973517, Success rate: 0.40
+avg return on 30 trajectories of agent3: 2105.188353009332, Success rate: 0.40
+avg return on 30 trajectories of agent4: 2111.5434164977296, Success rate: 0.40
+avg return on 30 trajectories of agent5: 2108.562147169193, Success rate: 0.40
+avg return on 30 trajectories of agent6: 2105.2467133412897, Success rate: 0.40
+avg return on 30 trajectories of agent7: 2101.6416763252337, Success rate: 0.40
+avg return on 30 trajectories of agent8: 2122.1414369603885, Success rate: 0.40
+avg return on 30 trajectories of agent9: 2122.335366809131, Success rate: 0.40
+avg return on 30 trajectories of agent10: 2122.7849417717584, Success rate: 0.40
+avg return on 30 trajectories of agent11: 2123.083549687035, Success rate: 0.40
+avg return on 30 trajectories of agent12: 2119.608049697064, Success rate: 0.40
+avg return on 30 trajectories of agent13: 2119.512577339327, Success rate: 0.40
+avg return on 30 trajectories of agent14: 2119.0757215593867, Success rate: 0.40
+avg return on 30 trajectories of agent15: 2118.152949187049, Success rate: 0.40
+avg return on 30 trajectories of agent16: 2119.7252051508303, Success rate: 0.40
+avg return on 30 trajectories of agent17: 2119.1465904760566, Success rate: 0.40
+avg return on 30 trajectories of agent18: 2118.5338260725957, Success rate: 0.40
+avg return on 30 trajectories of agent19: 2118.4080116940513, Success rate: 0.40
+avg cum rews: 2115.822521543649, std: 6.308698570276622
+avg success rate: 0.40, std: 0.00
+the best agent: 11, best agent cum rewards: 2123.083549687035, best agent success rate: 0.4
+65
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.028936071907355976
+avg return on 30 trajectories of agent0: 1974.0640680780473, Success rate: 0.40
+avg return on 30 trajectories of agent1: 1978.2482595066892, Success rate: 0.40
+avg return on 30 trajectories of agent2: 1981.6862986579852, Success rate: 0.40
+avg return on 30 trajectories of agent3: 2031.9859972096572, Success rate: 0.40
+avg return on 30 trajectories of agent4: 2011.534223268391, Success rate: 0.40
+avg return on 30 trajectories of agent5: 2054.905273440791, Success rate: 0.40
+avg return on 30 trajectories of agent6: 2115.241627455618, Success rate: 0.40
+avg return on 30 trajectories of agent7: 2120.4800041859216, Success rate: 0.40
+avg return on 30 trajectories of agent8: 2175.191503520155, Success rate: 0.40
+avg return on 30 trajectories of agent9: 2112.9190598911237, Success rate: 0.40
+avg return on 30 trajectories of agent10: 2081.535391587358, Success rate: 0.40
+avg return on 30 trajectories of agent11: 2105.859239629691, Success rate: 0.40
+avg return on 30 trajectories of agent12: 2125.125707866729, Success rate: 0.40
+avg return on 30 trajectories of agent13: 2103.492723069593, Success rate: 0.40
+avg return on 30 trajectories of agent14: 2014.1146434199086, Success rate: 0.40
+avg return on 30 trajectories of agent15: 2012.3691071515173, Success rate: 0.40
+avg return on 30 trajectories of agent16: 2179.654620785327, Success rate: 0.40
+avg return on 30 trajectories of agent17: 2157.8291097985757, Success rate: 0.40
+avg return on 30 trajectories of agent18: 2165.111863814862, Success rate: 0.40
+avg return on 30 trajectories of agent19: 2109.4833191838825, Success rate: 0.40
+avg cum rews: 2080.5416020760913, std: 66.3926653317576
+avg success rate: 0.40, std: 0.00
+the best agent: 16, best agent cum rewards: 2179.654620785327, best agent success rate: 0.4
+66
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.028944620357220174
+avg return on 30 trajectories of agent0: 2192.590806386419, Success rate: 0.40
+avg return on 30 trajectories of agent1: 2164.1532636947086, Success rate: 0.40
+avg return on 30 trajectories of agent2: 2138.2323970055127, Success rate: 0.40
+avg return on 30 trajectories of agent3: 2114.6916594458603, Success rate: 0.40
+avg return on 30 trajectories of agent4: 2085.129558545167, Success rate: 0.40
+avg return on 30 trajectories of agent5: 2084.1681926675224, Success rate: 0.40
+avg return on 30 trajectories of agent6: 2049.0215200790285, Success rate: 0.40
+avg return on 30 trajectories of agent7: 2033.5169777020117, Success rate: 0.40
+avg return on 30 trajectories of agent8: 2189.2226914146127, Success rate: 0.40
+avg return on 30 trajectories of agent9: 2191.9009159307748, Success rate: 0.40
+avg return on 30 trajectories of agent10: 2191.1587468155412, Success rate: 0.40
+avg return on 30 trajectories of agent11: 2191.4936583420176, Success rate: 0.40
+avg return on 30 trajectories of agent12: 2142.9309901246406, Success rate: 0.40
+avg return on 30 trajectories of agent13: 2138.1475641224756, Success rate: 0.40
+avg return on 30 trajectories of agent14: 2102.6843142659945, Success rate: 0.40
+avg return on 30 trajectories of agent15: 2101.833106215805, Success rate: 0.40
+avg return on 30 trajectories of agent16: 2169.5538978819645, Success rate: 0.40
+avg return on 30 trajectories of agent17: 2146.291768378601, Success rate: 0.40
+avg return on 30 trajectories of agent18: 2130.1146264921435, Success rate: 0.40
+avg return on 30 trajectories of agent19: 2117.01649333072, Success rate: 0.40
+avg cum rews: 2133.692657442076, std: 46.758101199944505
+avg success rate: 0.40, std: 0.00
+the best agent: 0, best agent cum rewards: 2192.590806386419, best agent success rate: 0.4
+67
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.025954560475387467
+avg return on 30 trajectories of agent0: 2096.57536781713, Success rate: 0.40
+avg return on 30 trajectories of agent1: 2097.9751364199733, Success rate: 0.40
+avg return on 30 trajectories of agent2: 2099.3110572206315, Success rate: 0.40
+avg return on 30 trajectories of agent3: 2098.2061082261994, Success rate: 0.40
+avg return on 30 trajectories of agent4: 2076.99777965928, Success rate: 0.40
+avg return on 30 trajectories of agent5: 2077.4689186114115, Success rate: 0.40
+avg return on 30 trajectories of agent6: 2087.1346448225613, Success rate: 0.40
+avg return on 30 trajectories of agent7: 2092.865302265708, Success rate: 0.40
+avg return on 30 trajectories of agent8: 2120.1916682982674, Success rate: 0.40
+avg return on 30 trajectories of agent9: 2104.013411408089, Success rate: 0.40
+avg return on 30 trajectories of agent10: 2106.2277378509743, Success rate: 0.40
+avg return on 30 trajectories of agent11: 2073.9582266293355, Success rate: 0.40
+avg return on 30 trajectories of agent12: 2104.3732378619566, Success rate: 0.40
+avg return on 30 trajectories of agent13: 2075.925516793702, Success rate: 0.40
+avg return on 30 trajectories of agent14: 2063.3754654963113, Success rate: 0.40
+avg return on 30 trajectories of agent15: 2031.6516201017605, Success rate: 0.40
+avg return on 30 trajectories of agent16: 2086.311513416156, Success rate: 0.40
+avg return on 30 trajectories of agent17: 2078.917703963134, Success rate: 0.40
+avg return on 30 trajectories of agent18: 2069.9273944952197, Success rate: 0.40
+avg return on 30 trajectories of agent19: 2037.652942843595, Success rate: 0.40
+avg cum rews: 2083.95303771007, std: 21.561866894198843
+avg success rate: 0.40, std: 0.00
+the best agent: 8, best agent cum rewards: 2120.1916682982674, best agent success rate: 0.4
+68
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.0275065974161346
+avg return on 30 trajectories of agent0: 2131.7153208817076, Success rate: 0.40
+avg return on 30 trajectories of agent1: 2146.568211416134, Success rate: 0.40
+avg return on 30 trajectories of agent2: 2121.1437785565, Success rate: 0.40
+avg return on 30 trajectories of agent3: 2121.484534291376, Success rate: 0.40
+avg return on 30 trajectories of agent4: 2154.805376253677, Success rate: 0.40
+avg return on 30 trajectories of agent5: 2156.0002730487086, Success rate: 0.40
+avg return on 30 trajectories of agent6: 2119.6768731080397, Success rate: 0.40
+avg return on 30 trajectories of agent7: 2111.6806944169057, Success rate: 0.40
+avg return on 30 trajectories of agent8: 2122.4972516738103, Success rate: 0.40
+avg return on 30 trajectories of agent9: 2103.092295201776, Success rate: 0.40
+avg return on 30 trajectories of agent10: 2097.959069426836, Success rate: 0.40
+avg return on 30 trajectories of agent11: 2092.4790172668686, Success rate: 0.40
+avg return on 30 trajectories of agent12: 2125.8421890228014, Success rate: 0.40
+avg return on 30 trajectories of agent13: 2135.093108083193, Success rate: 0.40
+avg return on 30 trajectories of agent14: 2159.271688403917, Success rate: 0.40
+avg return on 30 trajectories of agent15: 2162.9757983784593, Success rate: 0.40
+avg return on 30 trajectories of agent16: 2122.9234018568036, Success rate: 0.40
+avg return on 30 trajectories of agent17: 2109.301158788538, Success rate: 0.40
+avg return on 30 trajectories of agent18: 2157.9479729004943, Success rate: 0.40
+avg return on 30 trajectories of agent19: 2158.8442006534247, Success rate: 0.40
+avg cum rews: 2130.5651106814985, std: 21.736274155222063
+avg success rate: 0.40, std: 0.00
+the best agent: 15, best agent cum rewards: 2162.9757983784593, best agent success rate: 0.4
+69
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.03377120460365658
+avg return on 30 trajectories of agent0: 2202.034500822869, Success rate: 0.40
+avg return on 30 trajectories of agent1: 2203.0859222846893, Success rate: 0.40
+avg return on 30 trajectories of agent2: 2192.851619536715, Success rate: 0.40
+avg return on 30 trajectories of agent3: 2190.630266632925, Success rate: 0.40
+avg return on 30 trajectories of agent4: 2170.31317808538, Success rate: 0.40
+avg return on 30 trajectories of agent5: 2147.2044399265405, Success rate: 0.40
+avg return on 30 trajectories of agent6: 2148.808891959242, Success rate: 0.40
+avg return on 30 trajectories of agent7: 2149.1523047839196, Success rate: 0.40
+avg return on 30 trajectories of agent8: 2138.037183856976, Success rate: 0.40
+avg return on 30 trajectories of agent9: 2137.7597885122104, Success rate: 0.40
+avg return on 30 trajectories of agent10: 2136.882107302968, Success rate: 0.40
+avg return on 30 trajectories of agent11: 2136.156676398833, Success rate: 0.40
+avg return on 30 trajectories of agent12: 2166.8379135852133, Success rate: 0.40
+avg return on 30 trajectories of agent13: 2201.570122209572, Success rate: 0.40
+avg return on 30 trajectories of agent14: 2190.88521200881, Success rate: 0.40
+avg return on 30 trajectories of agent15: 2172.0563259066557, Success rate: 0.40
+avg return on 30 trajectories of agent16: 2162.6945757367967, Success rate: 0.40
+avg return on 30 trajectories of agent17: 2165.5856611328536, Success rate: 0.40
+avg return on 30 trajectories of agent18: 2169.2381716910795, Success rate: 0.40
+avg return on 30 trajectories of agent19: 2149.027107399762, Success rate: 0.40
+avg cum rews: 2166.5405984887007, std: 22.908924282142532
+avg success rate: 0.40, std: 0.00
+the best agent: 1, best agent cum rewards: 2203.0859222846893, best agent success rate: 0.4
+70
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.030409174501998197
+avg return on 30 trajectories of agent0: 2169.9100682211774, Success rate: 0.37
+avg return on 30 trajectories of agent1: 2017.0487800544129, Success rate: 0.37
+avg return on 30 trajectories of agent2: 2160.4732115619977, Success rate: 0.37
+avg return on 30 trajectories of agent3: 2152.023069957257, Success rate: 0.33
+avg return on 30 trajectories of agent4: 2169.798662392159, Success rate: 0.37
+avg return on 30 trajectories of agent5: 2165.2596229982955, Success rate: 0.37
+avg return on 30 trajectories of agent6: 2011.4433267734012, Success rate: 0.37
+avg return on 30 trajectories of agent7: 2136.2910658521255, Success rate: 0.33
+avg return on 30 trajectories of agent8: 2168.2294707924684, Success rate: 0.37
+avg return on 30 trajectories of agent9: 2165.399705978386, Success rate: 0.37
+avg return on 30 trajectories of agent10: 2161.648086375978, Success rate: 0.37
+avg return on 30 trajectories of agent11: 2158.650606487312, Success rate: 0.37
+avg return on 30 trajectories of agent12: 2211.7421838356995, Success rate: 0.40
+avg return on 30 trajectories of agent13: 2213.8551996053147, Success rate: 0.40
+avg return on 30 trajectories of agent14: 2215.040745861762, Success rate: 0.40
+avg return on 30 trajectories of agent15: 2216.781310756191, Success rate: 0.40
+avg return on 30 trajectories of agent16: 2209.0405725128303, Success rate: 0.40
+avg return on 30 trajectories of agent17: 2164.145595621304, Success rate: 0.40
+avg return on 30 trajectories of agent18: 2166.2548390769603, Success rate: 0.40
+avg return on 30 trajectories of agent19: 2168.121806251555, Success rate: 0.40
+avg cum rews: 2160.057896548329, std: 53.76422173433332
+avg success rate: 0.38, std: 0.02
+the best agent: 15, best agent cum rewards: 2216.781310756191, best agent success rate: 0.4
+71
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.027242022167839063
+avg return on 30 trajectories of agent0: 2193.28710946327, Success rate: 0.40
+avg return on 30 trajectories of agent1: 2169.784987822512, Success rate: 0.40
+avg return on 30 trajectories of agent2: 2171.8129989623494, Success rate: 0.40
+avg return on 30 trajectories of agent3: 2172.0140605268025, Success rate: 0.40
+avg return on 30 trajectories of agent4: 2167.9984559737854, Success rate: 0.40
+avg return on 30 trajectories of agent5: 2168.1083455469497, Success rate: 0.40
+avg return on 30 trajectories of agent6: 2166.345464256357, Success rate: 0.40
+avg return on 30 trajectories of agent7: 2163.216174847546, Success rate: 0.40
+avg return on 30 trajectories of agent8: 2214.3748839425557, Success rate: 0.40
+avg return on 30 trajectories of agent9: 2214.9099095275974, Success rate: 0.40
+avg return on 30 trajectories of agent10: 2191.6099712374294, Success rate: 0.40
+avg return on 30 trajectories of agent11: 2193.226945545189, Success rate: 0.40
+avg return on 30 trajectories of agent12: 2152.502925062774, Success rate: 0.40
+avg return on 30 trajectories of agent13: 2147.972853360635, Success rate: 0.40
+avg return on 30 trajectories of agent14: 2141.900438881316, Success rate: 0.40
+avg return on 30 trajectories of agent15: 1949.544485734318, Success rate: 0.37
+avg return on 30 trajectories of agent16: 2197.2968224002175, Success rate: 0.40
+avg return on 30 trajectories of agent17: 2193.0929966673366, Success rate: 0.40
+avg return on 30 trajectories of agent18: 2184.4265121523827, Success rate: 0.40
+avg return on 30 trajectories of agent19: 1993.5106902170642, Success rate: 0.40
+avg cum rews: 2157.3468516064195, std: 65.27774279056922
+avg success rate: 0.40, std: 0.01
+the best agent: 9, best agent cum rewards: 2214.9099095275974, best agent success rate: 0.4
+72
+---------------------------------
+Searching empty space policies
+(10, 7624)
+(20, 7624)
+(20, 7624)
+Average distance of agents to nearest neighbors: 0.026844472127399162
+avg return on 30 trajectories of agent0: 2140.097177732523, Success rate: 0.40
+avg return on 30 trajectories of agent1: 2139.0718923825284, Success rate: 0.40
+avg return on 30 trajectories of agent2: 2135.980005735076, Success rate: 0.40
+avg return on 30 trajectories of agent3: 2138.9884177480135, Success rate: 0.40
+avg return on 30 trajectories of agent4: 2146.061050026371, Success rate: 0.40
+avg return on 30 trajectories of agent5: 2164.2694317105856, Success rate: 0.40
+avg return on 30 trajectories of agent6: 2141.6059183565544, Success rate: 0.40
+avg return on 30 trajectories of agent7: 2144.4493592536314, Success rate: 0.40
+avg return on 30 trajectories of agent8: 2165.70801020455, Success rate: 0.40
+avg return on 30 trajectories of agent9: 2163.0153565946766, Success rate: 0.40
+avg return on 30 trajectories of agent10: 2160.3070620477856, Success rate: 0.40
+avg return on 30 trajectories of agent11: 2158.8234758171156, Success rate: 0.40
+avg return on 30 trajectories of agent12: 2131.5661564556567, Success rate: 0.40
+avg return on 30 trajectories of agent13: 2134.812962165151, Success rate: 0.40
+avg return on 30 trajectories of agent14: 2138.1973040998682, Success rate: 0.40
+avg return on 30 trajectories of agent15: 2156.6541995683815, Success rate: 0.40
+avg return on 30 trajectories of agent16: 2137.9228153759345, Success rate: 0.40
+avg return on 30 trajectories of agent17: 2139.5790032589002, Success rate: 0.40
+avg return on 30 trajectories of agent18: 2140.763533943314, Success rate: 0.40
+avg return on 30 trajectories of agent19: 2142.4338969638584, Success rate: 0.40
+avg cum rews: 2146.015351472023, std: 10.699152287257986
+avg success rate: 0.40, std: 0.00
+the best agent: 8, best agent cum rewards: 2165.70801020455, best agent success rate: 0.4
+Average distance of random agents to nearest neighbors: [0.018624590763919008, 0.02777543178593251, 0.029837621127234586, 0.030873509326061373, 0.025015546696284696, 0.028885665299863673, 0.030928463080251233, 0.027939534540559186, 0.026017688438371232, 0.023915484221404073, 0.02784396862864592, 0.032662528115496935, 0.02667200702912175, 0.03137645044827256, 0.02859977842943177, 0.028659326009415814, 0.03253433635683101, 0.031962779073387966, 0.027076066140826038, 0.026352980349816767, 0.029968999099950166, 0.022333046172428546, 0.03169466869459116, 0.027312541363863203, 0.031114475012755678, 0.030386044519532425, 0.03152755935820235, 0.02987613610863447, 0.026331884919346543, 0.03179093249514489, 0.02890764387158981, 0.03241005626726116, 0.033716349731711434, 0.025161109411223976, 0.030456647611759213, 0.0323836079860957, 0.03221298675758765, 0.02816964657714476, 0.03187362839118361, 0.02598560566494265, 0.029639732316381128, 0.028936071907355976, 0.028944620357220174, 0.025954560475387467, 0.0275065974161346, 0.03377120460365658, 0.030409174501998197, 0.027242022167839063, 0.026844472127399162]
+Time taken for each iteration: [3212.2820901870728, 6498.266679525375, 9850.750012874603, 13228.796071529388, 15785.567838191986, 18332.1164188385, 20882.930766105652, 23549.535539627075, 26209.810412168503, 28867.24993300438, 31624.342361450195, 34251.90447354317, 36857.94933772087, 39454.714849710464, 42113.641211271286, 44716.06631422043, 47363.404561042786, 49950.59912776947, 52596.42930817604, 55286.443103551865, 57929.0835814476, 60723.438428640366, 63414.809207201004, 66145.86461114883, 68706.43578267097, 71226.52531552315, 73784.0442328453, 76320.05217695236, 78877.09389328957, 81475.5637910366, 83997.89647769928, 86528.62600111961, 89063.11681890488, 91675.96798181534, 94536.10951852798, 97122.33431887627, 99783.44979071617, 102364.2025334835, 104951.59270453453, 107541.29735946655, 110174.03172063828, 112969.46077513695, 115614.45970916748, 118232.81820750237, 120856.42886972427, 123486.04863190651, 126219.24822545052, 128860.58291268349, 131458.41766643524]
